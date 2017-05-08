@@ -1,3 +1,4 @@
+{"1.1.0",
 [{<<"cowboy">>,
   {git,"https://github.com/ninenines/cowboy.git",
        {ref,"0c15b9216b7467390623db84e169b32c68e85bcb"}},
@@ -6,19 +7,20 @@
   {git,"https://github.com/ninenines/cowlib",
        {ref,"45f750db410a4b08c68d142ad0af839f544c5d3d"}},
   1},
- {<<"goldrush">>,
-  {git,"https://github.com/DeadZen/goldrush.git",
-       {ref,"8f1b715d36b650ec1e1f5612c00e28af6ab0de82"}},
-  2},
+ {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
  {<<"graphql">>,
   {git,"git@github.com:shopgun/graphql-erlang.git",
        {ref,"cba34f842c6385141b048c780e36d9d621651615"}},
   0},
  {<<"lager">>,
   {git,"https://github.com/erlang-lager/lager.git",
-       {ref,"92b1548f7f97a7fef257dffc45ef7b14006334e6"}},
-  1},
+       {ref,"a10c23c51dea6bbd63e5048c8a5a702169973114"}},
+  0},
  {<<"ranch">>,
   {git,"https://github.com/ninenines/ranch",
        {ref,"a004ad710eddd0c21aaccc30d5633a76b06164b5"}},
-  1}].
+  1}]}.
+[
+{pkg_hash,[
+ {<<"goldrush">>, <<"F06E5D5F1277DA5C413E84D5A2924174182FB108DABB39D5EC548B27424CD106">>}]}
+].

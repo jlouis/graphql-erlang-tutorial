@@ -5,7 +5,10 @@
   {mod, { sw_core_app, []}},
   {applications,
    [kernel,
-    stdlib
+    stdlib,
+    mnesia,
+
+    lager
    ]},
   {env,[]},
   {modules, []},
