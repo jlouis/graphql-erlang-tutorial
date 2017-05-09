@@ -36,7 +36,7 @@ mapping_rules() ->
          'Starship' => sw_core_starship,
          default => sw_core_object }
      }.
-%% end:schemaMapping[]
+%% end::schemaMapping[]
 
 %% tag::loadSchema[]
 load_schema() ->
