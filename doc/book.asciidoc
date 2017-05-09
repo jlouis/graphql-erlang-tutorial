@@ -1,5 +1,5 @@
 = Erlang GraphQL Tutorial
-
+:source-highlighter: prettify
 :sw_core: ../apps/sw_core
 
 include::introduction.asciidoc[Introduction]

@@ -15,6 +15,28 @@ the schema. The GraphQL system then figures out a _query plan_ for the
 query and executes the query. This in turn calls your bound modules
 and this allows you to process the query, load data, and so on.
 
+=== On this tutorial
+
+The tutorial you are now reading isn't really a tutorial per se where
+you type in stuff and see the output. There is a bit too much code for
+that kind of exposition. Rather, the tutorial describes a specific
+project implemented by means of the GraphQL system. You can use the
+ideas herein to build your own.
+
+There are examples of how things are built however, so you may be able
+to follow along and check out the construction of the system as a
+whole. Apart from being a small self-contained functional GraphQL
+project, it is also a small self-contained functional rebar3 project.
+So there's that.
+
+Most of the source code in this tutorial refers inside the real source
+code. If a section doesn't make sense anymore because the underlying
+code has changed, please submit a bug report.
+
+Another kind of bug report we are interested in, are "`I tried doing
+this, but the result was not what I expected`". These often indicate
+an omission on our part which should have been included.
+
 === Prerequisites
 
 Some Erlang knowledge is expected for reading this guide. General
