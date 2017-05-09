@@ -1,0 +1,65 @@
+# tag::nodeInterface[]
++description(text: "Relay Modern Node Interface")
+interface Node {
+  +description(text: "Unique Identity of a Node")
+  id : ID!
+}
+# end::nodeInterface[]
+
+type PageInfo {
+  hasNextPage : Boolean!
+  hasPreviousPage : Boolean!
+}
+
+type StarshipPilotsConnection {
+  pageInfo : PageInfo
+}
+
+type StarshipFilmsConnection {
+  pageInfo : PageInfo
+}
+
+# tag::starshipObject[]
++description(text: "Representation of Star Ships")
+type Starship implements Node {
+  id : ID!
+  name : String
+  model : String
+  starshipClass : String
+  manufacturers : [String]
+  costInCredits : Float
+  length : Float
+  crew : String
+  passengers : String
+  maxAtmospheringSpeed : Int
+  hyperdriveRating : Float
+  MGLT : Int
+# end::starshipObject[]
+  cargoCapacity : Float
+  consumables : String
+  pilotConnection(
+    after : String
+    first : Int
+    before : String
+    last : Int) : StarshipPilotsConnection
+  filmConnection(
+    after : String
+    first : Int
+    before : String
+    last : Int) : StarshipFilmsConnection
+  created : String
+  edited : String
+}
+
+type Mutation {
+  dummy : Node
+}
+
+# tag::queryObject[]
+type Query {
+  +description(text: "Relay Modern specification Node fetcher")
+  node(id : ID!) : Node
+  +description(text: "Fetch a starship with a given Id")
+  starship(id : ID!) : Starship
+}
+# end::queryObject[]

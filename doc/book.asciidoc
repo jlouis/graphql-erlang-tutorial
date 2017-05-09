@@ -1,7 +1,11 @@
 = Erlang GraphQL Tutorial
 
-:source_core: ../apps/sw_core/src
+:sw_core: ../apps/sw_core
 
 include::introduction.asciidoc[Introduction]
 include::getting_started.asciidoc[Getting Started]
 include::schema.asciidoc[Schema]
+
+== Pagination
+
+TODO

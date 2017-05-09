@@ -12,3 +12,167 @@ a projects `priv` directory. Our GraphQL system can then refer to the
 private directory of the application in order to load this schema when
 the system boots up.
 
+=== Identity generation
+
+In GraphQL, you have a special type, _ID_ which is used to attach an
+identity to objects. It is often construed as a "`PRIMARY KEY`" of
+sorts on objects, such that you can refer to objects uniquely. The
+rule is that a client must only treat an _ID_ as an opaque string
+value and never parse on the string value. Thus, an _ID_ is
+represented as a _String_, but you are not allowed to parse it as a
+client.
+
+To make this more obvious, the GraphQL people usually base64 encode
+their ID-values. Furthermore, we have the problem that in Mnesia, our
+rows IDs will be integers. This means we may have overlapping integers
+between different types. To avoid problem, we use a common definition
+in GraphQL. The Starship with id 3 will be encoded as essentially
+`base64("starship:3")`, apart from the fact we use a binary encoding
+of the number. This definition somewhat hides the implementation and
+also allows the server backend to redefine IDs later for objects.
+Another use of the encoding is that it can define what datasource a
+given came from, so you can figure out where to find that object. It
+is highly useful in migration scenarios.
+
+The encoder is simple because we can assume the server provides valid
+values:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_id.erl[tags=idEncode]
+----
+
+The decoder is a bit more involved. It requires you to fail on invalid
+inputs. We usually don't need to know what was invalid. We can simply
+fail aggressively if things turns out bad. A debugging session will
+usually uncover the details anyway as we dig into a failure.
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_id.erl[tags=idDecode]
+----
+
+=== The Node Interface
+
+The Relay Modern specification contains a number of standards for how
+to implement different parts of the GraphQL schema. One such standard
+is the *Node* interface. This interface allows you to "`start from`"
+any node in the graph which has an _id_ field. That is, every node
+with identity can be a starting point for a query.
+
+The interface is most often used as a way to cache-refresh objects you
+have loaded a long time ago in order to make sure they have the right
+kinds of data. The interface specification follows the standard
+closely:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=nodeInterface]
+----
+
+.On Documentation
+
+The Erlang version of GraphQL allows a certain extension by the Apollo
+people. This extension allows you to _annotate_ GraphQL schema data
+with more information. In particular, we use this for documentation.
+You can annotate almost anything with `+description(text:
+"documentation")` which in turn attaches that documentation to an
+entity in the Graph.
+
+Multi-line comments are also possible by using a backtick (`) rather
+than a quote symbol ("). These allows larger Markdown entries to be
+placed in the documentation, which tends to be good for documentation
+of APIs.
+
+NOTE: You can't easily use a ` inside the multiline quotations. This
+means you can't easily write pre-formatted code sections unless you
+use indentation in the Markdown format. The choice was somewhat
+deliberate in that there is a workaround currently, and it tends to
+flow really well when you enter documentation by means of the backtick
+character. A future version of the parser might redo this decision.
+
+=== Starships
+
+Since we have Starships in the mnesia database from the previous
+section, we can define the GraphQL Schema for them as well. The
+definition is quite straightforward given the Star Wars API we are
+trying to mimic already contains all the important parts.
+
+For brevity, we omit the documentation of each individual field for
+now. Though a more complete implementation would probably include
+documentation on each field to a fine detail. Also note we are cutting
+the full implementation short since the full Starship contains
+pagination, which we handle in a later section in the documentation.
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=starshipObject]
+...
+----
+
+== Loading the Schema
+
+In order to work with a schema, it must be loaded. We can load it as
+part of booting the `sw_core` application in the system. After having
+loaded the supervisor tree of the application, we can call out and
+load the star wars schema into the system. The main schema loader is
+defined in the following way:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_app.erl[tags=loadSchema]
+----
+
+To load the schema, we figure out where it is in the file system. The
+schema to load is in an environment variable inside `sw_core.app`, and
+we let OTP figure out where the applications private directory is.
+Then the schema is loaded according to the mapping rules of the
+schema.
+
+After the schema loads, we set up a _schema root_ which is how to
+start out a _query_ or a _mutation_. Finally, we validate the schema.
+This runs some correctness checks on the schema and fails of the
+sanity checks doesn't pass. It forces you to define everything you
+use, and it also verifies that interfaces are correctly implemented.
+
+NOTE: Currently, the schema root is set up "`manually`" outside the
+schema definition. It is likely that a later version of the
+implementation will be able to do this without manually injecting the
+root, but by having the root being part of the schema definition.
+
+TIP: Always run the schema validator once you've finished assembling
+your schema. Many errors are caught automatically by the validator,
+and it removes the hassle of debugging later. Also, it runs fairly
+quickly, so run it as part of your systems boot phase. This ensures
+your system won't boot if there is some kind of problem with your
+schema definition. If you have a boot-test as part of your testing
+framework or CI system, you should be able to use this as a "`schema
+type checker`" and weed out some obvious definitional bugs.
+
+=== Root setup
+
+The root setup defines how a query begins. All GraphQL queries are
+either a _query_ or a _mutation_.footnote:[The spec has toyed with the
+idea of adding more classes in additon to queries and mutations. Most
+notably the concept of a _subscription_] Correspondingly, the schema
+specification contains entries for two (output) objects, which are
+commonly called `Query` and `Mutation` respectively. For example, the
+query object looks like:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=queryObject]
+----
+
+The query root must be injected into the schema so the GraphQL systems
+knows where to start. This is done in the file `sw_core_app` in the
+function `setup_root`:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_app.erl[tags=setupRoot]
+----
+
+=== Mapping rules
+
+TODO

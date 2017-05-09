@@ -173,7 +173,7 @@ initial schema for the database:
 
 [source,erlang]
 ----
-include::{source_core}/sw_core_db.erl[tags=createSchema]
+include::{sw_core}/src/sw_core_db.erl[tags=createSchema]
 ----
 
 Creating the schema amounts to running a set of commands from the
@@ -182,7 +182,7 @@ large number of tables, so we are just going to show one here:
 
 [source,erlang]
 ----
-include::{source_core}/sw_core_db.erl[tags=createTables]
+include::{sw_core}/src/sw_core_db.erl[tags=createTables]
 ----
 
 In mnesia, tables are Erlang records. The `starship` record needs
@@ -192,7 +192,7 @@ the concept of a starship in the system:
 
 [source,erlang]
 ----
-include::{source_core}/sw_core_db.hrl[tags=shipRecord]
+include::{sw_core}/src/sw_core_db.hrl[tags=shipRecord]
 ----
 
 Every other table in the system is handled in the same manner.

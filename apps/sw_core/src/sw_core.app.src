@@ -8,9 +8,12 @@
     stdlib,
     mnesia,
 
-    lager
+    lager,
+    graphql
    ]},
-  {env,[]},
+  {env,[
+       {schema_file, "sw.schema"}
+       ]},
   {modules, []},
 
   {maintainers, []},
