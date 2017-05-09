@@ -21,3 +21,6 @@ release:
 
 dialyzer:
 	$(REBAR) dialyzer
+
+documentation:
+	asciidoc -d book doc/book.asciidoc

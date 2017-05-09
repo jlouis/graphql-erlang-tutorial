@@ -1,0 +1,45 @@
+[[introduction]]
+
+== Introduction
+
+The Erlang GraphQL system allows you to implement GraphQL servers in
+Erlang. It works as a library which you can use on top of existing web
+servers such as Cowboy, Webmachine, Yaws and so on.
+
+As a developer, you work by providing a _schema_ which defines the
+query structure which your server provides. Next, you map your schema
+unto Erlang modules which then defines a binding of the two worlds.
+
+Clients execute _queries_ to the server according to the structure of
+the schema. The GraphQL system then figures out a _query plan_ for the
+query and executes the query. This in turn calls your bound modules
+and this allows you to process the query, load data, and so on.
+
+=== Prerequisites
+
+Some Erlang knowledge is expected for reading this guide. General
+Erlang concept will not be explained, but assumed to be known.
+Furthermore, some knowledge of the web in general is assumed. We don't
+cover the intricacies of HTTP 1.1 or HTTP/2 for instance.
+
+This tutorial uses a couple of dependencies:
+
+* Rebar3 is used to build the software
+* Cowboy 1.x is used as a web server for the project
+* GraphiQL is used as a web interface to the Graph System
+* Erlang/OTP version 19.3.3 was used in the creation of this tutorial
+
+=== Supported Platforms
+
+The GraphQL system should run on any system which can run Erlang. The
+library does not use any special tooling, nor does it make any
+assumptions about the environment. If Erlang runs on your platform,
+chances are that GraphQL will too.
+
+=== License
+
+MIT 2.0
+
+----
+Copyright (c) 2016-2017, Shopgun Aps
+----

@@ -1,0 +1,160 @@
+[[Getting Started]]
+
+== Getting Started
+
+This tutorial takes you through the creation of a GraphQL server
+implementing the now ubiquitous _Star Wars_ schema. It is a complete
+implementation of the schema given as an example in order to make it
+clear how to implement a fully-fledged GraphQL server in Erlang.
+
+The goal of the tutorial is to provide a developer with a working
+example from which you can start. Once completed, you can start adding
+your own types to the tutorial. And once they start working, you can
+"take over" the system and gradually remove the Star Wars parts until
+you have a fully working example.
+
+This implementation backs the system by means of a Mnesia database.
+The choice is deliberate for a couple of reasons:
+
+* Mnesia is present in any Erlang system and thus it provides a simple
+  way to get started and setup.
+* Mnesia is *not* a Graph Database. This makes it explicit your
+  database can be anything. In fact, the "Graph" is GraphQL is
+  misnomer since GraphQL works even when your data does not have a
+  typical Graph-form. It is simply a nice query structure.
+
+=== Overview
+
+The purpose of a GraphQL server is to provide a contract between a
+client and a server. The contract ensures that the exchange of
+information follows a specific structure, and that queries and
+responses are in accordance with the contract specification.
+
+Additionally, the GraphQL servers contract defines what kind of
+queries are possible and what responses will look like. Every query
+and response is typed and a type checker ensures correctness of data.
+
+Finally, the contract is introspectable by the clients. This allows
+automatic deduction of queries and built-in documentation of the
+system interface.
+
+Thus, a GraphQL server is also a contract checker. The GraphQL system
+ensures that invalid queries are rejected, which makes it easier to
+implement the server side: you can assume queries are valid to a far
+greater extent than is typical in other systems such as typical REST
+interfaces.
+
+=== Plan
+
+In order to get going, we need a world in which to operate. First, we
+must provide two schemas: one for the GraphQL system, and one for the
+Mnesia database.
+
+The GraphQL schema defines the client/server contract. It consists of
+several GraphQL entity kinds. For example:
+
+* Scalar types--Extensions on top of the default types. Often used
+  for Dates, DateTime's, URI's, Color's, Currency, Locales and so on.
+* Enumerations--Values taken from a limited set. An example could be
+  the enumeration of weekdays: "MONDAY, TUESDAY, WEDNESDAY, ...,
+  SUNDAY".
+* Input Objects--Data flowing from the Client to the Server (Request).
+* Output Objects--Data flowing from the Server to the Client
+  (Response).
+
+A somewhat peculiar choice by the GraphQL authors is that the world of
+Input and Output objects differ. In general, a Client has no way to
+"_PUT_" an input object back into the Graph as is the case in REST
+systems. From a type-level perspective, client requests and server
+responses have different _polarity_.
+
+It may seem as if this is an irritating choice. You often have to
+specify the "same" object twice: once for input and once for output.
+However, as your GraphQL systems grows in size, it turns out this
+choice is the right one. You quickly run into situations where a
+client supplies a desired specific change where many of the fields on
+the output object doesn't make sense. By splitting the input and
+output world, it is easily to facilitate since the input objects can
+omit many fields that doesn't make sense.
+
+In a way, your GraphQL system is built such that changes to the data
+is done by executing "transactions" through a set of stored
+procedures. This can be seen as using the "_PATCH_" method of RESTful
+interfaces and not having a definition of PUT.
+
+.CQRS
+
+GraphQL splits the schema into two worlds: _query_ and _mutation_. The
+difference from the server side is mostly non-existent: the GraphQL
+system is allowed to parallelize queries but not mutations. But from
+the perspective of the client, the starting points in the graph is
+either the _query_ or the _mutation_ object.
+
+CQRS stands for Command-Query Responsiblity Separation. The idea stems
+from the observation that querying data often have a different feel
+than commanding the system to do changes. So rather than trying to
+solve both in one interface, you slice the system such that you have a
+query-part which pertains only to querying data, and a command-part
+which pertains to mutating data.
+
+GraphQL implements what is essentially CQRS by making a distinction
+between the notion of a _query_ and a _mutation_. Likewise, the server
+side makes this distinction. But on the server side it is merely
+implemented by having different starting objects in the graph
+execution.
+
+.Mnesia
+
+Our Star Wars schema uses the database *mnesia* as a backend. It is
+important to stress that you often have a situation where your
+database backend doesn't map 1-1 onto the GraphQL schema you specify.
+In larger systems, this is particularly important: the GraphQL schema
+is often served by multiple different backends, and those backends are
+not going to cleanly map onto the world we expose to the clients. So
+the GraphQL schema contract becomes a way to mediate between the
+different data stores. As an example, you may satisfy some parts of
+the GraphQL from a dedicated search system--such as
+ElasticSearch--while others are served as rows from a traditional
+database, such as MySQL or Postgresql.
+
+Over the course of having built larger systems, we've experienced that
+mappings which tries to get isomorphism between the backend and the
+schema creates more problems than they solve. Small changes have
+consequence in all of the stack. Worse, you can't evolve part of the
+system without evolving other parts which impairs the flexibility of
+the system.
+
+Another problem is that you may end up with an impedence mismatch
+between the Objects and links of the GraphQL query and the way you
+store your data in the backend. If you force a 1-1 relationship
+between the two, you can get into trouble because your GraphQL schema
+can't naturally describe data.
+
+.Mnesia initialization
+
+A common problem people run into with Mnesia is how to "get started".
+What people often resort to are solutions where an initial database is
+created if it doesn't exist. These solutions are often brittle.
+
+Here, we pick another solution. A helper can create a database schema
+for us, with all the necessary tables. The real release _assumes_ the
+presence of an initial database and won't boot without one. This means
+the Erlang release is simpler. There is always some database from
+which it can boot and operate. That database might be the empty
+database since we are just starting out. But in particular, the
+release won't concern itself with creating an initial database. Rather
+it will assume one is already existing.
+
+The situation is not much different than using a traditional
+schema-oriented database. Usually, you have to create the database
+first, and then populate the schema with some initial data. It is just
+because of Rails/Django like systems in which databases are
+migrate-established, we've started using different models.
+
+This project provides a Makefile to get up and running. We can create
+the initial schema by executing the following target:
+
+[source,bash]
+$ make create-db
+
+
