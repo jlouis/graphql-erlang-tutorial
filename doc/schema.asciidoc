@@ -180,6 +180,10 @@ schema maps onto erlang modules. Since many mapping can be coalesced
 into one, there is the possibility of defining a `default` mapping
 which just maps every unmapped object to the default.
 
+All of the mappings goes from an atom, which is the _type_ in the
+Schema you want to map. To an atom, which is the Erlang _module_
+handling that particular schema type.
+
 [source,erlang]
 ----
 include::{sw_core}/src/sw_core_app.erl[tags=schemaMapping]
