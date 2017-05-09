@@ -1,0 +1,57 @@
+[[why_graphql]]
+
+== Why GraphQL
+
+A worthy question to ask is "`Why GraphQL?`"
+
+In many ways, GraphQL is a natural extension of what we are already
+doing on the Web. As our systems grow, we start realizing our systems
+become gradually more heterogenous in the sense that data becomes more
+complex and data gets more variance.
+
+In addition--since we usually have a single API serving multiple
+different clients, written in different languages for different
+platforms--we need to flexible in query support. Clients are likely to
+evolve dynamically, non-linearly, and at different paces. Thus, the
+backend must support evolution while retaining backwards
+compatibility. Also, we must have a contract or protocol between the
+clients and the server that is standardized. Otherwise, we end up
+inventing our own system again and again, and this is a strenous
+affair which has little to no reuse between systems.
+
+The defining characteristic of GraphQL is that the system is
+client-focused and client-centric. Data is driven by the client of the
+system, and not by the server. The consequence is that the
+delivery-time for features tend to be shorter. As soon as the product
+knows what change to make, it can often be handled with less
+server-side interaction than normally. Especially for the case where
+you are recombining existing data into a new view.
+
+RESTful APIs have served us well for a long time. And they are likely
+to continue serving as well in a large number of situations. However,
+if you have a system requiring more complex interaction, chances are
+you are better off by taking the plunge and switching your system to
+GraphQL.
+
+.Efficency
+
+RESTful APIs recently got a powerful improvement in HTTP/2 which
+allows RESTful APIs to pipeline far better than what they did earlier.
+However, you still pay the round trip time between data dependencies
+in an HTTP/2 setting: You need the listing of keys before you can
+start requesting the data objects on those keys. In contrast, GraphQL
+queries tend to be a single roundtrip only. A full declarative query
+is formulated and executed, without the need of any intermediate
+query. This means faster response times. Even in the case where a
+single query becomes slower since there is no need for followup
+queries.
+
+.Porting
+
+You can often move your system onto GraphQL a bit at a time. You don't
+have to port every endpoint in the beginning. Often, people add some
+kind of field, `previousId` say, which is used as an identifier in the
+old system. Then you can gradually take over data from an old system
+and port it on top of GraphQL. Once the ball is rolling, it is likely
+that more and more clients want to use it, as it is a easier interface
+for them to use.

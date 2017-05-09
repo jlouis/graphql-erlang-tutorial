@@ -3,8 +3,11 @@
 :sw_core: ../apps/sw_core
 
 include::introduction.asciidoc[Introduction]
+include::why_graphql.asciidoc[Why GraphQL]
 include::getting_started.asciidoc[Getting Started]
 include::schema.asciidoc[Schema]
+include::scalar_resolution.asciidoc[Scalar Resolution]
+include::type_resolution.asciidoc[Type Resolution]
 
 == Pagination
 
