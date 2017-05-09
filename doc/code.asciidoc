@@ -1,0 +1,33 @@
+== Code Overview
+
+This section describes all the files in the repository and what their purpose are:
+
+=== Root
+
+.`rebar.config`
+
+The rebar3 configuration file. It contains information about the immediate system dependencies of the project. It also contains information for `relx` the release builder rebar3 uses. This is used to assemble a release by copying the Erlang runtime as well as the necessary support libraries into a release directory. This directory can then be archived via tar(1) or zip(1) and shipped for a production release.
+
+.`Makefile`
+
+Contains some convenience targets when building the software. In practice you have some support-calls that has to be made outside the build tool in many cases. This Makefile contains recipes for doing that, so you don't forget what is to be done.
+
+.`README.md`
+
+Instructions for the reader on Github. Also instructions on how to build the documentation and where to go next.
+
+.`rebar.lock`
+
+Dependency locking for reproducible builds. It makes sure you get versions of packages which are known to be working together and that upgrades of software is a deliberate action rather than an implicit one.
+
+.`apps/*`
+
+The applications provided by this repository. See the following sections for their description.
+
+=== Application `sw_core`
+
+TODO
+
+=== Application `sw_web`
+
+TODO

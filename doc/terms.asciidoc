@@ -1,0 +1,46 @@
+== Terminology
+
+This section defines terminology used in GraphQL that doesn't fit in
+the rest of the document. It is used as a reference to describe
+certain behaviors in a GraphQL implementation.
+
+[[null-propagation]]
+=== Null Propagation
+
+In GraphQL, fields _nullable_ by default. A generic field `f : T` can
+either take on the value of `T` or the value `null` if the rendering
+of the field fails for some reason.
+
+In contrast, a field can be non-nullable, `f : T!` in which case the
+field is not allowed to take on the value of `null`.
+
+If you try to complete a non-null field in an object, and `null` is
+returned, or an error occur, then the whole object becomes `null`.
+This notion _propagates_ until all of the query becomes `null` or we
+reach a nullable field, whichever comes first.
+
+TIP: If you are accustomed to writing statically typed programs, you
+may desire to mark as many fields as possible non-null. But the
+sacrifice made by doing so is that you can't return partial results.
+GraphQL servers are often distributed in nature and handle distributed
+backends. Thus, it is fairly often the case that some part of the
+system is down, while other parts of the system is up. By having some
+fields nullable, you allow the system to null out failing subsystems,
+while still providing answers for the parts of the query that can be
+fulfilled currently. Too many non-nullable types will make your system
+brittle as every document is an all-or-nothing approach.
+
+[[HATEOAS]]
+=== Hypertext as the engine of application state
+
+Hypertext embedded in responses can have users "`click around`" in
+your API. If you embed the possible operations as links in responses,
+a client can use returned data to learn what it can do with the data.
+Roy T. Fieldings phd thesis covers this in great detail.
+
+GraphQL doesn't implement HATEOAS, but it gets fairly close to the
+idea. Given that a GraphQL query can be introspected, you can
+gradually learn about the interface as a client and utilize that
+interface. In practice however, it is common to lock down the possible
+queries for a given client, in order to protect the system and get
+security.

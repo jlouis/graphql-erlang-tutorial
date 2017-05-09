@@ -132,7 +132,7 @@ can't naturally describe data.
 
 .Mnesia initialization
 
-A common problem people run into with Mnesia is how to "get started".
+A common problem people run into with Mnesia is how to "`get started`".
 What people often resort to are solutions where an initial database is
 created if it doesn't exist. These solutions are often brittle.
 
@@ -211,8 +211,8 @@ $ cp FALLBACK.BUP db/FALLBACK.BUP
 which makes the empty schema available for the release manager of the
 Erlang system. When we cook a release, we will make sure to copy this
 initial schema into the correct mnesia-directory of the release.
-Because the file is named FALLBACK.BUP, it is a fallback backup file.
-This will ``unpack'' itself to become a new empty database as if you
+Because the file is named `FALLBACK.BUP`, it is a fallback backup file.
+This will "`unpack`" itself to become a new empty database as if you
 had rolled in a backup on the first boot of the system. Thus we avoid
 our system having to deal with problem of starting up.
 

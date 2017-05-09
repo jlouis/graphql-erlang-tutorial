@@ -2,4 +2,73 @@
 
 == Scalar Resolution
 
-TODO
+In a GraphQL specification, the structure of queries are defined by
+objects, interfaces and unions. But the "`ground`" types initially
+consist of a small set of standard types:
+
+* Int--Integer values
+* Float--Floating point values
+* String--Textual strings
+* Boolean--Boolean values
+* ID--Identifiers: values which are opaque to the client
+
+These ground types are called _Scalars_. The set of scalars is
+extensible with your own types. Some examples of typical scalars to
+extend a Schema by:
+
+* DateTime objects--with or without time zone information
+* Email addresses
+* URIs
+* Colors
+* Refined types--Floats in the range 0.0-1.0 for instance
+
+.Coercion
+
+Clients input scalar values as strings. Thus, the input string has to
+be _input coerced_ by the GraphQL system. Vice versa, when a value is
+returned from the GraphQL backend, we must coerce so the client can
+handle it. This is called _output coercion_.
+
+.Validation, Canonicalization & Representation
+
+The advantage of coercing inputs from the client is that not only can
+we validate that the client sent something correct. We can also coerce
+different representations at the client side into a canonical one on
+the server side. This greatly simplifies the internals, as we can pick
+a different internal representation than one which the client operates
+with.
+
+In particular, we can chose an internal representation which is
+unrepresentable on the client side. That is, the client could be Java
+or Javascript and neither of those languages has a construct for
+tuples which is nice to work with. At least not when consider JSON as
+a transport for those languages. Yet, due to canonicaliztion, we may
+still use tuples and atoms internally in our Erlang code, as long as
+we make sure to output-coerce values such that they are representable
+by the transport and by the client.
+
+CAUTION: The current implementation of the Star Wars doesn't utilize
+this feature of GraphQL very much. So for now, our implementation here
+doesn't utilize the full feature set. A later update will solve this
+by providing an example.
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_scalar.erl[tags=scalarRepr]
+----
+
+The implementation here just defaults scalar conversion to convert a
+string into a string, and doing no conversion on the scalar values at
+all. The function is provided for completeness, not because it is
+needed.
+
+The possible return values are:
+
+* `{ok, Val}` where `Val` is a transformation of the scalar value,
+  perhaps to an internal representation.
+* `{ok, null}` which signifies that the value isn't an error, but
+  there is no meaningful value to give to this particular field.
+* `{error, Reason}` in which case the coercion fails with that error.
+
+NOTE: The notion of <<null-propagation>> holds for scalar values as
+well.

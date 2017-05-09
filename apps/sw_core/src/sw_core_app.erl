@@ -34,6 +34,8 @@ mapping_rules() ->
        unions => #{ default => sw_core_type },
        objects => #{
          'Starship' => sw_core_starship,
+         'Query' => sw_core_query,
+         'Mutation' => sw_core_mutation,
          default => sw_core_object }
      }.
 %% end::schemaMapping[]
