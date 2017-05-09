@@ -1,6 +1,7 @@
 = Erlang GraphQL Tutorial
 
-= Introduction
+:source_core: ../apps/sw_core/src
+
 include::introduction.asciidoc[Introduction]
-= Getting Started
 include::getting_started.asciidoc[Getting Started]
+include::schema.asciidoc[Schema]

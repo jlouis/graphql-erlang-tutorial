@@ -1,0 +1,2 @@
+documentation:
+	$(MAKE) -C .. documentation

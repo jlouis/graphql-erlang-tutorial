@@ -1,4 +1,4 @@
-[[Getting Started]]
+[[getting_started]]
 
 == Getting Started
 
@@ -151,10 +151,67 @@ first, and then populate the schema with some initial data. It is just
 because of Rails/Django like systems in which databases are
 migrate-established, we've started using different models.
 
-This project provides a Makefile to get up and running. We can create
-the initial schema by executing the following target:
+=== Setting up an initial mnesia schema
 
+To get up and running, we begin by constructing a mnesia schema we can
+start from. We do this by starting a shell on the Erlang node and then
+asking it to create the schema:
+
+[source]
+----
+tiefling:graphql-erlang-tutorial jlouis$ make shell-schema
+erl -pa `rebar3 path` --name sw@127.0.0.1
+Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:8:8] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
+
+Eshell V8.3  (abort with ^G)
+1> sw_core_db:create_schema()
+----
+
+What happens here is that the Makefile target gives us a shell with no
+applications. The call to `create_schema()` is used to build up an
+initial schema for the database:
+
+[source,erlang]
+----
+include::{source_core}/sw_core_db.erl[tags=createSchema]
+----
+
+Creating the schema amounts to running a set of commands from the
+mnesia documentation. The helper function to create tables contains a
+large number of tables, so we are just going to show one here:
+
+[source,erlang]
+----
+include::{source_core}/sw_core_db.erl[tags=createTables]
+----
+
+In mnesia, tables are Erlang records. The `starship` record needs
+definition and is in the header file `sw_core_db.hrl`. We simply list
+the entries which are defined the SWAPI GraphQL schema so we can store
+the concept of a starship in the system:
+
+[source,erlang]
+----
+include::{source_core}/sw_core_db.hrl[tags=shipRecord]
+----
+
+Every other table in the system is handled in the same manner.
+
+Once we have run the schema creation routine, a file called
+`FALLBACK.BUP` is created. We copy this to the database base core in
+the repository
 [source,bash]
-$ make create-db
+----
+$ cp FALLBACK.BUP db/FALLBACK.BUP
+----
+which makes the empty schema available for the release manager of the
+Erlang system. When we cook a release, we will make sure to copy this
+initial schema into the correct mnesia-directory of the release.
+Because the file is named FALLBACK.BUP, it is a fallback backup file.
+This will ``unpack'' itself to become a new empty database as if you
+had rolled in a backup on the first boot of the system. Thus we avoid
+our system having to deal with problem of starting up.
 
-
+We now have the ability to create new database tables easily and we
+have a mnesia database for backing our data. This means we can start
+turning our attention to the GraphQL schema.

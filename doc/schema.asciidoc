@@ -1,0 +1,14 @@
+[[schema]]
+
+== GraphQL Schema
+
+With a Mnesia database at our disposal, we next create a GraphQL
+schema definition. This file describes the contract between the client
+system and the server system. It is used by the GraphQL system to know
+which queries are valid and which aren't.
+
+In accordance with OTP design principles, we place this schema inside
+a projects `priv` directory. Our GraphQL system can then refer to the
+private directory of the application in order to load this schema when
+the system boots up.
+
