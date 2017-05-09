@@ -1,6 +1,20 @@
 = Erlang GraphQL Tutorial
+Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Shopgun Aps <contact@shopgun.com>
+:toc:
+
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
+
+Erlang GraphQL Tutorial
+
+The guide here is a running example of the "Star Wars" API implemented
+in Erlang through the Shopgun GraphQL engine. The intent is to provide
+readers with enough information they can go build their own GraphQL
+servers in Erlang.
+
+The GraphQL is used by https://shopgun.com as a data backend. All the
+work here has been done as part of the Shopgun implementation, and
+they sponsored all the work that has been done.
 
 include::introduction.asciidoc[Introduction]
 include::why_graphql.asciidoc[Why GraphQL]
