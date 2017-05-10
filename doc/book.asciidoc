@@ -1,5 +1,5 @@
 = Erlang GraphQL Tutorial
-Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Shopgun Aps <contact@shopgun.com>
+Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Martin Gausby <martin@gausby.dk>; Shopgun Aps <contact@shopgun.com>
 :toc:
 
 :source-highlighter: prettify
