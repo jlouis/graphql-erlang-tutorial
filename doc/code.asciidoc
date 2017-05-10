@@ -34,6 +34,24 @@ versions of packages which are known to be working together and that
 upgrades of software is a deliberate action rather than an implicit
 one.
 
+.`config/vm.args`
+
+Release VM arguments. The release handler makes sure these become part
+of the system release so you can set parameters on the command line of
+the Erlang runtime. It is often used to fine-tune schedulers, memory
+allocation, or the upper bound on processes or ports.
+
+.`config/sys.config`
+
+The configuration file of the release. This allows us to override
+application-specific configuration knobs in the final release. Often,
+configuration can be handled by adding a call to
+`application:get_env/3` in the source code and then adding a default
+value to an applications `.app` file. Then it can be overridden in the
+`sys.config` file later, if a release needs a different setting.
+Another common use is to provide varying configuration for different
+environments.
+
 .`apps/*`
 
 The applications provided by this repository. See the following
@@ -41,7 +59,65 @@ sections for their description.
 
 === Application `sw_core`
 
-TODO
+.`priv/sw.schmea`
+
+The schema definition file which can be read by the Erlang GraphQL
+system. It defines the schema rules for the Star Wars API.
+
+.`src/sw_core.app.src`
+
+Application description file which `rebar3` compiles into
+`ebin/sw_core.app`. It contains a number of important sections for the
+project:
+
+* Dependencies--Listing what this application needs in order to
+  function correctly. The release manager arranges the boot of the
+  node such that every dependent application is started first. In
+  short, it carries out a topological sorting of applications
+  according to their dependencies and starts them in the right order.
+* Start module--Which module to invoke in order to start the
+  application.
+* Environment--Application specific environmental defaults. In order
+  to keep the `sys.config` file small sane defaults can be added here
+  so they don't clutter the global configuration.
+
+.`src/sw_core_app.erl`
+
+The application behavior used to start the `sw_core` application. This
+file also contains the schema-loading code: when the system boots, we
+attempt to load and validate the schema. Any mistake will abort the
+boot process and print out a failure.
+
+.`src/sw_core_db.hrl`
+
+This header file contains the records we are using in our mnesia
+database. One could have spread these over multiple files, but since
+the system is fairly small we use a single file for this. It is likely
+a larger system would split this into smaller sections.
+
+.`src/sw_core_db.erl`
+
+Wrapper around the database calls which are common in the system. Also
+contains the functions for creating the initial schema, which can be
+invoked without the `sw_core` application running.
+
+.`src/sw_core_id.erl`
+
+Handling of _ID_ values in the Graph from the client. Provides
+encoding and decoding of identifier values so we know what object they
+refer to internally.
+
+.`src/sw_core_scalar.erl`
+
+Input and output coercion for scalar values
+
+.`src/sw_core_sup.erl`
+
+Top level supervisor referring to long-lived processes in this
+application.
+
+NOTE: Currently there are no such long-lived processes in the
+application.
 
 === Application `sw_web`
 
