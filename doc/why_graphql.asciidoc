@@ -11,8 +11,8 @@ complex and data gets more variance.
 
 In addition--since we usually have a single API serving multiple
 different clients, written in different languages for different
-platforms--we need to flexible in query support. Clients are likely to
-evolve dynamically, non-linearly, and at different paces. Thus, the
+platforms--we need to be flexible in query support. Clients are likely
+to evolve dynamically, non-linearly, and at different paces. Thus, the
 backend must support evolution while retaining backwards
 compatibility. Also, we must have a contract or protocol between the
 clients and the server that is standardized. Otherwise, we end up

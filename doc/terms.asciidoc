@@ -36,7 +36,7 @@ brittle as every document is an all-or-nothing approach.
 Hypertext embedded in responses can have users "`click around`" in
 your API. If you embed the possible operations as links in responses,
 a client can use returned data to learn what it can do with the data.
-Roy T. Fieldings phd thesis covers this in great detail.
+Roy T. Fieldings PhD thesis covers this in great detail.
 
 GraphQL doesn't implement HATEOAS, but it gets fairly close to the
 idea. Given that a GraphQL query can be introspected, you can

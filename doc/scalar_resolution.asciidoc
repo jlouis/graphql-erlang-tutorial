@@ -41,11 +41,11 @@ with.
 In particular, we can chose an internal representation which is
 unrepresentable on the client side. That is, the client could be Java
 or Javascript and neither of those languages has a construct for
-tuples which is nice to work with. At least not when consider JSON as
-a transport for those languages. Yet, due to canonicaliztion, we may
-still use tuples and atoms internally in our Erlang code, as long as
-we make sure to output-coerce values such that they are representable
-by the transport and by the client.
+tuples which is nice to work with. At least not when we consider JSON
+as a transport for those languages. Yet, due to canonicaliztion, we
+may still use tuples and atoms internally in our Erlang code, as long
+as we make sure to output-coerce values such that they are
+representable by the transport and by the client.
 
 CAUTION: The current implementation of the Star Wars doesn't utilize
 this feature of GraphQL very much. So for now, our implementation here
