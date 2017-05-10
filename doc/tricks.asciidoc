@@ -1,0 +1,45 @@
+[[tricks]]
+
+== Tricks
+
+[[object-representation]]
+=== Object Representation
+
+A rather useful representation of objects is to have some additional
+metadata on your object for use by the GraphQL system in addition to
+the base data fields which the client can request.
+
+.Maps
+
+If your object representation is a `map()`, you can add special fields
+into the map which is used by the GraphQL system. You can add those
+fields as you load the object from the backend database, in order to
+make it easier to work with later. In Erlang systems, due to
+immutability, a pointer to some static data is essentially free, even
+if many terms refer to it, due to sharing. So don't be afraid to add
+some metadata on your object.
+
+A common convention is to use a special atom such as
+`'$tag'`.footnote[In Erlang/OTP 20.0 and onwards, atoms can be
+arbitrary Unicode data, so you can pick a special symbol to mark
+special atoms] You can then add data under that key in the map which
+is useful to the GraphQL backend only.
+
+In addition, our convention is that fields which _must_ be derived
+begin with an underscore (e.g., `_images`). This makes it clear to the
+reader that the data is not isosmurfically mappable into the Graph but
+requires some kind of transformation.
+
+.Wrappers
+
+Rather than represent an object as a record such as `#starship{}` you
+represent the data as a wrapped term: `{#starship{} = Ship, MetaData}`
+and then you write your execution function such that it operates on
+the wrapped term rather than the raw `Ship`. This has the advantage of
+keeping the data separate from the raw plain data object. The
+sacrifice, though, is you have to do more work in your object
+resolution code.
+
+=== Middleware stacks
+
+TBD

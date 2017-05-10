@@ -27,8 +27,10 @@ include::getting_started.asciidoc[Getting Started]
 include::schema.asciidoc[Schema]
 include::scalar_resolution.asciidoc[Scalar Resolution]
 include::type_resolution.asciidoc[Type Resolution]
+include::object_resolution.asciidoc[Object Resolution]
 include::relay_modern.asciidoc[Relay Modern]
 include::security.asciidoc[Security]
+include::tricks.asciidoc[Tricks]
 
 == Transports
 
