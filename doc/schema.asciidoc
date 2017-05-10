@@ -84,12 +84,13 @@ than a quote symbol ("). These allows larger Markdown entries to be
 placed in the documentation, which tends to be good for documentation
 of APIs.
 
-NOTE: You can't easily use a ` inside the multiline quotations. This
-means you can't easily write pre-formatted code sections unless you
-use indentation in the Markdown format. The choice was somewhat
-deliberate in that there is a workaround currently, and it tends to
-flow really well when you enter documentation by means of the backtick
-character. A future version of the parser might redo this decision.
+NOTE: You can't easily use a backtick (`) inside the multiline
+quotations. This means you can't easily write pre-formatted code
+sections unless you use indentation in the Markdown format. The choice
+was somewhat deliberate in that there is a workaround currently, and
+it tends to flow really well when you enter documentation by means of
+the backtick character. A future version of the parser might redo this
+decision.
 
 === Starships
 
@@ -235,7 +236,7 @@ Every scalar type in the schema is mapped through the `scalar` mapping
 part. It is quite common a system only has a single place in which all
 scalars are defined. But it is also possible to split up the scalar
 mapping over multiple modules. This can be useful if you have a piece
-f code where some scalars naturally lives in a sub-application of some
+of code where some scalars naturally lives in a sub-application of some
 kind.
 
 .Interfaces & Unions
@@ -285,11 +286,9 @@ definitions as either atoms or binaries. They are most often returned
 as binaries at the moment, however.
 
 NOTE: The choice of using binaries may turn out to be wrong. We've
-toyed with different representations of this, and none of them falls
-out like you want. However, because the nature of GraphQL makes sure
+toyed with different representations of this, and none of them fell
+out like we wanted. However, because the nature of GraphQL makes sure
 that an enemy cannot generate arbitrary atoms in the system, we could
 use atoms in a later version of GraphQL. For now, however, most parts
 of the system accepts atoms or binaries, and converts data to binaries
 internally.
-
-

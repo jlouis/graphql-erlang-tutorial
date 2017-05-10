@@ -19,7 +19,7 @@ The choice is deliberate for a couple of reasons:
 * Mnesia is present in any Erlang system and thus it provides a simple
   way to get started and setup.
 * Mnesia is *not* a Graph Database. This makes it explicit your
-  database can be anything. In fact, the "Graph" is GraphQL is
+  database can be anything. In fact, the "Graph" in GraphQL is
   misnomer since GraphQL works even when your data does not have a
   typical Graph-form. It is simply a nice query structure.
 
@@ -214,7 +214,7 @@ initial schema into the correct mnesia-directory of the release.
 Because the file is named `FALLBACK.BUP`, it is a fallback backup file.
 This will "`unpack`" itself to become a new empty database as if you
 had rolled in a backup on the first boot of the system. Thus we avoid
-our system having to deal with problem of starting up.
+our system having to deal with this problem at start up.
 
 We now have the ability to create new database tables easily and we
 have a mnesia database for backing our data. This means we can start
