@@ -46,6 +46,20 @@ query. This means faster response times. Even in the case where a
 single query becomes slower since there is no need for followup
 queries.
 
+A major (subtle) insight is that in a GraphQL server, you don't have
+to hand-code the looping constructs which tend to be present in a lot
+of RESTful APIs. To avoid the roundtrip describes in the preceeding
+paragraph, you often resolve to a solution where a specialized
+optimized query is constructed and added to the system. This
+specialized endpoint is then looping over the data in one go so you
+avoid having to do multiple roundtrips.
+
+In a GraphQL system, that looping is handled once-and-for-all by the
+GraphQL engine. You are only implementing callbacks that run as part
+of the loop. A lot of tedious code is then handled by GraphQL and we
+avoid having to code this again and again for each RESTful web service
+we write.
+
 .Porting
 
 You can often move your system onto GraphQL a bit at a time. You don't

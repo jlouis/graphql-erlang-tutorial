@@ -76,9 +76,9 @@ in the Graph is almost always beneficial. The price for fetching the
 data has already been paid anyway. The implementation is simply to
 make sure that recursive objects test if the data are already loaded.
 
-=== Handling the Starship
+=== Execution
 
-We start with plain field access on the *Starhip* type. Our mapping
+We start with plain field access on the *Starship* type. Our mapping
 rules have mapped `Starship => sw_core_starship` so the field handling
 lives in the module `sw_core_starship`. In general, object resolution
 is handled by a single function, `execute/4`:
@@ -100,6 +100,11 @@ is handled by a single function, `execute/4`:
 <2> The current object the cursor points to
 <3> The field the client has requested
 <4> The arguments to the field as a map
+
+The function is called `execute` because it relates to the GraphQL
+notion of executing a query on the server side. And because the word
+"`execution`" maps precisely onto what you are doing. You are invoking
+functions on the server side, relating to the query by the client.
 
 In the following we give a detailed explanation of each of the fields
 here and what their purpose are:
@@ -194,5 +199,196 @@ way of processing "`no value`".
 TIP: Add sane defaults to your schema. If an input is a list, default
 it to the empty list `[]`, such that you code can `lists:map/2` over
 the input. But because the list is `[]` nothing happens. This can be
-used to eliminate ...
+used to eliminate code paths in your code by using default values for
+the data structures you are working on.
+
+=== Handling the Starship
+
+In our system, we have a module `sw_core_starship` which handles the
+execution parts of the starship. This module is rather typical if you
+have an object backed by a database and want to output it. The
+`execute/4` function describes how to translate the module into data
+for the client.
+
+The only exported function is `execute/4` which we dissect a bit here:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_starship.erl[tags=starshipExecute]
+...
+----
+
+In our case, since we are working with Mnesia data, we need a
+projection function to take fields out of the record and return them
+to the GraphQL system. Note that we can use this to rename fields. The
+GraphQL specifies `cargoCapacity` whereas we use the Erlang idiomatic
+internal name `cargo_capacity`.
+
+If you think this is a lot of typing, you can choose to represent
+Starships as a `map()` and then the execution function is basically
+
+[source,erlang]
+----
+execute(Ctx, Obj, Field, Args) ->
+    maps:get(Field, Obj, {ok, null}).
+----
+
+but the price you pay for doing so is that the names in the `Obj` has
+to match the names in the GraphQL specification. In our experience, it
+is often the case that things evolve and you need to rename fields. So
+this is not always a desirable solution.
+
+==== Id handling
+
+In our system, we need to turn an ID on the mnesia side into an ID in
+GraphQL. Luckily, we've already defined the ID encoder/decoder in the
+section <<identity-generation>>, so we can simply utilize those
+methods whenever we want to return an ID.
+
+An alternative to the solution depicted here is to encode the ID
+whenever you load the object from the underlying database; and then
+undo that encoding whenever you store the object back. The best
+solution depends on your preferences and where your API boundary
+between the GraphQL contract and the database is.
+
+=== Node Loading
+
+Our *Starship* execute function handles the case where we have a
+loaded starship and want to output its contents. But it doesn't say
+anything about how to fetch a starship from the database. This section
+handles the loading of data from Mnesia while running GraphQL queries.
+
+The type *Query* in the GraphQL specification (see
+<<queries-and-mutations>>) contains a field `node` and a field
+`starship` which are used to load any node or a starship respectively.
+The loader is the same, and `starship` is just a specialization of the
+`node` loader.
+
+Let us define the execution function for handling loading. We simply
+extract the interesting data and forward our query to a plain Erlang function:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_query.erl[tags=execute]
+----
+
+The function which actually loads the object can now be written:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_query.erl[tags=loadNode]
+----
+
+To load a particular node, we first attempt to decode the ID into its
+type and its mnesia ID. Once we know its decoded form, we have a
+helper routine which carries out the actual load. The loader asks the
+database to load data, and also verifies the allowed types if needed.
+
+==== DB Loading
+
+The database code contains a way to fetch various objects from the
+database and return in a GraphQL friendly representation. First, we
+have a translator, which can tell us what a given GraphQL type points
+to in the database
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_db.erl[tags=recordOf]
+----
+
+This may seem a bit redundant, but in a larger system it is common to
+have GraphQL objeccts backed by several data stores. In this case, the
+mapping also becomes a data source router which tells the system where
+to go and fetch a given piece of data. Another common case is that the
+naming in the database does not match the naming in the GraphQL
+schema. In general, see the section <<non-isomorphism>>.
+
+The data loader presented here uses a Mnesia transaction to load the
+data. It should be of no surprise to a reader who knows a bit about
+Mnesia:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_db.erl[tags=load]
+----
+
+For a load this simple, the transaction is probably overkill in
+Mnesia. A dirty read could probably have been used instead, and if you
+need to handle extreme amounts of data, you might want to avoid the
+transaction code and just do a dirty read. For this example though, we
+keep things straight and use transactions all over the place to make
+the interface more consistent.
+
+=== Anatomy of a query
+
+We now turn our attention to the notion of executing a query. It is
+instructional because it explains how a query is executed in the
+GraphQL system while using the parts we have defined up until now.
+
+Suppose we look at a query such as the following
+
+[source,graphql]
+----
+query Q {
+  node(id: "c3RhcnNoaXA6AAAAAAAAAAE=") {
+      id
+      ...StarshipFragment
+  }
+}
+
+fragment StarshipFragment on Starship {
+  name
+  model
+}
+----
+
+and look at how the system will execute such a query.
+
+First, query of the keyword `query` the system will begin by starting
+the _root_ of the query on the `Query` object in the Graph. Since this
+is mapped by the schema into the module `sw_core_query`, we start by
+executing fields in that module. The current object points to what is
+the _initial object_ of the query which is set by the developer. We
+ignore that object in our implementation.
+
+Next, since the field `node` is requested, we execute the call
+
+[source,erlang]
+----
+sw_core_query:execute(Ctx, Obj,
+  <<"node">>, #{ <<"id">> => <<"c3RhcnNoaXA6AAAAAAAAAAE=">> }),
+----
+
+which will execute `sw_core_db:load/2` on the Starship we requested.
+The value returned is the value `{ok, #starship{} = Ship}` for the
+starship we requested.
+
+Now, because the type of the `node` field is *Node*, the system will
+know that it has loaded something of _interface_ type. Such a type is
+abstract and must be made concrete. Thus we use <<type-resolution>>
+and a call
+
+[source,erlang]
+----
+sw_core_type:execute(#starship{} = Ship),
+----
+
+is performed. This call will return `{ok, 'Starship'}` as the value.
+So the system knows that it can proceed by assuming the *Node* was
+really a *Starship*.
+
+The cursor now moves to the starship value and this becomes the new
+object of the query. Field resolution and fragment expansion for the
+starship object now begins. Calls to `sw_core_starship:execute/4` are
+made 3 times for the fields `id`, `name` and `model`. Our projection
+functions return values inside the starship, and this becomes part of
+the GraphQL response to the client.
+
+---
+
+To recap: the GraphQL system drives the query and makes callbacks at
+appropriate times to your resolver function in order to satisfy the
+query. You only have to implement the callbacks. The looping itself is
+handled by GraphQL.
+
 

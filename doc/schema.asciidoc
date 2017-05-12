@@ -12,6 +12,7 @@ a projects `priv` directory. Our GraphQL system can then refer to the
 private directory of the application in order to load this schema when
 the system boots up.
 
+[[identity-generation]]
 === Identity generation
 
 In GraphQL, you have a special type, _ID_, which is used to attach an
@@ -111,6 +112,7 @@ include::{sw_core}/priv/sw.schema[tags=starshipObject]
 ...
 ----
 
+[[queries-and-mutations]]
 === Queries & Mutations
 
 All GraphQL queries are either a _query_ or a _mutation_.footnote:[The

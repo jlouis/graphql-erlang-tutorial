@@ -20,7 +20,7 @@ if many terms refer to it, due to sharing. So don't be afraid to add
 some metadata on your object.
 
 A common convention is to use a special atom such as
-`'$tag'`.footnote[In Erlang/OTP 20.0 and onwards, atoms can be
+`'$tag'`.footnote:[In Erlang/OTP 20.0 and onwards, atoms can be
 arbitrary Unicode data, so you can pick a special symbol to mark
 special atoms] You can then add data under that key in the map which
 is useful to the GraphQL backend only.
@@ -39,6 +39,41 @@ the wrapped term rather than the raw `Ship`. This has the advantage of
 keeping the data separate from the raw plain data object. The
 sacrifice, though, is you have to do more work in your object
 resolution code.
+
+[[non-isomorphism]]
+=== Avoid Isomorphic representations
+
+A common want when designing API systems is to avoid the need for
+continual retranslation of backend data to the GraphQL schema. A
+common solution to this problem is to make the database schema 1-1
+with the GraphQL schema, often called an isomorphic
+representation.footnote:[Isomorphic stems from ancient greek and means
+"`equal shape`"] However, our experience is that such a 1-1 mapping is
+detrimental to the development of the system. It is common the GraphQL
+schema and the underlying data evovle at different paces and that new
+data sources are added as you go along.
+
+Thus, a piece of advice is to know when to break from the 1-1 mapping
+and build your own translation layer in order to handle the gradual
+evolution of the database schema and the GraphQL contract. In general,
+you shouldn't be afraid of breaking the isomorphic representation if
+that turns out to help you define your system in a better way. On the
+flip side, inventing new terminology and names shouldn't in general be
+done for the sake of doing so. The advantage of having an isomorphism
+between the contract and the database is that you don't have to
+explain to people what the mapping means.
+
+* Look out for the situation where a simple change in the contract
+  starts an avalance of changes all throughout your stack. This tend
+  to mean you have built a system where each layer transforms the
+  data. Keep transformers down to as few layers as possible and let
+  the end-points in the data passing handle the transformations.
+* Large systems constantly change. Have some place in the code where
+  you can insert a temporary stub or plug while you change other parts
+  of the system. It is not generally possible to switch a system in
+  one go as soon as it becomes large. By having a stub/plug you can
+  gradually change the large system rather than having to change
+  everything at once.
 
 === Middleware stacks
 

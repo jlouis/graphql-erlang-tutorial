@@ -8,6 +8,7 @@
     stdlib,
     mnesia,
 
+    jsx,
     lager,
     graphql
    ]},

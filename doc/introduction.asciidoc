@@ -40,9 +40,12 @@ an omission on our part which should have been included.
 === Prerequisites
 
 Some Erlang knowledge is expected for reading this guide. General
-Erlang concept will not be explained, but assumed to be known.
-Furthermore, some knowledge of the web in general is assumed. We don't
-cover the intricacies of HTTP 1.1 or HTTP/2 for instance.
+Erlang concept will not be explained, but assumed to be known. Some
+mnesia knowledge will also help a bit in understanding what is going
+on, though if you know anything about databases in general, that is
+probably enough. Furthermore, some knowledge of the web in general is
+assumed. We don't cover the intricacies of HTTP 1.1 or HTTP/2 for
+instance.
 
 This tutorial uses a couple of dependencies:
 

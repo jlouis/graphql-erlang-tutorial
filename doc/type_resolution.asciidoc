@@ -1,5 +1,4 @@
 [[type-resolution]]
-
 == Type Resolution
 
 In GraphQL, certain types are _abstract_. These are interfaces and

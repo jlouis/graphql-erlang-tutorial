@@ -151,6 +151,7 @@ first, and then populate the schema with some initial data. It is just
 because of Rails/Django like systems in which databases are
 migrate-established, we've started using different models.
 
+== Mnesia
 === Setting up an initial mnesia schema
 
 To get up and running, we begin by constructing a mnesia schema we can
@@ -201,6 +202,38 @@ include::{sw_core}/src/sw_core_db.hrl[tags=shipRecord]
 
 Every other table in the system is handled in the same manner.
 
+
+=== Populating the database
+
+Once we have introduced tables into the system, we can turn our
+attention to populating the database tables. For this, we use the
+SWAPI data set as the primary data source. This set has its fixtures
+stored as JSON document. So we use `jsx` to decode those JSON
+documents and turn them into mnesia records, which we then insert into
+the database.
+
+We can fairly easily write a function which take the JSON and turn them
+into appropriate mnesia records. The starship is split over two
+tables: one for transports and one for starships. We handle the
+transport part first, and then we patch the data with the starship
+information later.
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_db.erl[tags=jsonToStarship]
+----
+
+Once we have this function down, we can utilize it to get a list of
+mnesia records, which we can then insert into the database through a
+transaction:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_db.erl[tags=populateStarships]
+----
+
+=== Creating a FALLBACK for the database
+
 Once we have run the schema creation routine, a file called
 `FALLBACK.BUP` is created. We copy this to the database base core in
 the repository
@@ -219,3 +252,4 @@ our system having to deal with this problem at start up.
 We now have the ability to create new database tables easily and we
 have a mnesia database for backing our data. This means we can start
 turning our attention to the GraphQL schema.
+

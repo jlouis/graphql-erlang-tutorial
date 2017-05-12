@@ -1,7 +1,7 @@
 = Erlang GraphQL Tutorial
 Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Martin Gausby <martin@gausby.dk>; Shopgun Aps <contact@shopgun.com>
 :toc:
-
+:icons: font
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
 
