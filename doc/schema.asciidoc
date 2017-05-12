@@ -158,6 +158,10 @@ query StarShipQuery($id : ID!) {
 ----
 <1> You would put additional fields here.
 
+=== Schema default values
+
+TBD
+
 == Loading the Schema
 
 In order to work with a schema, it must be loaded. We can load it as

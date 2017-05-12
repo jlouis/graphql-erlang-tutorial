@@ -1,4 +1,4 @@
-[[type_resolution]]
+[[type-resolution]]
 
 == Type Resolution
 

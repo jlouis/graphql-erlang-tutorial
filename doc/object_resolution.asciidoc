@@ -1,5 +1,198 @@
 [[object-resolution]]
 == Object Resolution
 
-TBD
+The meat of a GraphQL system is the resolver for objects. You have a
+concrete object on which you are resolving _fields_. As we shall see,
+this is used for two kinds of things a client want to do with the
+graph.
+
+.Raw Field Access
+
+First, field resolution on objects are used because you have a loaded
+object and the client has requested some specific fields on that
+object. For example, you may have loaded a *Starship* and you might be
+requesting the *name* of the Starship.
+
+.Derived Field Access
+
+Second, field resolution on objects are used to _derive_ values from
+other values. Suppose a *Starship* had two fields internally
+*cargoCapacity* and *cargoLoad*. We might want to compute the load
+factor of the starship as a value between 0.0 and 1.0. This amounts to
+running the computation `CargoLoad / CargoCapacity`. Rather than
+storing this value in the data, we can just compute it by derivation
+if the client happens to request the field. Otherwise, we abstain from
+computing it.
+
+An advantage of derivation is that you can handle things lazily. Once
+the client wants a field, you start doing the work for computing and
+returning that field. Also, derivation improves data normalization in
+many cases. Modern computers are fast and data fetching tend to be the
+major part of a client request. A bit of computation before returning
+data is rarely going to be dominant in the large scale of things.
+
+.Data Fetching Field Access
+
+Finally, field resolution on objects are used to _fetch_ objects from
+a backend data store. Consider the field `node(id: ID!)` on the
+`Query` object in the schema:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=queryObject]
+----
+
+When a `query` starts executing, an _intial_term_ is injected in by
+the developer. By convention this object is often either `null` or
+`#{}` signifying we currently have no current object. The reference to
+the `node` field states that the client wants to load a _Node_ object.
+So we fetch the given node from the database and return the data back
+to GraphQL.
+
+The GraphQL server now does two things:
+
+* First, it recursively digs into the returned _Node_. It places its
+  "`cursor`" on the Node and then it does <<type-resolution>> on the
+  Node in order to make it concrete. This may uncover the Node is
+  really a *Starship* and then the query proceeds by executing fields
+  in the starship type. Once the recursion ends, we have constructed a
+  `Response` for the `node` object.
+* Next, it returns the underlying recursive response as a mapping
+  `"node" => Response` and returns this for the field. Once every
+  field on the top-level `Query` object are satisfied, we have our
+  final response.
+
+Hopefully it is clear that the field resolution here is used as a way
+to load and fetch data. The same mechanism is used to "`follow`"
+associations between data in the database, by lazily executing JOINs
+on the database level.
+
+TIP: It is also possible to return a whole subtree at once when a
+field is resolved. This correspond to eager/strict loading in an ORM
+and is useful in the situation where you expect the client to request
+the data with high probability, or when fetching the extra data is
+done anyway. In this case, making the data available for further query
+in the Graph is almost always beneficial. The price for fetching the
+data has already been paid anyway. The implementation is simply to
+make sure that recursive objects test if the data are already loaded.
+
+=== Handling the Starship
+
+We start with plain field access on the *Starhip* type. Our mapping
+rules have mapped `Starship => sw_core_starship` so the field handling
+lives in the module `sw_core_starship`. In general, object resolution
+is handled by a single function, `execute/4`:
+
+[source,erlang]
+----
+-spec execute(Ctx, Obj, Field, Args) ->
+                {ok, Result} | {error, Reason}
+  when
+    Ctx :: context(), <1>
+    Obj :: term(), <2>
+    Field :: binary(), <3>
+    Args :: #{ binary() => term() } <4>
+    Result :: term(),
+    Reason :: term().
+----
+<1> The current context set by the developer and derived from the
+    position in the graph.
+<2> The current object the cursor points to
+<3> The field the client has requested
+<4> The arguments to the field as a map
+
+In the following we give a detailed explanation of each of the fields
+here and what their purpose are:
+
+.Ctx
+
+The <<context>> is a map which contains contextual information about
+the query. Its primary purpose is that the developers can set data
+into the context at the top-level when they start processing a GraphQL
+query. In turn, the context is often stuffed with data from the
+outside of the GraphQL system:
+
+* User authentication information.
+* The source IP address executing the query.
+* What type of transport was used to initiate the query.
+* Process `pid()` values for processes that pertains to this query.
+
+Additionally, the context also contains some base information added by
+the GraphQL system. Most notably the current object type and field.
+This allows one to build some extremely generic `execute/4` functions
+that handles large classes of objects.
+
+TIP: Sizable graph schemas tend to contain a number of administrative
+"`filler`" objects used to glue other objects together. These are
+often possible to handle by a single default executor which looks at
+the context in order to derive what to do with the particular object.
+If an type becomes non-generic, you can then work gradually and shift
+it to a specific `execute/4` handler for that particular object.
+
+.Obj
+
+The `Obj` field points to the current object we are rendering for,
+e.g. a *Starship* given as the a value `#starship{...}`. This field is
+the binding of a type to a concrete object we are working on. As an
+example, a B-wing is a *Starship*, an X-wing is a *Starship*, and a
+TIE-fighter is a *Starship*. So when the `execute/4` code runs, it
+needs to know what concrete loaded object is in play. Another way of
+seeing it is that the `Obj` is the object the <<cursor>> is currently
+pointing at in the Graph Rendering.
+
+.Field
+
+The field is the current field which the client requested in the
+object. The field is also inside the context, but because it is very
+common it is also an argument to the function directly. The field
+allows you to pattern match on different fields of the query.
+
+.Args
+
+Args is always of type `#{ binary() => term() }` mapping input
+arguments for the field to values for that field. If a client queries
+
+[source,graphql]
+----
+query {
+  node(id: "SOMEID") {
+     __typename
+     id
+  }
+}
+----
+
+then we will have `Args = #{ \<<"id">> => \<<"SOMEID">>}` and we
+can proceed by pattern matching on this object.
+
+[[input-argument-rules]]
+=== Input argument rules
+
+An important thing to cover at this point is how mappings of input
+arguments is done in GraphQL. A GraphQL client has _no_ way of
+inputting a `null` value. It is not allowed for the client to ever use
+a `null` in any input position. Rather, the way a client specifies is
+has no value, is by omission of a given input field.
+
+The GraphQL system considers the omission of a field depending on the
+configuration of that field:
+
+* If the field has a default value, the field takes on the default
+  value.
+* If the field is non-null, the query is rejected. The client must
+  supply a value for a non-null field.
+* If the field has no default value, the mapping `Field => null`
+  is added to the input map.
+
+In short, an object resolution module can assume that _all_ fields are
+always present in the `Args` map, either populated by a default value
+or by a `null` value if that field has no default. It is a brilliant
+design choice by the GraphQL specification designers: clients have one
+unambigous way to input "`no value`" and servers have one unambigous
+way of processing "`no value`".
+
+TIP: Add sane defaults to your schema. If an input is a list, default
+it to the empty list `[]`, such that you code can `lists:map/2` over
+the input. But because the list is `[]` nothing happens. This can be
+used to eliminate ...
 

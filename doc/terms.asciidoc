@@ -44,3 +44,35 @@ gradually learn about the interface as a client and utilize that
 interface. In practice however, it is common to lock down the possible
 queries for a given client, in order to protect the system and get
 security.
+
+[[context]]
+=== Context
+
+The context map contains a number of base fields before the developers
+extends the context with their own fields. This section describes
+those fields and their purpose:
+
+* TBD
+
+[[cursor]]
+
+=== Cursor
+
+We often use the term "`cursor`" in this tutorial. Imagine that a
+GraphQL is rendered by moving a cursor around in the data set and then
+rendering each part of the query as the cursor moves around. As the
+cursor traverses (recursively) deeper into the data set, more parts of
+the query may be rendered on demand.
+
+In practice, the cursor can be executed in parallel. If you submit a
+`query` you must assume that rendering will happen in parallel when
+possible. In contrast, a `mutation` will always process the query
+serially one element at a time. This is to make sure changes for a
+given query are not interfering with each other.
+
+NOTE: A typical system has on the order of 100:1 queries to
+mutations. It is very likely your data is queried far more often than
+they are mutated. Thus, if you look to optimize, optimize for queries
+first, unless you happen to know you have a large amount of mutations.
+
+
