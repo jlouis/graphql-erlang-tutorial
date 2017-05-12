@@ -55,14 +55,14 @@ populate_tables() ->
 
 %% tag::populateStarships[]
 populate_starships() ->
-    {ok, Data} = file:read_file("fixtures/transports.json"),
-    {ok, Transports} = jsx:decode(Data, [return_maps]),
+    {ok, Data} = file:read_file("fixtures/transport.json"),
+    Transports = jsx:decode(Data, [return_maps]),
     populate_starships(Transports).
 
 populate_starships(Ts) ->
     Starships = [json_to_starship(T) || T <- Ts],
     F = fun() ->
-                mnesia:insert(Starships),
+                [mnesia:write(SS) || SS <- Starships],
                 ok
         end,
     {atomic, ok} = mnesia:transaction(F),
