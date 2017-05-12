@@ -23,6 +23,21 @@ The choice is deliberate for a couple of reasons:
   misnomer since GraphQL works even when your data does not have a
   typical Graph-form. It is simply a nice query structure.
 
+=== What we do not cover
+
+This tutorial doesn't cover everything in the repository:
+
+* The details of the `rebar3` integration and the `relx` release
+  handling.
+* The tutorial only covers the parts of the code where there is
+  something to learn. The areas of the code getting exposition in this
+  document is due to the fact that they convey some kind of important
+  information about the use of the GraphQL system for Erlang. Other
+  parts, which are needed for completeness, but aren't as important
+  are skipped.
+* There is no section on "`how do I set up an initial Erlang
+  environment`" as it is expected to be done already.
+
 === Overview
 
 The purpose of a GraphQL server is to provide a contract between a
@@ -232,6 +247,10 @@ transaction:
 include::{sw_core}/src/sw_core_db.erl[tags=populateStarships]
 ----
 
+This creates a fixture in the database such that when we boot the
+database, the transport and starship data will be present in the
+records of the starship table.
+
 === Creating a FALLBACK for the database
 
 Once we have run the schema creation routine, a file called
@@ -248,6 +267,15 @@ Because the file is named `FALLBACK.BUP`, it is a fallback backup file.
 This will "`unpack`" itself to become a new empty database as if you
 had rolled in a backup on the first boot of the system. Thus we avoid
 our system having to deal with this problem at start up.
+
+NOTE: A real system will override the location of the Mnesia `dir`
+parameter and define a separate directory from which the Mnesia
+database will run. Initially, the operator will place the
+`FALLBACK.BUP` file in this directory to get going, but once we are
+established, and people start adding in data, we can't reset anything
+when deploying new versions. Hence the separate directory so we can
+upgrade the Erlang system without having to protect the database as
+much.
 
 We now have the ability to create new database tables easily and we
 have a mnesia database for backing our data. This means we can start

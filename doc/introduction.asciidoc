@@ -61,6 +61,31 @@ library does not use any special tooling, nor does it make any
 assumptions about the environment. If Erlang runs on your platform,
 chances are that GraphQL will too.
 
+=== Comments & Contact
+
+The official repository location is
+
+https://github.com/shopgun/graphql-erlang-tutorial
+
+If you have comments on the document or corrections, please open an
+https://github.com/shopgun/graphql-erlang-tutorial/issues[Issue] in the above repository on the thing that is missing. Also, feel
+free to provide pull requests against the code itself.
+
+Things we are particularly interested in:
+
+* Parts you don't understand. These often means something isn't
+  described well enough and needs improvement.
+* Code sequences that doesn't work for you. There is often some
+  prerequisite the document should mention but doesn't.
+* Bad wording. Things should be clear and precise. If a particular
+  sentence doesn't convey information clearly, we'd rather rewrite it
+  then confuse the next reader.
+* Bugs in the code base.
+* Bad code structure. A problem with a tutorial repository is that it
+  can "`infect`" code in the future. People copy from this repository,
+  so if it contains bad style, then that bad style is copied into
+  other repositories, infecting them with the same mistakes.
+
 === License
 
 MIT 2.0

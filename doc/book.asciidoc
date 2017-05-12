@@ -28,16 +28,11 @@ include::schema.asciidoc[Schema]
 include::scalar_resolution.asciidoc[Scalar Resolution]
 include::type_resolution.asciidoc[Type Resolution]
 include::object_resolution.asciidoc[Object Resolution]
+include::transports.asciidoc[Transports]
+include::graphiql.asciidoc[GraphiQL]
 include::relay_modern.asciidoc[Relay Modern]
 include::security.asciidoc[Security]
 include::tricks.asciidoc[Tricks]
-
-== Transports
-
-=== Web Interface
-==== Cowboy Handler
-
-== GraphiQL
 
 [appendix]
 include::terms.asciidoc[Terms]
