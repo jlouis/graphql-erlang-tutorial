@@ -2,7 +2,7 @@
 
 == Introduction
 
-The Erlang GraphQL system allows you to implement GraphQL servers in
+The {project} system allows you to implement GraphQL servers in
 Erlang. It works as a library which you can use on top of existing web
 servers such as Cowboy, Webmachine, Yaws and so on.
 

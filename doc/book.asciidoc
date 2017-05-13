@@ -1,11 +1,13 @@
-= Erlang GraphQL Tutorial
+= {project} Tutorial
 Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Martin Gausby <martin@gausby.dk>; Shopgun Aps <contact@shopgun.com>
 :toc:
 :icons: font
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
+:project: Erlang GraphQL
+:cowboy-version: 1.1.x
 
-Erlang GraphQL Tutorial
+{project} Tutorial
 
 The guide here is a running example of the "Star Wars" API implemented
 in Erlang through the Shopgun GraphQL engine. The intent is to provide

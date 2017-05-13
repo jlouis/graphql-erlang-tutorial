@@ -61,7 +61,7 @@ sections for their description.
 
 .`priv/sw.schmea`
 
-The schema definition file which can be read by the Erlang GraphQL
+The schema definition file which can be read by the {project}
 system. It defines the schema rules for the Star Wars API.
 
 .`src/sw_core.app.src`

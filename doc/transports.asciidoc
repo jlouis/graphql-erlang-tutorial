@@ -1,12 +1,44 @@
 == Transports
 
-TBD
+GraphQL is a transport-agnostic system. It can be used on top of every
+transport you can imagine. This means the GraphQL system must provide
+its own way to tell the outside world about errors, since it cannot
+rely on the surrounding system to do so.
 
-=== Web Interface
+The interface to GraphQL at its very base needs support for sending
+requests and recieving replies. There is relatively little need for
+out-of-order requests since queries tend to be large and
+all-encompassing.
 
-TBD
+However, newer parts of GraphQL which is currently being tried out has
+support for delayed and streamed responses.footnote:[Through the use
+of the `@streamed` and `@defer` directives among other things] Because
+of this, GraphQL will need a more powerful transport for those kinds
+of features.
+
+.Current state
+****
+The current {project} implementation does not yet support the optional
+tags such as `@streamed` and `@defer`. It is planned for a later
+version when the basics are down and works in a robust way.
+****
+
+This tutorial implements GraphQL on top of HTTP through the use of the
+Cowboy web server by Loïc Hoguin. We currently use cowboy version
+{cowboy-version}.
 
 === Cowboy Handler
+
+To make GraphQL work with Cowboy, we use the application `sw_web`.
+This application then uses `sw_core` in order to run the system. One
+could imagine adding other applications to the system if you need more
+transports. The web application needs a dispatcher in order to run:
+
+
+
+
+
+=== Web Interface
 
 TBD
 

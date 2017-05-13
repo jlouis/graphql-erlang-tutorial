@@ -1,8 +1,87 @@
 == Security
 
-=== Limiting Clients
+This section describes different security aspect of GraphQL and how
+they pertain to the Erlang implementation of GraphQL. Any real world
+implementation of a system must combat enemies on the web. In general,
+you can expect requests to be evil.
 
-TBD
+.Accidental maliciousness
+
+A rather common situation is when the "`malicious`" operation is
+accidental. Some user uses your system in a way you did not expect,
+and that then brings down your system. It isn't that they have crafted
+the query in order to bring down your system on purpose, it is simply
+that their use case makes your system go havoc.
+
+GraphQL servers must be built in a way such that every query has a
+limit and some kind of pagination. That way, you avoid that a single
+client can request all of your database and then go away before you
+can amass the response. By forcing clients to cooperate, you can get
+typical limitations such as request limits in play. Thus, any query
+that is possibly large, should have an upper bound on itself. You may
+also want to have a global upper bound in your query so requests for
+more than, say, 6000 objects will start returning errors if it is too
+large.
+
+=== Limiting Clients--Stored Procedures
+
+.Work in Progress
+****
+The following section is yet to be implemented in {project}, but
+we still mention it here because it is a common request, and it needs
+a common answer.
+
+When we get around to implement the feature, this section will also
+contain examples on how to use it.
+****
+
+GraphQL is a query language. If a client is able to run any query in
+the world, you may get into trouble with overload. Your system has to
+parse, type check & validate each request. And if the request is
+expensive, it puts unnecessary toll on your backend systems. To avoid
+this, production implementations support the ability to _prepare_ a
+query document containing all the queries a client want to make. Once
+and for all the document is parsed, type checked, and validated. Then
+a reference is given back to the client. Clients who wish to run a
+query can then supply this reference and an `opName` inside the query
+document to run that query.
+
+This is much faster since the Server only has to execute the query and
+can avoid going through the validation steps again and again. While
+the {project} system is fast, about 4/5 of a query is
+preprocessing time before execution. In other words, you can speed up
+the GraphQL by quite a margin if you use stored procedres.
+
+In addition, you can also arrange that a client isn't able to
+construct new query documents without authorization. This means
+developers can deploy new query document when they deploy new versions
+of an application, but a user of said application cannot produce new
+queries dynamically.
+
+In short:
+
+* Developers now has the full dynamic query language at their
+  disposal
+* Users of the application can only proceed by calling prepared stored
+  procedures.
+
+It is also possible to build hybrid systems. Let dynamic queries
+be limited in the backend to a few at a time. Thus, dynamic queries
+are far less likely to "`take out`" your system.
+
+If you give developers access through an API key, you can demand that
+they build query document should they want to run more than, say, 600
+queries per hour against your system. This is 10 queries per minute,
+which is usually fine for developement--Once the system is done, you
+provide a query document for preparation, and then the prepared
+document is used.
+
+Another advantage of prepared documents is that the server side
+controls what gets executed. This allows you to target a problematic
+query at the server side and patch it, for instance by lowering the
+size of a pagination window, or making the query simpler by not
+providing certain parts. On the other hand, many of those problems
+should be fixed by altering the server to become more robust.
 
 === Authentication
 
@@ -11,4 +90,5 @@ TBD
 === Authorization
 
 TBD
+
 
