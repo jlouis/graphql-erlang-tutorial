@@ -34,11 +34,80 @@ This application then uses `sw_core` in order to run the system. One
 could imagine adding other applications to the system if you need more
 transports. The web application needs a dispatcher in order to run:
 
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_app.erl[tags=dispatcher]
+----
 
+We could have picked any place to run the GraphQL interface, but this
+code uses `/` at the root.
 
+The Cowboy setup is completely out of the box, except that we
+manipulate a couple of variables in order to make cowboy play better
+with <<graphiql>>. Look at the file `sw_web_app.erl` for the details.
 
+We set up the cowboy handler as a REST handler. Mostly because it is
+fairly easy to do and because it automates a large set of things we'd
+like to do. Our plan is to use content-negotiation: a web server will
+be served an UI for GraphQL by default, but if the a client request
+comes in, we will pass that to the GraphQL system.
 
-=== Web Interface
+The `cowboy_rest` model stems from an idea pioneered by Webmachine. We
+can depict an HTTP request as a flow chart where each decision point
+is a node in the chart. Since every request follow this flow chart, it
+makes sense to use a classic Erlang model: write the generic/general
+parts inside a main module `cowboy_rest`, and then provide it with a
+callback module. Whenever a decision node is reached, the callback
+will be executed and the decision will follow the choice made by the
+callback. If no callback function is present, we use a default
+resolution.
 
-TBD
+==== Handler code
+
+The handler starts by declaring the callbacks it has. Each of these
+will described in the following sections for those who are not
+familiar with `cowboy_rest`:
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=exports]
+----
+
+.init/3
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=init]
+----
+
+When cowboy dispatches to the `sw_web_graphql_handler` module, this
+function is called upon initialization.
+
+We use the _upgrade_ feature of cowboy to upgrade to the `cowboy_rest`
+protocol for the remainder of the module. This means `cowboy_rest`
+takes over operation and we provide callbacks to the general restful
+handler for the parts we want to override.
+
+The first thing `cowboy_rest` will do is to call the next function:
+
+.rest_init/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=rest_init]
+----
+
+The purpose of this function is to initialize a state with relevant
+information. We are passed data from the dispatcher which we store in
+an Erlang map so we can refer to the information later.
+
+.allowed_methods/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=allowed_methods]
+----
+
+This callback is used by Cowboy to figure out what the valid methods
+are for this particular call. We allow *GET* and *POST* and reject any
+other method, since we just want to use REST as a simple transport and
+not as a full-blown system. Later we will show why we allow both.
+
 
