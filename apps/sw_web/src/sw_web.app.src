@@ -1,0 +1,17 @@
+{application, sw_web,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, { sw_web_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+
+    sw_core   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.
