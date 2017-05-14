@@ -73,6 +73,12 @@ familiar with `cowboy_rest`:
 include::{sw_web}/src/sw_web_graphql_handler.erl[tags=exports]
 ----
 
+==== Initialization & REST handling
+
+In this section we describe how the cowboy handler is used to dispatch
+a request to GraphQL. We first focus on using `cowboy_rest` to handle
+the request basics so we have an easier job later on.
+
 .init/3
 [source,erlang]
 ----
@@ -109,5 +115,91 @@ This callback is used by Cowboy to figure out what the valid methods
 are for this particular call. We allow *GET* and *POST* and reject any
 other method, since we just want to use REST as a simple transport and
 not as a full-blown system. Later we will show why we allow both.
+
+.content_types_accepted/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=content_types_accepted]
+----
+
+What types of input we accept. The only way to execute a GraphQL query
+is to provide the query embedded in a JSON document. This is currently
+the way the GraphiQL tools expects its input.
+
+
+.content_types_provided/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=content_types_provided]
+----
+
+The media types we can provide to a client:
+
+* If the client requests `text/html` we will call the `to_html`
+  function.
+* If the client requests `application/json` we will call the `to_json`
+  function.
+
+This allows us to handle the content different depending on who is
+requesting. The browser will by default ask for `text/html` which we
+use to feed it a page containing <<graphiql>>. Once the GraphiQL
+system is loaded into the browser, it will execute GraphQL queries by
+means of setting the desired content type to `application/json`.
+
+.charsets_provided/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=charsets_provided]
+----
+
+We only provide UTF-8. By doing so, we can simplify our backend a bit
+because it doesn't have to reencode data as long as all the data we
+store are in proper UTF-8 encoding. A more advanced system would
+analyze the desired content type from the client and eventually
+restructure its documents to fit this desired content type. For
+simplicity, we omit this part.
+
+.resource_exists/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=resource_exists]
+----
+
+In `cowboy_rest`, the call here determines if the resource we
+requested exists. Suppose, for instance, that we issue a GET request
+and the resource doesn't exist. This will make cowboy return a 404 or
+410 status code for the given resource. On the other hand, a POST will
+use this to drive its construction of a new object in a RESTful
+manner.
+
+We need to wrangle the cowboy system a bit here. We simply call that
+for any GET request, the resource exists, and for any POST request
+there is a new resource we can create.
+
+==== Processing
+
+We now turn our attention to the actual processing of the GraphQL
+query. The first case is when the client requests `text/html` in which
+case we just feed data from our static part of the site:
+
+.to_html/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=resource_exists]
+----
+
+Actual query processing is a bit more involved. Here is an overview of
+what we need to do:
+
+* Gather parameters. The system allows several ways of entering
+  parameters, either as part of the URL, or as part of an input
+  document.
+* Split the parameters into the _query_, the _operation name_, and the
+  _parameters_ for the operation.
+* Parse, type check and validate the query
+* Create an initial context
+* Create an initial object for the cursor to point to
+* Execute the query will all of the above
+* Format a proper response to the client
 
 
