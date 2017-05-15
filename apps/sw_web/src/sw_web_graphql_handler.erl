@@ -78,11 +78,11 @@ to_html(Req, #{ index_location :=
 
 %% tag::json_processing[]
 json_request(Req, State) ->
-    case gather(Req, State) of
+    case gather(Req) of
         {error, Reason} ->
             err(400, Reason, Req, State);
-        {ok, Decoded} ->
-            run_request(Decoded, Req, State)
+        {ok, Req2, Decoded} ->
+            run_request(Decoded, Req2, State)
     end.
 
 from_json(Req, State) -> json_request(Req, State).
@@ -97,58 +97,63 @@ run_request(#{ document := undefined }, Req, State) ->
 run_request(#{ document := Doc} = ReqCtx, Req, State) ->
     case graphql:parse(Doc) of
         {ok, AST} ->
-            run_type_check(ReqCtx#{ document := AST }, Req, State);
+            run_preprocess(ReqCtx#{ document := AST }, Req, State);
         {error, Reason} ->
             err(400, Reason, Req, State)
     end.
 %% end::run_request[]
 
-%% tag::run_type_check[]
-run_type_check(#{ document := AST } = ReqCtx, Req, State) ->
+%% tag::run_preprocess[]
+run_preprocess(#{ document := AST } = ReqCtx, Req, State) ->
     try
         Elaborated = graphql:elaborate(AST), % <1>
         {ok, #{
            fun_env := FunEnv,
-           ast := AST2 }} = graphql_type_check(Elaborated), % <2>
+           ast := AST2 }} = graphql:type_check(Elaborated), % <2>
         ok = graphql:validate(AST2), % <3>
         run_execute(ReqCtx#{ document := AST2, fun_env => FunEnv }, Req, State)
     catch
         throw:Err ->
             err(400, Err, Req, State)
     end.
-%% end::run_type_check[]
+%% end::run_preprocess[]
 
 %% tag::run_execute[]
-%% TODO
+run_execute(#{ document := AST,
+               fun_env := FunEnv,
+               vars := Vars,
+               operation := OpName }, Req, State) ->
+    Coerced = graphql:type_check_params(FunEnv, OpName, Vars), % <1>
+    Ctx = #{
+      params => Coerced,
+      operation_name => OpName },
+    Response = graphql:execute(Ctx, AST), % <2>
+    Req2 = cowboy_req:set_resp_body(jsx:encode(Response), Req), % <3>
+    {ok, Reply} = cowboy_req:reply(200, Req2),
+    {halt, Reply, State}.
 %% end::run_execute[]
 
-
-
-
-
-%% end::run_type_check[]
-
 %% tag::gather[]
-gather(Req, State) ->
+gather(Req) ->
     {ok, Body, Req2} = cowboy_req:body(Req),
     {Bindings, Req3} = cowboy_req:bindings(Req2),
     Params = maps:from_list(Bindings),
     try jsx:decode(Body, [return_maps]) of
         JSON ->
-            gather(Req3, State, JSON, Params)
+            gather(Req3, JSON, Params)
     catch
         error:badarg ->
             {error, invalid_json_body}
     end.
 
-gather(Req, State, Body, Params) ->
+gather(Req, Body, Params) ->
     QueryDocument = document([Params, Body]),
     case variables([Params, Body]) of
         {ok, Vars} ->
             Operation = operation_name([Params, Body]),
-            {ok, #{ document => QueryDocument,
-                    vars => Vars,
-                    operation_name => Operation}};
+            {ok, Req, #{ document => QueryDocument,
+                         vars => Vars,
+                         operation_name => Operation}};
         {error, Reason} ->
             {error, Reason}
     end.
@@ -165,8 +170,8 @@ variables([#{ <<"variables">> := Vars} | _]) ->
   if
       is_binary(Vars) ->
           try jsx:decode(Vars, [return_maps]) of
-              JSON -> {ok, JSON};
               null -> {ok, #{}};
+              JSON when is_map(JSON) -> {ok, JSON};
               _ -> {error, invalid_json}
           catch
               error:badarg ->
@@ -191,3 +196,13 @@ operation_name([]) ->
 %% tag::operation_name[]
 
 
+%% tag::errors[]
+err(Code, Msg, Req, State) ->
+    Formatted = iolist_to_binary(io_lib:format("~p", [Msg])),
+    Err = #{ type => error,
+             message => Formatted },
+    Body = jsx:encode(#{ errors => [Err] }),
+    Req2 = cowboy_req:set_resp_body(Body, Req),
+    {ok, Reply} = cowboy_req:reply(Code, Req2),
+    {halt, Reply, State}.
+%% end::errors[]

@@ -257,28 +257,84 @@ The function `operation_name` follows the same idea.
 
 .Running the request
 The request processing starts by a parsing step. If that step fails,
-we can exit with an error. If it succeeds, we proceed by running type
-checking.
+we can exit with an error. If it succeeds, we proceed by running
+pre-processing. The output of the parsing step is an abstract syntax
+tree.footnote:[A later version of GraphQL is likely to use abstract
+binding trees instead, but for now, we run with the classic structure]
 
 [source,erlang]
 ----
 include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_request]
 ----
 
+The pre-processing step handles everything up to execution of the
+Query. This step can be done once and for all for a given query and
+the same query could be re-run with the same document over and over.
+It corresponds to a prepared statement in the SQL world. In the
+pre-processing step, we carry out several of the needed operations:
+
 [source,erlang]
 ----
-include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_type_check]
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_preprocess]
 ----
-<1> ...
-<2> ...
-<3> ...
+<1> Elaboration is a step which runs over the query and _annotates_
+    the query with type information from the schema where possible. It
+    makes the steps after this one much simpler because they can often
+    look up information annotated on the abstract syntax tree.
+    Elaboration also checks the general structure of the query since
+    it annotates parts of the query according to the type information
+    in the schema.
+<2> Type checking verifies the elaborated syntax tree. It checks that
+    every elaborated part of the query is well-defined with respect to
+    the types which are allowed in that position. The output of the
+    type checking is a new syntax tree, `AST2` on which scalar
+    conversion has been run (for static variables) as an optimization;
+    and a `FunEnv` which is the type scheme for each operation in the
+    query.footnote:[We call operations for `functions` in the GraphQL
+    system because that is what they really are, from a language perspective]
+<3> Any query which is well-defined typewise can be executed. Yet many
+    of those queries are nonsensical in one way or another. If they
+    are executed, they yield results which are valid responses--but
+    they are often not what the client meant. Validation is a step
+    which adds a "`linting`" pass on top of the system and rejects
+    queries which are likely to be bad. For instance, it is checked
+    that every fragment in the document has at least one use, or that
+    a fragment spread expansion has at least one match. As queries
+    grow in size and become automatically generated, validation
+    becomes even more important.
+
+Once preprocessing is complete, we can execute the query itself:
 
 [source,erlang]
 ----
 include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_execute]
 ----
+<1> Type checking of parameters is a separate operation from type
+    checking the document. This is because the preprocessing of the
+    document can be handled separately from running the actual query.
+    Since an _operation_ in an existing document may have _variables_,
+    we must type check these variables for correctness. Preprocessing
+    yielded a function environment of the operations in the query. So
+    we proceed by checking the `Vars` against the `FunEnv`'s type
+    schema.
+<2> Execution proceeds on _coerced_ variables which has been processed
+    for input coercion.
+<3> In order to make `cowboy` behave, we override its normal response
+    path. This gives us the processing path of `cowboy_rest` up until
+    we start returning data and then we overrride the system in order
+    to satisfy the typical response expected by <<graphiql>> and
+    typical GraphQL systems.
 
 ==== Errors
 
-TBD
+Central to any GraphQL system is proper error handling. We handle
+errors through a helper routine in the cowboy handler which can
+transform a GraphQL error into an error which GraphQL systems can
+understand:
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=errors]
+----
+
 
