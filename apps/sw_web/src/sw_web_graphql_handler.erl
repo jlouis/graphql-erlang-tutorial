@@ -16,7 +16,6 @@
 
 %% Data input/output callbacks
 -export([
-    from_graphql/2,
     from_json/2,
     to_json/2,
     to_html/2
@@ -47,7 +46,7 @@ content_types_accepted(Req, State) ->
     {[
         {{<<"application">>, <<"json">>, []}, from_json}
     ], Req, State}.
-%% end:content_types_accepted[]
+%% end::content_types_accepted[]
 
 %% tag::content_types_provided[]
 content_types_provided(Req, State) ->
@@ -77,6 +76,38 @@ to_html(Req, #{ index_location :=
     {Data, Req, State}.
 %% end::to_html[]
 
+%% tag::json_processing[]
+json_request(Req, State) ->
+    case gather(Req, State) of
+        {error, Reason} ->
+            err(400, Reason, Req, State);
+        {ok, Decoded} ->
+            run_request(Decoded, Req, State)
+    end.
+
+from_json(Req, State) -> json_request(Req, State).
+to_json(Req, State) -> to_json(Req, State).
+%% end::json_processing[]
+
+%% -- INTERNAL FUNCTIONS ---------------------------------------
+
+%% tag::run_request[]
+run_request(#{ document := undefined }, Req, State) ->
+    err(400, no_query_supplied, Req, State);
+run_request(#{ document := Doc} = ReqCtx, Req, State) ->
+    case graphql:parse(Doc) of
+        {ok, AST} ->
+            run_type_check(ReqCtx#{ document := AST }, Req, State);
+        {error, Reason} ->
+            err(400, Reason, Req, State)
+    end.
+%% end::run_request[]
+
+%% tag::run_type_check[]
+
+%% end::run_type_check[]
+
+%% tag::gather[]
 gather(Req, State) ->
     {ok, Body, Req2} = cowboy_req:body(Req),
     {Bindings, Req3} = cowboy_req:bindings(Req2),
@@ -94,7 +125,48 @@ gather(Req, State, Body, Params) ->
     case variables([Params, Body]) of
         {ok, Vars} ->
             Operation = operation_name([Params, Body]),
-            {ok, QueryDocument, Vars, Opations};
+            {ok, #{ document => QueryDocument,
+                    vars => Vars,
+                    operation_name => Operation}};
         {error, Reason} ->
             {error, Reason}
     end.
+%% end::gather[]
+
+%% tag::document[]
+document([#{ <<"query">> := Q }|_]) -> Q;
+document([_|Next]) -> document(Next);
+document([]) -> undefined.
+%% end::document[]
+
+%% tag::variables[]
+variables([#{ <<"variables">> := Vars} | _]) ->
+  if
+      is_binary(Vars) ->
+          try jsx:decode(Vars, [return_maps]) of
+              JSON -> {ok, JSON};
+              null -> {ok, #{}};
+              _ -> {error, invalid_json}
+          catch
+              error:badarg ->
+                  {error, invalid_json}
+          end;
+      is_map(Vars) ->
+          {ok, Vars}
+  end;
+variables([_ | Next]) ->
+    variables(Next);
+variables([]) ->
+    {ok, #{}}.
+%% end::variables[]
+
+%% tag::operation_name[]
+operation_name([#{ <<"operationName">> := OpName } | _]) ->
+    OpName;
+operation_name([_ | Next]) ->
+    operation_name(Next);
+operation_name([]) ->
+    undefined.
+%% tag::operation_name[]
+
+

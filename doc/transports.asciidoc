@@ -185,7 +185,7 @@ case we just feed data from our static part of the site:
 .to_html/2
 [source,erlang]
 ----
-include::{sw_web}/src/sw_web_graphql_handler.erl[tags=resource_exists]
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=to_html]
 ----
 
 Actual query processing is a bit more involved. Here is an overview of
@@ -202,4 +202,59 @@ what we need to do:
 * Execute the query will all of the above
 * Format a proper response to the client
 
+
+.to_json/2 & from_json/2
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=json_processing]
+----
+
+The main function delegate work to other functions in a top-down
+fashion. In the following we will describe each of these parts. We
+want the processing to work both for a POST and for a GET, so we
+implement the same path on top of the functions `from_json` and
+`to_json`. Again, this is a bit of wrangling of `cowboy_rest` to make
+it happy with what is going on and because <<graphiql>> doesn't really
+use proper RESTful invocation.
+
+.Gathering inputs
+The first thing we must do is to gather the input variables, the body
+and the bindings. Then we must split those data into the _query
+document_ the _operation name_ and the _parameters/variables_. The
+rule, used by <<graphiql>> is that you can provide these data in the
+URL as parameters or in the body. As a consequence, we must go looking
+for data in multiple places
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=gather]
+----
+
+Most of this is standard operating procedure for a Cowboy application,
+we just need to create the necessary helper routines for digging out
+the necessary data:
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=document]
+----
+
+The `document` function searches a list of _places_ for the query
+document. If found, the query document is returned.
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=variables]
+----
+
+The `variables` function carries out the same search in a list of
+_places_ for the variables section. One problem here is that the
+variables section, when it is part of a JSON document, can be provided
+as is embedded in the JSON. Or it can be an escaped string of JSON
+which has to be decoded. So we let the code handle both cases.
+
+The function `operation_name` follows the same idea.
+
+.Running the request
+In order to
 
