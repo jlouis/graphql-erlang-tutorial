@@ -104,6 +104,27 @@ run_request(#{ document := Doc} = ReqCtx, Req, State) ->
 %% end::run_request[]
 
 %% tag::run_type_check[]
+run_type_check(#{ document := AST } = ReqCtx, Req, State) ->
+    try
+        Elaborated = graphql:elaborate(AST), % <1>
+        {ok, #{
+           fun_env := FunEnv,
+           ast := AST2 }} = graphql_type_check(Elaborated), % <2>
+        ok = graphql:validate(AST2), % <3>
+        run_execute(ReqCtx#{ document := AST2, fun_env => FunEnv }, Req, State)
+    catch
+        throw:Err ->
+            err(400, Err, Req, State)
+    end.
+%% end::run_type_check[]
+
+%% tag::run_execute[]
+%% TODO
+%% end::run_execute[]
+
+
+
+
 
 %% end::run_type_check[]
 

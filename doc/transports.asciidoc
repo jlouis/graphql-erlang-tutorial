@@ -256,5 +256,29 @@ which has to be decoded. So we let the code handle both cases.
 The function `operation_name` follows the same idea.
 
 .Running the request
-In order to
+The request processing starts by a parsing step. If that step fails,
+we can exit with an error. If it succeeds, we proceed by running type
+checking.
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_request]
+----
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_type_check]
+----
+<1> ...
+<2> ...
+<3> ...
+
+[source,erlang]
+----
+include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_execute]
+----
+
+==== Errors
+
+TBD
 
