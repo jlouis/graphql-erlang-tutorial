@@ -23,11 +23,7 @@ they sponsored all the work that has been done.
 
 include::introduction.asciidoc[Introduction]
 include::why_graphql.asciidoc[Why GraphQL]
-
-== System Tour
-
-TBD
-
+include::system_tour.asciidoc[System Tour]
 include::getting_started.asciidoc[Getting Started]
 include::schema.asciidoc[Schema]
 include::scalar_resolution.asciidoc[Scalar Resolution]
