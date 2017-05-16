@@ -14,7 +14,7 @@ compile:
 ## It doesn't. It also starts the applications. We don't want
 ## the applications started, hence this little blurb:
 shell-schema:
-	erl -pa `$(REBAR) path` --name sw@127.0.0.1
+	erl -pa `$(REBAR) path` -name sw@127.0.0.1
 
 release:
 	$(REBAR) release
