@@ -128,7 +128,8 @@ run_execute(#{ document := AST,
       params => Coerced,
       operation_name => OpName },
     Response = graphql:execute(Ctx, AST), % <2>
-    Req2 = cowboy_req:set_resp_body(jsx:encode(Response), Req), % <3>
+    ResponseBody = sw_web_response:term_to_json(Response), % <3>
+    Req2 = cowboy_req:set_resp_body(ResponseBody, Req), % <4>
     {ok, Reply} = cowboy_req:reply(200, Req2),
     {halt, Reply, State}.
 %% end::run_execute[]
