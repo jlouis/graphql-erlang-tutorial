@@ -33,7 +33,7 @@ rest_init(Req, {priv_file, _, _} = PrivFile) ->
     {Method, Req2} = cowboy_req:method(Req),
     {ok, Req2,
      #{ method => Method,
-        priv_file => PrivFile }}.
+        index_location => PrivFile }}.
 %% end::rest_init[]
 
 %% tag::allowed_methods[]
