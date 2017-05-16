@@ -179,7 +179,9 @@ variables([#{ <<"variables">> := Vars} | _]) ->
                   {error, invalid_json}
           end;
       is_map(Vars) ->
-          {ok, Vars}
+          {ok, Vars};
+      Vars == null ->
+          {ok, #{}}
   end;
 variables([_ | Next]) ->
     variables(Next);
