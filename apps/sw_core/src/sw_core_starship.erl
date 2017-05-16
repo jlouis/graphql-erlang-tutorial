@@ -13,6 +13,7 @@ execute(_Ctx, Starship, Field, _Args) ->
         <<"consumables">>      -> {ok, Starship#starship.consumables};
         <<"cost">>             -> {ok, Starship#starship.cost};
 %% end::starshipExecute[]
+        <<"model">>            -> {ok, Starship#starship.model};
         <<"created">>          -> {ok, Starship#starship.created};
         <<"crew">>             -> {ok, Starship#starship.crew};
         <<"edited">>           -> {ok, Starship#starship.edited};
