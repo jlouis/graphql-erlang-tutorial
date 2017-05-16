@@ -7,8 +7,11 @@
    [kernel,
     stdlib,
 
-    sw_core   ]},
-  {env,[]},
+    sw_core,
+    cowboy]},
+  {env,[
+       {http_port, 17290}
+  ]},
   {modules, []},
 
   {maintainers, []},
