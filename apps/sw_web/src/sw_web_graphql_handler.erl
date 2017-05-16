@@ -86,7 +86,7 @@ json_request(Req, State) ->
     end.
 
 from_json(Req, State) -> json_request(Req, State).
-to_json(Req, State) -> to_json(Req, State).
+to_json(Req, State) -> json_request(Req, State).
 %% end::json_processing[]
 
 %% -- INTERNAL FUNCTIONS ---------------------------------------
@@ -122,7 +122,7 @@ run_preprocess(#{ document := AST } = ReqCtx, Req, State) ->
 run_execute(#{ document := AST,
                fun_env := FunEnv,
                vars := Vars,
-               operation := OpName }, Req, State) ->
+               operation_name := OpName }, Req, State) ->
     Coerced = graphql:type_check_params(FunEnv, OpName, Vars), % <1>
     Ctx = #{
       params => Coerced,
