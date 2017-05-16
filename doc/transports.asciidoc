@@ -320,11 +320,31 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_execute]
     schema.
 <2> Execution proceeds on _coerced_ variables which has been processed
     for input coercion.
-<3> In order to make `cowboy` behave, we override its normal response
+<3> The `jsx` application is rather finicky with what it accepts as
+    input, so we provide a wrapper which canonicalizes Erlang terms
+    into JSON-valid responses (see <<response-formatter>>).
+<4> In order to make `cowboy` behave, we override its normal response
     path. This gives us the processing path of `cowboy_rest` up until
     we start returning data and then we overrride the system in order
     to satisfy the typical response expected by <<graphiql>> and
     typical GraphQL systems.
+
+[[response-formatter]]
+.Response formatter
+The `jsx` application is strict when processing Erlang terms into JSON
+output. If an Erlang term does not match the JSON mapping precisely,
+an error is raised, which leads to a 500 status code and `Internal
+Server Error`. Since it is pretty common that errors contain data
+which are not a priori JSON, we run a post-processing step on
+responses on errors. We simply walk the Erlang term structure with a
+transformation function which fixups the data if it is not valid JSON.
+
+This allows a greater range of responses and everything which is valid
+JSON is handled as valid JSON. In particular, it avoids a large set of
+errors leading to hard-to-understand `error:badarg` failures from
+`jsx`.
+
+See the file `sw_web_response` for the formatter and encoder.
 
 ==== Errors
 
