@@ -9,7 +9,7 @@ this front-end and just call directly to the GraphQL backend.
 
 Having a nice UI for a GraphQL server helps tremendously in
 development however. The UI uses the _introspection_ features of
-GraphQL which is built into <<project>>. It can thus request the
+GraphQL which is built into {project}. It can thus request the
 schema types from the server and use that information to present a
 nice user interface.
 
@@ -20,5 +20,54 @@ inside our `priv` directory in the application `sw_web`. We also
 provide a default `index.html` to load when the root URL `/` is
 requested.
 
+Since we bind the GraphQL server to {port-number} by default, you
+can access to the GraphiQL system by starting the release:
 
+[source,bash]
+----
+$ make release
+$ _build/default/rel/sw/bin/sw console
+----
+
+And once the system is up and running, you can access it on
+http://localhost:{port-number}/ It will look like
+
+[#img-graphiql]
+.The Graphiql User Interface
+image::graphiql.png[GraphiQL]
+
+The GraphiQL User Interface provides a number of features for the
+developer:
+
+* The system provides documentation by clicking the `Docs` tab. The
+  documentation is searchable and fully intospectible.
+* The system provides autocompletion and guidance when developing
+  queries. It uses the introspection features to figure out what can
+  be written.
+
+Let us run a simple example query in the interface. Since we have
+
+[source]
+----
+Eshell V8.3  (abort with ^G)
+1> base64:encode(<<"Starship:", 2:64/integer>>).
+<<"U3RhcnNoaXA6AAAAAAAAAAI=">>
+----
+
+we can write a query for this particular starship:
+
+[source,graphql]
+----
+query StarShipQuery {
+    node(id: "U3RhcnNoaXA6AAAAAAAAAAI=") {
+      ... on Starship {
+        id
+        name
+        cargoCapacity
+        model
+        passengers
+      }
+  }
+}
+----
 
