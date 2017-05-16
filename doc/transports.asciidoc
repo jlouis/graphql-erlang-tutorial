@@ -27,6 +27,7 @@ This tutorial implements GraphQL on top of HTTP through the use of the
 Cowboy web server by Loïc Hoguin. We currently use cowboy version
 {cowboy-version}.
 
+[[cowboy-handler]]
 === Cowboy Handler
 
 To make GraphQL work with Cowboy, we use the application `sw_web`.

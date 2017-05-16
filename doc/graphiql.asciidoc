@@ -1,5 +1,24 @@
 [[graphiql]]
 == GraphiQL
 
-TBD
+The ubiquituous front-end for GraphQL servers is a system called
+GraphiQL, https://github.com/graphql/graphiql, which provides a nice
+user interface for a GraphQL server. We use this system as the
+front-end in the demo, whereas real applications will of course skip
+this front-end and just call directly to the GraphQL backend.
+
+Having a nice UI for a GraphQL server helps tremendously in
+development however. The UI uses the _introspection_ features of
+GraphQL which is built into <<project>>. It can thus request the
+schema types from the server and use that information to present a
+nice user interface.
+
+We have already provided cowboy dispatchers for GraphiQL (see
+<<cowboy-handler>>). The only thing we have to do is to build a
+minified version of GraphiQL and place it in our `site/assets` folder
+inside our `priv` directory in the application `sw_web`. We also
+provide a default `index.html` to load when the root URL `/` is
+requested.
+
+
 

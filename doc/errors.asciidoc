@@ -3,4 +3,7 @@
 
 TBD
 
+Sections to be written:
+
+* Handling invalid terms around `jsx`.
 
