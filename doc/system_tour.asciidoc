@@ -1,6 +1,133 @@
 [[system-tour]]
 == System Tour
 
+Since a system as large as GraphQL can seem incomprehensible when you
+first use it, we will begin by providing a system tour explaining by
+example how the system works. In order to start the system for the
+first time, we must construct a _release_.
+
+.Releases
+****
+Erlang uses a concept called _releases_ for real applications. A
+release consists of:
+
+* An erlang emulator for the virtual machine, BEAM as a binary in the
+  operating system.
+* The set of applications which is configured to be inside the
+  release.
+* Every dependent application needed by the release-configuration.
+* Support libraries for executing the emulator, binary NIF shared
+  objects (NIF: Natively implemented function), and so on.
+* Configuration for the system and runtime
+
+A release is a self-contained Erlang system living in its own
+directory structure. It can be copied to a target machine and started
+without having to install any support libraries, as long as the system
+architecture is the same. If you provide an appropriate BEAM emulator
+for the given architecture, the code will run with little to no
+modification as well since the Erlang byte code is highly portable. It
+even works across Erlang/OTP versions (subject to some restrictions).
+****
+
+To make a release, run the following command:
+
+[source]
+----
+$ make release
+----
+
+This builds a release inside the `_build` directory and makes it
+available. In order to run the release, we can ask to run it with a
+console frontend, so we get a shell on the Erlang system:
+
+[source]
+----
+$ _build/default/rel/sw/bin/sw console
+----
+
+The system should boot and start running. A typical invocation looks
+like:
+
+[source]
+----
+Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:8:8] [async-threads:30] [hipe] [kernel-poll:true] [dtrace]
+
+15:33:05.705 [info] Application lager started on node 'sw@127.0.0.1'
+15:33:05.705 [info] Application ranch started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Application graphql started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Application sw_core started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Application cowboy started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Starting HTTP listener on port 17290
+Eshell V8.3  (abort with ^G)
+(sw@127.0.0.1)1>
+----
+
+TIP: To exit an Erlang node like this, you can either Ctrl-C twice
+which stops the system abruptly. Or you can be nice to the system and
+ask it to close gracefully one application at a time by entering
+`q().<RET>` in the shell.
+
+One the Erlang emulator is running our `sw` release, we can point a
+browser to http://localhost:{port-number}/ and you should be greeted
+with the following screen:
+
+[#img-graphiql]
+.The initial greeting screen for the GraphQL system
+image::graphiql.png[GraphiQL]
+
+=== First query
+
+The first query we will run requests a given *Starhip* from the system.
+In accordance with the rules of Relay Modern GraphQL conventions, we
+will load this *Starship* via the _Object Identification_ conventions
+of Relay Modern:
+
+[source,graphql]
+----
+query StarShipQuery {
+    node(id: "U3RhcnNoaXA6AAAAAAAAAAI=") { # <1>
+      ... on Starship { # <2>
+        id # <3>
+        name
+        cargoCapacity
+        model
+        passengers
+      }
+  }
+}
+----
+<1> The *ID* entered here is opaque to the client, and we assume it
+    was obtained in an earlier query. We will show typical ways to
+    list things later in this section.
+<2> This notation, if you are only slightly familiar with GraphQL is
+    called an _inline fragment_. The output of the `node` field is of
+    type *Node* and here we restrict ourselves to the type *Starship*.
+<3> This requests the given fields in the particular starship we loaded.
+
+If you enter this in the GraphiQL left window and press the "`Run`"
+button, you should get the following response:
+
+[source,json]
+----
+{
+  "data": {
+    "node": {
+      "id": "c3RhcnNoaXA6AAAAAAAAAAI=",
+      "model": "CR90 corvette",
+      "name": "CR90 corvette",
+      "passengers": "600"
+    }
+  }
+}
+----
+
+Note how the response reflects the structure of the query. This is a
+powerful feature of GraphQL since it allows you to build up queries
+client side and get deterministic results based off of your
+query-structure.
+
+=== More advanced queries
+
 TBD
 
 
