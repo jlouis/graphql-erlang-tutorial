@@ -178,7 +178,7 @@ asking it to create the schema:
 $ git clean -dfxq # <1>
 $ make compile # <2>
 $ make shell-schema # <3>
-erl -pa `rebar3 path` --name sw@127.0.0.1
+erl -pa `rebar3 path` -name sw@127.0.0.1
 Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:8:8] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
 
 Eshell V8.3  (abort with ^G)
