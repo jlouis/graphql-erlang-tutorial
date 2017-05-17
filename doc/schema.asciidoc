@@ -156,7 +156,7 @@ query StarShipQuery($id : ID!) {
 }
 ----
 
-== Input objects
+=== Input objects
 
 TBD
 
