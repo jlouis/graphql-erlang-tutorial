@@ -60,6 +60,18 @@ create_tables() ->
           [{disc_copies, [node()]},
            {type, set},
            {attributes, record_info(fields, film)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          person,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, person)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          planet,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, planet)}]),
     ok.
 
 %% tag::populatingTables[]
@@ -71,7 +83,9 @@ populate(File, Fun) ->
 populate_tables() ->
     populate("fixtures/transport.json", fun populate_starships/1),
     populate("fixtures/species.json", fun populate_species/1),
-    populate("fixtures/films.json", fun populate_films/1).
+    populate("fixtures/films.json", fun populate_films/1),
+    populate("fixtures/people.json", fun populate_people/1),
+    ok.
 %% end::populatingTables
 
 %% tag::populateStarships[]
@@ -80,7 +94,7 @@ populate_starships(Ts) ->
     Txn = fun() ->
                 [mnesia:write(S) || S <- Starships],
                 ok
-        end,
+          end,
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
 %% end::populateStarships[]
@@ -99,7 +113,16 @@ populate_species(Terms) ->
     Txn = fun() ->
                 [mnesia:write(S) || S <- Species],
                 ok
-        end,
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.
+
+populate_people(Terms) ->
+    People = [json_to_person(P) || P <- Terms],
+    Txn = fun() ->
+                  [mnesia:write(P) || P <- People],
+                  ok
+          end,
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
 
