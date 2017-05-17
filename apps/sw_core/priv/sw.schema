@@ -45,15 +45,63 @@ type Starship implements Node {
   filmConnection(
     after : String
     first : Int
-    before : String
-    last : Int) : StarshipFilmsConnection
-  created : String
-  edited : String
+    before: String
+    last: Int) : StarshipFilmsConnection
+  created: String
+  edited: String
 }
 
-type Mutation {
-  dummy : Node
+# tag::filmObject[]
+type Film {
+  title : String
+  episodeID : Int
+  openingCrawl : String
+  director : String
+  producers : [String]
+  releaseDate : String
+  speciesConnection(after: String, first: Int,
+                    before: String, last: Int)
+    : FilmSpeciesConnection
+  created : String
+  edited : String
+  id : ID!
 }
+# end::filmObject[]
+
+# tag::speciesObject[]
+type Species {
+  name : String
+  classification : String
+  designation : String
+  averageHeight : String
+  averageLifespan : String
+  eyeColors : [String]
+  hairColors : [String]
+  skinColors : [String]
+  language : String
+  homeworld : Planet
+  created : String
+  edited : String
+  id : ID!
+}
+# end::speciesObject[]
+
+# tag::planetObject[]
+type Planet {
+  name : String
+  diameter : Int
+  rotationPeriod : Int
+  orbitalPeriod : Int
+  gravity : String
+  population : Float
+  climates : [String]
+  terrains : [String]
+  surfaceWater : Float
+  created : String
+  edited : String
+  id : ID!
+}
+# end::planetObject[]
 
 # tag::queryObject[]
 type Query {
@@ -63,3 +111,23 @@ type Query {
   starship(id : ID!) : Starship
 }
 # end::queryObject[]
+
+type Mutation {
+  dummy : Node
+}
+
+## -- CONNECTION OBJECTS --------
+##
+## This section implements connection objects according to the relay modern conventions
+
+type FilmSpeciesConnection {
+  pageInfo : PageInfo!
+  edges : [FilmSpeciesEdge]
+  totalCount : Int
+  species : [Species]
+}
+
+type FilmSpeciesEdge {
+  node : Species
+  cursor : String!
+}

@@ -20,3 +20,22 @@
          passengers :: binary()
 }).
 %% end::shipRecord[]
+
+-record(species,
+        {id :: binary() | integer(),
+         edited :: binary(),
+         created :: binary(),
+         classification :: binary(),
+         name :: binary(),
+         designation :: binary(),
+         eye_colors :: [binary()],
+         people :: [integer()],
+         skin_colors :: [binary()],
+         language :: binary(),
+         hair_colors :: [binary()],
+         homeworld :: binary(),
+         average_lifespan :: integer(),
+         average_height :: integer()
+}).
+
+                             

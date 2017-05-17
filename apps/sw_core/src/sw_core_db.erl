@@ -47,11 +47,18 @@ create_tables() ->
           [{disc_copies, [node()]},
            {type, set},
            {attributes, record_info(fields, starship)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          species,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, species)}]),
 %% end::createTables[]
     ok.
 
 populate_tables() ->
-    populate_starships().
+    populate_starships(),
+    populate_species().
 
 %% tag::populateStarships[]
 populate_starships() ->
@@ -69,22 +76,36 @@ populate_starships(Ts) ->
     ok.
 %% end::populateStarships[]
 
+populate_species() ->
+    {ok, Data} = file:read_file("fixtures/species.json"),
+    Species = jsx:decode(Data, [return_maps]),
+    populate_species(Species).
+
+populate_species(Terms) ->
+    Species = [json_to_species(T) || T <- Terms],
+    F = fun() ->
+                [mnesia:write(SS) || SS <- Species],
+                ok
+        end,
+    {atomic, ok} = mnesia:transaction(F),
+    ok.
+
 %% tag::jsonToStarship[]
 json_to_starship(
   #{ <<"pk">> := ID,
      <<"fields">> := #{
-       <<"edited">> := Edited,
-       <<"consumables">> := Consumables,
-       <<"name">> := Name,
-       <<"created">> := Created,
-       <<"cargo_capacity">> := CargoCapacity,
-       <<"passengers">> := Passengers,
-       <<"max_atmosphering_speed">> := MaxAtmosSpeed,
-       <<"crew">> := Crew,
-       <<"length">> := Length,
-       <<"model">> := Model,
-       <<"cost_in_credits">> := Cost,
-       <<"manufacturer">> := Manufacturer }}) ->
+         <<"edited">> := Edited,
+         <<"consumables">> := Consumables,
+         <<"name">> := Name,
+         <<"created">> := Created,
+         <<"cargo_capacity">> := CargoCapacity,
+         <<"passengers">> := Passengers,
+         <<"max_atmosphering_speed">> := MaxAtmosSpeed,
+         <<"crew">> := Crew,
+         <<"length">> := Length,
+         <<"model">> := Model,
+         <<"cost_in_credits">> := Cost,
+         <<"manufacturer">> := Manufacturer }}) ->
     #starship {
        id = ID,
        cargo_capacity = CargoCapacity,
@@ -100,3 +121,44 @@ json_to_starship(
        name = Name,
        passengers = Passengers }.
 %% end::jsonToStarship[]
+
+json_to_species(
+  #{ <<"pk">> := ID,
+     <<"fields">> := #{
+         <<"edited">> := Edited,
+         <<"classification">> := Classification,
+         <<"name">> := Name,
+         <<"created">> := Created,
+         <<"eye_colors">> := EyeColors,
+         <<"people">> := People,
+         <<"skin_colors">> := SkinColors,
+         <<"language">> := Language,
+         <<"hair_colors">> := HairColors,
+         <<"homeworld">> := HomeWorld,
+         <<"average_lifespan">> := LifeSpan,
+         <<"average_height">> := Height }}) ->
+    #species {
+       id = ID,
+       edited = Edited,
+       created = Created,
+       classification = Classification,
+       name = Name,
+       eye_colors = commasplit(EyeColors),
+       people = People,
+       skin_colors = commasplit(SkinColors),
+       language = Language,
+       hair_colors = commasplit(HairColors),
+       homeworld = HomeWorld,
+       average_lifespan = integer_like(LifeSpan),
+       average_height = integer_like(Height) }.
+
+
+%% --- INTERNAL HELPERS ------------------------
+commasplit(String) ->
+    binary:split(String, <<", ">>, [global]).
+
+integer_like(<<"indefinite">>) -> infinity;
+integer_like(<<"n/a">>)        -> nan;
+integer_like(<<"unknown">>)    -> nan;
+integer_like(String)           -> binary_to_integer(String).
+
