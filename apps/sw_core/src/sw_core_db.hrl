@@ -75,6 +75,7 @@
          birth_year :: binary()
 }).
 
+%% tag::planetRecord[]
 -record(planet,
         {id :: binary(),
          edited :: binary(),
@@ -89,6 +90,7 @@
          orbital_period :: integer(),
          population :: integer()
 }).
+%% end::planetRecord[]
 
 -record(vehicle,
         {id :: binary(),

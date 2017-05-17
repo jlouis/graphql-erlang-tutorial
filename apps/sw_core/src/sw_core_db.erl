@@ -6,7 +6,9 @@
 -export([create_schema/0]).
 
 %% tag::recordOf[]
-record_of('Starship') -> starship.
+record_of('Starship') -> starship;
+record_of('Planet') -> planet;
+record_of('Species') -> species.
 %% end::recordOf[]
 
 %% tag::load[]

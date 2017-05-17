@@ -87,14 +87,14 @@ type Species {
 # end::speciesObject[]
 
 # tag::planetObject[]
-type Planet {
+type Planet implements Node {
   name : String
   diameter : Int
   rotationPeriod : Int
   orbitalPeriod : Int
   gravity : String
   population : Float
-  climates : [String]
+  climate : String
   terrains : [String]
   surfaceWater : Float
   created : String

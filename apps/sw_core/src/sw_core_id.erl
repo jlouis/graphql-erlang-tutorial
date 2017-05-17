@@ -5,7 +5,8 @@
 %% tag::idEncode[]
 encode({Tag, ID}) ->
     BinTag = atom_to_binary(Tag, utf8),
-    base64:encode(<<BinTag/binary, ":", ID:64/integer>>).
+    IDStr = integer_to_binary(ID),
+    base64:encode(<<BinTag/binary, ":", IDStr/binary>>).
 %% end::idEncode[]
 
 %% tag::idDecode[]
@@ -13,8 +14,9 @@ decode(Input) ->
     try
         Decoded = base64:decode(Input),
         case binary:split(Decoded, <<":">>) of
-            [BinTag, <<ID:64/integer>>] ->
-                {ok, {binary_to_existing_atom(BinTag, utf8), ID}};
+            [BinTag, IDStr] ->
+                {ok, {binary_to_existing_atom(BinTag, utf8),
+                      binary_to_integer(IDStr)}};
             _ ->
                 exit(invalid)
         end

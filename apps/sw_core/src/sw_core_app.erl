@@ -33,6 +33,7 @@ mapping_rules() ->
        interfaces => #{ default => sw_core_type },
        unions => #{ default => sw_core_type },
        objects => #{
+         'Planet' => sw_core_planet,
          'Starship' => sw_core_starship,
          'Query' => sw_core_query,
          'Mutation' => sw_core_mutation,
