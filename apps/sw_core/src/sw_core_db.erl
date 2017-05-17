@@ -72,6 +72,18 @@ create_tables() ->
           [{disc_copies, [node()]},
            {type, set},
            {attributes, record_info(fields, planet)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          transport,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, transport)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          vehicle,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, vehicle)}]),
     ok.
 
 %% tag::populatingTables[]
@@ -81,23 +93,35 @@ populate(File, Fun) ->
     Fun(Terms).
 
 populate_tables() ->
-    populate("fixtures/transport.json", fun populate_starships/1),
+    populate("fixtures/transport.json", fun populate_transports/1),
+    populate("fixtures/starships.json", fun populate_starships/1),
     populate("fixtures/species.json", fun populate_species/1),
     populate("fixtures/films.json", fun populate_films/1),
     populate("fixtures/people.json", fun populate_people/1),
+    populate("fixtures/planets.json", fun populate_planets/1),
+    populate("fixtures/vehicles.json", fun populate_vehicles/1),
     ok.
 %% end::populatingTables
 
-%% tag::populateStarships[]
-populate_starships(Ts) ->
-    Starships = [json_to_starship(T) || T <- Ts],
+%% tag::populateTransports[]
+populate_transports(Ts) ->
+    Starships = [json_to_transport(T) || T <- Ts],
     Txn = fun() ->
                 [mnesia:write(S) || S <- Starships],
                 ok
           end,
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
-%% end::populateStarships[]
+%% end::populateTransports[]
+
+populate_starships(Terms) ->
+    Films = [json_to_starship(T) || T <- Terms],
+    Txn = fun() ->
+                  [mnesia:write(F) || F <- Films],
+                  ok
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.
 
 populate_films(Terms) ->
     Films = [json_to_film(T) || T <- Terms],
@@ -126,8 +150,26 @@ populate_people(Terms) ->
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
 
-%% tag::jsonToStarship[]
-json_to_starship(
+populate_planets(Terms) ->
+    People = [json_to_planet(P) || P <- Terms],
+    Txn = fun() ->
+                  [mnesia:write(P) || P <- People],
+                  ok
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.
+
+populate_vehicles(Terms) ->
+    Vehicles = [json_to_vehicle(V) || V <- Terms],
+    Txn = fun() ->
+                  [mnesia:write(V) || V <- Vehicles],
+                  ok
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.
+
+%% tag::jsonToTransport[]
+json_to_transport(
   #{ <<"pk">> := ID,
      <<"fields">> := #{
          <<"edited">> := Edited,
@@ -142,7 +184,7 @@ json_to_starship(
          <<"model">> := Model,
          <<"cost_in_credits">> := Cost,
          <<"manufacturer">> := Manufacturer }}) ->
-    #starship {
+    #transport {
        id = ID,
        cargo_capacity = CargoCapacity,
        consumables = Consumables,
@@ -156,7 +198,23 @@ json_to_starship(
        model = Model,
        name = Name,
        passengers = Passengers }.
-%% end::jsonToStarship[]
+%% end::jsonToTransport[]
+
+json_to_starship(
+  #{ <<"pk">> := ID,
+     <<"fields">> := #{
+         <<"pilots">> := Pilots,
+         <<"MGLT">> := MGLT,
+         <<"starship_class">> := Class,
+         <<"hyperdrive_rating">> := HyperRating
+        }}) ->
+    #starship {
+       id = ID,
+       pilots = Pilots,
+       mglt = MGLT,
+       starship_class = Class,
+       hyperdrive_rating = HyperRating
+      }.
 
 json_to_film(
   #{ <<"pk">> := ID,
@@ -216,6 +274,77 @@ json_to_species(
        average_lifespan = integer_like(LifeSpan),
        average_height = integer_like(Height) }.
 
+json_to_planet(
+  #{ <<"pk">> := ID,
+     <<"fields">> := #{
+         <<"edited">> := Edited,
+         <<"climate">> := Climate,
+         <<"surface_water">> := SWater,
+         <<"name">> := Name,
+         <<"diameter">> := Diameter,
+         <<"rotation_period">> := RotationPeriod,
+         <<"created">> := Created,
+         <<"terrain">> := Terrain,
+         <<"gravity">> := Gravity,
+         <<"orbital_period">> := OrbPeriod,
+         <<"population">> := Population
+        }}) ->
+    #planet {
+       id = ID,
+       edited = Edited,
+       climate = Climate,
+       surface_water = SWater,
+       name = Name,
+       diameter = Diameter,
+       rotation_period = RotationPeriod,
+       created = Created,
+       terrain = Terrain,
+       gravity = Gravity,
+       orbital_period = OrbPeriod,
+       population = Population
+}.
+
+json_to_person(
+  #{ <<"pk">> := ID,
+     <<"fields">> := #{
+         <<"edited">> := Edited,
+         <<"name">> := Name,
+         <<"created">> := Created,
+         <<"gender">> := Gender,
+         <<"skin_color">> := SkinColor,
+         <<"hair_color">> := HairColor,
+         <<"height">> := Height,
+         <<"eye_color">> := EyeColor,
+         <<"mass">> := Mass,
+         <<"homeworld">> := HomeWorld,
+         <<"birth_year">> := BirthYear
+        }}) ->
+    #person {
+       id = ID,
+       edited = Edited,
+       name = Name,
+       created = Created,
+       gender = Gender,
+       skin_color = SkinColor,
+       hair_color = HairColor,
+       height = Height,
+       eye_color = EyeColor,
+       mass = Mass,
+       homeworld = HomeWorld,
+       birth_year = BirthYear
+      }.
+
+json_to_vehicle(
+  #{ <<"pk">> := ID,
+     <<"fields">> := #{
+         <<"vehicle_class">> := Class,
+         <<"pilots">> := Pilots
+        }}) ->
+    #vehicle {
+       id = ID,
+       vehicle_class = Class,
+       pilots = Pilots
+      }.
 
 %% --- INTERNAL HELPERS ------------------------
 commasplit(String) ->

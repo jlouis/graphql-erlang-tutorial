@@ -1,25 +1,32 @@
 %% Database Schema definition files
 
-%% tag::shipRecord[]
+%% tag::starshipRecord[]
 -record(starship,
-        {id :: binary(),
-         cargo_capacity :: float(),
-         class :: binary(),
-         consumables :: binary(),
-         cost :: float(),
-         created :: binary(),
-         crew :: binary(),
-         edited :: binary(),
-         hyperdrive_rating :: float(),
-         length :: float(),
-         manufacturers :: [binary()],
-         max_speed :: integer(),
+        {id :: integer(),
+         pilots :: [integer()],
          mglt :: integer(),
-         model :: binary(),
-         name :: binary(),
-         passengers :: binary()
+         starship_class :: binary(),
+         hyperdrive_rating :: binary()
 }).
-%% end::shipRecord[]
+%% end::starshipRecord[]
+
+%% tag::transportRecord[]
+-record(transport,
+        {id :: binary(),
+         edited :: binary(),
+         consumables :: binary(),
+         name :: binary(),
+         created :: binary(),
+         cargo_capacity :: float(),
+         passengers :: binary(),
+         max_speed :: integer(),
+         crew :: binary(),
+         length :: float(),
+         model :: binary(),
+         cost :: float(),
+         manufacturers :: [binary()]
+}).
+%% end::transportRecord[]
 
 -record(film,
         {id :: binary() | integer(),
@@ -82,4 +89,9 @@
          orbital_period :: integer(),
          population :: integer()
 }).
+
+-record(vehicle,
+        {id :: binary(),
+         vehicle_class :: binary(),
+         pilots :: [integer()]}).
 
