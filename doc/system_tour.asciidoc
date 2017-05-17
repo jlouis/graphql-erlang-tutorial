@@ -77,22 +77,19 @@ image::graphiql.png[GraphiQL]
 
 === First query
 
-The first query we will run requests a given *Starhip* from the system.
+The first query we will run requests a given *Planet* from the system.
 In accordance with the rules of Relay Modern GraphQL conventions, we
-will load this *Starship* via the _Object Identification_ conventions
-of Relay Modern:
+will load this *Planet* via the _Object Identification_ conventions:
 
 [source,graphql]
 ----
-query StarShipQuery {
-    node(id: "U3RhcnNoaXA6AAAAAAAAAAI=") { # <1>
-      ... on Starship { # <2>
-        id # <3>
-        name
-        cargoCapacity
-        model
-        passengers
-      }
+query PlanetQuery {
+  node(id:"UGxhbmV0OjE=") { # <1>
+    ... on Planet { # <2>
+      id # <3>
+      name
+      climate
+    }
   }
 }
 ----
@@ -101,7 +98,7 @@ query StarShipQuery {
     list things later in this section.
 <2> This notation, if you are only slightly familiar with GraphQL is
     called an _inline fragment_. The output of the `node` field is of
-    type *Node* and here we restrict ourselves to the type *Starship*.
+    type *Node* and here we restrict ourselves to the type *Planet*.
 <3> This requests the given fields in the particular starship we loaded.
 
 If you enter this in the GraphiQL left window and press the "`Run`"
@@ -112,10 +109,9 @@ button, you should get the following response:
 {
   "data": {
     "node": {
-      "id": "c3RhcnNoaXA6AAAAAAAAAAI=",
-      "model": "CR90 corvette",
-      "name": "CR90 corvette",
-      "passengers": "600"
+      "climate": "arid",
+      "id": "cGxhbmV0OjE=",
+      "name": "Tatooine"
     }
   }
 }

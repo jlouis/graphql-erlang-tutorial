@@ -12,8 +12,8 @@ a projects `priv` directory. Our GraphQL system can then refer to the
 private directory of the application in order to load this schema when
 the system boots up.
 
-[[identity-generation]]
-=== Identity generation
+[[identity-encoding]]
+=== Identity encoding
 
 In GraphQL, you have a special type, _ID_, which is used to attach an
 identity to objects. It is often construed as a "`PRIMARY KEY`" of
@@ -26,14 +26,15 @@ client.
 To make this more obvious, the GraphQL people usually base64 encode
 their ID-values. Furthermore, we have the problem that in Mnesia, our
 rows IDs will be integers. This means we may have overlapping integers
-between different types. To avoid problem, we use a common definition
-in GraphQL. The Starship with id 3 will be encoded as essentially
-`base64("starship:3")`, apart from the fact we use a binary encoding
-of the number. This definition somewhat hides the implementation and
-also allows the server backend to redefine IDs later for objects.
-Another use of the encoding is that it can define what datasource a
-given came from, so you can figure out where to find that object. It
-is highly useful in migration scenarios.
+between different types. To avoid problem, we use a common encoding in
+GraphQL. The Starship with id 3 will be encoded as
+`base64("Starship:3")` for example. And the planet Tatooine taken from
+the <<system-tour>> is encoded as `base64("Planet:1")`. This
+definition somewhat hides the implementation and also allows the
+server backend to redefine IDs later for objects. Another use of the
+encoding is that it can define what datasource a given came from, so
+you can figure out where to find that object. It is highly useful in
+migration scenarios.
 
 The encoder is simple because we can assume the server provides valid
 values:
@@ -74,11 +75,11 @@ include::{sw_core}/priv/sw.schema[tags=nodeInterface]
 .On Documentation
 
 The Erlang version of GraphQL allows a certain extension by the Apollo
-people. This extension allows you to _annotate_ GraphQL schema data
-with more information. In particular, we use this for documentation.
-You can annotate almost anything with `+description(text:
-"documentation")` which in turn attaches that documentation to an
-entity in the Graph.
+people. This extension allows you to use <<annotations>> in GraphQL
+schemas to attach more information to particular objects of interest.
+We use this for documentation. You can annotate almost anything with
+`+description(text: "documentation")` which in turn attaches that
+documentation to an entity in the Graph.
 
 Multi-line comments are also possible by using a backtick (`) rather
 than a quote symbol ("). These allows larger Markdown entries to be
@@ -93,23 +94,20 @@ it tends to flow really well when you enter documentation by means of
 the backtick character. A future version of the parser might redo this
 decision.
 
-=== Starships
+=== Planets
 
-Since we have Starships in the mnesia database from the previous
+Since we have planets in the mnesia database from the previous
 section, we can define the GraphQL Schema for them as well. The
 definition is quite straightforward given the Star Wars API we are
 trying to mimic already contains all the important parts.
 
 For brevity, we omit the documentation of each individual field for
 now. Though a more complete implementation would probably include
-documentation on each field to a fine detail. Also note we are cutting
-the full implementation short since the full Starship contains
-pagination, which we handle in a later section in the documentation.
+documentation on each field to a fine detail.
 
 [source,graphql]
 ----
-include::{sw_core}/priv/sw.schema[tags=starshipObject]
-...
+include::{sw_core}/priv/sw.schema[tags=planetObject]
 ----
 
 [[queries-and-mutations]]
@@ -139,10 +137,10 @@ it.
 
 The field `node` allows you to request any node in the Graph. Later,
 we will see how to implement the backend functionality for this call.
-The field `starship` allows you to request a particular starship. In a
-way, this is a redundant endpoint, since every starship can also be
-requested through the node interface, and then fragment expanded on
-starships only:
+In this example, we will request a *Starship* through the node
+interface by first requesting anything implementing the *Node*
+interface, and then use an inline-fragment in order to tell the system
+which fields we want to grab inside the starship:
 
 [source,graphql]
 ----
@@ -153,12 +151,14 @@ query StarShipQuery($id : ID!) {
        ... on Starship {
           model
           name
-          <1>
        }
     }
 }
 ----
-<1> You would put additional fields here.
+
+== Input objects
+
+TBD
 
 === Schema default values
 
@@ -256,7 +256,7 @@ simply defines a heterogenous collection of types.
 For the GraphQL system to operate correctly, execution must have a way
 to take an abstract type and make it concrete. Say, for instance, you
 have just loaded an object of type *Node*. We don't yet know that it
-is a starship, but if the programmer fragment expands inside the on
+is a starship, but if the programmer fragment expands on
 the *Starship*
 
 [source,graphql]

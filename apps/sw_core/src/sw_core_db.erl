@@ -103,7 +103,7 @@ populate_tables() ->
     populate("fixtures/planets.json", fun populate_planets/1),
     populate("fixtures/vehicles.json", fun populate_vehicles/1),
     ok.
-%% end::populatingTables
+%% end::populatingTables[]
 
 %% tag::populateTransports[]
 populate_transports(Ts) ->
@@ -152,6 +152,7 @@ populate_people(Terms) ->
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
 
+%% tag::populate_planets[]
 populate_planets(Terms) ->
     People = [json_to_planet(P) || P <- Terms],
     Txn = fun() ->
@@ -160,6 +161,7 @@ populate_planets(Terms) ->
           end,
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
+%% end::populate_planets[]
 
 populate_vehicles(Terms) ->
     Vehicles = [json_to_vehicle(V) || V <- Terms],
@@ -276,6 +278,7 @@ json_to_species(
        average_lifespan = integer_like(LifeSpan),
        average_height = integer_like(Height) }.
 
+%% tag::json_to_planet[]
 json_to_planet(
   #{ <<"pk">> := ID,
      <<"fields">> := #{
@@ -305,6 +308,7 @@ json_to_planet(
        orbital_period = OrbPeriod,
        population = Population
 }.
+%% end::json_to_planet[]
 
 json_to_person(
   #{ <<"pk">> := ID,

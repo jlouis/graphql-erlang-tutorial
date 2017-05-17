@@ -71,8 +71,8 @@ several GraphQL entity kinds. For example:
 * Scalar types--Extensions on top of the default types. Often used
   for Dates, DateTime's, URI's, Color's, Currency, Locales and so on.
 * Enumerations--Values taken from a limited set. An example could be
-  the enumeration of weekdays: "MONDAY, TUESDAY, WEDNESDAY, ...,
-  SUNDAY".
+  the enumeration of weekdays: "`MONDAY, TUESDAY, WEDNESDAY, ...,
+  SUNDAY`".
 * Input Objects--Data flowing from the Client to the Server (Request).
 * Output Objects--Data flowing from the Server to the Client
   (Response).
@@ -84,7 +84,7 @@ systems. From a type-level perspective, client requests and server
 responses have different _polarity_.
 
 It may seem as if this is an irritating choice. You often have to
-specify the "same" object twice: once for input and once for output.
+specify the "`same`" object twice: once for input and once for output.
 However, as your GraphQL systems grows in size, it turns out this
 choice is the right one. You quickly run into situations where a
 client supplies a desired specific change where many of the fields on
@@ -93,8 +93,8 @@ output world, it is easily to facilitate since the input objects can
 omit many fields that doesn't make sense.
 
 In a way, your GraphQL system is built such that changes to the data
-is done by executing "transactions" through a set of stored
-procedures. This can be seen as using the "_PATCH_" method of RESTful
+is done by executing "`transactions`" through a set of stored
+procedures. This can be seen as using the "`_PATCH_`" method of RESTful
 interfaces and not having a definition of PUT.
 
 .CQRS
@@ -130,7 +130,10 @@ the GraphQL schema contract becomes a way to mediate between the
 different data stores. As an example, you may satisfy some parts of
 the GraphQL from a dedicated search system--such as
 ElasticSearch--while others are served as rows from a traditional
-database, such as MySQL or Postgresql.
+database, such as MySQL or Postgresql. You may even have a message
+queue broker or some other subsystem in which you have relevant data
+you want to query. Or perhaps, some queries are handled by
+micro-services in your architecture.
 
 Over the course of having built larger systems, we've experienced that
 mappings which tries to get isomorphism between the backend and the
@@ -205,18 +208,18 @@ large number of tables, so we are just going to show one here:
 include::{sw_core}/src/sw_core_db.erl[tags=createTables]
 ----
 
-In mnesia, tables are Erlang records. The `starship` record needs
+In mnesia, tables are Erlang records. The `#planet{}` record needs
 definition and is in the header file `sw_core_db.hrl`. We simply list
 the entries which are defined the SWAPI GraphQL schema so we can store
 the concept of a starship in the system:
 
 [source,erlang]
 ----
-include::{sw_core}/src/sw_core_db.hrl[tags=shipRecord]
+include::{sw_core}/src/sw_core_db.hrl[tags=planetRecord]
 ----
 
-Every other table in the system is handled in the same manner.
-
+Every other table in the system is handled in the same manner, but are
+not given here for brevity. They follow the same style as the example above.
 
 === Populating the database
 
@@ -228,14 +231,13 @@ documents and turn them into mnesia records, which we then insert into
 the database.
 
 We can fairly easily write a function which take the JSON and turn them
-into appropriate mnesia records. The starship is split over two
-tables: one for transports and one for starships. We handle the
-transport part first, and then we patch the data with the starship
-information later.
+into appropriate mnesia records. Planets live in a fixture file
+`planets.json`, so we need a function that can turn a part said JSON
+file into a mnesia record. Some conversion is necessary on the way:
 
 [source,erlang]
 ----
-include::{sw_core}/src/sw_core_db.erl[tags=jsonToStarship]
+include::{sw_core}/src/sw_core_db.erl[tags=json_to_planet]
 ----
 
 Once we have this function down, we can utilize it to get a list of
@@ -244,8 +246,18 @@ transaction:
 
 [source,erlang]
 ----
-include::{sw_core}/src/sw_core_db.erl[tags=populateStarships]
+include::{sw_core}/src/sw_core_db.erl[tags=populate_planets]
 ----
+
+The code to read in and populate the database is fairly
+straightforward. It is the last piece of the puzzle to inject relevant
+data into the Mnesia database:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_db.erl[tags=populatingTables]
+----
+
 
 This creates a fixture in the database such that when we boot the
 database, the transport and starship data will be present in the
@@ -280,4 +292,3 @@ much.
 We now have the ability to create new database tables easily and we
 have a mnesia database for backing our data. This means we can start
 turning our attention to the GraphQL schema.
-

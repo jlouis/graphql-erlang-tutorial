@@ -34,6 +34,12 @@ include::graphiql.asciidoc[GraphiQL]
 include::errors.asciidoc[Error Handling]
 include::relay_modern.asciidoc[Relay Modern]
 include::security.asciidoc[Security]
+
+[[annotations]]
+== Annotations
+
+TBD
+
 include::tricks.asciidoc[Tricks]
 
 [appendix]
