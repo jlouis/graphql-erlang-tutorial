@@ -54,40 +54,53 @@ create_tables() ->
            {type, set},
            {attributes, record_info(fields, species)}]),
 %% end::createTables[]
+    {atomic, ok} =
+        mnesia:create_table(
+          film,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, film)}]),
     ok.
 
+%% tag::populatingTables[]
+populate(File, Fun) ->
+    {ok, Data} = file:read_file(File),
+    Terms = jsx:decode(Data, [return_maps]),
+    Fun(Terms).
+
 populate_tables() ->
-    populate_starships(),
-    populate_species().
+    populate("fixtures/transport.json", fun populate_starships/1),
+    populate("fixtures/species.json", fun populate_species/1),
+    populate("fixtures/films.json", fun populate_films/1).
+%% end::populatingTables
 
 %% tag::populateStarships[]
-populate_starships() ->
-    {ok, Data} = file:read_file("fixtures/transport.json"),
-    Transports = jsx:decode(Data, [return_maps]),
-    populate_starships(Transports).
-
 populate_starships(Ts) ->
     Starships = [json_to_starship(T) || T <- Ts],
-    F = fun() ->
-                [mnesia:write(SS) || SS <- Starships],
+    Txn = fun() ->
+                [mnesia:write(S) || S <- Starships],
                 ok
         end,
-    {atomic, ok} = mnesia:transaction(F),
+    {atomic, ok} = mnesia:transaction(Txn),
     ok.
 %% end::populateStarships[]
 
-populate_species() ->
-    {ok, Data} = file:read_file("fixtures/species.json"),
-    Species = jsx:decode(Data, [return_maps]),
-    populate_species(Species).
+populate_films(Terms) ->
+    Films = [json_to_film(T) || T <- Terms],
+    Txn = fun() ->
+                  [mnesia:write(F) || F <- Films],
+                  ok
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.
 
 populate_species(Terms) ->
     Species = [json_to_species(T) || T <- Terms],
-    F = fun() ->
-                [mnesia:write(SS) || SS <- Species],
+    Txn = fun() ->
+                [mnesia:write(S) || S <- Species],
                 ok
         end,
-    {atomic, ok} = mnesia:transaction(F),
+    {atomic, ok} = mnesia:transaction(Txn),
     ok.
 
 %% tag::jsonToStarship[]
@@ -122,6 +135,34 @@ json_to_starship(
        passengers = Passengers }.
 %% end::jsonToStarship[]
 
+json_to_film(
+  #{ <<"pk">> := ID,
+     <<"fields">> := #{
+         <<"edited">> := Edited,
+         <<"created">> := Created,
+         <<"vehicles">> := Vehicles,
+         <<"planets">> := Planets,
+         <<"producer">> := Producer,
+         <<"title">> := Title,
+         <<"episode_id">> := EpisodeId,
+         <<"director">> := Director,
+         <<"opening_crawl">> := OpeningCrawl,
+         <<"characters">> := Characters
+        }}) ->
+    #film {
+       id = ID,
+       edited = Edited,
+       created = Created,
+       vehicles = Vehicles,
+       planets = Planets,
+       producer = Producer,
+       title = Title,
+       episode_id = EpisodeId,
+       director = Director,
+       opening_crawl = OpeningCrawl,
+       characters = Characters
+      }.
+  
 json_to_species(
   #{ <<"pk">> := ID,
      <<"fields">> := #{

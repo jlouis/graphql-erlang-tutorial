@@ -21,6 +21,21 @@
 }).
 %% end::shipRecord[]
 
+-record(film,
+        {id :: binary() | integer(),
+         edited :: binary(),
+         created :: binary(),
+         starships :: [integer()],
+         vehicles :: [integer()],
+         planets :: [integer()],
+         producer :: binary(),
+         title :: binary(),
+         episode_id :: integer(),
+         director :: binary(),
+         release_date :: binary(),
+         opening_crawl :: binary(),
+         characters :: [integer()] }).
+         
 -record(species,
         {id :: binary() | integer(),
          edited :: binary(),
@@ -38,4 +53,3 @@
          average_height :: integer()
 }).
 
-                             
