@@ -121,4 +121,35 @@ application.
 
 === Application `sw_web`
 
-TBD
+This application implements the web UI and the HTTP transport on top
+of the Core application.
+
+.`src/sw_web_app.erl`
+
+Application callback for the `sw_web` application. Also initializees
+the cowboy web server with its dispatch rules and the configuration of
+cowboy.
+
+.`src/sw_web_graphql_handler.erl`
+
+The main handler for GraphQL requests in the system. It provides
+transport between GraphQL and HTTP.
+
+.`src/sw_web_sup.erl`
+
+Main supervisor. Currently it has no children, but exists as a way to
+appease the application controller by giving the application a
+specific `pid()` it can use to know if the application is up and
+running.
+
+.`src/sw_web_response.erl`
+
+Wrapper around responses. It makes sure that an Erlang term is
+renderable in JSON by converting something like a tuple into a binary
+value. This allows a JSON encoder to handle the Erlang term without
+problems.
+
+Another reason for doing this is that we eliminate a lot of 500 Status
+code responses from the system.
+
+
