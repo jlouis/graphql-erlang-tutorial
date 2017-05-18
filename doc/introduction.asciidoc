@@ -17,6 +17,13 @@ and this allows you to process the query, load data, and so on.
 
 === On this tutorial
 
+CAUTION: We are currently building the document and are still making
+changes to it. Things can still move around and change. If you see a
+"`TBD`" marker it means that section is "`To Be Done`" and will be
+written at a later point. In the same vein, the code base is being
+built up as well, so it may not be that everything is fully described
+yet.
+
 The tutorial you are now reading isn't really a tutorial per se where
 you type in stuff and see the output. There is a bit too much code for
 that kind of exposition. Rather, the tutorial describes a specific
@@ -28,6 +35,8 @@ to follow along and check out the construction of the system as a
 whole. Apart from being a small self-contained functional GraphQL
 project, it is also a small self-contained functional rebar3 project.
 So there's that.
+
+==== Suggestions
 
 Most of the source code in this tutorial refers inside the real source
 code. If a section doesn't make sense anymore because the underlying
