@@ -3,6 +3,7 @@
 
 -export([execute/4]).
 
+%% tag::planetExecute[]
 execute(_Ctx, Planet, Field, _Args) ->
     case Field of
         <<"id">> -> {ok, sw_core_id:encode({planet, Planet#planet.id})};
@@ -11,8 +12,8 @@ execute(_Ctx, Planet, Field, _Args) ->
         <<"surfaceWater">> -> {ok, Planet#planet.surface_water};
         <<"name">> -> {ok, Planet#planet.name};
         <<"diameter">> -> {ok, Planet#planet.diameter};
-        <<"rotationPeriod">> ->
-            {ok, Planet#planet.rotation_period};
+        <<"rotationPeriod">> -> {ok, Planet#planet.rotation_period};
+%% end::planetExecute[]
         <<"created">> -> {ok, Planet#planet.created};
         <<"terrain">> -> {ok, Planet#planet.terrain};
         <<"gravity">> -> {ok, Planet#planet.gravity};

@@ -12,11 +12,12 @@ record_of('Planet') -> planet;
 record_of('Species') -> species.
 %% end::recordOf[]
 
+tables() ->
+    [starship, transport, film,
+     species, person, planet, vehicle].
+
 wait_for_tables() ->
-    Tables = [starship, transport, film,
-              species, person, planet, vehicle]
-        ++ [sequences],
-    mnesia:wait_for_tables(Tables, 5000).
+    mnesia:wait_for_tables([sequences | tables()], 5000).
 
 %% tag::load[]
 load(Type, ID) ->
@@ -131,8 +132,10 @@ populate_transports(Ts) ->
 %% end::populateTransports[]
 
 setup_sequences() ->
+    Counters = [#sequences { key = K, value = 1000 } || K <- tables()],
     Txn = fun() ->
-                  mnesia:write(#sequences { key = transport, value = 1000 })
+                  [mnesia:write(C) || C <- Counters],
+                  ok
           end,
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
