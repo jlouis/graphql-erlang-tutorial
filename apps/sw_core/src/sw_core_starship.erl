@@ -6,7 +6,7 @@
 execute(_Ctx, Starship, Field, _Args) ->
     case Field of
         <<"id">> ->
-            {ok, sw_core_id:encode({starship, Starship#starship.id})};
+            {ok, sw_core_id:encode({'Starship', Starship#starship.id})};
         <<"hyperdriveRating">> -> {ok, Starship#starship.hyperdrive_rating};
         <<"mglt">>             -> {ok, Starship#starship.mglt}
     end.

@@ -97,6 +97,9 @@ type Planet implements Node {
   climate : String
   terrains : [String]
   surfaceWater : Float
+  filmConnection(after: String, first: Int,
+                 before: String, last: Int)
+    : PlanetFilmsConnection
   created : String
   edited : String
   id : ID!
@@ -119,6 +122,17 @@ type Mutation {
 ## -- CONNECTION OBJECTS --------
 ##
 ## This section implements connection objects according to the relay modern conventions
+
+type PlanetFilmsConnection {
+  pageInfo : PageInfo!
+  edges : [PlanetFilmsEdge]
+  totalCount : Int
+}
+
+type PlanetFilmsEdge {
+  node : Film
+  cursor : String!
+}
 
 type FilmSpeciesConnection {
   pageInfo : PageInfo!

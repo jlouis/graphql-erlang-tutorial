@@ -89,10 +89,10 @@ resolution is handled by a single function, `execute/4`:
 -spec execute(Ctx, Obj, Field, Args) ->
                 {ok, Result} | {error, Reason}
   when
-    Ctx :: context(), <1>
-    Obj :: term(), <2>
-    Field :: binary(), <3>
-    Args :: #{ binary() => term() } <4>
+    Ctx :: context(), % <1>
+    Obj :: term(), % <2>
+    Field :: binary(), % <3>
+    Args :: #{ binary() => term() } % <4>
     Result :: term(),
     Reason :: term().
 ----

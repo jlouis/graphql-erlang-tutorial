@@ -9,7 +9,8 @@
 %% tag::recordOf[]
 record_of('Starship') -> starship;
 record_of('Planet') -> planet;
-record_of('Species') -> species.
+record_of('Species') -> species;
+record_of('Film') -> film.
 %% end::recordOf[]
 
 tables() ->

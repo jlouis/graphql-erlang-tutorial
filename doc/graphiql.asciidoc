@@ -54,7 +54,7 @@ Eshell V8.3  (abort with ^G)
 <<"UGxhbmV0OjM=">>
 ----
 
-we can write a query for this particular starship:
+we can write a query for this particular planet:
 
 [source,graphql]
 ----
@@ -69,5 +69,15 @@ query StarShipQuery {
 }
 ----
 
-TBD
+The GraphiQL interface is a nice development and debugging tool. We
+keep it available for production as well in a security gating because
+it is nice you can build a query on the fly if something is odd with a
+data set.
+
+Note that GraphiQL creates a very large URL containing the query
+itself. This is also very useful as you can send queries between
+people by pasting links. In a development setting, you can then talk
+about a particular query which doesn't operate as expected.
+
+
 
