@@ -50,8 +50,8 @@ Let us run a simple example query in the interface. Since we have
 [source]
 ----
 Eshell V8.3  (abort with ^G)
-1> base64:encode(<<"Starship:", 2:64/integer>>).
-<<"U3RhcnNoaXA6AAAAAAAAAAI=">>
+(sw@127.0.0.1)1> base64:encode("Planet:3").
+<<"UGxhbmV0OjM=">>
 ----
 
 we can write a query for this particular starship:
@@ -59,15 +59,15 @@ we can write a query for this particular starship:
 [source,graphql]
 ----
 query StarShipQuery {
-    node(id: "U3RhcnNoaXA6AAAAAAAAAAI=") {
-      ... on Starship {
+    node(id: "UGxhbmV0OjM=") {
+      ... on planet {
         id
         name
-        cargoCapacity
-        model
-        passengers
+        climate
       }
   }
 }
 ----
+
+TBD
 

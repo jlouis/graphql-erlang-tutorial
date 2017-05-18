@@ -99,7 +99,7 @@ query PlanetQuery {
 <2> This notation, if you are only slightly familiar with GraphQL is
     called an _inline fragment_. The output of the `node` field is of
     type *Node* and here we restrict ourselves to the type *Planet*.
-<3> This requests the given fields in the particular starship we loaded.
+<3> This requests the given fields in the particular planet we loaded.
 
 If you enter this in the GraphiQL left window and press the "`Run`"
 button, you should get the following response:

@@ -211,7 +211,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=createTables]
 In mnesia, tables are Erlang records. The `#planet{}` record needs
 definition and is in the header file `sw_core_db.hrl`. We simply list
 the entries which are defined the SWAPI GraphQL schema so we can store
-the concept of a starship in the system:
+the concept of a planet in the system:
 
 [source,erlang]
 ----
@@ -260,9 +260,8 @@ include::{sw_core}/src/sw_core_db.erl[tags=populatingTables]
 
 
 This creates a fixture in the database such that when we boot the
-database, the transport and starship data will be present in the
-records of the starship table.
-
+database, the planets, transports, people, ..., will be present in the
+mnesia database when we boot the system.
 === Creating a FALLBACK for the database
 
 Once we have run the schema creation routine, a file called

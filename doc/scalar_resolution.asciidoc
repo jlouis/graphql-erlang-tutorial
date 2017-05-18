@@ -48,12 +48,13 @@ as we make sure to output-coerce values such that they are
 representable by the transport and by the client.
 
 .Star Wars and Scalar values
-****
-The current implementation of the Star Wars doesn't utilize
+
+CAUTION: The current implementation of the Star Wars doesn't utilize
 this feature of GraphQL very much. So for now, our implementation here
 doesn't utilize the full feature set. A later update will solve this
 by providing an example.
-****
+
+TBD
 
 [source,erlang]
 ----

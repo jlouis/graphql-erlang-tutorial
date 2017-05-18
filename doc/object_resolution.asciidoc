@@ -54,8 +54,8 @@ The GraphQL server now does two things:
 * First, it recursively digs into the returned _Node_. It places its
   "`cursor`" on the Node and then it does <<type-resolution>> on the
   Node in order to make it concrete. This may uncover the Node is
-  really a *Starship* and then the query proceeds by executing fields
-  in the starship type. Once the recursion ends, we have constructed a
+  really a *Planet* and then the query proceeds by executing fields
+  in the planet type. Once the recursion ends, we have constructed a
   `Response` for the `node` object.
 * Next, it returns the underlying recursive response as a mapping
   `"node" => Response` and returns this for the field. Once every
@@ -78,10 +78,11 @@ make sure that recursive objects test if the data are already loaded.
 
 === Execution
 
-We start with plain field access on the *Starship* type. Our mapping
-rules have mapped `Starship => sw_core_starship` so the field handling
-lives in the module `sw_core_starship`. In general, object resolution
-is handled by a single function, `execute/4`:
+We start with plain field access on the *Planet* and *Starship* types.
+Our mapping rules have mapped `'Starship' => sw_core_starship` so the
+field handling lives in the module `sw_core_starship`. Likewise, we
+map `'Planet' => sw_core_planet` and so on. In general, object
+resolution is handled by a single function, `execute/4`:
 
 [source,erlang]
 ----
@@ -202,30 +203,31 @@ the input. But because the list is `[]` nothing happens. This can be
 used to eliminate code paths in your code by using default values for
 the data structures you are working on.
 
-=== Handling the Starship
+=== Handling Planets
 
-In our system, we have a module `sw_core_starship` which handles the
-execution parts of the starship. This module is rather typical if you
-have an object backed by a database and want to output it. The
-`execute/4` function describes how to translate the module into data
-for the client.
+In our system, we have a module `sw_core_planet` which handles the
+execution parts of planets. Planets are rather simple object in that
+most of their internals are directly mapped to an underlying Mnesia
+database. The `execute/4` function describes how the Mnesia records
+are mapped into the GraphQL world of fields the client requested.
 
-The only exported function is `execute/4` which we dissect a bit here:
+The only exported function is `execute/4` which we dissect a bit here.
+We omit some parts which are not very interesting as of now:
 
 [source,erlang]
 ----
-include::{sw_core}/src/sw_core_starship.erl[tags=starshipExecute]
+include::{sw_core}/src/sw_core_planet.erl[tags=planetExecute]
 ...
 ----
 
 In our case, since we are working with Mnesia data, we need a
 projection function to take fields out of the record and return them
 to the GraphQL system. Note that we can use this to rename fields. The
-GraphQL specifies `cargoCapacity` whereas we use the Erlang idiomatic
-internal name `cargo_capacity`.
+GraphQL specifies `rotationPeriod` whereas we use the Erlang idiomatic
+internal name `rotation_period`.
 
 If you think this is a lot of typing, you can choose to represent
-Starships as a `map()` and then the execution function is basically
+Planets as a `map()` and then the execution function is basically
 
 [source,erlang]
 ----
@@ -253,19 +255,20 @@ between the GraphQL contract and the database is.
 
 === Node Loading
 
-Our *Starship* execute function handles the case where we have a
-loaded starship and want to output its contents. But it doesn't say
-anything about how to fetch a starship from the database. This section
+Our *Planet* execute function handles the case where we have a
+loaded planet and want to output its contents. But it doesn't say
+anything about how to fetch a planet from the database. This section
 handles the loading of data from Mnesia while running GraphQL queries.
 
 The type *Query* in the GraphQL specification (see
 <<queries-and-mutations>>) contains a field `node` and a field
-`starship` which are used to load any node or a starship respectively.
-The loader is the same, and `starship` is just a specialization of the
+`planet` which are used to load any node or a planet respectively.
+The loader is the same, and `planet` is just a specialization of the
 `node` loader.
 
 Let us define the execution function for handling loading. We simply
-extract the interesting data and forward our query to a plain Erlang function:
+extract the interesting data and forward our query to a plain Erlang
+function:
 
 [source,erlang]
 ----
@@ -329,16 +332,15 @@ Suppose we look at a query such as the following
 
 [source,graphql]
 ----
-query Q {
-  node(id: "c3RhcnNoaXA6AAAAAAAAAAE=") {
-      id
-      ...StarshipFragment
+query PlanetQuery {
+  node(id: "UGxhbmV0OjI=") {
+    ...PlanetFragment
   }
 }
 
-fragment StarshipFragment on Starship {
+fragment PlanetFragment on Planet {
   name
-  model
+  climate
 }
 ----
 
@@ -356,12 +358,12 @@ Next, since the field `node` is requested, we execute the call
 [source,erlang]
 ----
 sw_core_query:execute(Ctx, Obj,
-  <<"node">>, #{ <<"id">> => <<"c3RhcnNoaXA6AAAAAAAAAAE=">> }),
+  <<"node">>, #{ <<"id">> => <<"UGxhbmV0OjI=">> }),
 ----
 
 which will execute `sw_core_db:load/2` on the Starship we requested.
-The value returned is the value `{ok, #starship{} = Ship}` for the
-starship we requested.
+The value returned is the value `{ok, #planet{} = Planet}` for the
+planet we requested.
 
 Now, because the type of the `node` field is *Node*, the system will
 know that it has loaded something of _interface_ type. Such a type is
@@ -370,18 +372,18 @@ and a call
 
 [source,erlang]
 ----
-sw_core_type:execute(#starship{} = Ship),
+sw_core_type:execute(#planet{} = Planet),
 ----
 
-is performed. This call will return `{ok, 'Starship'}` as the value.
+is performed. This call will return `{ok, 'Planet'}` as the value.
 So the system knows that it can proceed by assuming the *Node* was
-really a *Starship*.
+really a *Planet*.
 
-The cursor now moves to the starship value and this becomes the new
+The cursor now moves to the planet value and this becomes the new
 object of the query. Field resolution and fragment expansion for the
-starship object now begins. Calls to `sw_core_starship:execute/4` are
-made 3 times for the fields `id`, `name` and `model`. Our projection
-functions return values inside the starship, and this becomes part of
+planet object now begins. Calls to `sw_core_planet:execute/4` are
+made 3 times for the fields `id`, `name` and `climate`. Our projection
+functions return values inside the planet, and this becomes part of
 the GraphQL response to the client.
 
 ---
