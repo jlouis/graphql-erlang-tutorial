@@ -10,7 +10,107 @@ TBD
 
 TBD
 
+[[pagination]]
 === Pagination
 
-TBD
+The Relay Modern pagination specification
+(https://facebook.github.io/relay/graphql/connections.htm) defines how
+pagination connections and cursors are supposed to work. We have a
+simple implementation of these ideas in Erlang in this tutorial.
+
+Real world systems will benefit from having a close linkage between a
+given data source and the pagination system. You can gain lots of
+efficiency if you request data after you know what window the client
+desired. The implementation is faithful to the specification and can
+be used as a start.
+
+Furthermore, different data sources tend to provide different ways to
+paginate. An RDBMS can use the OFFSET/LIMIT pairs, or an
+time-interval column.footnote[Oracle and MS SQL Server uses different
+notions, but can achieve the same thing] Some systems provide cursors
+which can be sent with a follow-up query. And so on.
+
+In the Relay Modern specification, the cursor is a _server side_
+controlled piece of data. A client is not allowed to manipulate it.
+This allows the server to use the same pagination scheme for many
+different types of data stores. And this provides a large amount of
+flexibility.
+
+The pagination function is called as `select(Elements, Args)` where
+`Elements` is the set of edges we are paginating for, and `Args` is a
+map containing the fields `first`, `last`, `after`, and `before`. We
+expect the elements to be the full results of every eligible elements.
+This is possibly large and should be optimized in a real
+implementation. The body of the function looks like the following and
+follows the specification very closely:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_paginate.erl[tags=paginate]
+----
+<1> If the user does not supply either `first` nor `last`, then we set
+    up a default which requests the first 5 edges.
+<2> We compute the total count of elements.
+<3> If `after` or `before` is given by the user, cut the window off
+    after or before a cursor respectively. We also attach the position
+    of each element by use of `lists:zip/2`. This is later used to
+    render cursors correctly on the data.
+<4> Given the cut `Sliced` pick either the first or last `K` elements
+    in that window. Then build the map `#{ node => Edge, cursor =>
+    Cursor }` via the functin `format/1`.
+<5> Compute the `PageInfo` object.
+<6> Return the desired result as a map.
+
+.apply_cursors_to_edges/3
+
+This function cuts off a window with respect to either the `before` or
+the `after` cursor. We can handle this through pattern matching in
+Erlang:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_paginate.erl[tags=applyCursorsToEdges]
+----
+
+The function is pretty straightforward, since the cursor contains the
+position at which to cut. So we can simply split the element list at
+the right point and return it.
+
+.edges_to_return/3
+
+This function evaluates the `first` and `last` parameters and only
+returns the first/last `K` elements of the cut-off window. It follows
+a simple scheme:
+
+* If given first, we compare the size of the window to the desired
+  number of elements. We then limit the window to the correct amount
+  of elements.
+* If given last, we rewrite the task so it looks as if it were a
+  first-type task. Then we execute this task--finally rewriting back
+  to the original form
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_paginate.erl[tags=edgesToReturn]
+----
+
+.PageInfo object
+
+To build up the PageInfo object, we use the following small helpers
+function which will determine if there is more elements after the
+window in either direction. They closely follow the specification:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_paginate.erl[tags=pageInfo]
+----
+
+.Packing cursors
+
+A cursor in this setup is the base64 encoding of the position:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_paginate.erl[tags=packCursor]
+----
 

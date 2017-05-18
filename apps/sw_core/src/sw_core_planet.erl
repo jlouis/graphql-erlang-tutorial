@@ -15,6 +15,7 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
         <<"diameter">> -> {ok, Planet#planet.diameter};
         <<"rotationPeriod">> -> {ok, Planet#planet.rotation_period};
 %% end::planetExecute[]
+
         <<"filmConnection">> ->
             Txn = fun() ->
                           QH = qlc:q([F || F <- mnesia:table(film),
@@ -23,6 +24,7 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
                   end,
             {atomic, Films} = mnesia:transaction(Txn),
             sw_core_paginate:select(Films, Args);
+%% tag::residentConnection[]
         <<"residentConnection">> ->
             Txn = fun() ->
                           QH = qlc:q([P || P <- mnesia:table(person),
@@ -31,6 +33,7 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
                   end,
             {atomic, People} = mnesia:transaction(Txn),
             sw_core_paginate:select(People, Args);
+%% end::residentConnection[]
         <<"created">> -> {ok, Planet#planet.created};
         <<"terrain">> -> {ok, Planet#planet.terrain};
         <<"gravity">> -> {ok, Planet#planet.gravity};

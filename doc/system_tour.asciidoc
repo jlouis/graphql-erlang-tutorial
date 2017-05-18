@@ -124,6 +124,148 @@ query-structure.
 
 === More advanced queries
 
+Let us look at a far more intricate query. In this query, we will also
+request a planet, but then we will ask "`what films does this planet
+appear in?`" and we will ask "`Who are the residents on the
+planet?`"--who has the planet as their homeworld?.
+
+To do this, we use pagination. We ask for the first 2 films and the
+first 3 residents. We also ask for the relevant meta-data of the
+connections as we are here:
+
+[source,graphql]
+----
+query Q {
+  node(id:"UGxhbmV0OjE=") {
+    ... on Planet {
+      id
+      name
+      climate
+      filmConnection(first: 2) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...Films
+          }
+          cursor
+        }
+      }
+      residentConnection(first: 3) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...Residents
+          }
+          cursor
+        }
+      }
+    }
+  }
+}
+
+fragment Films on Film {
+  id
+  title
+  director
+}
+
+fragment Residents on Person {
+  id
+  name
+  gender
+}
+----
+
+The `fragment` parts allows your queries to re-use different subsets
+of a larger query again and again. We use this here to show off that
+capability of GraphQL. The result follows the structure of the query:
+
+[source,json]
+----
+{
+  "data": {
+    "node": {
+      "climate": "arid",
+      "filmConnection": {
+        "edges": [
+          {
+            "cursor": "MQ==",
+            "node": {
+              "director": "George Lucas",
+              "id": "RmlsbTox",
+              "title": "A New Hope"
+            }
+          },
+          {
+            "cursor": "Mg==",
+            "node": {
+              "director": "Richard Marquand",
+              "id": "RmlsbToz",
+              "title": "Return of the Jedi"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "totalCount": 5
+      },
+      "id": "UGxhbmV0OjE=",
+      "name": "Tatooine",
+      "residentConnection": {
+        "edges": [
+          {
+            "cursor": "MQ==",
+            "node": {
+              "gender": "n/a",
+              "id": "UGVyc29uOjg=",
+              "name": "R5-D4"
+            }
+          },
+          {
+            "cursor": "Mg==",
+            "node": {
+              "gender": "male",
+              "id": "UGVyc29uOjEx",
+              "name": "Anakin Skywalker"
+            }
+          },
+          {
+            "cursor": "Mw==",
+            "node": {
+              "gender": "male",
+              "id": "UGVyc29uOjE=",
+              "name": "Luke Skywalker"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "totalCount": 10
+      }
+    }
+  }
+}
+----
+
+=== Mutations
+
 TBD
 
+=== This tutorial
 
+This tutorial will tell you how to create your own system which can
+satisfy queries as complex and complicated as the examples we just
+provided. It will explain the different parts of the GraphQL system
+and how you achieve the above.

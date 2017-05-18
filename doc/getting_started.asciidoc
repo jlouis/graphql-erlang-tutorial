@@ -262,6 +262,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=populatingTables]
 This creates a fixture in the database such that when we boot the
 database, the planets, transports, people, ..., will be present in the
 mnesia database when we boot the system.
+
 === Creating a FALLBACK for the database
 
 Once we have run the schema creation routine, a file called

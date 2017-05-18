@@ -322,6 +322,81 @@ transaction code and just do a dirty read. For this example though, we
 keep things straight and use transactions all over the place to make
 the interface more consistent.
 
+[[walking-in-the-graph]]
+=== Walking in the Graph
+
+The specification of a Planet contains a field `residentConnection`
+which links the planet to the residents on the planet. To handle such
+a link in the code, we begin by implementing the code that tells GraphQL
+how to render a *Person*. It follows the same structure as a Planet
+from above, and there is little new stuff in those parts.
+
+In the object resolution for the *Planet* we must perform a query in
+Mnesia to obtain the relevant persons and then build up the correct
+pagination structure.
+
+[source,erlang]
+----
+execute(_, _, Field, _) ->
+    case Field of
+        ...;
+include::{sw_core}/src/sw_core_planet.erl[tags=residentConnection]
+----
+
+We set up a Mnesia transaction through QLC, and then we look for the
+people whose homeworld matches our desired Planet ID. Once we have
+loaded all such people, we pass them to the pagination system
+which slices the data according to the clients specification.
+
+NOTE: Our implementation here is inefficient since it loads every
+matching *Person* and _then_ slices it down to the pagination window.
+A better way to handle this in a real system would be to ask the
+database for the total count and then figure out what the offset and
+limit parameters should be to the database. This allows you to request
+the window only, which is far more efficient. Real implementations
+often bake the pagination into the data fetching in order to achieve
+this.
+
+The pagination here follows the Relay Modern specification for
+paginations and is described in the section <<pagination>>.
+
+=== Default Mapping
+
+The module `sw_core_object` contains a _default mapping_ which is the
+`execute/4` function used for any object that isn't overridden by a
+more specific mapping rule. The implementation is sinisterly simple:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_object.erl[]
+----
+
+The default mapper assumes it is given a `map()` type and then it
+looks inside that map for fields. This is convenient because you will
+have lots of output types which are plain and simple. You don't want
+to invent a specific record for such an object, nor do you want to
+tedium of writing an `execute/4` function for all of them.
+
+As an example the `residentConnection` field we just handled in
+<<walking-in-the-graph>> returns an object of type
+`ResidentsConnection`. The pagination engine returns a `map()` which
+happens to contain precisely the fields of a `ResidentsConnection`.
+The default mapper then takes care of everything else if the user
+requests fields inside the `ResidentsConnection`.
+
+TIP: You can freely intermingle different representations of objects
+on the server side like this example, where we mix `#person{}` records
+as well as `map()`'s. This is due to the fact that no value is
+returned from GraphQL "`as is`" but always goes through some
+`execute/4` function in some module. Exploit this fact to make it
+easier to write your own code.
+
+=== Resolving lists
+
+TBD
+
+* Return format of list-like values
+
 === Anatomy of a query
 
 We now turn our attention to the notion of executing a query. It is

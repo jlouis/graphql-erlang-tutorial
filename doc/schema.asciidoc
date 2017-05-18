@@ -113,6 +113,8 @@ include::{sw_core}/priv/sw.schema[tags=planetObject]
 [[queries-and-mutations]]
 === Queries & Mutations
 
+==== Query Object
+
 All GraphQL queries are either a _query_ or a _mutation_.footnote:[The
 spec has toyed with the idea of adding more classes in additon to
 queries and mutations. Most notably the concept of a _subscription_]
@@ -155,6 +157,10 @@ query StarShipQuery($id : ID!) {
     }
 }
 ----
+
+==== Mutation Object
+
+TBD
 
 === Input objects
 

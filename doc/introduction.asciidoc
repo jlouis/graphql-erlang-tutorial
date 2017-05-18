@@ -106,3 +106,9 @@ MIT 2.0
 ----
 Copyright (c) 2016-2017, Shopgun Aps
 ----
+
+=== Acknowledgements
+
+* Everyone involved in the Star Wars API. We use that data extensively.
+* The GraphQL people who did an excellent job at answering questions and   provided us with a well-written specification.
+* Josh Price. The parser was derived from his initial work though it has   been changed a lot since the initial commit.
