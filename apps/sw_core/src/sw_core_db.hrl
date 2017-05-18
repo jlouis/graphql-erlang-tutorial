@@ -97,3 +97,4 @@
          vehicle_class :: binary(),
          pilots :: [integer()]}).
 
+-record(sequences, {key, value}).

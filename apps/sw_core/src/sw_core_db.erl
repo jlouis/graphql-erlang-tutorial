@@ -2,6 +2,7 @@
 
 -include("sw_core_db.hrl").
 -export([load/2]).
+-export([wait_for_tables/0]).
 
 -export([create_schema/0]).
 
@@ -10,6 +11,12 @@ record_of('Starship') -> starship;
 record_of('Planet') -> planet;
 record_of('Species') -> species.
 %% end::recordOf[]
+
+wait_for_tables() ->
+    Tables = [starship, transport, film,
+              species, person, planet, vehicle]
+        ++ [sequences],
+    mnesia:wait_for_tables(Tables, 5000).
 
 %% tag::load[]
 load(Type, ID) ->
@@ -86,6 +93,12 @@ create_tables() ->
           [{disc_copies, [node()]},
            {type, set},
            {attributes, record_info(fields, vehicle)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          sequences,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, sequences)}]),
     ok.
 
 %% tag::populatingTables[]
@@ -102,6 +115,7 @@ populate_tables() ->
     populate("fixtures/people.json", fun populate_people/1),
     populate("fixtures/planets.json", fun populate_planets/1),
     populate("fixtures/vehicles.json", fun populate_vehicles/1),
+    setup_sequences(),
     ok.
 %% end::populatingTables[]
 
@@ -115,6 +129,13 @@ populate_transports(Ts) ->
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
 %% end::populateTransports[]
+
+setup_sequences() ->
+    Txn = fun() ->
+                  mnesia:write(#sequences { key = transport, value = 1000 })
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.
 
 populate_starships(Terms) ->
     Films = [json_to_starship(T) || T <- Terms],

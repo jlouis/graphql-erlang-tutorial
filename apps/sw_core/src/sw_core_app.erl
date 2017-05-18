@@ -17,6 +17,7 @@
 start(_StartType, _StartArgs) ->
     {ok, Pid} = sw_core_sup:start_link(),
     ok = load_schema(),
+    ok = sw_core_db:wait_for_tables(),
     {ok, Pid}.
 
 %%--------------------------------------------------------------------
