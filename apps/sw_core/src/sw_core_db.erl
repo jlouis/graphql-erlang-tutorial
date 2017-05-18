@@ -121,9 +121,9 @@ populate_tables() ->
 
 %% tag::populateTransports[]
 populate_transports(Ts) ->
-    Starships = [json_to_transport(T) || T <- Ts],
+    Transports = [json_to_transport(T) || T <- Ts],
     Txn = fun() ->
-                [mnesia:write(S) || S <- Starships],
+                [mnesia:write(S) || S <- Transports],
                 ok
           end,
     {atomic, ok} = mnesia:transaction(Txn),
@@ -138,9 +138,9 @@ setup_sequences() ->
     ok.
 
 populate_starships(Terms) ->
-    Films = [json_to_starship(T) || T <- Terms],
+    Starships = [json_to_starship(T) || T <- Terms],
     Txn = fun() ->
-                  [mnesia:write(F) || F <- Films],
+                  [mnesia:write(F) || F <- Starships],
                   ok
           end,
     {atomic, ok} = mnesia:transaction(Txn),
