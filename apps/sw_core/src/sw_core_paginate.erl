@@ -4,16 +4,13 @@
 
 -define(DEFAULT_FIRST, 5).
 
-select(Elements, Window) ->
+select(Elements, Args) ->
     try
-        {ok, select_(Elements, Window)}
+        {ok, select_(Elements, Args)}
     catch
         throw:Err ->
             {error, Err}
     end.
-
-defaults(null, null) -> {?DEFAULT_FIRST, null};
-defaults(F, L) -> {F, L}.
 
 select_(Elements,
          #{ <<"first">> := F,
@@ -37,6 +34,10 @@ select_(Elements,
        <<"pageInfo">> => PageInfo
      }.
 
+defaults(null, null) -> {?DEFAULT_FIRST, null};
+defaults(F, L) -> {F, L}.
+
+
 has_previous(_Sliced, null) -> false;
 has_previous(Sliced, Last) -> length(Sliced) > Last.
     
@@ -52,9 +53,10 @@ format([{Elem, Pos}|Xs]) ->
 edges_to_return(First, null, Window) ->
     Sz = length(Window),
     case Sz - First of
-        0 -> Window;
-        K when K < 0 -> Window;
-        K when K > 0 -> lists:split(First, Window)
+        K when K =< 0 -> Window;
+        K when K > 0 ->
+            {Res, _} = lists:split(First, Window),
+            Res
     end;
 edges_to_return(null, Last, Window) ->
     %% Simple "conjugate"

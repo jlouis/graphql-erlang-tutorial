@@ -5,7 +5,7 @@
 -export([execute/4]).
 
 %% tag::planetExecute[]
-execute(_Ctx, Planet, Field, Args) ->
+execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
     case Field of
         <<"id">> -> {ok, sw_core_id:encode({'Planet', Planet#planet.id})};
         <<"edited">> -> {ok, Planet#planet.edited};
@@ -16,16 +16,21 @@ execute(_Ctx, Planet, Field, Args) ->
         <<"rotationPeriod">> -> {ok, Planet#planet.rotation_period};
 %% end::planetExecute[]
         <<"filmConnection">> ->
-            Id = Planet#planet.id,
             Txn = fun() ->
                           QH = qlc:q([F || F <- mnesia:table(film),
-                                           lists:member(Id, F#film.planets)]),
+                                           lists:member(PlanetId, F#film.planets)]),
                           qlc:e(QH)
                   end,
             {atomic, Films} = mnesia:transaction(Txn),
-            R = sw_core_paginate:select(Films, Args),
-            lager:warning("~p", [R]),
-            R;
+            sw_core_paginate:select(Films, Args);
+        <<"residentConnection">> ->
+            Txn = fun() ->
+                          QH = qlc:q([P || P <- mnesia:table(person),
+                                           P#person.homeworld == PlanetId]),
+                          qlc:e(QH)
+                  end,
+            {atomic, People} = mnesia:transaction(Txn),
+            sw_core_paginate:select(People, Args);
         <<"created">> -> {ok, Planet#planet.created};
         <<"terrain">> -> {ok, Planet#planet.terrain};
         <<"gravity">> -> {ok, Planet#planet.gravity};

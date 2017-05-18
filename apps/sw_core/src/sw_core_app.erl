@@ -37,6 +37,7 @@ mapping_rules() ->
          'Planet' => sw_core_planet,
          'Starship' => sw_core_starship,
          'Film' => sw_core_film,
+         'Person' => sw_core_person,
          'Query' => sw_core_query,
          'Mutation' => sw_core_mutation,
          default => sw_core_object }

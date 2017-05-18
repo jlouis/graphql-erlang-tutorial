@@ -100,11 +100,30 @@ type Planet implements Node {
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : PlanetFilmsConnection
+  residentConnection(after: String, first: Int,
+                     before: String, last: Int)
+    : PlanetResidentsConnection
   created : String
   edited : String
   id : ID!
 }
 # end::planetObject[]
+
+type Person implements Node {
+  name : String
+  birthYear : String
+  eyeColor : String
+  gender : String
+  hairColor : String
+  height : Int
+  mass : Float
+  skinColor : String
+  homeworld : Planet
+  species : Species
+  created : String
+  edited : String
+  id : ID!
+}
 
 # tag::queryObject[]
 type Query {
@@ -131,6 +150,17 @@ type PlanetFilmsConnection {
 
 type PlanetFilmsEdge {
   node : Film
+  cursor : String!
+}
+
+type PlanetResidentsConnection {
+  pageInfo : PageInfo!
+  edges : [PlanetResidentsEdge]
+  totalCount : Int
+}
+
+type PlanetResidentsEdge {
+  node : Person
   cursor : String!
 }
 

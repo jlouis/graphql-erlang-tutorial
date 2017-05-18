@@ -9,6 +9,7 @@
 %% tag::recordOf[]
 record_of('Starship') -> starship;
 record_of('Planet') -> planet;
+record_of('Person') -> person;
 record_of('Species') -> species;
 record_of('Film') -> film.
 %% end::recordOf[]
