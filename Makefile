@@ -1,6 +1,6 @@
 REBAR=rebar3
 
-.PHONY: compile shell-schema release dialyzer
+.PHONY: compile shell-schema release dialyzer publish documentation
 
 compile:
 	$(REBAR) compile
@@ -22,6 +22,12 @@ release:
 dialyzer:
 	$(REBAR) dialyzer
 
-documentation:
+DOC_SOURCES = $(wildcard doc/*.asciidoc)
+doc/book.html: $(DOC_SOURCES)
 	asciidoctor doc/book.asciidoc
 
+index.html: doc/book.html
+	cp doc/book.html index.html
+
+documentation: doc/book.html
+publish: index.html

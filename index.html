@@ -441,13 +441,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_supported_platforms">Supported Platforms</a></li>
 <li><a href="#_comments_contact">Comments &amp; Contact</a></li>
 <li><a href="#_license">License</a></li>
+<li><a href="#_acknowledgements">Acknowledgements</a></li>
 </ul>
 </li>
-<li><a href="#why_graphql">Why GraphQL</a></li>
+<li><a href="#_why_graphql">Why GraphQL</a></li>
 <li><a href="#system-tour">System Tour</a>
 <ul class="sectlevel2">
 <li><a href="#_first_query">First query</a></li>
 <li><a href="#_more_advanced_queries">More advanced queries</a></li>
+<li><a href="#_mutations">Mutations</a></li>
+<li><a href="#_this_tutorial">This tutorial</a></li>
 </ul>
 </li>
 <li><a href="#getting_started">Getting Started</a>
@@ -461,6 +464,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_setting_up_an_initial_mnesia_schema">Setting up an initial mnesia schema</a></li>
 <li><a href="#_populating_the_database">Populating the database</a></li>
+<li><a href="#_creating_a_fallback_for_the_database">Creating a FALLBACK for the database</a></li>
 </ul>
 </li>
 <li><a href="#schema">GraphQL Schema</a>
@@ -487,6 +491,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#input-argument-rules">Input argument rules</a></li>
 <li><a href="#_handling_planets">Handling Planets</a></li>
 <li><a href="#_node_loading">Node Loading</a></li>
+<li><a href="#walking-in-the-graph">Walking in the Graph</a></li>
+<li><a href="#_default_mapping">Default Mapping</a></li>
+<li><a href="#_resolving_lists">Resolving lists</a></li>
 <li><a href="#_anatomy_of_a_query">Anatomy of a query</a></li>
 </ul>
 </li>
@@ -501,7 +508,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_node_interface">Node Interface</a></li>
 <li><a href="#_inputs_payloads">Inputs &amp; Payloads</a></li>
-<li><a href="#_pagination">Pagination</a></li>
+<li><a href="#pagination">Pagination</a></li>
 </ul>
 </li>
 <li><a href="#_security">Security</a>
@@ -731,10 +738,26 @@ other repositories, infecting them with the same mistakes.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_acknowledgements">Acknowledgements</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Everyone involved in the Star Wars API. We use that data extensively.</p>
+</li>
+<li>
+<p>The GraphQL people who did an excellent job at answering questions and   provided us with a well-written specification.</p>
+</li>
+<li>
+<p>Josh Price. The parser was derived from his initial work though it has   been changed a lot since the initial commit.</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="why_graphql">Why GraphQL</h2>
+<h2 id="_why_graphql">Why GraphQL</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>A worthy question to ask is &#8220;Why GraphQL?&#8221;</p>
@@ -991,7 +1014,157 @@ query-structure.</p>
 <div class="sect2">
 <h3 id="_more_advanced_queries">More advanced queries</h3>
 <div class="paragraph">
+<p>Let us look at a far more intricate query. In this query, we will also
+request a planet, but then we will ask &#8220;what films does this planet
+appear in?&#8221; and we will ask &#8220;Who are the residents on the
+planet?&#8221;--who has the planet as their homeworld?.</p>
+</div>
+<div class="paragraph">
+<p>To do this, we use pagination. We ask for the first 2 films and the
+first 3 residents. We also ask for the relevant meta-data of the
+connections as we are here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query Q {
+  node(id:"UGxhbmV0OjE=") {
+    ... on Planet {
+      id
+      name
+      climate
+      filmConnection(first: 2) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...Films
+          }
+          cursor
+        }
+      }
+      residentConnection(first: 3) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...Residents
+          }
+          cursor
+        }
+      }
+    }
+  }
+}
+
+fragment Films on Film {
+  id
+  title
+  director
+}
+
+fragment Residents on Person {
+  id
+  name
+  gender
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>fragment</code> parts allows your queries to re-use different subsets
+of a larger query again and again. We use this here to show off that
+capability of GraphQL. The result follows the structure of the query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-json" data-lang="json">{
+  "data": {
+    "node": {
+      "climate": "arid",
+      "filmConnection": {
+        "edges": [
+          {
+            "cursor": "MQ==",
+            "node": {
+              "director": "George Lucas",
+              "id": "RmlsbTox",
+              "title": "A New Hope"
+            }
+          },
+          {
+            "cursor": "Mg==",
+            "node": {
+              "director": "Richard Marquand",
+              "id": "RmlsbToz",
+              "title": "Return of the Jedi"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "totalCount": 5
+      },
+      "id": "UGxhbmV0OjE=",
+      "name": "Tatooine",
+      "residentConnection": {
+        "edges": [
+          {
+            "cursor": "MQ==",
+            "node": {
+              "gender": "n/a",
+              "id": "UGVyc29uOjg=",
+              "name": "R5-D4"
+            }
+          },
+          {
+            "cursor": "Mg==",
+            "node": {
+              "gender": "male",
+              "id": "UGVyc29uOjEx",
+              "name": "Anakin Skywalker"
+            }
+          },
+          {
+            "cursor": "Mw==",
+            "node": {
+              "gender": "male",
+              "id": "UGVyc29uOjE=",
+              "name": "Luke Skywalker"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "totalCount": 10
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mutations">Mutations</h3>
+<div class="paragraph">
 <p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_this_tutorial">This tutorial</h3>
+<div class="paragraph">
+<p>This tutorial will tell you how to create your own system which can
+satisfy queries as complex and complicated as the examples we just
+provided. It will explain the different parts of the GraphQL system
+and how you achieve the above.</p>
 </div>
 </div>
 </div>
@@ -1418,9 +1591,11 @@ populate_tables() -&gt;
 <div class="paragraph">
 <p>This creates a fixture in the database such that when we boot the
 database, the planets, transports, people, &#8230;&#8203;, will be present in the
-mnesia database when we boot the system.
-=== Creating a FALLBACK for the database</p>
+mnesia database when we boot the system.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_fallback_for_the_database">Creating a FALLBACK for the database</h3>
 <div class="paragraph">
 <p>Once we have run the schema creation routine, a file called
 <code>FALLBACK.BUP</code> is created. We copy this to the database base core in
@@ -1642,6 +1817,8 @@ documentation on each field to a fine detail.</p>
 </div>
 <div class="sect2">
 <h3 id="queries-and-mutations">Queries &amp; Mutations</h3>
+<div class="sect3">
+<h4 id="_query_object">Query Object</h4>
 <div class="paragraph">
 <p>All GraphQL queries are either a <em>query</em> or a <em>mutation</em>.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>
 Correspondingly, the schema specification contains entries for two
@@ -1699,6 +1876,13 @@ which fields we want to grab inside the starship:</p>
        }
     }
 }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_mutation_object">Mutation Object</h4>
+<div class="paragraph">
+<p>TBD</p>
 </div>
 </div>
 </div>
@@ -1839,6 +2023,7 @@ handling that particular schema type.</p>
          'Planet' =&gt; sw_core_planet,
          'Starship' =&gt; sw_core_starship,
          'Film' =&gt; sw_core_film,
+         'Person' =&gt; sw_core_person,
          'Query' =&gt; sw_core_query,
          'Mutation' =&gt; sw_core_mutation,
          default =&gt; sw_core_object }
@@ -2111,10 +2296,13 @@ resolve the type in the Graph of those objects (file: <code>sw_core_type.erl</co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(#starship{}) -&gt; {ok, 'Starship'};
-execute(#planet{}) -&gt; {ok, 'Planet'};
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(#film{}) -&gt; {ok, 'Film'};
 execute(#person{}) -&gt; {ok, 'Person'};
-execute(#film{}) -&gt; {ok, 'Film'};
+execute(#planet{}) -&gt; {ok, 'Planet'};
+execute(#species{}) -&gt; {ok, 'Species'};
+execute(#starship{}) -&gt; {ok, 'Starship'};
+execute(#transport{}) -&gt; {ok, 'Transport'};
+execute(#vehicle{}) -&gt; {ok, 'Vehicle'};
 execute(_Otherwise) -&gt; {error, unknown_type}.</code></pre>
 </div>
 </div>
@@ -2578,11 +2766,13 @@ to in the database</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">record_of('Starship') -&gt; starship;
-record_of('Planet') -&gt; planet;
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">record_of('Film') -&gt; film;
 record_of('Person') -&gt; person;
+record_of('Planet') -&gt; planet;
 record_of('Species') -&gt; species;
-record_of('Film') -&gt; film.</code></pre>
+record_of('Starship') -&gt; starship;
+record_of('Transport') -&gt; transport;
+record_of('Vehicle') -&gt; vehicle.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2625,6 +2815,129 @@ transaction code and just do a dirty read. For this example though, we
 keep things straight and use transactions all over the place to make
 the interface more consistent.</p>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="walking-in-the-graph">Walking in the Graph</h3>
+<div class="paragraph">
+<p>The specification of a Planet contains a field <code>residentConnection</code>
+which links the planet to the residents on the planet. To handle such
+a link in the code, we begin by implementing the code that tells GraphQL
+how to render a <strong>Person</strong>. It follows the same structure as a Planet
+from above, and there is little new stuff in those parts.</p>
+</div>
+<div class="paragraph">
+<p>In the object resolution for the <strong>Planet</strong> we must perform a query in
+Mnesia to obtain the relevant persons and then build up the correct
+pagination structure.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_, _, Field, _) -&gt;
+    case Field of
+        ...;
+        &lt;&lt;"residentConnection"&gt;&gt; -&gt;
+            Txn = fun() -&gt;
+                          QH = qlc:q([P || P &lt;- mnesia:table(person),
+                                           P#person.homeworld == PlanetId]),
+                          qlc:e(QH)
+                  end,
+            {atomic, People} = mnesia:transaction(Txn),
+            sw_core_paginate:select(People, Args);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We set up a Mnesia transaction through QLC, and then we look for the
+people whose homeworld matches our desired Planet ID. Once we have
+loaded all such people, we pass them to the pagination system
+which slices the data according to the clients specification.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Our implementation here is inefficient since it loads every
+matching <strong>Person</strong> and <em>then</em> slices it down to the pagination window.
+A better way to handle this in a real system would be to ask the
+database for the total count and then figure out what the offset and
+limit parameters should be to the database. This allows you to request
+the window only, which is far more efficient. Real implementations
+often bake the pagination into the data fetching in order to achieve
+this.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The pagination here follows the Relay Modern specification for
+paginations and is described in the section <a href="#pagination">Pagination</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_mapping">Default Mapping</h3>
+<div class="paragraph">
+<p>The module <code>sw_core_object</code> contains a <em>default mapping</em> which is the
+<code>execute/4</code> function used for any object that isn&#8217;t overridden by a
+more specific mapping rule. The implementation is sinisterly simple:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-module(sw_core_object).
+-export([execute/4]).
+
+%% Assume we are given a map(). Look up the field in the map. If not
+%% present, return the value null.
+execute(_Ctx, Obj, Field, _Args) -&gt;
+    {ok, maps:get(Field, Obj, null)}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default mapper assumes it is given a <code>map()</code> type and then it
+looks inside that map for fields. This is convenient because you will
+have lots of output types which are plain and simple. You don&#8217;t want
+to invent a specific record for such an object, nor do you want to
+tedium of writing an <code>execute/4</code> function for all of them.</p>
+</div>
+<div class="paragraph">
+<p>As an example the <code>residentConnection</code> field we just handled in
+<a href="#walking-in-the-graph">Walking in the Graph</a> returns an object of type
+<code>ResidentsConnection</code>. The pagination engine returns a <code>map()</code> which
+happens to contain precisely the fields of a <code>ResidentsConnection</code>.
+The default mapper then takes care of everything else if the user
+requests fields inside the <code>ResidentsConnection</code>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can freely intermingle different representations of objects
+on the server side like this example, where we mix <code>#person{}</code> records
+as well as <code>map()&#8217;s. This is due to the fact that no value is
+returned from GraphQL &#8220;as is&#8221; but always goes through some
+`execute/4</code> function in some module. Exploit this fact to make it
+easier to write your own code.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resolving_lists">Resolving lists</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Return format of list-like values</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -3441,9 +3754,192 @@ about a particular query which doesn&#8217;t operate as expected.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_pagination">Pagination</h3>
+<h3 id="pagination">Pagination</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>The Relay Modern pagination specification
+(<a href="https://facebook.github.io/relay/graphql/connections.htm" class="bare">https://facebook.github.io/relay/graphql/connections.htm</a>) defines how
+pagination connections and cursors are supposed to work. We have a
+simple implementation of these ideas in Erlang in this tutorial.</p>
+</div>
+<div class="paragraph">
+<p>Real world systems will benefit from having a close linkage between a
+given data source and the pagination system. You can gain lots of
+efficiency if you request data after you know what window the client
+desired. The implementation is faithful to the specification and can
+be used as a start.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, different data sources tend to provide different ways to
+paginate. An RDBMS can use the OFFSET/LIMIT pairs, or an
+time-interval column.footnote[Oracle and MS SQL Server uses different
+notions, but can achieve the same thing] Some systems provide cursors
+which can be sent with a follow-up query. And so on.</p>
+</div>
+<div class="paragraph">
+<p>In the Relay Modern specification, the cursor is a <em>server side</em>
+controlled piece of data. A client is not allowed to manipulate it.
+This allows the server to use the same pagination scheme for many
+different types of data stores. And this provides a large amount of
+flexibility.</p>
+</div>
+<div class="paragraph">
+<p>The pagination function is called as <code>select(Elements, Args)</code> where
+<code>Elements</code> is the set of edges we are paginating for, and <code>Args</code> is a
+map containing the fields <code>first</code>, <code>last</code>, <code>after</code>, and <code>before</code>. We
+expect the elements to be the full results of every eligible elements.
+This is possibly large and should be optimized in a real
+implementation. The body of the function looks like the following and
+follows the specification very closely:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">select_(Elements,
+         #{ &lt;&lt;"first"&gt;&gt; := F,
+            &lt;&lt;"last"&gt;&gt; := L,
+            &lt;&lt;"after"&gt;&gt; := After,
+            &lt;&lt;"before"&gt;&gt; := Before }) -&gt;
+    {First, Last} = defaults(F, L), % <i class="conum" data-value="1"></i><b>(1)</b>
+    Count = length(Elements), % <i class="conum" data-value="2"></i><b>(2)</b>
+
+    %% applyCursorsToEdges <i class="conum" data-value="3"></i><b>(3)</b>
+    Positions = lists:seq(1, Count),
+    Sliced = apply_cursors_to_edges(After, Before,
+                                    lists:zip(Elements, Positions)),
+    Window = edges_to_return(First, Last, Sliced), % <i class="conum" data-value="4"></i><b>(4)</b>
+    Edges = format(Window),
+
+    %% Build PageInfo <i class="conum" data-value="5"></i><b>(5)</b>
+    PageInfo = #{
+      &lt;&lt;"hasNextPage"&gt;&gt; =&gt; has_next(Sliced, First),
+      &lt;&lt;"hasPreviousPage"&gt;&gt; =&gt; has_previous(Sliced, Last)
+     },
+
+    %% Return result <i class="conum" data-value="6"></i><b>(6)</b>
+    #{
+       &lt;&lt;"totalCount"&gt;&gt; =&gt; Count,
+       &lt;&lt;"edges"&gt;&gt; =&gt; Edges,
+       &lt;&lt;"pageInfo"&gt;&gt; =&gt; PageInfo
+     }.</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>If the user does not supply either <code>first</code> nor <code>last</code>, then we set
+up a default which requests the first 5 edges.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>We compute the total count of elements.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If <code>after</code> or <code>before</code> is given by the user, cut the window off
+after or before a cursor respectively. We also attach the position
+of each element by use of <code>lists:zip/2</code>. This is later used to
+render cursors correctly on the data.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Given the cut <code>Sliced</code> pick either the first or last <code>K</code> elements
+in that window. Then build the map <code>#{ node &#8658; Edge, cursor &#8658;
+Cursor }</code> via the functin <code>format/1</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Compute the <code>PageInfo</code> object.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Return the desired result as a map.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<div class="title">apply_cursors_to_edges/3</div>
+<p>This function cuts off a window with respect to either the <code>before</code> or
+the <code>after</code> cursor. We can handle this through pattern matching in
+Erlang:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">apply_cursors_to_edges(null, null, Elements) -&gt;
+    Elements;
+apply_cursors_to_edges(null, Before, Elements) -&gt;
+    Pos = unpack_cursor(Before),
+    {Res,_} = lists:split(Pos, Elements),
+    apply_cursors_to_edges(null, null, Res);
+apply_cursors_to_edges(After, Before, Elements) -&gt;
+    Pos = unpack_cursor(After),
+    {_, Res} = lists:split(Pos, Elements),
+    apply_cursors_to_edges(null, Before, Res).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The function is pretty straightforward, since the cursor contains the
+position at which to cut. So we can simply split the element list at
+the right point and return it.</p>
+</div>
+<div class="paragraph">
+<div class="title">edges_to_return/3</div>
+<p>This function evaluates the <code>first</code> and <code>last</code> parameters and only
+returns the first/last <code>K</code> elements of the cut-off window. It follows
+a simple scheme:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If given first, we compare the size of the window to the desired
+number of elements. We then limit the window to the correct amount
+of elements.</p>
+</li>
+<li>
+<p>If given last, we rewrite the task so it looks as if it were a
+first-type task. Then we execute this task&#8212;&#8203;finally rewriting back
+to the original form</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">edges_to_return(First, null, Window) -&gt;
+    Sz = length(Window),
+    case Sz - First of
+        K when K =&lt; 0 -&gt; Window;
+        K when K &gt; 0 -&gt;
+            {Res, _} = lists:split(First, Window),
+            Res
+    end;
+edges_to_return(null, Last, Window) -&gt;
+    lists:reverse(
+      edges_to_return(Last, null, lists:reverse(Window))).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">PageInfo object</div>
+<p>To build up the PageInfo object, we use the following small helpers
+function which will determine if there is more elements after the
+window in either direction. They closely follow the specification:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">has_previous(_Sliced, null) -&gt; false;
+has_previous(Sliced, Last) -&gt; length(Sliced) &gt; Last.
+
+has_next(_Sliced, null) -&gt; false;
+has_next(Sliced, First) -&gt; length(Sliced) &gt; First.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Packing cursors</div>
+<p>A cursor in this setup is the base64 encoding of the position:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">pack_cursor(Pos) -&gt;
+    base64:encode(integer_to_binary(Pos)).</code></pre>
+</div>
 </div>
 </div>
 </div>
