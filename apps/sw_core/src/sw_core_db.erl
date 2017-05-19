@@ -7,11 +7,13 @@
 -export([create_schema/0]).
 
 %% tag::recordOf[]
-record_of('Starship') -> starship;
-record_of('Planet') -> planet;
+record_of('Film') -> film;
 record_of('Person') -> person;
+record_of('Planet') -> planet;
 record_of('Species') -> species;
-record_of('Film') -> film.
+record_of('Starship') -> starship;
+record_of('Transport') -> transport;
+record_of('Vehicle') -> vehicle.
 %% end::recordOf[]
 
 tables() ->

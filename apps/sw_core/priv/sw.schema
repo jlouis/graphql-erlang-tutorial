@@ -52,7 +52,7 @@ type Starship implements Node {
 }
 
 # tag::filmObject[]
-type Film {
+type Film implements Node {
   title : String
   episodeID : Int
   openingCrawl : String
@@ -62,6 +62,12 @@ type Film {
   speciesConnection(after: String, first: Int,
                     before: String, last: Int)
     : FilmSpeciesConnection
+  planetConnection(after: String, first: Int,
+                   before: String, last: Int)
+    : FilmPlanetConnection
+  characterConnection(after: String, first: Int,
+                      before: String, last: Int)
+    : FilmCharactersConnection
   created : String
   edited : String
   id : ID!
@@ -175,3 +181,26 @@ type FilmSpeciesEdge {
   node : Species
   cursor : String!
 }
+
+type FilmPlanetConnection {
+  pageInfo : PageInfo!
+  edges : [FilmPlanetEdge]
+  totalCount : Int
+}
+
+type FilmPlanetEdge {
+  node : Planet
+  cursor : String!
+}
+
+type FilmCharactersConnection {
+  pageInfo : PageInfo!
+  edges : [FilmCharactersEdge]
+  totalCount : Int
+}
+
+type FilmCharactersEdge {
+  node : Person
+  cursor : String!
+}
+
