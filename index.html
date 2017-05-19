@@ -1,0 +1,4011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.5">
+<meta name="author" content="Jesper Louis Andersen, Martin Gausby, Shopgun Aps">
+<title>Erlang GraphQL Tutorial</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+*:not(pre)>code.nobreak{word-wrap:normal}
+*:not(pre)>code.nowrap{white-space:nowrap}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+em em{font-style:normal}
+strong strong{font-weight:400}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Erlang GraphQL Tutorial</h1>
+<div class="details">
+<span id="author" class="author">Jesper Louis Andersen</span><br>
+<span id="email" class="email"><a href="mailto:jesper.louis.andersen@gmail.com">jesper.louis.andersen@gmail.com</a></span><br>
+<span id="author2" class="author">Martin Gausby</span><br>
+<span id="email2" class="email"><a href="mailto:martin@gausby.dk">martin@gausby.dk</a></span><br>
+<span id="author3" class="author">Shopgun Aps</span><br>
+<span id="email3" class="email"><a href="mailto:contact@shopgun.com">contact@shopgun.com</a></span><br>
+</div>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#introduction">Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_on_this_tutorial">On this tutorial</a></li>
+<li><a href="#_prerequisites">Prerequisites</a></li>
+<li><a href="#_supported_platforms">Supported Platforms</a></li>
+<li><a href="#_comments_contact">Comments &amp; Contact</a></li>
+<li><a href="#_license">License</a></li>
+</ul>
+</li>
+<li><a href="#why_graphql">Why GraphQL</a></li>
+<li><a href="#system-tour">System Tour</a>
+<ul class="sectlevel2">
+<li><a href="#_first_query">First query</a></li>
+<li><a href="#_more_advanced_queries">More advanced queries</a></li>
+</ul>
+</li>
+<li><a href="#getting_started">Getting Started</a>
+<ul class="sectlevel2">
+<li><a href="#_what_we_do_not_cover">What we do not cover</a></li>
+<li><a href="#_overview">Overview</a></li>
+<li><a href="#_plan">Plan</a></li>
+</ul>
+</li>
+<li><a href="#_mnesia">Mnesia</a>
+<ul class="sectlevel2">
+<li><a href="#_setting_up_an_initial_mnesia_schema">Setting up an initial mnesia schema</a></li>
+<li><a href="#_populating_the_database">Populating the database</a></li>
+</ul>
+</li>
+<li><a href="#schema">GraphQL Schema</a>
+<ul class="sectlevel2">
+<li><a href="#identity-encoding">Identity encoding</a></li>
+<li><a href="#_the_node_interface">The Node Interface</a></li>
+<li><a href="#_planets">Planets</a></li>
+<li><a href="#queries-and-mutations">Queries &amp; Mutations</a></li>
+<li><a href="#_input_objects">Input objects</a></li>
+<li><a href="#_schema_default_values">Schema default values</a></li>
+</ul>
+</li>
+<li><a href="#_loading_the_schema">Loading the Schema</a>
+<ul class="sectlevel2">
+<li><a href="#_root_setup">Root setup</a></li>
+<li><a href="#_mapping_rules">Mapping rules</a></li>
+</ul>
+</li>
+<li><a href="#scalar_resolution">Scalar Resolution</a></li>
+<li><a href="#type-resolution">Type Resolution</a></li>
+<li><a href="#object-resolution">Object Resolution</a>
+<ul class="sectlevel2">
+<li><a href="#_execution">Execution</a></li>
+<li><a href="#input-argument-rules">Input argument rules</a></li>
+<li><a href="#_handling_planets">Handling Planets</a></li>
+<li><a href="#_node_loading">Node Loading</a></li>
+<li><a href="#_anatomy_of_a_query">Anatomy of a query</a></li>
+</ul>
+</li>
+<li><a href="#_transports">Transports</a>
+<ul class="sectlevel2">
+<li><a href="#cowboy-handler">Cowboy Handler</a></li>
+</ul>
+</li>
+<li><a href="#graphiql">GraphiQL</a></li>
+<li><a href="#error-handling">Error Handling</a></li>
+<li><a href="#_relay_modern">Relay Modern</a>
+<ul class="sectlevel2">
+<li><a href="#_node_interface">Node Interface</a></li>
+<li><a href="#_inputs_payloads">Inputs &amp; Payloads</a></li>
+<li><a href="#_pagination">Pagination</a></li>
+</ul>
+</li>
+<li><a href="#_security">Security</a>
+<ul class="sectlevel2">
+<li><a href="#_limiting_clients_stored_procedures">Limiting Clients&#8212;&#8203;Stored Procedures</a></li>
+<li><a href="#_authentication">Authentication</a></li>
+<li><a href="#_authorization">Authorization</a></li>
+</ul>
+</li>
+<li><a href="#annotations">Annotations</a></li>
+<li><a href="#tricks">Tricks</a>
+<ul class="sectlevel2">
+<li><a href="#object-representation">Object Representation</a></li>
+<li><a href="#non-isomorphism">Avoid Isomorphic representations</a></li>
+<li><a href="#_middleware_stacks">Middleware stacks</a></li>
+<li><a href="#_data_loader">Data Loader</a></li>
+<li><a href="#_fragments">Fragments</a></li>
+</ul>
+</li>
+<li><a href="#_terminology">Appendix A: Terminology</a>
+<ul class="sectlevel2">
+<li><a href="#null-propagation">Null Propagation</a></li>
+<li><a href="#HATEOAS">Hypertext as the engine of application state</a></li>
+<li><a href="#context">Context</a></li>
+<li><a href="#cursor">Cursor</a></li>
+</ul>
+</li>
+<li><a href="#_code_overview">Appendix B: Code Overview</a>
+<ul class="sectlevel2">
+<li><a href="#_root">Root</a></li>
+<li><a href="#_application_code_sw_core_code">Application <code>sw_core</code></a></li>
+<li><a href="#_application_code_sw_web_code">Application <code>sw_web</code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Erlang GraphQL Tutorial</p>
+</div>
+<div class="paragraph">
+<p>The guide here is a running example of the "Star Wars" API implemented
+in Erlang through the Shopgun GraphQL engine. The intent is to provide
+readers with enough information they can go build their own GraphQL
+servers in Erlang.</p>
+</div>
+<div class="paragraph">
+<p>The GraphQL system is used by <a href="https://shopgun.com" class="bare">https://shopgun.com</a> as a data backend.
+They also sponsored this tutorial as part of their Open Source efforts.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Erlang GraphQL system allows you to implement GraphQL servers in
+Erlang. It works as a library which you can use on top of existing web
+servers such as Cowboy, Webmachine, Yaws and so on.</p>
+</div>
+<div class="paragraph">
+<p>As a developer, you work by providing a <em>schema</em> which defines the
+query structure which your server provides. Next, you map your schema
+unto Erlang modules which then defines a binding of the two worlds.</p>
+</div>
+<div class="paragraph">
+<p>Clients execute <em>queries</em> to the server according to the structure of
+the schema. The GraphQL system then figures out a <em>query plan</em> for the
+query and executes the query. This in turn calls your bound modules
+and this allows you to process the query, load data, and so on.</p>
+</div>
+<div class="sect2">
+<h3 id="_on_this_tutorial">On this tutorial</h3>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+We are currently building the document and are still making
+changes to it. Things can still move around and change. If you see a
+&#8220;TBD&#8221; marker it means that section is &#8220;To Be Done&#8221; and will be
+written at a later point. In the same vein, the code base is being
+built up as well, so it may not be that everything is fully described
+yet.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The current version of Erlang GraphQL returns some errors which
+are hard to parse and understand. It is our intention to make the
+error handling better and more clean in a later version.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The tutorial you are now reading isn&#8217;t really a tutorial per se where
+you type in stuff and see the output. There is a bit too much code for
+that kind of exposition. Rather, the tutorial describes a specific
+project implemented by means of the GraphQL system. You can use the
+ideas herein to build your own.</p>
+</div>
+<div class="paragraph">
+<p>There are examples of how things are built however, so you may be able
+to follow along and check out the construction of the system as a
+whole. Apart from being a small self-contained functional GraphQL
+project, it is also a small self-contained functional rebar3 project.
+So there&#8217;s that.</p>
+</div>
+<div class="sect3">
+<h4 id="_suggestions">Suggestions</h4>
+<div class="paragraph">
+<p>Most of the source code in this tutorial refers inside the real source
+code. If a section doesn&#8217;t make sense anymore because the underlying
+code has changed, please submit a bug report.</p>
+</div>
+<div class="paragraph">
+<p>Another kind of bug report we are interested in, are &#8220;I tried doing
+this, but the result was not what I expected&#8221;. These often indicate
+an omission on our part which should have been included.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_prerequisites">Prerequisites</h3>
+<div class="paragraph">
+<p>Some Erlang knowledge is expected for reading this guide. General
+Erlang concept will not be explained, but assumed to be known. Some
+mnesia knowledge will also help a bit in understanding what is going
+on, though if you know anything about databases in general, that is
+probably enough. Furthermore, some knowledge of the web in general is
+assumed. We don&#8217;t cover the intricacies of HTTP 1.1 or HTTP/2 for
+instance.</p>
+</div>
+<div class="paragraph">
+<p>This tutorial uses a couple of dependencies:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Rebar3 is used to build the software</p>
+</li>
+<li>
+<p>Cowboy 1.x is used as a web server for the project</p>
+</li>
+<li>
+<p>GraphiQL is used as a web interface to the Graph System</p>
+</li>
+<li>
+<p>Erlang/OTP version 19.3.3 was used in the creation of this tutorial</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_supported_platforms">Supported Platforms</h3>
+<div class="paragraph">
+<p>The GraphQL system should run on any system which can run Erlang. The
+library does not use any special tooling, nor does it make any
+assumptions about the environment. If Erlang runs on your platform,
+chances are that GraphQL will too.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_comments_contact">Comments &amp; Contact</h3>
+<div class="paragraph">
+<p>The official repository location is</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/shopgun/graphql-erlang-tutorial" class="bare">https://github.com/shopgun/graphql-erlang-tutorial</a></p>
+</div>
+<div class="paragraph">
+<p>If you have comments on the document or corrections, please open an
+<a href="https://github.com/shopgun/graphql-erlang-tutorial/issues">Issue</a> in the above repository on the thing that is missing. Also, feel
+free to provide pull requests against the code itself.</p>
+</div>
+<div class="paragraph">
+<p>Things we are particularly interested in:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Parts you don&#8217;t understand. These often means something isn&#8217;t
+described well enough and needs improvement.</p>
+</li>
+<li>
+<p>Code sequences that doesn&#8217;t work for you. There is often some
+prerequisite the document should mention but doesn&#8217;t.</p>
+</li>
+<li>
+<p>Bad wording. Things should be clear and precise. If a particular
+sentence doesn&#8217;t convey information clearly, we&#8217;d rather rewrite it
+then confuse the next reader.</p>
+</li>
+<li>
+<p>Bugs in the code base.</p>
+</li>
+<li>
+<p>Bad code structure. A problem with a tutorial repository is that it
+can &#8220;infect&#8221; code in the future. People copy from this repository,
+so if it contains bad style, then that bad style is copied into
+other repositories, infecting them with the same mistakes.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_license">License</h3>
+<div class="paragraph">
+<p>MIT 2.0</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Copyright (c) 2016-2017, Shopgun Aps</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="why_graphql">Why GraphQL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A worthy question to ask is &#8220;Why GraphQL?&#8221;</p>
+</div>
+<div class="paragraph">
+<p>In many ways, GraphQL is a natural extension of what we are already
+doing on the Web. As our systems grow, we start realizing our systems
+become gradually more heterogenous in the sense that data becomes more
+complex and data gets more variance.</p>
+</div>
+<div class="paragraph">
+<p>In addition&#8212;&#8203;since we usually have a single API serving multiple
+different clients, written in different languages for different
+platforms&#8212;&#8203;we need to be flexible in query support. Clients are likely
+to evolve dynamically, non-linearly, and at different paces. Thus, the
+backend must support evolution while retaining backwards
+compatibility. Also, we must have a contract or protocol between the
+clients and the server that is standardized. Otherwise, we end up
+inventing our own system again and again, and this is a strenous
+affair which has little to no reuse between systems.</p>
+</div>
+<div class="paragraph">
+<p>The defining characteristic of GraphQL is that the system is
+client-focused and client-centric. Data is driven by the client of the
+system, and not by the server. The consequence is that the
+delivery-time for features tend to be shorter. As soon as the product
+knows what change to make, it can often be handled with less
+server-side interaction than normally. Especially for the case where
+you are recombining existing data into a new view.</p>
+</div>
+<div class="paragraph">
+<p>RESTful APIs have served us well for a long time. And they are likely
+to continue serving as well in a large number of situations. However,
+if you have a system requiring more complex interaction, chances are
+you are better off by taking the plunge and switching your system to
+GraphQL.</p>
+</div>
+<div class="paragraph">
+<div class="title">Efficency</div>
+<p>RESTful APIs recently got a powerful improvement in HTTP/2 which
+allows RESTful APIs to pipeline far better than what they did earlier.
+However, you still pay the round trip time between data dependencies
+in an HTTP/2 setting: You need the listing of keys before you can
+start requesting the data objects on those keys. In contrast, GraphQL
+queries tend to be a single roundtrip only. A full declarative query
+is formulated and executed, without the need of any intermediate
+query. This means faster response times. Even in the case where a
+single query becomes slower since there is no need for followup
+queries.</p>
+</div>
+<div class="paragraph">
+<p>A major (subtle) insight is that in a GraphQL server, you don&#8217;t have
+to hand-code the looping constructs which tend to be present in a lot
+of RESTful APIs. To avoid the roundtrip describes in the preceeding
+paragraph, you often resolve to a solution where a specialized
+optimized query is constructed and added to the system. This
+specialized endpoint is then looping over the data in one go so you
+avoid having to do multiple roundtrips.</p>
+</div>
+<div class="paragraph">
+<p>In a GraphQL system, that looping is handled once-and-for-all by the
+GraphQL engine. You are only implementing callbacks that run as part
+of the loop. A lot of tedious code is then handled by GraphQL and we
+avoid having to code this again and again for each RESTful web service
+we write.</p>
+</div>
+<div class="paragraph">
+<div class="title">Porting</div>
+<p>You can often move your system onto GraphQL a bit at a time. You don&#8217;t
+have to port every endpoint in the beginning. Often, people add some
+kind of field, <code>previousId</code> say, which is used as an identifier in the
+old system. Then you can gradually take over data from an old system
+and port it on top of GraphQL. Once the ball is rolling, it is likely
+that more and more clients want to use it, as it is a easier interface
+for them to use.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="system-tour">System Tour</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since a system as large as GraphQL can seem incomprehensible when you
+first use it, we will begin by providing a system tour explaining by
+example how the system works. In order to start the system for the
+first time, we must construct a <em>release</em>.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Releases</div>
+<div class="paragraph">
+<p>Erlang uses a concept called <em>releases</em> for real applications. A
+release consists of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An erlang emulator for the virtual machine, BEAM as a binary in the
+operating system.</p>
+</li>
+<li>
+<p>The set of applications which is configured to be inside the
+release.</p>
+</li>
+<li>
+<p>Every dependent application needed by the release-configuration.</p>
+</li>
+<li>
+<p>Support libraries for executing the emulator, binary NIF shared
+objects (NIF: Natively implemented function), and so on.</p>
+</li>
+<li>
+<p>Configuration for the system and runtime</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A release is a self-contained Erlang system living in its own
+directory structure. It can be copied to a target machine and started
+without having to install any support libraries, as long as the system
+architecture is the same. If you provide an appropriate BEAM emulator
+for the given architecture, the code will run with little to no
+modification as well since the Erlang byte code is highly portable. It
+even works across Erlang/OTP versions (subject to some restrictions).</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>To make a release, run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>$ make release</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This builds a release inside the <code>_build</code> directory and makes it
+available. In order to run the release, we can ask to run it with a
+console frontend, so we get a shell on the Erlang system:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>$ _build/default/rel/sw/bin/sw console</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The system should boot and start running. A typical invocation looks
+like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:8:8] [async-threads:30] [hipe] [kernel-poll:true] [dtrace]
+
+15:33:05.705 [info] Application lager started on node 'sw@127.0.0.1'
+15:33:05.705 [info] Application ranch started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Application graphql started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Application sw_core started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Application cowboy started on node 'sw@127.0.0.1'
+15:33:05.706 [info] Starting HTTP listener on port 17290
+Eshell V8.3  (abort with ^G)
+(sw@127.0.0.1)1&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+To exit an Erlang node like this, you can either Ctrl-C twice
+which stops the system abruptly. Or you can be nice to the system and
+ask it to close gracefully one application at a time by entering
+<code>q().&lt;RET&gt;</code> in the shell.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>One the Erlang emulator is running our <code>sw</code> release, we can point a
+browser to <a href="http://localhost:17290/" class="bare">http://localhost:17290/</a> and you should be greeted
+with the following screen:</p>
+</div>
+<div id="img-graphiql" class="imageblock">
+<div class="content">
+<img src="./images/graphiql.png" alt="GraphiQL">
+</div>
+<div class="title">Figure 1. The initial greeting screen for the GraphQL system</div>
+</div>
+<div class="sect2">
+<h3 id="_first_query">First query</h3>
+<div class="paragraph">
+<p>The first query we will run requests a given <strong>Planet</strong> from the system.
+In accordance with the rules of Relay Modern GraphQL conventions, we
+will load this <strong>Planet</strong> via the <em>Object Identification</em> conventions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query PlanetQuery {
+  node(id:"UGxhbmV0OjE=") { <i class="conum" data-value="1"></i><b>(1)</b>
+    ... on Planet { <i class="conum" data-value="2"></i><b>(2)</b>
+      id <i class="conum" data-value="3"></i><b>(3)</b>
+      name
+      climate
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <strong>ID</strong> entered here is opaque to the client, and we assume it
+was obtained in an earlier query. We will show typical ways to
+list things later in this section.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This notation, if you are only slightly familiar with GraphQL is
+called an <em>inline fragment</em>. The output of the <code>node</code> field is of
+type <strong>Node</strong> and here we restrict ourselves to the type <strong>Planet</strong>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This requests the given fields in the particular planet we loaded.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you enter this in the GraphiQL left window and press the &#8220;Run&#8221;
+button, you should get the following response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-json" data-lang="json">{
+  "data": {
+    "node": {
+      "climate": "arid",
+      "id": "cGxhbmV0OjE=",
+      "name": "Tatooine"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how the response reflects the structure of the query. This is a
+powerful feature of GraphQL since it allows you to build up queries
+client side and get deterministic results based off of your
+query-structure.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_more_advanced_queries">More advanced queries</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting_started">Getting Started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial takes you through the creation of a GraphQL server
+implementing the now ubiquitous <em>Star Wars</em> schema. It is a complete
+implementation of the schema given as an example in order to make it
+clear how to implement a fully-fledged GraphQL server in Erlang.</p>
+</div>
+<div class="paragraph">
+<p>The goal of the tutorial is to provide a developer with a working
+example from which you can start. Once completed, you can start adding
+your own types to the tutorial. And once they start working, you can
+"take over" the system and gradually remove the Star Wars parts until
+you have a fully working example.</p>
+</div>
+<div class="paragraph">
+<p>This implementation backs the system by means of a Mnesia database.
+The choice is deliberate for a couple of reasons:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Mnesia is present in any Erlang system and thus it provides a simple
+way to get started and setup.</p>
+</li>
+<li>
+<p>Mnesia is <strong>not</strong> a Graph Database. This makes it explicit your
+database can be anything. In fact, the "Graph" in GraphQL is
+misnomer since GraphQL works even when your data does not have a
+typical Graph-form. It is simply a nice query structure.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_what_we_do_not_cover">What we do not cover</h3>
+<div class="paragraph">
+<p>This tutorial doesn&#8217;t cover everything in the repository:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The details of the <code>rebar3</code> integration and the <code>relx</code> release
+handling.</p>
+</li>
+<li>
+<p>The tutorial only covers the parts of the code where there is
+something to learn. The areas of the code getting exposition in this
+document is due to the fact that they convey some kind of important
+information about the use of the GraphQL system for Erlang. Other
+parts, which are needed for completeness, but aren&#8217;t as important
+are skipped.</p>
+</li>
+<li>
+<p>There is no section on &#8220;how do I set up an initial Erlang
+environment&#8221; as it is expected to be done already.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_overview">Overview</h3>
+<div class="paragraph">
+<p>The purpose of a GraphQL server is to provide a contract between a
+client and a server. The contract ensures that the exchange of
+information follows a specific structure, and that queries and
+responses are in accordance with the contract specification.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, the GraphQL servers contract defines what kind of
+queries are possible and what responses will look like. Every query
+and response is typed and a type checker ensures correctness of data.</p>
+</div>
+<div class="paragraph">
+<p>Finally, the contract is introspectable by the clients. This allows
+automatic deduction of queries and built-in documentation of the
+system interface.</p>
+</div>
+<div class="paragraph">
+<p>Thus, a GraphQL server is also a contract checker. The GraphQL system
+ensures that invalid queries are rejected, which makes it easier to
+implement the server side: you can assume queries are valid to a far
+greater extent than is typical in other systems such as typical REST
+interfaces.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_plan">Plan</h3>
+<div class="paragraph">
+<p>In order to get going, we need a world in which to operate. First, we
+must provide two schemas: one for the GraphQL system, and one for the
+Mnesia database.</p>
+</div>
+<div class="paragraph">
+<p>The GraphQL schema defines the client/server contract. It consists of
+several GraphQL entity kinds. For example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scalar types&#8212;&#8203;Extensions on top of the default types. Often used
+for Dates, DateTime&#8217;s, URI&#8217;s, Color&#8217;s, Currency, Locales and so on.</p>
+</li>
+<li>
+<p>Enumerations&#8212;&#8203;Values taken from a limited set. An example could be
+the enumeration of weekdays: &#8220;MONDAY, TUESDAY, WEDNESDAY, &#8230;&#8203;,
+SUNDAY&#8221;.</p>
+</li>
+<li>
+<p>Input Objects&#8212;&#8203;Data flowing from the Client to the Server (Request).</p>
+</li>
+<li>
+<p>Output Objects&#8212;&#8203;Data flowing from the Server to the Client
+(Response).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A somewhat peculiar choice by the GraphQL authors is that the world of
+Input and Output objects differ. In general, a Client has no way to
+"<em>PUT</em>" an input object back into the Graph as is the case in REST
+systems. From a type-level perspective, client requests and server
+responses have different <em>polarity</em>.</p>
+</div>
+<div class="paragraph">
+<p>It may seem as if this is an irritating choice. You often have to
+specify the &#8220;same&#8221; object twice: once for input and once for output.
+However, as your GraphQL systems grows in size, it turns out this
+choice is the right one. You quickly run into situations where a
+client supplies a desired specific change where many of the fields on
+the output object doesn&#8217;t make sense. By splitting the input and
+output world, it is easily to facilitate since the input objects can
+omit many fields that doesn&#8217;t make sense.</p>
+</div>
+<div class="paragraph">
+<p>In a way, your GraphQL system is built such that changes to the data
+is done by executing &#8220;transactions&#8221; through a set of stored
+procedures. This can be seen as using the &#8220;_PATCH_&#8221; method of RESTful
+interfaces and not having a definition of PUT.</p>
+</div>
+<div class="paragraph">
+<div class="title">CQRS</div>
+<p>GraphQL splits the schema into two worlds: <em>query</em> and <em>mutation</em>. The
+difference from the server side is mostly non-existent: the GraphQL
+system is allowed to parallelize queries but not mutations. But from
+the perspective of the client, the starting points in the graph is
+either the <em>query</em> or the <em>mutation</em> object.</p>
+</div>
+<div class="paragraph">
+<p>CQRS stands for Command-Query Responsiblity Separation. The idea stems
+from the observation that querying data often have a different feel
+than commanding the system to do changes. So rather than trying to
+solve both in one interface, you slice the system such that you have a
+query-part which pertains only to querying data, and a command-part
+which pertains to mutating data.</p>
+</div>
+<div class="paragraph">
+<p>GraphQL implements what is essentially CQRS by making a distinction
+between the notion of a <em>query</em> and a <em>mutation</em>. Likewise, the server
+side makes this distinction. But on the server side it is merely
+implemented by having different starting objects in the graph
+execution.</p>
+</div>
+<div class="paragraph">
+<div class="title">Mnesia</div>
+<p>Our Star Wars schema uses the database <strong>mnesia</strong> as a backend. It is
+important to stress that you often have a situation where your
+database backend doesn&#8217;t map 1-1 onto the GraphQL schema you specify.
+In larger systems, this is particularly important: the GraphQL schema
+is often served by multiple different backends, and those backends are
+not going to cleanly map onto the world we expose to the clients. So
+the GraphQL schema contract becomes a way to mediate between the
+different data stores. As an example, you may satisfy some parts of
+the GraphQL from a dedicated search system&#8212;&#8203;such as
+ElasticSearch&#8212;&#8203;while others are served as rows from a traditional
+database, such as MySQL or Postgresql. You may even have a message
+queue broker or some other subsystem in which you have relevant data
+you want to query. Or perhaps, some queries are handled by
+micro-services in your architecture.</p>
+</div>
+<div class="paragraph">
+<p>Over the course of having built larger systems, we&#8217;ve experienced that
+mappings which tries to get isomorphism between the backend and the
+schema creates more problems than they solve. Small changes have
+consequence in all of the stack. Worse, you can&#8217;t evolve part of the
+system without evolving other parts which impairs the flexibility of
+the system.</p>
+</div>
+<div class="paragraph">
+<p>Another problem is that you may end up with an impedence mismatch
+between the Objects and links of the GraphQL query and the way you
+store your data in the backend. If you force a 1-1 relationship
+between the two, you can get into trouble because your GraphQL schema
+can&#8217;t naturally describe data.</p>
+</div>
+<div class="paragraph">
+<div class="title">Mnesia initialization</div>
+<p>A common problem people run into with Mnesia is how to &#8220;get started&#8221;.
+What people often resort to are solutions where an initial database is
+created if it doesn&#8217;t exist. These solutions are often brittle.</p>
+</div>
+<div class="paragraph">
+<p>Here, we pick another solution. A helper can create a database schema
+for us, with all the necessary tables. The real release <em>assumes</em> the
+presence of an initial database and won&#8217;t boot without one. This means
+the Erlang release is simpler. There is always some database from
+which it can boot and operate. That database might be the empty
+database since we are just starting out. But in particular, the
+release won&#8217;t concern itself with creating an initial database. Rather
+it will assume one is already existing.</p>
+</div>
+<div class="paragraph">
+<p>The situation is not much different than using a traditional
+schema-oriented database. Usually, you have to create the database
+first, and then populate the schema with some initial data. It is just
+because of Rails/Django like systems in which databases are
+migrate-established, we&#8217;ve started using different models.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mnesia">Mnesia</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_setting_up_an_initial_mnesia_schema">Setting up an initial mnesia schema</h3>
+<div class="paragraph">
+<p>To get up and running, we begin by constructing a mnesia schema we can
+start from. We do this by starting a shell on the Erlang node and then
+asking it to create the schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>$ git clean -dfxq <i class="conum" data-value="1"></i><b>(1)</b>
+$ make compile <i class="conum" data-value="2"></i><b>(2)</b>
+$ make shell-schema <i class="conum" data-value="3"></i><b>(3)</b>
+erl -pa `rebar3 path` -name sw@127.0.0.1
+Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:8:8] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
+
+Eshell V8.3  (abort with ^G)
+1&gt; sw_core_db:create_schema(). % <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Clean out the source code repository to make sure there is no lingering files</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Compile the code so we have compiled versions of modules we can loaded</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Run the erlang interpreter with an altered path for our newly compiled modules</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Create the schema</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The call the <code>create_schema()</code> runs the the following schema creation code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">create_schema() -&gt;
+    mnesia:create_schema([node()]),
+    application:ensure_all_started(mnesia),
+    ok = create_tables(),
+    ok = populate_tables(),
+    mnesia:backup("FALLBACK.BUP"),
+    mnesia:install_fallback("FALLBACK.BUP"),
+    application:stop(mnesia).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Creating the schema amounts to running a set of commands from the
+mnesia documentation. The helper function to create tables contains a
+large number of tables, so we are just going to show one here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">create_tables() -&gt;
+    {atomic, ok} =
+        mnesia:create_table(
+          starship,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, starship)}]),
+    {atomic, ok} =
+        mnesia:create_table(
+          species,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, species)}]),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In mnesia, tables are Erlang records. The <code>#planet{}</code> record needs
+definition and is in the header file <code>sw_core_db.hrl</code>. We simply list
+the entries which are defined the SWAPI GraphQL schema so we can store
+the concept of a planet in the system:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-record(planet,
+        {id :: binary(),
+         edited :: binary(),
+         climate :: binary(),
+         surface_water :: integer(),
+         name :: binary(),
+         diameter :: integer(),
+         rotation_period :: integer(),
+         created :: binary(),
+         terrain :: binary(),
+         gravity :: binary(),
+         orbital_period :: integer(),
+         population :: integer()
+}).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Every other table in the system is handled in the same manner, but are
+not given here for brevity. They follow the same style as the example above.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_populating_the_database">Populating the database</h3>
+<div class="paragraph">
+<p>Once we have introduced tables into the system, we can turn our
+attention to populating the database tables. For this, we use the
+SWAPI data set as the primary data source. This set has its fixtures
+stored as JSON document. So we use <code>jsx</code> to decode those JSON
+documents and turn them into mnesia records, which we then insert into
+the database.</p>
+</div>
+<div class="paragraph">
+<p>We can fairly easily write a function which take the JSON and turn them
+into appropriate mnesia records. Planets live in a fixture file
+<code>planets.json</code>, so we need a function that can turn a part said JSON
+file into a mnesia record. Some conversion is necessary on the way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">json_to_planet(
+  #{ &lt;&lt;"pk"&gt;&gt; := ID,
+     &lt;&lt;"fields"&gt;&gt; := #{
+         &lt;&lt;"edited"&gt;&gt; := Edited,
+         &lt;&lt;"climate"&gt;&gt; := Climate,
+         &lt;&lt;"surface_water"&gt;&gt; := SWater,
+         &lt;&lt;"name"&gt;&gt; := Name,
+         &lt;&lt;"diameter"&gt;&gt; := Diameter,
+         &lt;&lt;"rotation_period"&gt;&gt; := RotationPeriod,
+         &lt;&lt;"created"&gt;&gt; := Created,
+         &lt;&lt;"terrain"&gt;&gt; := Terrain,
+         &lt;&lt;"gravity"&gt;&gt; := Gravity,
+         &lt;&lt;"orbital_period"&gt;&gt; := OrbPeriod,
+         &lt;&lt;"population"&gt;&gt; := Population
+        }}) -&gt;
+    #planet {
+       id = ID,
+       edited = Edited,
+       climate = Climate,
+       surface_water = SWater,
+       name = Name,
+       diameter = Diameter,
+       rotation_period = RotationPeriod,
+       created = Created,
+       terrain = Terrain,
+       gravity = Gravity,
+       orbital_period = OrbPeriod,
+       population = Population
+}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once we have this function down, we can utilize it to get a list of
+mnesia records, which we can then insert into the database through a
+transaction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">populate_planets(Terms) -&gt;
+    People = [json_to_planet(P) || P &lt;- Terms],
+    Txn = fun() -&gt;
+                  [mnesia:write(P) || P &lt;- People],
+                  ok
+          end,
+    {atomic, ok} = mnesia:transaction(Txn),
+    ok.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The code to read in and populate the database is fairly
+straightforward. It is the last piece of the puzzle to inject relevant
+data into the Mnesia database:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">populate(File, Fun) -&gt;
+    {ok, Data} = file:read_file(File),
+    Terms = jsx:decode(Data, [return_maps]),
+    Fun(Terms).
+
+populate_tables() -&gt;
+    populate("fixtures/transport.json", fun populate_transports/1),
+    populate("fixtures/starships.json", fun populate_starships/1),
+    populate("fixtures/species.json", fun populate_species/1),
+    populate("fixtures/films.json", fun populate_films/1),
+    populate("fixtures/people.json", fun populate_people/1),
+    populate("fixtures/planets.json", fun populate_planets/1),
+    populate("fixtures/vehicles.json", fun populate_vehicles/1),
+    setup_sequences(),
+    ok.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This creates a fixture in the database such that when we boot the
+database, the planets, transports, people, &#8230;&#8203;, will be present in the
+mnesia database when we boot the system.
+=== Creating a FALLBACK for the database</p>
+</div>
+<div class="paragraph">
+<p>Once we have run the schema creation routine, a file called
+<code>FALLBACK.BUP</code> is created. We copy this to the database base core in
+the repository</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ cp FALLBACK.BUP db/FALLBACK.BUP</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which makes the empty schema available for the release manager of the
+Erlang system. When we cook a release, we will make sure to copy this
+initial schema into the correct mnesia-directory of the release.
+Because the file is named <code>FALLBACK.BUP</code>, it is a fallback backup file.
+This will &#8220;unpack&#8221; itself to become a new empty database as if you
+had rolled in a backup on the first boot of the system. Thus we avoid
+our system having to deal with this problem at start up.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A real system will override the location of the Mnesia <code>dir</code>
+parameter and define a separate directory from which the Mnesia
+database will run. Initially, the operator will place the
+<code>FALLBACK.BUP</code> file in this directory to get going, but once we are
+established, and people start adding in data, we can&#8217;t reset anything
+when deploying new versions. Hence the separate directory so we can
+upgrade the Erlang system without having to protect the database as
+much.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We now have the ability to create new database tables easily and we
+have a mnesia database for backing our data. This means we can start
+turning our attention to the GraphQL schema.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="schema">GraphQL Schema</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With a Mnesia database at our disposal, we next create a GraphQL
+schema definition. This file describes the contract between the client
+system and the server system. It is used by the GraphQL system to know
+which queries are valid and which aren&#8217;t.</p>
+</div>
+<div class="paragraph">
+<p>In accordance with OTP design principles, we place this schema inside
+a projects <code>priv</code> directory. Our GraphQL system can then refer to the
+private directory of the application in order to load this schema when
+the system boots up.</p>
+</div>
+<div class="sect2">
+<h3 id="identity-encoding">Identity encoding</h3>
+<div class="paragraph">
+<p>In GraphQL, you have a special type, <em>ID</em>, which is used to attach an
+identity to objects. It is often construed as a &#8220;PRIMARY KEY&#8221; of
+sorts on objects, such that you can refer to objects uniquely. The
+rule is that a client must only treat an <em>ID</em> as an opaque string
+value and never parse on the string value. Thus, an <em>ID</em> is
+represented as a <em>String</em>, but you are not allowed to parse it as a
+client.</p>
+</div>
+<div class="paragraph">
+<p>To make this more obvious, the GraphQL people usually base64 encode
+their ID-values. Furthermore, we have the problem that in Mnesia, our
+rows IDs will be integers. This means we may have overlapping integers
+between different types. To avoid problem, we use a common encoding in
+GraphQL. The Starship with id 3 will be encoded as
+<code>base64("Starship:3")</code> for example. And the planet Tatooine taken from
+the <a href="#system-tour">System Tour</a> is encoded as <code>base64("Planet:1")</code>. This
+definition somewhat hides the implementation and also allows the
+server backend to redefine IDs later for objects. Another use of the
+encoding is that it can define what datasource a given came from, so
+you can figure out where to find that object. It is highly useful in
+migration scenarios.</p>
+</div>
+<div class="paragraph">
+<p>The encoder is simple because we can assume the server provides valid
+values:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">encode({Tag, ID}) -&gt;
+    BinTag = atom_to_binary(Tag, utf8),
+    IDStr = integer_to_binary(ID),
+    base64:encode(&lt;&lt;BinTag/binary, ":", IDStr/binary&gt;&gt;).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The decoder is a bit more involved. It requires you to fail on invalid
+inputs. We usually don&#8217;t need to know what was invalid. We can simply
+fail aggressively if things turns out bad. A debugging session will
+usually uncover the details anyway as we dig into a failure.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">decode(Input) -&gt;
+    try
+        Decoded = base64:decode(Input),
+        case binary:split(Decoded, &lt;&lt;":"&gt;&gt;) of
+            [BinTag, IDStr] -&gt;
+                {ok, {binary_to_existing_atom(BinTag, utf8),
+                      binary_to_integer(IDStr)}};
+            _ -&gt;
+                exit(invalid)
+        end
+    catch
+        _:_ -&gt;
+            {error, invalid_decode}
+    end.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_node_interface">The Node Interface</h3>
+<div class="paragraph">
+<p>The Relay Modern specification contains a number of standards for how
+to implement different parts of the GraphQL schema. One such standard
+is the <strong>Node</strong> interface. This interface allows you to &#8220;start from&#8221;
+any node in the graph which has an <em>id</em> field. That is, every node
+with identity can be a starting point for a query.</p>
+</div>
+<div class="paragraph">
+<p>The interface is most often used as a way to cache-refresh objects you
+have loaded a long time ago in order to make sure they have the right
+kinds of data. The interface specification follows the standard
+closely:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">+description(text: "Relay Modern Node Interface")
+interface Node {
+  +description(text: "Unique Identity of a Node")
+  id : ID!
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">On Documentation</div>
+<p>The Erlang version of GraphQL allows a certain extension by the Apollo
+people. This extension allows you to use <a href="#annotations">Annotations</a> in GraphQL
+schemas to attach more information to particular objects of interest.
+We use this for documentation. You can annotate almost anything with
+<code>+description(text: "documentation")</code> which in turn attaches that
+documentation to an entity in the Graph.</p>
+</div>
+<div class="paragraph">
+<p>Multi-line comments are also possible by using a backtick (`) rather
+than a quote symbol ("). These allows larger Markdown entries to be
+placed in the documentation, which tends to be good for documentation
+of APIs.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can&#8217;t easily use a backtick (`) inside the multiline
+quotations. This means you can&#8217;t easily write pre-formatted code
+sections unless you use indentation in the Markdown format. The choice
+was somewhat deliberate in that there is a workaround currently, and
+it tends to flow really well when you enter documentation by means of
+the backtick character. A future version of the parser might redo this
+decision.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_planets">Planets</h3>
+<div class="paragraph">
+<p>Since we have planets in the mnesia database from the previous
+section, we can define the GraphQL Schema for them as well. The
+definition is quite straightforward given the Star Wars API we are
+trying to mimic already contains all the important parts.</p>
+</div>
+<div class="paragraph">
+<p>For brevity, we omit the documentation of each individual field for
+now. Though a more complete implementation would probably include
+documentation on each field to a fine detail.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">type Planet implements Node {
+  name : String
+  diameter : Int
+  rotationPeriod : Int
+  orbitalPeriod : Int
+  gravity : String
+  population : Float
+  climate : String
+  terrains : [String]
+  surfaceWater : Float
+  filmConnection(after: String, first: Int,
+                 before: String, last: Int)
+    : PlanetFilmsConnection
+  residentConnection(after: String, first: Int,
+                     before: String, last: Int)
+    : PlanetResidentsConnection
+  created : String
+  edited : String
+  id : ID!
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="queries-and-mutations">Queries &amp; Mutations</h3>
+<div class="paragraph">
+<p>All GraphQL queries are either a <em>query</em> or a <em>mutation</em>.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>
+Correspondingly, the schema specification contains entries for two
+(output) objects, which are commonly called <code>Query</code> and <code>Mutation</code>
+respectively. For example, the query object looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">type Query {
+  +description(text: "Relay Modern specification Node fetcher")
+  node(id : ID!) : Node
+  +description(text: "Fetch a starship with a given Id")
+  starship(id : ID!) : Starship
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Query object defines the (public) API of your backend. All queries
+will start from here, and the specification defines what you can do
+with the given query.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The introspection capabilities of GraphQL will have the astute
+reader recognize that this predefined rule of what you can do with a
+query is very close to automatic discovery of capabilities. In other
+words, you get close to the notion of <a href="#HATEOAS">Hypertext as the engine of application state</a>, while not reaching
+it.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The field <code>node</code> allows you to request any node in the Graph. Later,
+we will see how to implement the backend functionality for this call.
+In this example, we will request a <strong>Starship</strong> through the node
+interface by first requesting anything implementing the <strong>Node</strong>
+interface, and then use an inline-fragment in order to tell the system
+which fields we want to grab inside the starship:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query StarShipQuery($id : ID!) {
+    node(id: $id) {
+       __typename
+       id
+       ... on Starship {
+          model
+          name
+       }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_input_objects">Input objects</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_schema_default_values">Schema default values</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_loading_the_schema">Loading the Schema</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to work with a schema, it must be loaded. We can load it as
+part of booting the <code>sw_core</code> application in the system. After having
+loaded the supervisor tree of the application, we can call out and
+load the star wars schema into the system. The main schema loader is
+defined in the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">load_schema() -&gt;
+    {ok, SchemaFile} = application:get_env(sw_core, schema_file),
+    PrivDir = code:priv_dir(sw_core),
+    {ok, SchemaData} = file:read_file(
+                         filename:join(PrivDir, SchemaFile)),
+    Mapping = mapping_rules(),
+    ok = graphql:load_schema(Mapping, SchemaData),
+    ok = setup_root(),
+    ok = graphql:validate_schema(),
+    ok.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To load the schema, we figure out where it is in the file system. The
+schema to load is in an environment variable inside <code>sw_core.app</code>, and
+we let OTP figure out where the applications private directory is.
+Then the schema is loaded according to the mapping rules of the
+schema.</p>
+</div>
+<div class="paragraph">
+<p>After the schema loads, we set up a <em>schema root</em> which is how to
+start out a <em>query</em> or a <em>mutation</em>. Finally, we validate the schema.
+This runs some correctness checks on the schema and fails of the
+sanity checks doesn&#8217;t pass. It forces you to define everything you
+use, and it also verifies that interfaces are correctly implemented.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Currently, the schema root is set up &#8220;manually&#8221; outside the
+schema definition. It is likely that a later version of the
+implementation will be able to do this without manually injecting the
+root, but by having the root being part of the schema definition.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Always run the schema validator once you&#8217;ve finished assembling
+your schema. Many errors are caught automatically by the validator,
+and it removes the hassle of debugging later. Also, it runs fairly
+quickly, so run it as part of your systems boot phase. This ensures
+your system won&#8217;t boot if there is some kind of problem with your
+schema definition. If you have a boot-test as part of your testing
+framework or CI system, you should be able to use this as a &#8220;schema
+type checker&#8221; and weed out some obvious definitional bugs.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_root_setup">Root setup</h3>
+<div class="paragraph">
+<p>The root setup defines how a query begins by defining what type in the
+schema specification is the root for queries and mutations
+respectively. By convention, these types are always called <code>Query</code> and
+<code>Mutation</code> so it is easy to find find the Root&#8217;s entry points in the
+Graph.</p>
+</div>
+<div class="paragraph">
+<p>The query root must be injected into the schema so the GraphQL systems
+knows where to start. This is done in the file <code>sw_core_app</code> in the
+function <code>setup_root</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">setup_root() -&gt;
+    Root = {root,
+            #{ query =&gt; 'Query',
+               mutation =&gt; 'Mutation',
+               interfaces =&gt; ['Node']
+             }},
+    ok = graphql:insert_schema_definition(Root),
+    ok.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mapping_rules">Mapping rules</h3>
+<div class="paragraph">
+<p>The mapping rules of the GraphQL system defines how the types in the
+schema maps onto erlang modules. Since many mapping can be coalesced
+into one, there is the possibility of defining a <code>default</code> mapping
+which just maps every unmapped object to the default.</p>
+</div>
+<div class="paragraph">
+<p>All of the mappings goes from an atom, which is the <em>type</em> in the
+Schema you want to map. To an atom, which is the Erlang <em>module</em>
+handling that particular schema type.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">mapping_rules() -&gt;
+    #{
+       scalars =&gt; #{ default =&gt; sw_core_scalar },
+       interfaces =&gt; #{ default =&gt; sw_core_type },
+       unions =&gt; #{ default =&gt; sw_core_type },
+       objects =&gt; #{
+         'Planet' =&gt; sw_core_planet,
+         'Starship' =&gt; sw_core_starship,
+         'Film' =&gt; sw_core_film,
+         'Query' =&gt; sw_core_query,
+         'Mutation' =&gt; sw_core_mutation,
+         default =&gt; sw_core_object }
+     }.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Scalars</div>
+<p>Every scalar type in the schema is mapped through the <code>scalar</code> mapping
+part. It is quite common a system only has a single place in which all
+scalars are defined. But it is also possible to split up the scalar
+mapping over multiple modules. This can be useful if you have a piece
+of code where some scalars naturally lives in a sub-application of some
+kind.</p>
+</div>
+<div class="paragraph">
+<div class="title">Interfaces &amp; Unions</div>
+<p>In GraphQL, two kinds of <em>abstract</em> types are defined: interfaces and
+unions. Interfaces abstract over concrete types which have some fields
+in common (and thus the fields must also agree on types). Unions
+abstract over concrete types that has nothing in common and thus
+simply defines a heterogenous collection of types.</p>
+</div>
+<div class="paragraph">
+<p>For the GraphQL system to operate correctly, execution must have a way
+to take an abstract type and make it concrete. Say, for instance, you
+have just loaded an object of type <strong>Node</strong>. We don&#8217;t yet know that it
+is a starship, but if the programmer fragment expands on
+the <strong>Starship</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query Q($nid : ID!) {
+  node(id: $nid) {
+    ... on Starship {
+      model
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>we need to know if the concrete node loaded indeed <em>was</em> a starship.
+The type resolver is responsible for figuring out what concrete type
+we have. Commonly, we map both the interface and union type resolver
+to the same resolver.</p>
+</div>
+<div class="paragraph">
+<p>The reason this needs to be handled by the programmer is because the
+GraphQL system doesn&#8217;t know about your representation. In turn, it
+call back into your code in order to learn which type your
+representation has.</p>
+</div>
+<div class="paragraph">
+<div class="title">Objects</div>
+<p>The mapping of objects is likely to have a special mapping for each
+object type you have defined. This is because each kind of (output)
+object tend to be different and require its own handler.</p>
+</div>
+<div class="paragraph">
+<p>Note that it is possible to define the type of the object as an
+<code>atom()</code> here. This is common in GraphQL for Erlang. You can write
+definitions as either atoms or binaries. They are most often returned
+as binaries at the moment, however.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The choice of using binaries may turn out to be wrong. We&#8217;ve
+toyed with different representations of this, and none of them fell
+out like we wanted. However, because the nature of GraphQL makes sure
+that an enemy cannot generate arbitrary atoms in the system, we could
+use atoms in a later version of GraphQL. For now, however, most parts
+of the system accepts atoms or binaries, and converts data to binaries
+internally.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="scalar_resolution">Scalar Resolution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a GraphQL specification, the structure of queries are defined by
+objects, interfaces and unions. But the &#8220;ground&#8221; types initially
+consist of a small set of standard types:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Int&#8212;&#8203;Integer values</p>
+</li>
+<li>
+<p>Float&#8212;&#8203;Floating point values</p>
+</li>
+<li>
+<p>String&#8212;&#8203;Textual strings</p>
+</li>
+<li>
+<p>Boolean&#8212;&#8203;Boolean values</p>
+</li>
+<li>
+<p>ID&#8212;&#8203;Identifiers: values which are opaque to the client</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These ground types are called <em>Scalars</em>. The set of scalars is
+extensible with your own types. Some examples of typical scalars to
+extend a Schema by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>DateTime objects&#8212;&#8203;with or without time zone information</p>
+</li>
+<li>
+<p>Email addresses</p>
+</li>
+<li>
+<p>URIs</p>
+</li>
+<li>
+<p>Colors</p>
+</li>
+<li>
+<p>Refined types&#8212;&#8203;Floats in the range 0.0-1.0 for instance</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<div class="title">Coercion</div>
+<p>Clients input scalar values as strings. Thus, the input string has to
+be <em>input coerced</em> by the GraphQL system. Vice versa, when a value is
+returned from the GraphQL backend, we must coerce so the client can
+handle it. This is called <em>output coercion</em>.</p>
+</div>
+<div class="paragraph">
+<div class="title">Validation, Canonicalization &amp; Representation</div>
+<p>The advantage of coercing inputs from the client is that not only can
+we validate that the client sent something correct. We can also coerce
+different representations at the client side into a canonical one on
+the server side. This greatly simplifies the internals, as we can pick
+a different internal representation than one which the client operates
+with.</p>
+</div>
+<div class="paragraph">
+<p>In particular, we can chose an internal representation which is
+unrepresentable on the client side. That is, the client could be Java
+or Javascript and neither of those languages has a construct for
+tuples which is nice to work with. At least not when we consider JSON
+as a transport for those languages. Yet, due to canonicaliztion, we
+may still use tuples and atoms internally in our Erlang code, as long
+as we make sure to output-coerce values such that they are
+representable by the transport and by the client.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="title">Star Wars and Scalar values</div>
+The current implementation of the Star Wars doesn&#8217;t utilize
+this feature of GraphQL very much. So for now, our implementation here
+doesn&#8217;t utilize the full feature set. A later update will solve this
+by providing an example.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-module(sw_core_scalar).
+
+-export([input/2, output/2]).
+
+input(_Type, Val) -&gt;
+    {ok, Val}.
+
+output(_Type, Val) -&gt;
+    {ok, Val}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation here just defaults scalar conversion to convert a
+string into a string, and doing no conversion on the scalar values at
+all. The function is provided for completeness, not because it is
+needed.</p>
+</div>
+<div class="paragraph">
+<p>The possible return values are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{ok, Val}</code> where <code>Val</code> is a transformation of the scalar value,
+perhaps to an internal representation.</p>
+</li>
+<li>
+<p><code>{ok, null}</code> which signifies that the value isn&#8217;t an error, but
+there is no meaningful value to give to this particular field.</p>
+</li>
+<li>
+<p><code>{error, Reason}</code> in which case the coercion fails with that error.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The notion of <a href="#null-propagation">Null Propagation</a> holds for scalar values as
+well.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="type-resolution">Type Resolution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In GraphQL, certain types are <em>abstract</em>. These are interfaces and
+unions. When the GraphQL system encounters an abstract type, it must
+have a way to <em>resolve</em> those abstract types into concrete (output)
+types. This is handled by the type resolution mapping.</p>
+</div>
+<div class="paragraph">
+<p>The exeuctor of GraphQL queries uses the type resolver when it wants
+to make an abstract object concrete. The executor can then continue
+working with the concretized object and thus determine if fragments
+should expand and so on.</p>
+</div>
+<div class="paragraph">
+<p>A type resolver takes an Erlang term as input and provides a resolved
+type as output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-spec execute(Term) -&gt; {ok, Type} | {error, Reason}
+  when
+    Term :: term(),
+    Type :: atom(),
+    Reason :: term().</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Term</code> is often some piece of data loaded from a database, but it
+can be any representation of data in the Erlang system. The purpose of
+the <code>execute/1</code> function is to analyze that data and return what type
+it belongs to (as an atom). In our case, we can assume resolution
+works on mnesia objects. Hence, by matching on mnesia objects, we can
+resolve the type in the Graph of those objects (file: <code>sw_core_type.erl</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(#starship{}) -&gt; {ok, 'Starship'};
+execute(#planet{}) -&gt; {ok, 'Planet'};
+execute(#person{}) -&gt; {ok, 'Person'};
+execute(#film{}) -&gt; {ok, 'Film'};
+execute(_Otherwise) -&gt; {error, unknown_type}.</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In larger implementations, you often use multiple type resolvers
+and use the mapping rules to handle different abstract types via
+different resolvers. Also, type resolution is likely to forward
+decisions to other modules and merely act as a dispatch layer for the
+real code. The current implementation allows for a great deal of
+flexibility for this reason.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Use pattern matching in the <code>execute/1</code> function to vary what
+kinds of data you can process. Do not be afraid to wrap your objects
+into other objects if that makes it easier to process. Since you can
+handle any Erlang term, you can often wrap your objects in a map of
+metadata and use the metadata for figuring out the type of the object.
+See <a href="#object-representation">Object Representation</a> for a discussion of several commonly
+used variants.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="object-resolution">Object Resolution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The meat of a GraphQL system is the resolver for objects. You have a
+concrete object on which you are resolving <em>fields</em>. As we shall see,
+this is used for two kinds of things a client want to do with the
+graph.</p>
+</div>
+<div class="paragraph">
+<div class="title">Raw Field Access</div>
+<p>First, field resolution on objects are used because you have a loaded
+object and the client has requested some specific fields on that
+object. For example, you may have loaded a <strong>Starship</strong> and you might be
+requesting the <strong>name</strong> of the Starship.</p>
+</div>
+<div class="paragraph">
+<div class="title">Derived Field Access</div>
+<p>Second, field resolution on objects are used to <em>derive</em> values from
+other values. Suppose a <strong>Starship</strong> had two fields internally
+<strong>cargoCapacity</strong> and <strong>cargoLoad</strong>. We might want to compute the load
+factor of the starship as a value between 0.0 and 1.0. This amounts to
+running the computation <code>CargoLoad / CargoCapacity</code>. Rather than
+storing this value in the data, we can just compute it by derivation
+if the client happens to request the field. Otherwise, we abstain from
+computing it.</p>
+</div>
+<div class="paragraph">
+<p>An advantage of derivation is that you can handle things lazily. Once
+the client wants a field, you start doing the work for computing and
+returning that field. Also, derivation improves data normalization in
+many cases. Modern computers are fast and data fetching tend to be the
+major part of a client request. A bit of computation before returning
+data is rarely going to be dominant in the large scale of things.</p>
+</div>
+<div class="paragraph">
+<div class="title">Data Fetching Field Access</div>
+<p>Finally, field resolution on objects are used to <em>fetch</em> objects from
+a backend data store. Consider the field <code>node(id: ID!)</code> on the
+<code>Query</code> object in the schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">type Query {
+  +description(text: "Relay Modern specification Node fetcher")
+  node(id : ID!) : Node
+  +description(text: "Fetch a starship with a given Id")
+  starship(id : ID!) : Starship
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When a <code>query</code> starts executing, an <em>intial_term</em> is injected in by
+the developer. By convention this object is often either <code>null</code> or
+<code>#{}</code> signifying we currently have no current object. The reference to
+the <code>node</code> field states that the client wants to load a <em>Node</em> object.
+So we fetch the given node from the database and return the data back
+to GraphQL.</p>
+</div>
+<div class="paragraph">
+<p>The GraphQL server now does two things:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First, it recursively digs into the returned <em>Node</em>. It places its
+&#8220;cursor&#8221; on the Node and then it does <a href="#type-resolution">Type Resolution</a> on the
+Node in order to make it concrete. This may uncover the Node is
+really a <strong>Planet</strong> and then the query proceeds by executing fields
+in the planet type. Once the recursion ends, we have constructed a
+<code>Response</code> for the <code>node</code> object.</p>
+</li>
+<li>
+<p>Next, it returns the underlying recursive response as a mapping
+<code>"node" &#8658; Response</code> and returns this for the field. Once every
+field on the top-level <code>Query</code> object are satisfied, we have our
+final response.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Hopefully it is clear that the field resolution here is used as a way
+to load and fetch data. The same mechanism is used to &#8220;follow&#8221;
+associations between data in the database, by lazily executing JOINs
+on the database level.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+It is also possible to return a whole subtree at once when a
+field is resolved. This correspond to eager/strict loading in an ORM
+and is useful in the situation where you expect the client to request
+the data with high probability, or when fetching the extra data is
+done anyway. In this case, making the data available for further query
+in the Graph is almost always beneficial. The price for fetching the
+data has already been paid anyway. The implementation is simply to
+make sure that recursive objects test if the data are already loaded.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_execution">Execution</h3>
+<div class="paragraph">
+<p>We start with plain field access on the <strong>Planet</strong> and <strong>Starship</strong> types.
+Our mapping rules have mapped <code>'Starship' &#8658; sw_core_starship</code> so the
+field handling lives in the module <code>sw_core_starship</code>. Likewise, we
+map <code>'Planet' &#8658; sw_core_planet</code> and so on. In general, object
+resolution is handled by a single function, <code>execute/4</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-spec execute(Ctx, Obj, Field, Args) -&gt;
+                {ok, Result} | {error, Reason}
+  when
+    Ctx :: context(), % <i class="conum" data-value="1"></i><b>(1)</b>
+    Obj :: term(), % <i class="conum" data-value="2"></i><b>(2)</b>
+    Field :: binary(), % <i class="conum" data-value="3"></i><b>(3)</b>
+    Args :: #{ binary() =&gt; term() } % <i class="conum" data-value="4"></i><b>(4)</b>
+    Result :: term(),
+    Reason :: term().</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The current context set by the developer and derived from the
+position in the graph.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The current object the cursor points to</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The field the client has requested</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The arguments to the field as a map</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The function is called <code>execute</code> because it relates to the GraphQL
+notion of executing a query on the server side. And because the word
+&#8220;execution&#8221; maps precisely onto what you are doing. You are invoking
+functions on the server side, relating to the query by the client.</p>
+</div>
+<div class="paragraph">
+<p>In the following we give a detailed explanation of each of the fields
+here and what their purpose are:</p>
+</div>
+<div class="paragraph">
+<div class="title">Ctx</div>
+<p>The <a href="#context">Context</a> is a map which contains contextual information about
+the query. Its primary purpose is that the developers can set data
+into the context at the top-level when they start processing a GraphQL
+query. In turn, the context is often stuffed with data from the
+outside of the GraphQL system:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User authentication information.</p>
+</li>
+<li>
+<p>The source IP address executing the query.</p>
+</li>
+<li>
+<p>What type of transport was used to initiate the query.</p>
+</li>
+<li>
+<p>Process <code>pid()</code> values for processes that pertains to this query.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additionally, the context also contains some base information added by
+the GraphQL system. Most notably the current object type and field.
+This allows one to build some extremely generic <code>execute/4</code> functions
+that handles large classes of objects.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Sizable graph schemas tend to contain a number of administrative
+&#8220;filler&#8221; objects used to glue other objects together. These are
+often possible to handle by a single default executor which looks at
+the context in order to derive what to do with the particular object.
+If an type becomes non-generic, you can then work gradually and shift
+it to a specific <code>execute/4</code> handler for that particular object.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<div class="title">Obj</div>
+<p>The <code>Obj</code> field points to the current object we are rendering for,
+e.g. a <strong>Starship</strong> given as the a value <code>#starship{&#8230;&#8203;}</code>. This field is
+the binding of a type to a concrete object we are working on. As an
+example, a B-wing is a <strong>Starship</strong>, an X-wing is a <strong>Starship</strong>, and a
+TIE-fighter is a <strong>Starship</strong>. So when the <code>execute/4</code> code runs, it
+needs to know what concrete loaded object is in play. Another way of
+seeing it is that the <code>Obj</code> is the object the <a href="#cursor">Cursor</a> is currently
+pointing at in the Graph Rendering.</p>
+</div>
+<div class="paragraph">
+<div class="title">Field</div>
+<p>The field is the current field which the client requested in the
+object. The field is also inside the context, but because it is very
+common it is also an argument to the function directly. The field
+allows you to pattern match on different fields of the query.</p>
+</div>
+<div class="paragraph">
+<div class="title">Args</div>
+<p>Args is always of type <code>#{ binary() &#8658; term() }</code> mapping input
+arguments for the field to values for that field. If a client queries</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query {
+  node(id: "SOMEID") {
+     __typename
+     id
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then we will have <code>Args = #{ &lt;&lt;"id"&gt;&gt; &#8658; &lt;&lt;"SOMEID"&gt;&gt;}</code> and we
+can proceed by pattern matching on this object.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="input-argument-rules">Input argument rules</h3>
+<div class="paragraph">
+<p>An important thing to cover at this point is how mappings of input
+arguments is done in GraphQL. A GraphQL client has <em>no</em> way of
+inputting a <code>null</code> value. It is not allowed for the client to ever use
+a <code>null</code> in any input position. Rather, the way a client specifies is
+has no value, is by omission of a given input field.</p>
+</div>
+<div class="paragraph">
+<p>The GraphQL system considers the omission of a field depending on the
+configuration of that field:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the field has a default value, the field takes on the default
+value.</p>
+</li>
+<li>
+<p>If the field is non-null, the query is rejected. The client must
+supply a value for a non-null field.</p>
+</li>
+<li>
+<p>If the field has no default value, the mapping <code>Field &#8658; null</code>
+is added to the input map.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In short, an object resolution module can assume that <em>all</em> fields are
+always present in the <code>Args</code> map, either populated by a default value
+or by a <code>null</code> value if that field has no default. It is a brilliant
+design choice by the GraphQL specification designers: clients have one
+unambigous way to input &#8220;no value&#8221; and servers have one unambigous
+way of processing &#8220;no value&#8221;.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Add sane defaults to your schema. If an input is a list, default
+it to the empty list <code>[]</code>, such that you code can <code>lists:map/2</code> over
+the input. But because the list is <code>[]</code> nothing happens. This can be
+used to eliminate code paths in your code by using default values for
+the data structures you are working on.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_handling_planets">Handling Planets</h3>
+<div class="paragraph">
+<p>In our system, we have a module <code>sw_core_planet</code> which handles the
+execution parts of planets. Planets are rather simple object in that
+most of their internals are directly mapped to an underlying Mnesia
+database. The <code>execute/4</code> function describes how the Mnesia records
+are mapped into the GraphQL world of fields the client requested.</p>
+</div>
+<div class="paragraph">
+<p>The only exported function is <code>execute/4</code> which we dissect a bit here.
+We omit some parts which are not very interesting as of now:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) -&gt;
+    case Field of
+        &lt;&lt;"id"&gt;&gt; -&gt; {ok, sw_core_id:encode({'Planet', Planet#planet.id})};
+        &lt;&lt;"edited"&gt;&gt; -&gt; {ok, Planet#planet.edited};
+        &lt;&lt;"climate"&gt;&gt; -&gt; {ok, Planet#planet.climate};
+        &lt;&lt;"surfaceWater"&gt;&gt; -&gt; {ok, Planet#planet.surface_water};
+        &lt;&lt;"name"&gt;&gt; -&gt; {ok, Planet#planet.name};
+        &lt;&lt;"diameter"&gt;&gt; -&gt; {ok, Planet#planet.diameter};
+        &lt;&lt;"rotationPeriod"&gt;&gt; -&gt; {ok, Planet#planet.rotation_period};
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In our case, since we are working with Mnesia data, we need a
+projection function to take fields out of the record and return them
+to the GraphQL system. Note that we can use this to rename fields. The
+GraphQL specifies <code>rotationPeriod</code> whereas we use the Erlang idiomatic
+internal name <code>rotation_period</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you think this is a lot of typing, you can choose to represent
+Planets as a <code>map()</code> and then the execution function is basically</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(Ctx, Obj, Field, Args) -&gt;
+    maps:get(Field, Obj, {ok, null}).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>but the price you pay for doing so is that the names in the <code>Obj</code> has
+to match the names in the GraphQL specification. In our experience, it
+is often the case that things evolve and you need to rename fields. So
+this is not always a desirable solution.</p>
+</div>
+<div class="sect3">
+<h4 id="_id_handling">Id handling</h4>
+<div class="paragraph">
+<p>In our system, we need to turn an ID on the mnesia side into an ID in
+GraphQL. Luckily, we&#8217;ve already defined the ID encoder/decoder in the
+section <a href="#identity-generation">[identity-generation]</a>, so we can simply utilize those
+methods whenever we want to return an ID.</p>
+</div>
+<div class="paragraph">
+<p>An alternative to the solution depicted here is to encode the ID
+whenever you load the object from the underlying database; and then
+undo that encoding whenever you store the object back. The best
+solution depends on your preferences and where your API boundary
+between the GraphQL contract and the database is.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_node_loading">Node Loading</h3>
+<div class="paragraph">
+<p>Our <strong>Planet</strong> execute function handles the case where we have a
+loaded planet and want to output its contents. But it doesn&#8217;t say
+anything about how to fetch a planet from the database. This section
+handles the loading of data from Mnesia while running GraphQL queries.</p>
+</div>
+<div class="paragraph">
+<p>The type <strong>Query</strong> in the GraphQL specification (see
+<a href="#queries-and-mutations">Queries &amp; Mutations</a>) contains a field <code>node</code> and a field
+<code>planet</code> which are used to load any node or a planet respectively.
+The loader is the same, and <code>planet</code> is just a specialization of the
+<code>node</code> loader.</p>
+</div>
+<div class="paragraph">
+<p>Let us define the execution function for handling loading. We simply
+extract the interesting data and forward our query to a plain Erlang
+function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, _DummyObj, &lt;&lt;"node"&gt;&gt;, #{ &lt;&lt;"id"&gt;&gt; := ID }) -&gt;
+    load_node(any, ID);
+execute(_Ctx, _DummyObj, &lt;&lt;"starship"&gt;&gt;, #{ &lt;&lt;"id"&gt;&gt; := ID }) -&gt;
+    load_node(['Starship'], ID).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The function which actually loads the object can now be written:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">load_node(Types, ID) when is_binary(ID) -&gt;
+    case sw_core_id:decode(ID) of
+        {ok, Decoded} -&gt;
+            load_node_(Types, Decoded);
+        {error, Reason} -&gt;
+            {error, Reason}
+    end.
+
+load_node_(any, {Type, MID}) -&gt;
+    sw_core_db:load(Type, MID);
+load_node_(TypeList, {Type, MID}) -&gt;
+    case lists:member(Type, TypeList) of
+        true -&gt;
+            sw_core_db:load(Type, MID);
+        false -&gt;
+            {error, wrong_type}
+    end.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To load a particular node, we first attempt to decode the ID into its
+type and its mnesia ID. Once we know its decoded form, we have a
+helper routine which carries out the actual load. The loader asks the
+database to load data, and also verifies the allowed types if needed.</p>
+</div>
+<div class="sect3">
+<h4 id="_db_loading">DB Loading</h4>
+<div class="paragraph">
+<p>The database code contains a way to fetch various objects from the
+database and return in a GraphQL friendly representation. First, we
+have a translator, which can tell us what a given GraphQL type points
+to in the database</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">record_of('Starship') -&gt; starship;
+record_of('Planet') -&gt; planet;
+record_of('Person') -&gt; person;
+record_of('Species') -&gt; species;
+record_of('Film') -&gt; film.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This may seem a bit redundant, but in a larger system it is common to
+have GraphQL objeccts backed by several data stores. In this case, the
+mapping also becomes a data source router which tells the system where
+to go and fetch a given piece of data. Another common case is that the
+naming in the database does not match the naming in the GraphQL
+schema. In general, see the section <a href="#non-isomorphism">Avoid Isomorphic representations</a>.</p>
+</div>
+<div class="paragraph">
+<p>The data loader presented here uses a Mnesia transaction to load the
+data. It should be of no surprise to a reader who knows a bit about
+Mnesia:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">load(Type, ID) -&gt;
+    MType = record_of(Type),
+    F = fun() -&gt;
+                [Obj] = mnesia:read(MType, ID, read),
+                Obj
+        end,
+    txn(F).
+
+%% @doc txn/1 turns a mnesia transaction into a GraphQL friendly return
+%% @end
+txn(F) -&gt;
+    case mnesia:transaction(F) of
+        {atomic, Res} -&gt; {ok, Res};
+        {aborted, Reason} -&gt; {error, Reason}
+    end.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For a load this simple, the transaction is probably overkill in
+Mnesia. A dirty read could probably have been used instead, and if you
+need to handle extreme amounts of data, you might want to avoid the
+transaction code and just do a dirty read. For this example though, we
+keep things straight and use transactions all over the place to make
+the interface more consistent.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_anatomy_of_a_query">Anatomy of a query</h3>
+<div class="paragraph">
+<p>We now turn our attention to the notion of executing a query. It is
+instructional because it explains how a query is executed in the
+GraphQL system while using the parts we have defined up until now.</p>
+</div>
+<div class="paragraph">
+<p>Suppose we look at a query such as the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query PlanetQuery {
+  node(id: "UGxhbmV0OjI=") {
+    ...PlanetFragment
+  }
+}
+
+fragment PlanetFragment on Planet {
+  name
+  climate
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and look at how the system will execute such a query.</p>
+</div>
+<div class="paragraph">
+<p>First, query of the keyword <code>query</code> the system will begin by starting
+the <em>root</em> of the query on the <code>Query</code> object in the Graph. Since this
+is mapped by the schema into the module <code>sw_core_query</code>, we start by
+executing fields in that module. The current object points to what is
+the <em>initial object</em> of the query which is set by the developer. We
+ignore that object in our implementation.</p>
+</div>
+<div class="paragraph">
+<p>Next, since the field <code>node</code> is requested, we execute the call</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">sw_core_query:execute(Ctx, Obj,
+  &lt;&lt;"node"&gt;&gt;, #{ &lt;&lt;"id"&gt;&gt; =&gt; &lt;&lt;"UGxhbmV0OjI="&gt;&gt; }),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which will execute <code>sw_core_db:load/2</code> on the Starship we requested.
+The value returned is the value <code>{ok, #planet{} = Planet}</code> for the
+planet we requested.</p>
+</div>
+<div class="paragraph">
+<p>Now, because the type of the <code>node</code> field is <strong>Node</strong>, the system will
+know that it has loaded something of <em>interface</em> type. Such a type is
+abstract and must be made concrete. Thus we use <a href="#type-resolution">Type Resolution</a>
+and a call</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">sw_core_type:execute(#planet{} = Planet),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>is performed. This call will return <code>{ok, 'Planet'}</code> as the value.
+So the system knows that it can proceed by assuming the <strong>Node</strong> was
+really a <strong>Planet</strong>.</p>
+</div>
+<div class="paragraph">
+<p>The cursor now moves to the planet value and this becomes the new
+object of the query. Field resolution and fragment expansion for the
+planet object now begins. Calls to <code>sw_core_planet:execute/4</code> are
+made 3 times for the fields <code>id</code>, <code>name</code> and <code>climate</code>. Our projection
+functions return values inside the planet, and this becomes part of
+the GraphQL response to the client.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p>To recap: the GraphQL system drives the query and makes callbacks at
+appropriate times to your resolver function in order to satisfy the
+query. You only have to implement the callbacks. The looping itself is
+handled by GraphQL.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_transports">Transports</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>GraphQL is a transport-agnostic system. It can be used on top of every
+transport you can imagine. This means the GraphQL system must provide
+its own way to tell the outside world about errors, since it cannot
+rely on the surrounding system to do so.</p>
+</div>
+<div class="paragraph">
+<p>The interface to GraphQL at its very base needs support for sending
+requests and recieving replies. There is relatively little need for
+out-of-order requests since queries tend to be large and
+all-encompassing.</p>
+</div>
+<div class="paragraph">
+<p>However, newer parts of GraphQL which is currently being tried out has
+support for delayed and streamed responses.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup> Because
+of this, GraphQL will need a more powerful transport for those kinds
+of features.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Current state</div>
+<div class="paragraph">
+<p>The current Erlang GraphQL implementation does not yet support the optional
+tags such as <code>@streamed</code> and <code>@defer</code>. It is planned for a later
+version when the basics are down and works in a robust way.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This tutorial implements GraphQL on top of HTTP through the use of the
+Cowboy web server by Loïc Hoguin. We currently use cowboy version
+1.1.x.</p>
+</div>
+<div class="sect2">
+<h3 id="cowboy-handler">Cowboy Handler</h3>
+<div class="paragraph">
+<p>To make GraphQL work with Cowboy, we use the application <code>sw_web</code>.
+This application then uses <code>sw_core</code> in order to run the system. One
+could imagine adding other applications to the system if you need more
+transports. The web application needs a dispatcher in order to run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">    Dispatch =
+        cowboy_router:compile(
+          [{'_',
+            [{"/assets/[...]", cowboy_static,
+              {priv_dir, sw_web, "site/assets"}},
+             {"/", sw_web_graphql_handler,
+              {priv_file, sw_web, "site/index.html"}}
+            ]}]),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We could have picked any place to run the GraphQL interface, but this
+code uses <code>/</code> at the root.</p>
+</div>
+<div class="paragraph">
+<p>The Cowboy setup is completely out of the box, except that we
+manipulate a couple of variables in order to make cowboy play better
+with <a href="#graphiql">GraphiQL</a>. Look at the file <code>sw_web_app.erl</code> for the details.</p>
+</div>
+<div class="paragraph">
+<p>We set up the cowboy handler as a REST handler. Mostly because it is
+fairly easy to do and because it automates a large set of things we&#8217;d
+like to do. Our plan is to use content-negotiation: a web server will
+be served an UI for GraphQL by default, but if the a client request
+comes in, we will pass that to the GraphQL system.</p>
+</div>
+<div class="paragraph">
+<p>The <code>cowboy_rest</code> model stems from an idea pioneered by Webmachine. We
+can depict an HTTP request as a flow chart where each decision point
+is a node in the chart. Since every request follow this flow chart, it
+makes sense to use a classic Erlang model: write the generic/general
+parts inside a main module <code>cowboy_rest</code>, and then provide it with a
+callback module. Whenever a decision node is reached, the callback
+will be executed and the decision will follow the choice made by the
+callback. If no callback function is present, we use a default
+resolution.</p>
+</div>
+<div class="sect3">
+<h4 id="_handler_code">Handler code</h4>
+<div class="paragraph">
+<p>The handler starts by declaring the callbacks it has. Each of these
+will described in the following sections for those who are not
+familiar with <code>cowboy_rest</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-module(sw_web_graphql_handler).
+
+%% Cowboy Handler Interface
+-export([init/3]).
+
+%% REST callbacks
+-export([
+    rest_init/2,
+    allowed_methods/2,
+    resource_exists/2,
+    content_types_provided/2,
+    content_types_accepted/2,
+    charsets_provided/2
+]).
+
+%% Data input/output callbacks
+-export([
+    from_json/2,
+    to_json/2,
+    to_html/2
+]).</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_initialization_rest_handling">Initialization &amp; REST handling</h4>
+<div class="paragraph">
+<p>In this section we describe how the cowboy handler is used to dispatch
+a request to GraphQL. We first focus on using <code>cowboy_rest</code> to handle
+the request basics so we have an easier job later on.</p>
+</div>
+<div class="listingblock">
+<div class="title">init/3</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">init(_Transport, _Req, _Options) -&gt;
+    {upgrade, protocol, cowboy_rest}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When cowboy dispatches to the <code>sw_web_graphql_handler</code> module, this
+function is called upon initialization.</p>
+</div>
+<div class="paragraph">
+<p>We use the <em>upgrade</em> feature of cowboy to upgrade to the <code>cowboy_rest</code>
+protocol for the remainder of the module. This means <code>cowboy_rest</code>
+takes over operation and we provide callbacks to the general restful
+handler for the parts we want to override.</p>
+</div>
+<div class="paragraph">
+<p>The first thing <code>cowboy_rest</code> will do is to call the next function:</p>
+</div>
+<div class="listingblock">
+<div class="title">rest_init/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">rest_init(Req, {priv_file, _, _} = PrivFile) -&gt;
+    {Method, Req2} = cowboy_req:method(Req),
+    {ok, Req2,
+     #{ method =&gt; Method,
+        index_location =&gt; PrivFile }}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The purpose of this function is to initialize a state with relevant
+information. We are passed data from the dispatcher which we store in
+an Erlang map so we can refer to the information later.</p>
+</div>
+<div class="listingblock">
+<div class="title">allowed_methods/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">allowed_methods(Req, State) -&gt;
+    {[&lt;&lt;"GET"&gt;&gt;, &lt;&lt;"POST"&gt;&gt;], Req, State}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This callback is used by Cowboy to figure out what the valid methods
+are for this particular call. We allow <strong>GET</strong> and <strong>POST</strong> and reject any
+other method, since we just want to use REST as a simple transport and
+not as a full-blown system. Later we will show why we allow both.</p>
+</div>
+<div class="listingblock">
+<div class="title">content_types_accepted/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">content_types_accepted(Req, State) -&gt;
+    {[
+        {{&lt;&lt;"application"&gt;&gt;, &lt;&lt;"json"&gt;&gt;, []}, from_json}
+    ], Req, State}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What types of input we accept. The only way to execute a GraphQL query
+is to provide the query embedded in a JSON document. This is currently
+the way the GraphiQL tools expects its input.</p>
+</div>
+<div class="listingblock">
+<div class="title">content_types_provided/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">content_types_provided(Req, State) -&gt;
+    {[
+        {{&lt;&lt;"application"&gt;&gt;, &lt;&lt;"json"&gt;&gt;, []}, to_json},
+        {{&lt;&lt;"text"&gt;&gt;, &lt;&lt;"html"&gt;&gt;, []}, to_html}
+    ], Req, State}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The media types we can provide to a client:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the client requests <code>text/html</code> we will call the <code>to_html</code>
+function.</p>
+</li>
+<li>
+<p>If the client requests <code>application/json</code> we will call the <code>to_json</code>
+function.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This allows us to handle the content different depending on who is
+requesting. The browser will by default ask for <code>text/html</code> which we
+use to feed it a page containing <a href="#graphiql">GraphiQL</a>. Once the GraphiQL
+system is loaded into the browser, it will execute GraphQL queries by
+means of setting the desired content type to <code>application/json</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">charsets_provided/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">charsets_provided(Req, State) -&gt;
+    {[&lt;&lt;"utf-8"&gt;&gt;], Req, State}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We only provide UTF-8. By doing so, we can simplify our backend a bit
+because it doesn&#8217;t have to reencode data as long as all the data we
+store are in proper UTF-8 encoding. A more advanced system would
+analyze the desired content type from the client and eventually
+restructure its documents to fit this desired content type. For
+simplicity, we omit this part.</p>
+</div>
+<div class="listingblock">
+<div class="title">resource_exists/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">resource_exists(Req, #{ method := &lt;&lt;"GET"&gt;&gt; } = State) -&gt;
+    {true, Req, State};
+resource_exists(Req, #{ method := &lt;&lt;"POST"&gt;&gt; } = State) -&gt;
+    {false, Req, State}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <code>cowboy_rest</code>, the call here determines if the resource we
+requested exists. Suppose, for instance, that we issue a GET request
+and the resource doesn&#8217;t exist. This will make cowboy return a 404 or
+410 status code for the given resource. On the other hand, a POST will
+use this to drive its construction of a new object in a RESTful
+manner.</p>
+</div>
+<div class="paragraph">
+<p>We need to wrangle the cowboy system a bit here. We simply call that
+for any GET request, the resource exists, and for any POST request
+there is a new resource we can create.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_processing">Processing</h4>
+<div class="paragraph">
+<p>We now turn our attention to the actual processing of the GraphQL
+query. The first case is when the client requests <code>text/html</code> in which
+case we just feed data from our static part of the site:</p>
+</div>
+<div class="listingblock">
+<div class="title">to_html/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">to_html(Req, #{ index_location :=
+                    {priv_file, App, FileLocation}} = State) -&gt;
+    Filename = filename:join(code:priv_dir(App), FileLocation),
+    {ok, Data} = file:read_file(Filename),
+    {Data, Req, State}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Actual query processing is a bit more involved. Here is an overview of
+what we need to do:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Gather parameters. The system allows several ways of entering
+parameters, either as part of the URL, or as part of an input
+document.</p>
+</li>
+<li>
+<p>Split the parameters into the <em>query</em>, the <em>operation name</em>, and the
+<em>parameters</em> for the operation.</p>
+</li>
+<li>
+<p>Parse, type check and validate the query</p>
+</li>
+<li>
+<p>Create an initial context</p>
+</li>
+<li>
+<p>Create an initial object for the cursor to point to</p>
+</li>
+<li>
+<p>Execute the query will all of the above</p>
+</li>
+<li>
+<p>Format a proper response to the client</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">to_json/2 &amp; from_json/2</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">json_request(Req, State) -&gt;
+    case gather(Req) of
+        {error, Reason} -&gt;
+            err(400, Reason, Req, State);
+        {ok, Req2, Decoded} -&gt;
+            run_request(Decoded, Req2, State)
+    end.
+
+from_json(Req, State) -&gt; json_request(Req, State).
+to_json(Req, State) -&gt; json_request(Req, State).</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The main function delegate work to other functions in a top-down
+fashion. In the following we will describe each of these parts. We
+want the processing to work both for a POST and for a GET, so we
+implement the same path on top of the functions <code>from_json</code> and
+<code>to_json</code>. Again, this is a bit of wrangling of <code>cowboy_rest</code> to make
+it happy with what is going on and because <a href="#graphiql">GraphiQL</a> doesn&#8217;t really
+use proper RESTful invocation.</p>
+</div>
+<div class="paragraph">
+<div class="title">Gathering inputs</div>
+<p>The first thing we must do is to gather the input variables, the body
+and the bindings. Then we must split those data into the <em>query
+document</em> the <em>operation name</em> and the <em>parameters/variables</em>. The
+rule, used by <a href="#graphiql">GraphiQL</a> is that you can provide these data in the
+URL as parameters or in the body. As a consequence, we must go looking
+for data in multiple places</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">gather(Req) -&gt;
+    {ok, Body, Req2} = cowboy_req:body(Req),
+    {Bindings, Req3} = cowboy_req:bindings(Req2),
+    Params = maps:from_list(Bindings),
+    try jsx:decode(Body, [return_maps]) of
+        JSON -&gt;
+            gather(Req3, JSON, Params)
+    catch
+        error:badarg -&gt;
+            {error, invalid_json_body}
+    end.
+
+gather(Req, Body, Params) -&gt;
+    QueryDocument = document([Params, Body]),
+    case variables([Params, Body]) of
+        {ok, Vars} -&gt;
+            Operation = operation_name([Params, Body]),
+            {ok, Req, #{ document =&gt; QueryDocument,
+                         vars =&gt; Vars,
+                         operation_name =&gt; Operation}};
+        {error, Reason} -&gt;
+            {error, Reason}
+    end.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Most of this is standard operating procedure for a Cowboy application,
+we just need to create the necessary helper routines for digging out
+the necessary data:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">document([#{ &lt;&lt;"query"&gt;&gt; := Q }|_]) -&gt; Q;
+document([_|Next]) -&gt; document(Next);
+document([]) -&gt; undefined.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>document</code> function searches a list of <em>places</em> for the query
+document. If found, the query document is returned.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">variables([#{ &lt;&lt;"variables"&gt;&gt; := Vars} | _]) -&gt;
+  if
+      is_binary(Vars) -&gt;
+          try jsx:decode(Vars, [return_maps]) of
+              null -&gt; {ok, #{}};
+              JSON when is_map(JSON) -&gt; {ok, JSON};
+              _ -&gt; {error, invalid_json}
+          catch
+              error:badarg -&gt;
+                  {error, invalid_json}
+          end;
+      is_map(Vars) -&gt;
+          {ok, Vars};
+      Vars == null -&gt;
+          {ok, #{}}
+  end;
+variables([_ | Next]) -&gt;
+    variables(Next);
+variables([]) -&gt;
+    {ok, #{}}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>variables</code> function carries out the same search in a list of
+<em>places</em> for the variables section. One problem here is that the
+variables section, when it is part of a JSON document, can be provided
+as is embedded in the JSON. Or it can be an escaped string of JSON
+which has to be decoded. So we let the code handle both cases.</p>
+</div>
+<div class="paragraph">
+<p>The function <code>operation_name</code> follows the same idea.</p>
+</div>
+<div class="paragraph">
+<div class="title">Running the request</div>
+<p>The request processing starts by a parsing step. If that step fails,
+we can exit with an error. If it succeeds, we proceed by running
+pre-processing. The output of the parsing step is an abstract syntax
+tree.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">run_request(#{ document := undefined }, Req, State) -&gt;
+    err(400, no_query_supplied, Req, State);
+run_request(#{ document := Doc} = ReqCtx, Req, State) -&gt;
+    case graphql:parse(Doc) of
+        {ok, AST} -&gt;
+            run_preprocess(ReqCtx#{ document := AST }, Req, State);
+        {error, Reason} -&gt;
+            err(400, Reason, Req, State)
+    end.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The pre-processing step handles everything up to execution of the
+Query. This step can be done once and for all for a given query and
+the same query could be re-run with the same document over and over.
+It corresponds to a prepared statement in the SQL world. In the
+pre-processing step, we carry out several of the needed operations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">run_preprocess(#{ document := AST } = ReqCtx, Req, State) -&gt;
+    try
+        Elaborated = graphql:elaborate(AST), % <i class="conum" data-value="1"></i><b>(1)</b>
+        {ok, #{
+           fun_env := FunEnv,
+           ast := AST2 }} = graphql:type_check(Elaborated), % <i class="conum" data-value="2"></i><b>(2)</b>
+        ok = graphql:validate(AST2), % <i class="conum" data-value="3"></i><b>(3)</b>
+        run_execute(ReqCtx#{ document := AST2, fun_env =&gt; FunEnv }, Req, State)
+    catch
+        throw:Err -&gt;
+            err(400, Err, Req, State)
+    end.</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Elaboration is a step which runs over the query and <em>annotates</em>
+the query with type information from the schema where possible. It
+makes the steps after this one much simpler because they can often
+look up information annotated on the abstract syntax tree.
+Elaboration also checks the general structure of the query since
+it annotates parts of the query according to the type information
+in the schema.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Type checking verifies the elaborated syntax tree. It checks that
+every elaborated part of the query is well-defined with respect to
+the types which are allowed in that position. The output of the
+type checking is a new syntax tree, <code>AST2</code> on which scalar
+conversion has been run (for static variables) as an optimization;
+and a <code>FunEnv</code> which is the type scheme for each operation in the
+query.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</sup></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Any query which is well-defined typewise can be executed. Yet many
+of those queries are nonsensical in one way or another. If they
+are executed, they yield results which are valid responses&#8212;&#8203;but
+they are often not what the client meant. Validation is a step
+which adds a &#8220;linting&#8221; pass on top of the system and rejects
+queries which are likely to be bad. For instance, it is checked
+that every fragment in the document has at least one use, or that
+a fragment spread expansion has at least one match. As queries
+grow in size and become automatically generated, validation
+becomes even more important.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once preprocessing is complete, we can execute the query itself:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">run_execute(#{ document := AST,
+               fun_env := FunEnv,
+               vars := Vars,
+               operation_name := OpName }, Req, State) -&gt;
+    Coerced = graphql:type_check_params(FunEnv, OpName, Vars), % <i class="conum" data-value="1"></i><b>(1)</b>
+    Ctx = #{
+      params =&gt; Coerced,
+      operation_name =&gt; OpName },
+    Response = graphql:execute(Ctx, AST), % <i class="conum" data-value="2"></i><b>(2)</b>
+    ResponseBody = sw_web_response:term_to_json(Response), % <i class="conum" data-value="3"></i><b>(3)</b>
+    Req2 = cowboy_req:set_resp_body(ResponseBody, Req), % <i class="conum" data-value="4"></i><b>(4)</b>
+    {ok, Reply} = cowboy_req:reply(200, Req2),
+    {halt, Reply, State}.</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Type checking of parameters is a separate operation from type
+checking the document. This is because the preprocessing of the
+document can be handled separately from running the actual query.
+Since an <em>operation</em> in an existing document may have <em>variables</em>,
+we must type check these variables for correctness. Preprocessing
+yielded a function environment of the operations in the query. So
+we proceed by checking the <code>Vars</code> against the `FunEnv&#8217;s type
+schema.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Execution proceeds on <em>coerced</em> variables which has been processed
+for input coercion.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>jsx</code> application is rather finicky with what it accepts as
+input, so we provide a wrapper which canonicalizes Erlang terms
+into JSON-valid responses (see <a href="#response-formatter">Response formatter</a>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>In order to make <code>cowboy</code> behave, we override its normal response
+path. This gives us the processing path of <code>cowboy_rest</code> up until
+we start returning data and then we overrride the system in order
+to satisfy the typical response expected by <a href="#graphiql">GraphiQL</a> and
+typical GraphQL systems.</td>
+</tr>
+</table>
+</div>
+<div id="response-formatter" class="paragraph">
+<div class="title">Response formatter</div>
+<p>The <code>jsx</code> application is strict when processing Erlang terms into JSON
+output. If an Erlang term does not match the JSON mapping precisely,
+an error is raised, which leads to a 500 status code and <code>Internal
+Server Error</code>. Since it is pretty common that errors contain data
+which are not a priori JSON, we run a post-processing step on
+responses on errors. We simply walk the Erlang term structure with a
+transformation function which fixups the data if it is not valid JSON.</p>
+</div>
+<div class="paragraph">
+<p>This allows a greater range of responses and everything which is valid
+JSON is handled as valid JSON. In particular, it avoids a large set of
+errors leading to hard-to-understand <code>error:badarg</code> failures from
+<code>jsx</code>.</p>
+</div>
+<div class="paragraph">
+<p>See the file <code>sw_web_response</code> for the formatter and encoder.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_errors">Errors</h4>
+<div class="paragraph">
+<p>Central to any GraphQL system is proper error handling. We handle
+errors through a helper routine in the cowboy handler which can
+transform a GraphQL error into an error which GraphQL systems can
+understand:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">err(Code, Msg, Req, State) -&gt;
+    Formatted = iolist_to_binary(io_lib:format("~p", [Msg])),
+    Err = #{ type =&gt; error,
+             message =&gt; Formatted },
+    Body = jsx:encode(#{ errors =&gt; [Err] }),
+    Req2 = cowboy_req:set_resp_body(Body, Req),
+    {ok, Reply} = cowboy_req:reply(Code, Req2),
+    {halt, Reply, State}.</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="graphiql">GraphiQL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The ubiquituous front-end for GraphQL servers is a system called
+GraphiQL, <a href="https://github.com/graphql/graphiql" class="bare">https://github.com/graphql/graphiql</a>, which provides a nice
+user interface for a GraphQL server. We use this system as the
+front-end in the demo, whereas real applications will of course skip
+this front-end and just call directly to the GraphQL backend.</p>
+</div>
+<div class="paragraph">
+<p>Having a nice UI for a GraphQL server helps tremendously in
+development however. The UI uses the <em>introspection</em> features of
+GraphQL which is built into Erlang GraphQL. It can thus request the
+schema types from the server and use that information to present a
+nice user interface.</p>
+</div>
+<div class="paragraph">
+<p>We have already provided cowboy dispatchers for GraphiQL (see
+<a href="#cowboy-handler">Cowboy Handler</a>). The only thing we have to do is to build a
+minified version of GraphiQL and place it in our <code>site/assets</code> folder
+inside our <code>priv</code> directory in the application <code>sw_web</code>. We also
+provide a default <code>index.html</code> to load when the root URL <code>/</code> is
+requested.</p>
+</div>
+<div class="paragraph">
+<p>Since we bind the GraphQL server to 17290 by default, you
+can access to the GraphiQL system by starting the release:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-bash" data-lang="bash">$ make release
+$ _build/default/rel/sw/bin/sw console</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And once the system is up and running, you can access it on
+<a href="http://localhost:17290/" class="bare">http://localhost:17290/</a> It will look like</p>
+</div>
+<div id="img-graphiql" class="imageblock">
+<div class="content">
+<img src="./images/graphiql.png" alt="GraphiQL">
+</div>
+<div class="title">Figure 2. The Graphiql User Interface</div>
+</div>
+<div class="paragraph">
+<p>The GraphiQL User Interface provides a number of features for the
+developer:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The system provides documentation by clicking the <code>Docs</code> tab. The
+documentation is searchable and fully intospectible.</p>
+</li>
+<li>
+<p>The system provides autocompletion and guidance when developing
+queries. It uses the introspection features to figure out what can
+be written.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let us run a simple example query in the interface. Since we have</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>Eshell V8.3  (abort with ^G)
+(sw@127.0.0.1)1&gt; base64:encode("Planet:3").
+&lt;&lt;"UGxhbmV0OjM="&gt;&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>we can write a query for this particular planet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query StarShipQuery {
+    node(id: "UGxhbmV0OjM=") {
+      ... on planet {
+        id
+        name
+        climate
+      }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The GraphiQL interface is a nice development and debugging tool. We
+keep it available for production as well in a security gating because
+it is nice you can build a query on the fly if something is odd with a
+data set.</p>
+</div>
+<div class="paragraph">
+<p>Note that GraphiQL creates a very large URL containing the query
+itself. This is also very useful as you can send queries between
+people by pasting links. In a development setting, you can then talk
+about a particular query which doesn&#8217;t operate as expected.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="error-handling">Error Handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TBD</p>
+</div>
+<div class="paragraph">
+<p>Sections to be written:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Handling invalid terms around <code>jsx</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_relay_modern">Relay Modern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TBD</p>
+</div>
+<div class="sect2">
+<h3 id="_node_interface">Node Interface</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inputs_payloads">Inputs &amp; Payloads</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pagination">Pagination</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section describes different security aspect of GraphQL and how
+they pertain to the Erlang implementation of GraphQL. Any real world
+implementation of a system must combat enemies on the web. In general,
+you can expect requests to be evil.</p>
+</div>
+<div class="paragraph">
+<div class="title">Accidental maliciousness</div>
+<p>A rather common situation is when the &#8220;malicious&#8221; operation is
+accidental. Some user uses your system in a way you did not expect,
+and that then brings down your system. It isn&#8217;t that they have crafted
+the query in order to bring down your system on purpose, it is simply
+that their use case makes your system go havoc.</p>
+</div>
+<div class="paragraph">
+<p>GraphQL servers must be built in a way such that every query has a
+limit and some kind of pagination. That way, you avoid that a single
+client can request all of your database and then go away before you
+can amass the response. By forcing clients to cooperate, you can get
+typical limitations such as request limits in play. Thus, any query
+that is possibly large, should have an upper bound on itself. You may
+also want to have a global upper bound in your query so requests for
+more than, say, 6000 objects will start returning errors if it is too
+large.</p>
+</div>
+<div class="sect2">
+<h3 id="_limiting_clients_stored_procedures">Limiting Clients&#8212;&#8203;Stored Procedures</h3>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Work in Progress</div>
+<div class="paragraph">
+<p>The following section is yet to be implemented in Erlang GraphQL, but
+we still mention it here because it is a common request, and it needs
+a common answer.</p>
+</div>
+<div class="paragraph">
+<p>When we get around to implement the feature, this section will also
+contain examples on how to use it.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>GraphQL is a query language. If a client is able to run any query in
+the world, you may get into trouble with overload. Your system has to
+parse, type check &amp; validate each request. And if the request is
+expensive, it puts unnecessary toll on your backend systems. To avoid
+this, production implementations support the ability to <em>prepare</em> a
+query document containing all the queries a client want to make. Once
+and for all the document is parsed, type checked, and validated. Then
+a reference is given back to the client. Clients who wish to run a
+query can then supply this reference and an <code>opName</code> inside the query
+document to run that query.</p>
+</div>
+<div class="paragraph">
+<p>This is much faster since the Server only has to execute the query and
+can avoid going through the validation steps again and again. While
+the Erlang GraphQL system is fast, about 4/5 of a query is
+preprocessing time before execution. In other words, you can speed up
+the GraphQL by quite a margin if you use stored procedres.</p>
+</div>
+<div class="paragraph">
+<p>In addition, you can also arrange that a client isn&#8217;t able to
+construct new query documents without authorization. This means
+developers can deploy new query document when they deploy new versions
+of an application, but a user of said application cannot produce new
+queries dynamically.</p>
+</div>
+<div class="paragraph">
+<p>In short:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Developers now has the full dynamic query language at their
+disposal</p>
+</li>
+<li>
+<p>Users of the application can only proceed by calling prepared stored
+procedures.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It is also possible to build hybrid systems. Let dynamic queries
+be limited in the backend to a few at a time. Thus, dynamic queries
+are far less likely to &#8220;take out&#8221; your system.</p>
+</div>
+<div class="paragraph">
+<p>If you give developers access through an API key, you can demand that
+they build query document should they want to run more than, say, 600
+queries per hour against your system. This is 10 queries per minute,
+which is usually fine for developement&#8212;&#8203;Once the system is done, you
+provide a query document for preparation, and then the prepared
+document is used.</p>
+</div>
+<div class="paragraph">
+<p>Another advantage of prepared documents is that the server side
+controls what gets executed. This allows you to target a problematic
+query at the server side and patch it, for instance by lowering the
+size of a pagination window, or making the query simpler by not
+providing certain parts. On the other hand, many of those problems
+should be fixed by altering the server to become more robust.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_authentication">Authentication</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_authorization">Authorization</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="annotations">Annotations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tricks">Tricks</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="object-representation">Object Representation</h3>
+<div class="paragraph">
+<p>A rather useful representation of objects is to have some additional
+metadata on your object for use by the GraphQL system in addition to
+the base data fields which the client can request.</p>
+</div>
+<div class="paragraph">
+<div class="title">Maps</div>
+<p>If your object representation is a <code>map()</code>, you can add special fields
+into the map which is used by the GraphQL system. You can add those
+fields as you load the object from the backend database, in order to
+make it easier to work with later. In Erlang systems, due to
+immutability, a pointer to some static data is essentially free, even
+if many terms refer to it, due to sharing. So don&#8217;t be afraid to add
+some metadata on your object.</p>
+</div>
+<div class="paragraph">
+<p>A common convention is to use a special atom such as
+<code>'$tag'</code>.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup> You can then add data under that key in the map which
+is useful to the GraphQL backend only.</p>
+</div>
+<div class="paragraph">
+<p>In addition, our convention is that fields which <em>must</em> be derived
+begin with an underscore (e.g., <code>_images</code>). This makes it clear to the
+reader that the data is not isosmurfically mappable into the Graph but
+requires some kind of transformation.</p>
+</div>
+<div class="paragraph">
+<div class="title">Wrappers</div>
+<p>Rather than represent an object as a record such as <code>#starship{}</code> you
+represent the data as a wrapped term: <code>{#starship{} = Ship, MetaData}</code>
+and then you write your execution function such that it operates on
+the wrapped term rather than the raw <code>Ship</code>. This has the advantage of
+keeping the data separate from the raw plain data object. The
+sacrifice, though, is you have to do more work in your object
+resolution code.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="non-isomorphism">Avoid Isomorphic representations</h3>
+<div class="paragraph">
+<p>A common want when designing API systems is to avoid the need for
+continual retranslation of backend data to the GraphQL schema. A
+common solution to this problem is to make the database schema 1-1
+with the GraphQL schema, often called an isomorphic
+representation.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup> However, our experience is that such a 1-1 mapping is
+detrimental to the development of the system. It is common the GraphQL
+schema and the underlying data evovle at different paces and that new
+data sources are added as you go along.</p>
+</div>
+<div class="paragraph">
+<p>Thus, a piece of advice is to know when to break from the 1-1 mapping
+and build your own translation layer in order to handle the gradual
+evolution of the database schema and the GraphQL contract. In general,
+you shouldn&#8217;t be afraid of breaking the isomorphic representation if
+that turns out to help you define your system in a better way. On the
+flip side, inventing new terminology and names shouldn&#8217;t in general be
+done for the sake of doing so. The advantage of having an isomorphism
+between the contract and the database is that you don&#8217;t have to
+explain to people what the mapping means.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Look out for the situation where a simple change in the contract
+starts an avalance of changes all throughout your stack. This tend
+to mean you have built a system where each layer transforms the
+data. Keep transformers down to as few layers as possible and let
+the end-points in the data passing handle the transformations.</p>
+</li>
+<li>
+<p>Large systems constantly change. Have some place in the code where
+you can insert a temporary stub or plug while you change other parts
+of the system. It is not generally possible to switch a system in
+one go as soon as it becomes large. By having a stub/plug you can
+gradually change the large system rather than having to change
+everything at once.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_middleware_stacks">Middleware stacks</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_data_loader">Data Loader</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fragments">Fragments</h3>
+<div class="paragraph">
+<p>TBD</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminology">Appendix A: Terminology</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section defines terminology used in GraphQL that doesn&#8217;t fit in
+the rest of the document. It is used as a reference to describe
+certain behaviors in a GraphQL implementation.</p>
+</div>
+<div class="sect2">
+<h3 id="null-propagation">Null Propagation</h3>
+<div class="paragraph">
+<p>In GraphQL, fields <em>nullable</em> by default. A generic field <code>f : T</code> can
+either take on the value of <code>T</code> or the value <code>null</code> if the rendering
+of the field fails for some reason.</p>
+</div>
+<div class="paragraph">
+<p>In contrast, a field can be non-nullable, <code>f : T!</code> in which case the
+field is not allowed to take on the value of <code>null</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you try to complete a non-null field in an object, and <code>null</code> is
+returned, or an error occur, then the whole object becomes <code>null</code>.
+This notion <em>propagates</em> until all of the query becomes <code>null</code> or we
+reach a nullable field, whichever comes first.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you are accustomed to writing statically typed programs, you
+may desire to mark as many fields as possible non-null. But the
+sacrifice made by doing so is that you can&#8217;t return partial results.
+GraphQL servers are often distributed in nature and handle distributed
+backends. Thus, it is fairly often the case that some part of the
+system is down, while other parts of the system is up. By having some
+fields nullable, you allow the system to null out failing subsystems,
+while still providing answers for the parts of the query that can be
+fulfilled currently. Too many non-nullable types will make your system
+brittle as every document is an all-or-nothing approach.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="HATEOAS">Hypertext as the engine of application state</h3>
+<div class="paragraph">
+<p>Hypertext embedded in responses can have users &#8220;click around&#8221; in
+your API. If you embed the possible operations as links in responses,
+a client can use returned data to learn what it can do with the data.
+Roy T. Fieldings PhD thesis covers this in great detail.</p>
+</div>
+<div class="paragraph">
+<p>GraphQL doesn&#8217;t implement HATEOAS, but it gets fairly close to the
+idea. Given that a GraphQL query can be introspected, you can
+gradually learn about the interface as a client and utilize that
+interface. In practice however, it is common to lock down the possible
+queries for a given client, in order to protect the system and get
+security.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="context">Context</h3>
+<div class="paragraph">
+<p>The context map contains a number of base fields before the developers
+extends the context with their own fields. This section describes
+those fields and their purpose:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>TBD</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cursor">Cursor</h3>
+<div class="paragraph">
+<p>We often use the term &#8220;cursor&#8221; in this tutorial. Imagine that a
+GraphQL is rendered by moving a cursor around in the data set and then
+rendering each part of the query as the cursor moves around. As the
+cursor traverses (recursively) deeper into the data set, more parts of
+the query may be rendered on demand.</p>
+</div>
+<div class="paragraph">
+<p>In practice, the cursor can be executed in parallel. If you submit a
+<code>query</code> you must assume that rendering will happen in parallel when
+possible. In contrast, a <code>mutation</code> will always process the query
+serially one element at a time. This is to make sure changes for a
+given query are not interfering with each other.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A typical system has on the order of 100:1 queries to
+mutations. It is very likely your data is queried far more often than
+they are mutated. Thus, if you look to optimize, optimize for queries
+first, unless you happen to know you have a large amount of mutations.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_code_overview">Appendix B: Code Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section describes all the files in the repository and what their
+purpose are:</p>
+</div>
+<div class="sect2">
+<h3 id="_root">Root</h3>
+<div class="paragraph">
+<div class="title"><code>rebar.config</code></div>
+<p>The rebar3 configuration file. It contains information about the
+immediate system dependencies of the project. It also contains
+information for <code>relx</code> the release builder rebar3 uses. This is used
+to assemble a release by copying the Erlang runtime as well as the
+necessary support libraries into a release directory. This directory
+can then be archived via tar(1) or zip(1) and shipped for a production
+release.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>Makefile</code></div>
+<p>Contains some convenience targets when building the software. In
+practice you have some support-calls that has to be made outside the
+build tool in many cases. This Makefile contains recipes for doing
+that, so you don&#8217;t forget what is to be done.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>README.md</code></div>
+<p>Instructions for the reader on Github. Also instructions on how to
+build the documentation and where to go next.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>rebar.lock</code></div>
+<p>Dependency locking for reproducible builds. It makes sure you get
+versions of packages which are known to be working together and that
+upgrades of software is a deliberate action rather than an implicit
+one.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>config/vm.args</code></div>
+<p>Release VM arguments. The release handler makes sure these become part
+of the system release so you can set parameters on the command line of
+the Erlang runtime. It is often used to fine-tune schedulers, memory
+allocation, or the upper bound on processes or ports.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>config/sys.config</code></div>
+<p>The configuration file of the release. This allows us to override
+application-specific configuration knobs in the final release. Often,
+configuration can be handled by adding a call to
+<code>application:get_env/3</code> in the source code and then adding a default
+value to an applications <code>.app</code> file. Then it can be overridden in the
+<code>sys.config</code> file later, if a release needs a different setting.
+Another common use is to provide varying configuration for different
+environments.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>apps/*</code></div>
+<p>The applications provided by this repository. See the following
+sections for their description.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_application_code_sw_core_code">Application <code>sw_core</code></h3>
+<div class="paragraph">
+<div class="title"><code>priv/sw.schmea</code></div>
+<p>The schema definition file which can be read by the Erlang GraphQL
+system. It defines the schema rules for the Star Wars API.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core.app.src</code></div>
+<p>Application description file which <code>rebar3</code> compiles into
+<code>ebin/sw_core.app</code>. It contains a number of important sections for the
+project:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Dependencies&#8212;&#8203;Listing what this application needs in order to
+function correctly. The release manager arranges the boot of the
+node such that every dependent application is started first. In
+short, it carries out a topological sorting of applications
+according to their dependencies and starts them in the right order.</p>
+</li>
+<li>
+<p>Start module&#8212;&#8203;Which module to invoke in order to start the
+application.</p>
+</li>
+<li>
+<p>Environment&#8212;&#8203;Application specific environmental defaults. In order
+to keep the <code>sys.config</code> file small sane defaults can be added here
+so they don&#8217;t clutter the global configuration.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_app.erl</code></div>
+<p>The application behavior used to start the <code>sw_core</code> application. This
+file also contains the schema-loading code: when the system boots, we
+attempt to load and validate the schema. Any mistake will abort the
+boot process and print out a failure.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_db.hrl</code></div>
+<p>This header file contains the records we are using in our mnesia
+database. One could have spread these over multiple files, but since
+the system is fairly small we use a single file for this. It is likely
+a larger system would split this into smaller sections.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_db.erl</code></div>
+<p>Wrapper around the database calls which are common in the system. Also
+contains the functions for creating the initial schema, which can be
+invoked without the <code>sw_core</code> application running.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_id.erl</code></div>
+<p>Handling of <em>ID</em> values in the Graph from the client. Provides
+encoding and decoding of identifier values so we know what object they
+refer to internally.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_scalar.erl</code></div>
+<p>Input and output coercion for scalar values</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_sup.erl</code></div>
+<p>Top level supervisor referring to long-lived processes in this
+application.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Currently there are no such long-lived processes in the
+application.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_application_code_sw_web_code">Application <code>sw_web</code></h3>
+<div class="paragraph">
+<p>This application implements the web UI and the HTTP transport on top
+of the Core application.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_web_app.erl</code></div>
+<p>Application callback for the <code>sw_web</code> application. Also initializees
+the cowboy web server with its dispatch rules and the configuration of
+cowboy.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_web_graphql_handler.erl</code></div>
+<p>The main handler for GraphQL requests in the system. It provides
+transport between GraphQL and HTTP.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_web_sup.erl</code></div>
+<p>Main supervisor. Currently it has no children, but exists as a way to
+appease the application controller by giving the application a
+specific <code>pid()</code> it can use to know if the application is up and
+running.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_web_response.erl</code></div>
+<p>Wrapper around responses. It makes sure that an Erlang term is
+renderable in JSON by converting something like a tuple into a binary
+value. This allows a JSON encoder to handle the Erlang term without
+problems.</p>
+</div>
+<div class="paragraph">
+<p>Another reason for doing this is that we eliminate a lot of 500 Status
+code responses from the system.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. The spec has toyed with the idea of adding more classes in additon to queries and mutations. Most notably the concept of a <em>subscription</em>
+</div>
+<div class="footnote" id="_footnote_2">
+<a href="#_footnoteref_2">2</a>. Through the use of the <code>@streamed</code> and <code>@defer</code> directives among other things
+</div>
+<div class="footnote" id="_footnote_3">
+<a href="#_footnoteref_3">3</a>. A later version of GraphQL is likely to use abstract binding trees instead, but for now, we run with the classic structure
+</div>
+<div class="footnote" id="_footnote_4">
+<a href="#_footnoteref_4">4</a>. We call operations for <code>functions</code> in the GraphQL system because that is what they really are, from a language perspective
+</div>
+<div class="footnote" id="_footnote_5">
+<a href="#_footnoteref_5">5</a>. In Erlang/OTP 20.0 and onwards, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
+</div>
+<div class="footnote" id="_footnote_6">
+<a href="#_footnoteref_6">6</a>. Isomorphic stems from ancient greek and means &#8220;equal shape&#8221;
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2017-05-18 13:13:27 CEST
+</div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<script>prettyPrint()</script>
+</body>
+</html>
