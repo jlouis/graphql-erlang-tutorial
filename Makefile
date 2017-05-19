@@ -32,4 +32,4 @@ index.html: doc/book.html
 
 documentation: doc/book.html
 publish: index.html
-	cp -r doc/images images
+	cp -r $(IMAGE_SOURCES) images
