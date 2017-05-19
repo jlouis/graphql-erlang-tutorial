@@ -13,7 +13,7 @@ Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Martin Gausby <martin@g
 {project} Tutorial
 
 The guide here is a running example of the "Star Wars" API implemented
-in Erlang through the Shopgun GraphQL engine. The intent is to provide
+in Erlang through the ShopGun GraphQL engine. The intent is to provide
 readers with enough information they can go build their own GraphQL
 servers in Erlang.
 
