@@ -6,6 +6,17 @@ clarify how the system is supposed to be used in a full
 implementation. The idea is that it can used as a starting point for
 your own implementation of your own GraphQL schema.
 
+# Documentation
+
+The primary URL for the document is:
+
+https://shopgun.github.io/graphql-erlang-tutorial/
+
+To read the latest version of the documentation, go there and start
+reading!
+
+## Building
+
 To build this software you need:
 
 * rebar3
