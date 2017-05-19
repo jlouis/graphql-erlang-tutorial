@@ -23,6 +23,7 @@ dialyzer:
 	$(REBAR) dialyzer
 
 DOC_SOURCES = $(wildcard doc/*.asciidoc)
+IMAGE_SOURCES = $(wildcard doc/images/*)
 doc/book.html: $(DOC_SOURCES)
 	asciidoctor doc/book.asciidoc
 
@@ -31,3 +32,4 @@ index.html: doc/book.html
 
 documentation: doc/book.html
 publish: index.html
+	cp -r doc/images images
