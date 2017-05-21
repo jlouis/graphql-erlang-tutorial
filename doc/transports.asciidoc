@@ -5,10 +5,9 @@ transport you can imagine. This means the GraphQL system must provide
 its own way to tell the outside world about errors, since it cannot
 rely on the surrounding system to do so.
 
-The interface to GraphQL at its very base needs support for sending
-requests and receiving replies. There is relatively little need for
-out-of-order requests since queries tend to be large and
-all-encompassing.
+The interface to GraphQL at its base needs support for sending
+requests and receiving replies. There is little need for out-of-order
+requests since queries tend to be large and all-encompassing.
 
 However, newer parts of GraphQL which is currently being tried out has
 support for delayed and streamed responses.footnote:[Through the use
@@ -43,15 +42,15 @@ include::{sw_web}/src/sw_web_app.erl[tags=dispatcher]
 We could have picked any place to run the GraphQL interface, but this
 code uses `/` at the root.
 
-The Cowboy setup is completely out of the box, except that we
-manipulate a couple of variables in order to make cowboy play better
-with <<graphiql>>. Look at the file `sw_web_app.erl` for the details.
+The Cowboy setup is straightforward, except that we manipulate a
+couple of variables in order to make cowboy play better with
+<<graphiql>>. Look at the file `sw_web_app.erl` for the details.
 
-We set up the cowboy handler as a REST handler. Mostly because it is
-fairly easy to do and because it automates a large set of things we'd
-like to do. Our plan is to use content-negotiation: a web server will
-be served an UI for GraphQL by default, but if the a client request
-comes in, we will pass that to the GraphQL system.
+We set up the cowboy handler as a REST handler, because it is easy to
+do, and because it automates a large set of things we'd like to do.
+Our plan is to use content-negotiation: a web server will be served an
+UI for GraphQL by default, but if the a client request comes in, we
+will pass that to the GraphQL system.
 
 The `cowboy_rest` model stems from an idea pioneered by Webmachine. We
 can depict an HTTP request as a flow chart where each decision point
@@ -192,7 +191,7 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=to_html]
 Actual query processing is a bit more involved. Here is an overview of
 what we need to do:
 
-* Gather parameters. The system allows several ways of entering
+* Gather parameters. The system allows multiple ways of entering
   parameters, either as part of the URL, or as part of an input
   document.
 * Split the parameters into the _query_, the _operation name_, and the
@@ -272,7 +271,7 @@ The pre-processing step handles everything up to execution of the
 Query. This step can be done once and for all for a given query and
 the same query could be re-run with the same document over and over.
 It corresponds to a prepared statement in the SQL world. In the
-pre-processing step, we carry out several of the needed operations:
+pre-processing step, we carry out all operations up until execution:
 
 [source,erlang]
 ----
@@ -292,17 +291,18 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_preprocess]
     conversion has been run (for static variables) as an optimization;
     and a `FunEnv` which is the type scheme for each operation in the
     query.footnote:[We call operations for `functions` in the GraphQL
-    system because that is what they really are, from a language perspective]
-<3> Any query which is well-defined type wise can be executed. Yet many
-    of those queries are nonsensical in one way or another. If they
-    are executed, they yield results which are valid responses--but
-    they are often not what the client meant. Validation is a step
-    which adds a "`linting`" pass on top of the system and rejects
-    queries which are likely to be bad. For instance, it is checked
-    that every fragment in the document has at least one use, or that
-    a fragment spread expansion has at least one match. As queries
-    grow in size and become automatically generated, validation
-    becomes even more important.
+    system because that is what they really are, from a language
+    perspective]
+<3> Any query which is well-defined type wise can be executed. Yet
+    those queries can still be nonsensical. If they are executed, they
+    yield results which are valid responses--but they are often not
+    what the client meant. Validation is a step which adds a
+    "`linting`" pass on top of the system and rejects queries which
+    are likely to be bad. For instance, it is checked that every
+    fragment in the document has at least one use, or that a fragment
+    spread expansion has at least one match. As queries grow in size
+    and become automatically generated, validation becomes even more
+    important.
 
 Once pre-processing is complete, we can execute the query itself:
 

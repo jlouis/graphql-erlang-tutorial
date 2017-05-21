@@ -15,8 +15,8 @@ If your object representation is a `map()`, you can add special fields
 into the map which is used by the GraphQL system. You can add those
 fields as you load the object from the backend database, in order to
 make it easier to work with later. In Erlang systems, due to
-immutability, a pointer to some static data is essentially free, even
-if many terms refer to it, due to sharing. So don't be afraid to add
+immutability, a pointer to some static data is essentially free, as
+long as terms share the same base value. So don't be afraid to add
 some metadata on your object.
 
 A common convention is to use a special atom such as

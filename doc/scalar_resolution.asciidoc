@@ -54,7 +54,9 @@ this feature of GraphQL very much. So for now, our implementation here
 doesn't utilize the full feature set. A later update will solve this
 by providing an example.
 
-TBD
+TBD: Write about Scalar values as part of the specification.
+Dependency: mutations in the specification, because otherwise the
+input coercion parts are a bit moot.
 
 [source,erlang]
 ----
