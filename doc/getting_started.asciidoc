@@ -192,7 +192,7 @@ Eshell V8.3  (abort with ^G)
 <3> Run the Erlang interpreter with an altered path for our newly compiled modules
 <4> Create the schema
 
-The call the `create_schema()` runs the the following schema creation code:
+The call the `create_schema()` runs the following schema creation code:
 
 [source,erlang]
 ----

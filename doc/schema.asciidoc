@@ -273,7 +273,7 @@ type checker`" and weed out some obvious definitional bugs.
 The root setup defines how a query begins by defining what type in the
 schema specification is the root for queries and mutations
 respectively. By convention, these types are always called `Query` and
-`Mutation` so it is easy to find find the Root's entry points in the
+`Mutation` so it is easy to find the Root's entry points in the
 Graph.
 
 The query root must be injected into the schema so the GraphQL systems

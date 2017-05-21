@@ -155,8 +155,8 @@ allows you to pattern match on different fields of the query.
 
 .Args
 
-Args is always of type `#{ binary() => term() }` mapping input
-arguments for the field to values for that field. If a client queries
+The arguments are always of type `#{ binary() => term() }`; mapping
+from field name to field value. If a client queries
 
 [source,graphql]
 ----
