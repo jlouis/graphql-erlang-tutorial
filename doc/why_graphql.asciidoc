@@ -4,9 +4,9 @@
 
 A worthy question to ask is "`Why GraphQL?`"
 
-In many ways, GraphQL is a natural extension of what we are already
-doing on the Web. As our systems grow, we start realizing our systems
-become gradually more heterogeneous in the sense that data becomes more
+GraphQL is a natural extension of what we are already doing on the
+Web. As our systems grow, we start realizing our systems become
+gradually more heterogeneous in the sense that data becomes more
 complex and data gets more variance.
 
 In addition--since we usually have a single API serving multiple

@@ -42,12 +42,11 @@ decisions to other modules and merely act as a dispatch layer for the
 real code. The current implementation allows for a great deal of
 flexibility for this reason.
 
-Use pattern matching in the `execute/1` function to vary what
-kinds of data you can process. Do not be afraid to wrap your objects
-into other objects if that makes it easier to process. Since you can
-handle any Erlang term, you can often wrap your objects in a map of
-metadata and use the metadata for figuring out the type of the object.
-See <<object-representation>> for a discussion of several commonly
-used variants.
+Use pattern matching in the `execute/1` function to vary what kinds of
+data you can process. Do not be afraid to wrap your objects into other
+objects if that makes it easier to process. Since you can handle any
+Erlang term, you can often wrap your objects in a map of metadata and
+use the metadata for figuring out the type of the object. See
+<<object-representation>> for a discussion of commonly used variants.
 
 
