@@ -6,6 +6,24 @@ interface Node {
 }
 # end::nodeInterface[]
 
+# tag::transportInterface[]
+interface Transport {
+  id : ID!
+  edited : String
+  consumables : String
+  name : String
+  created : String
+  cargoCapacity : Int
+  passengers : String
+  maxAtmospheringSpeed : Int
+  crew : String
+  length : Float
+  model : String
+  costInCredits : Int
+  manufacturers : [String]
+}
+# end::transportInterface[]
+
 type PageInfo {
   hasNextPage : Boolean!
   hasPreviousPage : Boolean!
@@ -21,22 +39,24 @@ type StarshipFilmsConnection {
 
 # tag::starshipObject[]
 +description(text: "Representation of Star Ships")
-type Starship implements Node {
+type Starship implements Node, Transport {
   id : ID!
   name : String
   model : String
   starshipClass : String
   manufacturers : [String]
-  costInCredits : Float
+  costInCredits : Int
   length : Float
   crew : String
   passengers : String
   maxAtmospheringSpeed : Int
   hyperdriveRating : Float
   MGLT : Int
-# end::starshipObject[]
-  cargoCapacity : Float
+  cargoCapacity : Int
   consumables : String
+  created: String
+  edited: String
+# end::starshipObject[]
   pilotConnection(
     after : String
     first : Int
@@ -47,8 +67,6 @@ type Starship implements Node {
     first : Int
     before: String
     last: Int) : StarshipFilmsConnection
-  created: String
-  edited: String
 }
 
 # tag::filmObject[]

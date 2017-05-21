@@ -253,7 +253,7 @@ undo that encoding whenever you store the object back. The best
 solution depends on your preferences and where your API boundary
 between the GraphQL contract and the database is.
 
-=== Node Loading
+=== Loading Data
 
 Our *Planet* execute function handles the case where we have a
 loaded planet and want to output its contents. But it doesn't say
@@ -312,6 +312,7 @@ Mnesia:
 
 [source,erlang]
 ----
+...
 include::{sw_core}/src/sw_core_db.erl[tags=load]
 ----
 
@@ -321,6 +322,35 @@ need to handle extreme amounts of data, you might want to avoid the
 transaction code and just do a dirty read. For this example though, we
 keep things straight and use transactions all over the place to make
 the interface more consistent.
+
+==== Loading Complex objects
+
+In the example with the *Planet* above, the loading of the data set is
+straightforward because one database row corresponds to one object in
+the Graph. For a *Starship* however, The data is spread over multiple
+rows. Most of the data lives in a `#transport{}` record and a small
+set of additional data lives in a `#starship{}` record. This
+corresponds to our earlier handling the schema: most data lives in the
+*Transport* interface and a *Starship* implements the transport.
+
+To load a *Starship*, we extend our loader function with a new variant
+for loading the starship, and we return the pair of a transport and a
+starship as the object:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_db.erl[tags=loadStarship]
+...
+----
+
+NOTE: The loading of the *Starship* exemplifies a common trait of
+GraphQL systems in which they analyze the object the client wants and
+then translate the demand into a series of data acquisition commands.
+The data can live in many different locations and can be complex
+objects which are mixed together to form the GraphQL type for that
+object. This allows the server freedom to choose how it represents
+data and what data sources it uses to assemble the response for a
+request.
 
 [[walking-in-the-graph]]
 === Walking in the Graph

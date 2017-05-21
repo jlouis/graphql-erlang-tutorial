@@ -94,7 +94,15 @@ it tends to flow really well when you enter documentation by means of
 the backtick character. A future version of the parser might redo this
 decision.
 
-=== Planets
+=== Object types
+
+We follow the specification for describing object types. Thus, if you
+describe an object like a starship as `type Starship { ... }` the
+system knows how to parse and internalize such a description. In the
+following, we don't cover all of the schema, but focus on a single
+type in order to describe what is going on.
+
+==== Planets
 
 Since we have planets in the mnesia database from the previous
 section, we can define the GraphQL Schema for them as well. The
@@ -165,6 +173,57 @@ TBD
 === Input objects
 
 TBD
+
+=== Interfaces & Unions
+
+In GraphQL, an interface is a way to handle the heterogenous nature of
+modern data. Several objects may share the same fields with the same
+types. In this case, we can provide an `interface` for those fields
+they have in common.
+
+Likewise, if we have two objects which can logically be the output of
+a given field, we can use a `union` to signify that a set of disparate
+objects can be returned.
+
+In the case of an interface, the client is only allowed to access the
+fields in the interface, unless it fragment-expands in order to be
+more specific. For unions, the client _must_ fragment expand to get
+the data.
+
+The Star Wars Schema has an obvious example of an interface via the
+*Node* specification above, but there is another interface possible in
+the specification: both *Starship* and *Vehicle* shares a large set of
+data in the concept of a *Transport*. We can arrange for this overlap
+by declaring an interface for transports:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=transportInterface]
+----
+
+And then we include the interface when we declare either a starship or
+a vehicle. Here we use the *Starship* as an example:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=starshipObject]
+...
+----
+
+.Abstract types
+
+Interfaces and Unions are so-called _abstract types_ in the GraphQL
+specification. They never occur in concrete data, but is a type-level
+relationship only. Thus, when handling an interface or a unions, you
+just return concrete objects. In the section <<type-resolution>> we
+will see how the server will handle abstract types.
+
+TIP: If you have an object which naturally shares fields with other
+objects, consider creating an interface--even in the case where you
+have no use for the interface. The {project} contains a schema
+validator which will validate your fields to be in order. It is fairly
+easy to mess up schema types in subtle ways, but if you write them
+down, the system can figure out when you make this error.
 
 === Schema default values
 
@@ -242,7 +301,7 @@ handling that particular schema type.
 include::{sw_core}/src/sw_core_app.erl[tags=schemaMapping]
 ----
 
-.Scalars
+==== Scalars
 
 Every scalar type in the schema is mapped through the `scalar` mapping
 part. It is quite common a system only has a single place in which all
@@ -251,7 +310,7 @@ mapping over multiple modules. This can be useful if you have a piece
 of code where some scalars naturally lives in a sub-application of some
 kind.
 
-.Interfaces & Unions
+==== Interfaces & Unions
 
 In GraphQL, two kinds of _abstract_ types are defined: interfaces and
 unions. Interfaces abstract over concrete types which have some fields
@@ -286,7 +345,7 @@ GraphQL system doesn't know about your representation. In turn, it
 call back into your code in order to learn which type your
 representation has.
 
-.Objects
+==== Objects
 
 The mapping of objects is likely to have a special mapping for each
 object type you have defined. This is because each kind of (output)

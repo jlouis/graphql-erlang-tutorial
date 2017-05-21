@@ -23,6 +23,24 @@ tables() ->
 wait_for_tables() ->
     mnesia:wait_for_tables([sequences | tables()], 5000).
 
+load('Vehicle', ID) ->
+    F = fun() ->
+                [Transport] = mnesia:read('Transport', ID, read),
+                [Vehicle]  = mnesia:read('Vehicle', ID, read),
+                #{ starship => Vehicle,
+                   transport => Transport }
+        end,
+    txn(F);
+%% tag::loadStarship[]
+load('Starship', ID) ->
+    F = fun() ->
+                [Transport] = mnesia:read('Transport', ID, read),
+                [Starship]  = mnesia:read('Starship', ID, read),
+                #{ starship => Starship,
+                   transport => Transport }
+        end,
+    txn(F);
+%% end::loadStarship[]
 %% tag::load[]
 load(Type, ID) ->
     MType = record_of(Type),
