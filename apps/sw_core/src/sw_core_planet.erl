@@ -15,7 +15,6 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
         <<"diameter">> -> {ok, Planet#planet.diameter};
         <<"rotationPeriod">> -> {ok, Planet#planet.rotation_period};
 %% end::planetExecute[]
-
         <<"filmConnection">> ->
             Txn = fun() ->
                           QH = qlc:q([F || F <- mnesia:table(film),

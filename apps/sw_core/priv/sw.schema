@@ -75,7 +75,7 @@ type Film implements Node {
 # end::filmObject[]
 
 # tag::speciesObject[]
-type Species {
+type Species implements Node {
   name : String
   classification : String
   designation : String
@@ -86,6 +86,13 @@ type Species {
   skinColors : [String]
   language : String
   homeworld : Planet
+  personConnection(after: String, first: Int,
+                   before: String, last: Int)
+    : SpeciesPeopleConnection
+  filmConnection(after: String, first: Int,
+                 before: String, last: Int)
+    : SpeciesFilmConnection
+    
   created : String
   edited : String
   id : ID!
@@ -179,6 +186,28 @@ type FilmSpeciesConnection {
 
 type FilmSpeciesEdge {
   node : Species
+  cursor : String!
+}
+
+type SpeciesFilmConnection {
+  pageInfo : PageInfo!
+  edges : [SpeciesFilmEdge]
+  totalCount : Int
+}
+
+type SpeciesFilmEdge {
+  node : Film
+  cursor : String!
+}
+
+type SpeciesPeopleConnection {
+  pageInfo : PageInfo!
+  edges : [SpeciesPeopleEdge]
+  totalCount : Int
+}
+
+type SpeciesPeopleEdge {
+  node : Person
   cursor : String!
 }
 
