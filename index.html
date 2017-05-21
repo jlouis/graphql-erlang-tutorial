@@ -441,7 +441,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_supported_platforms">Supported Platforms</a></li>
 <li><a href="#_comments_contact">Comments &amp; Contact</a></li>
 <li><a href="#_license">License</a></li>
-<li><a href="#_acknowledgements">Acknowledgements</a></li>
+<li><a href="#_acknowledgments">Acknowledgments</a></li>
 </ul>
 </li>
 <li><a href="#_why_graphql">Why GraphQL</a></li>
@@ -462,7 +462,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_mnesia">Mnesia</a>
 <ul class="sectlevel2">
-<li><a href="#_setting_up_an_initial_mnesia_schema">Setting up an initial mnesia schema</a></li>
+<li><a href="#_setting_up_an_initial_mnesia_schema">Setting up an initial Mnesia schema</a></li>
 <li><a href="#_populating_the_database">Populating the database</a></li>
 <li><a href="#_creating_a_fallback_for_the_database">Creating a FALLBACK for the database</a></li>
 </ul>
@@ -471,9 +471,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#identity-encoding">Identity encoding</a></li>
 <li><a href="#_the_node_interface">The Node Interface</a></li>
-<li><a href="#_planets">Planets</a></li>
+<li><a href="#_object_types">Object types</a></li>
 <li><a href="#queries-and-mutations">Queries &amp; Mutations</a></li>
 <li><a href="#_input_objects">Input objects</a></li>
+<li><a href="#_interfaces_unions">Interfaces &amp; Unions</a></li>
 <li><a href="#_schema_default_values">Schema default values</a></li>
 </ul>
 </li>
@@ -490,7 +491,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_execution">Execution</a></li>
 <li><a href="#input-argument-rules">Input argument rules</a></li>
 <li><a href="#_handling_planets">Handling Planets</a></li>
-<li><a href="#_node_loading">Node Loading</a></li>
+<li><a href="#_loading_data">Loading Data</a></li>
 <li><a href="#walking-in-the-graph">Walking in the Graph</a></li>
 <li><a href="#_default_mapping">Default Mapping</a></li>
 <li><a href="#_resolving_lists">Resolving lists</a></li>
@@ -649,7 +650,7 @@ an omission on our part which should have been included.</p>
 <div class="paragraph">
 <p>Some Erlang knowledge is expected for reading this guide. General
 Erlang concept will not be explained, but assumed to be known. Some
-mnesia knowledge will also help a bit in understanding what is going
+Mnesia knowledge will also help a bit in understanding what is going
 on, though if you know anything about databases in general, that is
 probably enough. Furthermore, some knowledge of the web in general is
 assumed. We don&#8217;t cover the intricacies of HTTP 1.1 or HTTP/2 for
@@ -751,7 +752,7 @@ limitations under the License.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_acknowledgements">Acknowledgements</h3>
+<h3 id="_acknowledgments">Acknowledgments</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -777,7 +778,7 @@ limitations under the License.</p>
 <div class="paragraph">
 <p>In many ways, GraphQL is a natural extension of what we are already
 doing on the Web. As our systems grow, we start realizing our systems
-become gradually more heterogenous in the sense that data becomes more
+become gradually more heterogeneous in the sense that data becomes more
 complex and data gets more variance.</p>
 </div>
 <div class="paragraph">
@@ -788,7 +789,7 @@ to evolve dynamically, non-linearly, and at different paces. Thus, the
 backend must support evolution while retaining backwards
 compatibility. Also, we must have a contract or protocol between the
 clients and the server that is standardized. Otherwise, we end up
-inventing our own system again and again, and this is a strenous
+inventing our own system again and again, and this is a strenuous
 affair which has little to no reuse between systems.</p>
 </div>
 <div class="paragraph">
@@ -808,13 +809,13 @@ you are better off by taking the plunge and switching your system to
 GraphQL.</p>
 </div>
 <div class="paragraph">
-<div class="title">Efficency</div>
+<div class="title">Efficiency</div>
 <p>RESTful APIs recently got a powerful improvement in HTTP/2 which
 allows RESTful APIs to pipeline far better than what they did earlier.
 However, you still pay the round trip time between data dependencies
 in an HTTP/2 setting: You need the listing of keys before you can
 start requesting the data objects on those keys. In contrast, GraphQL
-queries tend to be a single roundtrip only. A full declarative query
+queries tend to be a single round-trip only. A full declarative query
 is formulated and executed, without the need of any intermediate
 query. This means faster response times. Even in the case where a
 single query becomes slower since there is no need for followup
@@ -823,11 +824,11 @@ queries.</p>
 <div class="paragraph">
 <p>A major (subtle) insight is that in a GraphQL server, you don&#8217;t have
 to hand-code the looping constructs which tend to be present in a lot
-of RESTful APIs. To avoid the roundtrip describes in the preceeding
+of RESTful APIs. To avoid the round-trip describes in the preceding
 paragraph, you often resolve to a solution where a specialized
 optimized query is constructed and added to the system. This
 specialized endpoint is then looping over the data in one go so you
-avoid having to do multiple roundtrips.</p>
+avoid having to do multiple round-trips.</p>
 </div>
 <div class="paragraph">
 <p>In a GraphQL system, that looping is handled once-and-for-all by the
@@ -879,7 +880,7 @@ release.</p>
 </li>
 <li>
 <p>Support libraries for executing the emulator, binary NIF shared
-objects (NIF: Natively implemented function), and so on.</p>
+objects (NIF: Native implemented function), and so on.</p>
 </li>
 <li>
 <p>Configuration for the system and runtime</p>
@@ -908,7 +909,7 @@ even works across Erlang/OTP versions (subject to some restrictions).</p>
 <div class="paragraph">
 <p>This builds a release inside the <code>_build</code> directory and makes it
 available. In order to run the release, we can ask to run it with a
-console frontend, so we get a shell on the Erlang system:</p>
+console front-end, so we get a shell on the Erlang system:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1330,7 +1331,7 @@ the perspective of the client, the starting points in the graph is
 either the <em>query</em> or the <em>mutation</em> object.</p>
 </div>
 <div class="paragraph">
-<p>CQRS stands for Command-Query Responsiblity Separation. The idea stems
+<p>CQRS stands for Command-Query Responsibility Separation. The idea stems
 from the observation that querying data often have a different feel
 than commanding the system to do changes. So rather than trying to
 solve both in one interface, you slice the system such that you have a
@@ -1346,7 +1347,7 @@ execution.</p>
 </div>
 <div class="paragraph">
 <div class="title">Mnesia</div>
-<p>Our Star Wars schema uses the database <strong>mnesia</strong> as a backend. It is
+<p>Our Star Wars schema uses the database <strong>Mnesia</strong> as a backend. It is
 important to stress that you often have a situation where your
 database backend doesn&#8217;t map 1-1 onto the GraphQL schema you specify.
 In larger systems, this is particularly important: the GraphQL schema
@@ -1370,7 +1371,7 @@ system without evolving other parts which impairs the flexibility of
 the system.</p>
 </div>
 <div class="paragraph">
-<p>Another problem is that you may end up with an impedence mismatch
+<p>Another problem is that you may end up with an impedance mismatch
 between the Objects and links of the GraphQL query and the way you
 store your data in the backend. If you force a 1-1 relationship
 between the two, you can get into trouble because your GraphQL schema
@@ -1406,9 +1407,9 @@ migrate-established, we&#8217;ve started using different models.</p>
 <h2 id="_mnesia">Mnesia</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_setting_up_an_initial_mnesia_schema">Setting up an initial mnesia schema</h3>
+<h3 id="_setting_up_an_initial_mnesia_schema">Setting up an initial Mnesia schema</h3>
 <div class="paragraph">
-<p>To get up and running, we begin by constructing a mnesia schema we can
+<p>To get up and running, we begin by constructing a Mnesia schema we can
 start from. We do this by starting a shell on the Erlang node and then
 asking it to create the schema:</p>
 </div>
@@ -1436,7 +1437,7 @@ Eshell V8.3  (abort with ^G)
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Run the erlang interpreter with an altered path for our newly compiled modules</td>
+<td>Run the Erlang interpreter with an altered path for our newly compiled modules</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -1445,7 +1446,7 @@ Eshell V8.3  (abort with ^G)
 </table>
 </div>
 <div class="paragraph">
-<p>The call the <code>create_schema()</code> runs the the following schema creation code:</p>
+<p>The call the <code>create_schema()</code> runs the following schema creation code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1461,7 +1462,7 @@ Eshell V8.3  (abort with ^G)
 </div>
 <div class="paragraph">
 <p>Creating the schema amounts to running a set of commands from the
-mnesia documentation. The helper function to create tables contains a
+Mnesia documentation. The helper function to create tables contains a
 large number of tables, so we are just going to show one here:</p>
 </div>
 <div class="listingblock">
@@ -1482,7 +1483,7 @@ large number of tables, so we are just going to show one here:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>In mnesia, tables are Erlang records. The <code>#planet{}</code> record needs
+<p>In Mnesia, tables are Erlang records. The <code>#planet{}</code> record needs
 definition and is in the header file <code>sw_core_db.hrl</code>. We simply list
 the entries which are defined the SWAPI GraphQL schema so we can store
 the concept of a planet in the system:</p>
@@ -1517,14 +1518,14 @@ not given here for brevity. They follow the same style as the example above.</p>
 attention to populating the database tables. For this, we use the
 SWAPI data set as the primary data source. This set has its fixtures
 stored as JSON document. So we use <code>jsx</code> to decode those JSON
-documents and turn them into mnesia records, which we then insert into
+documents and turn them into Mnesia records, which we then insert into
 the database.</p>
 </div>
 <div class="paragraph">
 <p>We can fairly easily write a function which take the JSON and turn them
-into appropriate mnesia records. Planets live in a fixture file
+into appropriate Mnesia records. Planets live in a fixture file
 <code>planets.json</code>, so we need a function that can turn a part said JSON
-file into a mnesia record. Some conversion is necessary on the way:</p>
+file into a Mnesia record. Some conversion is necessary on the way:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1561,7 +1562,7 @@ file into a mnesia record. Some conversion is necessary on the way:</p>
 </div>
 <div class="paragraph">
 <p>Once we have this function down, we can utilize it to get a list of
-mnesia records, which we can then insert into the database through a
+Mnesia records, which we can then insert into the database through a
 transaction:</p>
 </div>
 <div class="listingblock">
@@ -1603,7 +1604,7 @@ populate_tables() -&gt;
 <div class="paragraph">
 <p>This creates a fixture in the database such that when we boot the
 database, the planets, transports, people, &#8230;&#8203;, will be present in the
-mnesia database when we boot the system.</p>
+Mnesia database when we boot the system.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1621,7 +1622,7 @@ the repository</p>
 <div class="paragraph">
 <p>which makes the empty schema available for the release manager of the
 Erlang system. When we cook a release, we will make sure to copy this
-initial schema into the correct mnesia-directory of the release.
+initial schema into the correct Mnesia-directory of the release.
 Because the file is named <code>FALLBACK.BUP</code>, it is a fallback backup file.
 This will &#8220;unpack&#8221; itself to become a new empty database as if you
 had rolled in a backup on the first boot of the system. Thus we avoid
@@ -1648,7 +1649,7 @@ much.
 </div>
 <div class="paragraph">
 <p>We now have the ability to create new database tables easily and we
-have a mnesia database for backing our data. This means we can start
+have a Mnesia database for backing our data. This means we can start
 turning our attention to the GraphQL schema.</p>
 </div>
 </div>
@@ -1790,9 +1791,18 @@ decision.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_planets">Planets</h3>
+<h3 id="_object_types">Object types</h3>
 <div class="paragraph">
-<p>Since we have planets in the mnesia database from the previous
+<p>We follow the specification for describing object types. Thus, if you
+describe an object like a starship as <code>type Starship { &#8230;&#8203; }</code> the
+system knows how to parse and internalize such a description. In the
+following, we don&#8217;t cover all of the schema, but focus on a single
+type in order to describe what is going on.</p>
+</div>
+<div class="sect3">
+<h4 id="_planets">Planets</h4>
+<div class="paragraph">
+<p>Since we have planets in the Mnesia database from the previous
 section, we can define the GraphQL Schema for them as well. The
 definition is quite straightforward given the Star Wars API we are
 trying to mimic already contains all the important parts.</p>
@@ -1824,6 +1834,7 @@ documentation on each field to a fine detail.</p>
   edited : String
   id : ID!
 }</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -1902,6 +1913,104 @@ which fields we want to grab inside the starship:</p>
 <h3 id="_input_objects">Input objects</h3>
 <div class="paragraph">
 <p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_interfaces_unions">Interfaces &amp; Unions</h3>
+<div class="paragraph">
+<p>In GraphQL, an interface is a way to handle the heterogeneous nature of
+modern data. Several objects may share the same fields with the same
+types. In this case, we can provide an <code>interface</code> for those fields
+they have in common.</p>
+</div>
+<div class="paragraph">
+<p>Likewise, if we have two objects which can logically be the output of
+a given field, we can use a <code>union</code> to signify that a set of disparate
+objects can be returned.</p>
+</div>
+<div class="paragraph">
+<p>In the case of an interface, the client is only allowed to access the
+fields in the interface, unless it fragment-expands in order to be
+more specific. For unions, the client <em>must</em> fragment expand to get
+the data.</p>
+</div>
+<div class="paragraph">
+<p>The Star Wars Schema has an obvious example of an interface via the
+<strong>Node</strong> specification above, but there is another interface possible in
+the specification: both <strong>Starship</strong> and <strong>Vehicle</strong> shares a large set of
+data in the concept of a <strong>Transport</strong>. We can arrange for this overlap
+by declaring an interface for transports:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">interface Transport {
+  id : ID!
+  edited : String
+  consumables : String
+  name : String
+  created : String
+  cargoCapacity : Int
+  passengers : String
+  maxAtmospheringSpeed : Int
+  crew : String
+  length : Float
+  model : String
+  costInCredits : Int
+  manufacturers : [String]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then we include the interface when we declare either a starship or
+a vehicle. Here we use the <strong>Starship</strong> as an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">+description(text: "Representation of Star Ships")
+type Starship implements Node, Transport {
+  id : ID!
+  name : String
+  model : String
+  starshipClass : String
+  manufacturers : [String]
+  costInCredits : Int
+  length : Float
+  crew : String
+  passengers : String
+  maxAtmospheringSpeed : Int
+  hyperdriveRating : Float
+  MGLT : Int
+  cargoCapacity : Int
+  consumables : String
+  created: String
+  edited: String
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">Abstract types</div>
+<p>Interfaces and Unions are so-called <em>abstract types</em> in the GraphQL
+specification. They never occur in concrete data, but is a type-level
+relationship only. Thus, when handling an interface or a unions, you
+just return concrete objects. In the section <a href="#type-resolution">Type Resolution</a> we
+will see how the server will handle abstract types.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you have an object which naturally shares fields with other
+objects, consider creating an interface&#8212;&#8203;even in the case where you
+have no use for the interface. The Erlang GraphQL contains a schema
+validator which will validate your fields to be in order. It is fairly
+easy to mess up schema types in subtle ways, but if you write them
+down, the system can figure out when you make this error.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1990,7 +2099,7 @@ type checker&#8221; and weed out some obvious definitional bugs.
 <p>The root setup defines how a query begins by defining what type in the
 schema specification is the root for queries and mutations
 respectively. By convention, these types are always called <code>Query</code> and
-<code>Mutation</code> so it is easy to find find the Root&#8217;s entry points in the
+<code>Mutation</code> so it is easy to find the Root&#8217;s entry points in the
 Graph.</p>
 </div>
 <div class="paragraph">
@@ -2042,8 +2151,9 @@ handling that particular schema type.</p>
      }.</code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_scalars">Scalars</h4>
 <div class="paragraph">
-<div class="title">Scalars</div>
 <p>Every scalar type in the schema is mapped through the <code>scalar</code> mapping
 part. It is quite common a system only has a single place in which all
 scalars are defined. But it is also possible to split up the scalar
@@ -2051,13 +2161,15 @@ mapping over multiple modules. This can be useful if you have a piece
 of code where some scalars naturally lives in a sub-application of some
 kind.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_interfaces_unions_2">Interfaces &amp; Unions</h4>
 <div class="paragraph">
-<div class="title">Interfaces &amp; Unions</div>
 <p>In GraphQL, two kinds of <em>abstract</em> types are defined: interfaces and
 unions. Interfaces abstract over concrete types which have some fields
 in common (and thus the fields must also agree on types). Unions
 abstract over concrete types that has nothing in common and thus
-simply defines a heterogenous collection of types.</p>
+simply defines a heterogeneous collection of types.</p>
 </div>
 <div class="paragraph">
 <p>For the GraphQL system to operate correctly, execution must have a way
@@ -2089,8 +2201,10 @@ GraphQL system doesn&#8217;t know about your representation. In turn, it
 call back into your code in order to learn which type your
 representation has.</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_objects">Objects</h4>
 <div class="paragraph">
-<div class="title">Objects</div>
 <p>The mapping of objects is likely to have a special mapping for each
 object type you have defined. This is because each kind of (output)
 object tend to be different and require its own handler.</p>
@@ -2118,6 +2232,7 @@ internally.
 </td>
 </tr>
 </table>
+</div>
 </div>
 </div>
 </div>
@@ -2192,9 +2307,9 @@ with.</p>
 <div class="paragraph">
 <p>In particular, we can chose an internal representation which is
 unrepresentable on the client side. That is, the client could be Java
-or Javascript and neither of those languages has a construct for
+or JavaScript and neither of those languages has a construct for
 tuples which is nice to work with. At least not when we consider JSON
-as a transport for those languages. Yet, due to canonicaliztion, we
+as a transport for those languages. Yet, due to canonicalization, we
 may still use tuples and atoms internally in our Erlang code, as long
 as we make sure to output-coerce values such that they are
 representable by the transport and by the client.</p>
@@ -2280,7 +2395,7 @@ have a way to <em>resolve</em> those abstract types into concrete (output)
 types. This is handled by the type resolution mapping.</p>
 </div>
 <div class="paragraph">
-<p>The exeuctor of GraphQL queries uses the type resolver when it wants
+<p>The executor of GraphQL queries uses the type resolver when it wants
 to make an abstract object concrete. The executor can then continue
 working with the concretized object and thus determine if fragments
 should expand and so on.</p>
@@ -2303,7 +2418,7 @@ type as output:</p>
 can be any representation of data in the Erlang system. The purpose of
 the <code>execute/1</code> function is to analyze that data and return what type
 it belongs to (as an atom). In our case, we can assume resolution
-works on mnesia objects. Hence, by matching on mnesia objects, we can
+works on Mnesia objects. Hence, by matching on Mnesia objects, we can
 resolve the type in the Graph of those objects (file: <code>sw_core_type.erl</code>):</p>
 </div>
 <div class="listingblock">
@@ -2367,7 +2482,7 @@ requesting the <strong>name</strong> of the Starship.</p>
 <p>Second, field resolution on objects are used to <em>derive</em> values from
 other values. Suppose a <strong>Starship</strong> had two fields internally
 <strong>cargoCapacity</strong> and <strong>cargoLoad</strong>. We might want to compute the load
-factor of the starship as a value between 0.0 and 1.0. This amounts to
+factor of the Starship as a value between 0.0 and 1.0. This amounts to
 running the computation <code>CargoLoad / CargoCapacity</code>. Rather than
 storing this value in the data, we can just compute it by derivation
 if the client happens to request the field. Otherwise, we abstain from
@@ -2398,7 +2513,7 @@ a backend data store. Consider the field <code>node(id: ID!)</code> on the
 </div>
 </div>
 <div class="paragraph">
-<p>When a <code>query</code> starts executing, an <em>intial_term</em> is injected in by
+<p>When a <code>query</code> starts executing, an <em>initial_term</em> is injected in by
 the developer. By convention this object is often either <code>null</code> or
 <code>#{}</code> signifying we currently have no current object. The reference to
 the <code>node</code> field states that the client wants to load a <em>Node</em> object.
@@ -2571,8 +2686,8 @@ allows you to pattern match on different fields of the query.</p>
 </div>
 <div class="paragraph">
 <div class="title">Args</div>
-<p>Args is always of type <code>#{ binary() &#8658; term() }</code> mapping input
-arguments for the field to values for that field. If a client queries</p>
+<p>The arguments are always of type <code>#{ binary() &#8658; term() }</code>; mapping
+from field name to field value. If a client queries</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2623,7 +2738,7 @@ is added to the input map.</p>
 always present in the <code>Args</code> map, either populated by a default value
 or by a <code>null</code> value if that field has no default. It is a brilliant
 design choice by the GraphQL specification designers: clients have one
-unambigous way to input &#8220;no value&#8221; and servers have one unambigous
+unambiguous way to input &#8220;no value&#8221; and servers have one unambiguous
 way of processing &#8220;no value&#8221;.</p>
 </div>
 <div class="admonitionblock tip">
@@ -2696,7 +2811,7 @@ this is not always a desirable solution.</p>
 <div class="sect3">
 <h4 id="_id_handling">Id handling</h4>
 <div class="paragraph">
-<p>In our system, we need to turn an ID on the mnesia side into an ID in
+<p>In our system, we need to turn an ID on the Mnesia side into an ID in
 GraphQL. Luckily, we&#8217;ve already defined the ID encoder/decoder in the
 section <a href="#identity-generation">[identity-generation]</a>, so we can simply utilize those
 methods whenever we want to return an ID.</p>
@@ -2711,7 +2826,7 @@ between the GraphQL contract and the database is.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_node_loading">Node Loading</h3>
+<h3 id="_loading_data">Loading Data</h3>
 <div class="paragraph">
 <p>Our <strong>Planet</strong> execute function handles the case where we have a
 loaded planet and want to output its contents. But it doesn&#8217;t say
@@ -2764,7 +2879,7 @@ load_node_(TypeList, {Type, MID}) -&gt;
 </div>
 <div class="paragraph">
 <p>To load a particular node, we first attempt to decode the ID into its
-type and its mnesia ID. Once we know its decoded form, we have a
+type and its Mnesia ID. Once we know its decoded form, we have a
 helper routine which carries out the actual load. The loader asks the
 database to load data, and also verifies the allowed types if needed.</p>
 </div>
@@ -2789,7 +2904,7 @@ record_of('Vehicle') -&gt; vehicle.</code></pre>
 </div>
 <div class="paragraph">
 <p>This may seem a bit redundant, but in a larger system it is common to
-have GraphQL objeccts backed by several data stores. In this case, the
+have GraphQL objects backed by several data stores. In this case, the
 mapping also becomes a data source router which tells the system where
 to go and fetch a given piece of data. Another common case is that the
 naming in the database does not match the naming in the GraphQL
@@ -2802,7 +2917,8 @@ Mnesia:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">load(Type, ID) -&gt;
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">...
+load(Type, ID) -&gt;
     MType = record_of(Type),
     F = fun() -&gt;
                 [Obj] = mnesia:read(MType, ID, read),
@@ -2826,6 +2942,55 @@ need to handle extreme amounts of data, you might want to avoid the
 transaction code and just do a dirty read. For this example though, we
 keep things straight and use transactions all over the place to make
 the interface more consistent.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_loading_complex_objects">Loading Complex objects</h4>
+<div class="paragraph">
+<p>In the example with the <strong>Planet</strong> above, the loading of the data set is
+straightforward because one database row corresponds to one object in
+the Graph. For a <strong>Starship</strong> however, The data is spread over multiple
+rows. Most of the data lives in a <code>#transport{}</code> record and a small
+set of additional data lives in a <code>#starship{}</code> record. This
+corresponds to our earlier handling the schema: most data lives in the
+<strong>Transport</strong> interface and a <strong>Starship</strong> implements the transport.</p>
+</div>
+<div class="paragraph">
+<p>To load a <strong>Starship</strong>, we extend our loader function with a new variant
+for loading the starship, and we return the pair of a transport and a
+starship as the object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">load('Starship', ID) -&gt;
+    F = fun() -&gt;
+                [Transport] = mnesia:read('Transport', ID, read),
+                [Starship]  = mnesia:read('Starship', ID, read),
+                #{ starship =&gt; Starship,
+                   transport =&gt; Transport }
+        end,
+    txn(F);
+...</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The loading of the <strong>Starship</strong> exemplifies a common trait of
+GraphQL systems in which they analyze the object the client wants and
+then translate the demand into a series of data acquisition commands.
+The data can live in many different locations and can be complex
+objects which are mixed together to form the GraphQL type for that
+object. This allows the server freedom to choose how it represents
+data and what data sources it uses to assemble the response for a
+request.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2885,7 +3050,7 @@ this.
 </div>
 <div class="paragraph">
 <p>The pagination here follows the Relay Modern specification for
-paginations and is described in the section <a href="#pagination">Pagination</a>.</p>
+pagination and is described in the section <a href="#pagination">Pagination</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3046,7 +3211,7 @@ rely on the surrounding system to do so.</p>
 </div>
 <div class="paragraph">
 <p>The interface to GraphQL at its very base needs support for sending
-requests and recieving replies. There is relatively little need for
+requests and receiving replies. There is relatively little need for
 out-of-order requests since queries tend to be large and
 all-encompassing.</p>
 </div>
@@ -3261,7 +3426,7 @@ means of setting the desired content type to <code>application/json</code>.</p>
 </div>
 <div class="paragraph">
 <p>We only provide UTF-8. By doing so, we can simplify our backend a bit
-because it doesn&#8217;t have to reencode data as long as all the data we
+because it doesn&#8217;t have to re-encode data as long as all the data we
 store are in proper UTF-8 encoding. A more advanced system would
 analyze the desired content type from the client and eventually
 restructure its documents to fit this desired content type. For
@@ -3516,7 +3681,7 @@ query.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_foo
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Any query which is well-defined typewise can be executed. Yet many
+<td>Any query which is well-defined type wise can be executed. Yet many
 of those queries are nonsensical in one way or another. If they
 are executed, they yield results which are valid responses&#8212;&#8203;but
 they are often not what the client meant. Validation is a step
@@ -3530,7 +3695,7 @@ becomes even more important.</td>
 </table>
 </div>
 <div class="paragraph">
-<p>Once preprocessing is complete, we can execute the query itself:</p>
+<p>Once pre-processing is complete, we can execute the query itself:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3554,10 +3719,10 @@ becomes even more important.</td>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>Type checking of parameters is a separate operation from type
-checking the document. This is because the preprocessing of the
+checking the document. This is because the pre-processing of the
 document can be handled separately from running the actual query.
 Since an <em>operation</em> in an existing document may have <em>variables</em>,
-we must type check these variables for correctness. Preprocessing
+we must type check these variables for correctness. Pre-processing
 yielded a function environment of the operations in the query. So
 we proceed by checking the <code>Vars</code> against the `FunEnv&#8217;s type
 schema.</td>
@@ -3577,7 +3742,7 @@ into JSON-valid responses (see <a href="#response-formatter">Response formatter<
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>In order to make <code>cowboy</code> behave, we override its normal response
 path. This gives us the processing path of <code>cowboy_rest</code> up until
-we start returning data and then we overrride the system in order
+we start returning data and then we override the system in order
 to satisfy the typical response expected by <a href="#graphiql">GraphiQL</a> and
 typical GraphQL systems.</td>
 </tr>
@@ -3631,7 +3796,7 @@ understand:</p>
 <h2 id="graphiql">GraphiQL</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The ubiquituous front-end for GraphQL servers is a system called
+<p>The ubiquitous front-end for GraphQL servers is a system called
 GraphiQL, <a href="https://github.com/graphql/graphiql" class="bare">https://github.com/graphql/graphiql</a>, which provides a nice
 user interface for a GraphQL server. We use this system as the
 front-end in the demo, whereas real applications will of course skip
@@ -3680,10 +3845,10 @@ developer:</p>
 <ul>
 <li>
 <p>The system provides documentation by clicking the <code>Docs</code> tab. The
-documentation is searchable and fully intospectible.</p>
+documentation is searchable and fully introspectable.</p>
 </li>
 <li>
-<p>The system provides autocompletion and guidance when developing
+<p>The system provides auto-completion and guidance when developing
 queries. It uses the introspection features to figure out what can
 be written.</p>
 </li>
@@ -3856,7 +4021,7 @@ render cursors correctly on the data.</td>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>Given the cut <code>Sliced</code> pick either the first or last <code>K</code> elements
 in that window. Then build the map <code>#{ node &#8658; Edge, cursor &#8658;
-Cursor }</code> via the functin <code>format/1</code>.</td>
+Cursor }</code> via the function <code>format/1</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -4016,8 +4181,8 @@ document to run that query.</p>
 <p>This is much faster since the Server only has to execute the query and
 can avoid going through the validation steps again and again. While
 the Erlang GraphQL system is fast, about 4/5 of a query is
-preprocessing time before execution. In other words, you can speed up
-the GraphQL by quite a margin if you use stored procedres.</p>
+pre-processing time before execution. In other words, you can speed up
+the GraphQL by quite a margin if you use stored procedures.</p>
 </div>
 <div class="paragraph">
 <p>In addition, you can also arrange that a client isn&#8217;t able to
@@ -4050,7 +4215,7 @@ are far less likely to &#8220;take out&#8221; your system.</p>
 <p>If you give developers access through an API key, you can demand that
 they build query document should they want to run more than, say, 600
 queries per hour against your system. This is 10 queries per minute,
-which is usually fine for developement&#8212;&#8203;Once the system is done, you
+which is usually fine for development&#8212;&#8203;Once the system is done, you
 provide a query document for preparation, and then the prepared
 document is used.</p>
 </div>
@@ -4131,12 +4296,12 @@ resolution code.</p>
 <h3 id="non-isomorphism">Avoid Isomorphic representations</h3>
 <div class="paragraph">
 <p>A common want when designing API systems is to avoid the need for
-continual retranslation of backend data to the GraphQL schema. A
+continual translation of backend data to the GraphQL schema. A
 common solution to this problem is to make the database schema 1-1
 with the GraphQL schema, often called an isomorphic
 representation.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup> However, our experience is that such a 1-1 mapping is
 detrimental to the development of the system. It is common the GraphQL
-schema and the underlying data evovle at different paces and that new
+schema and the underlying data evolve at different paces and that new
 data sources are added as you go along.</p>
 </div>
 <div class="paragraph">
@@ -4154,7 +4319,7 @@ explain to people what the mapping means.</p>
 <ul>
 <li>
 <p>Look out for the situation where a simple change in the contract
-starts an avalance of changes all throughout your stack. This tend
+starts an avalanche of changes all throughout your stack. This tend
 to mean you have built a system where each layer transforms the
 data. Keep transformers down to as few layers as possible and let
 the end-points in the data passing handle the transformations.</p>
@@ -4243,7 +4408,7 @@ brittle as every document is an all-or-nothing approach.
 <p>Hypertext embedded in responses can have users &#8220;click around&#8221; in
 your API. If you embed the possible operations as links in responses,
 a client can use returned data to learn what it can do with the data.
-Roy T. Fieldings PhD thesis covers this in great detail.</p>
+Roy T. Fielding&#8217;s PhD thesis covers this in great detail.</p>
 </div>
 <div class="paragraph">
 <p>GraphQL doesn&#8217;t implement HATEOAS, but it gets fairly close to the
@@ -4331,7 +4496,7 @@ that, so you don&#8217;t forget what is to be done.</p>
 </div>
 <div class="paragraph">
 <div class="title"><code>README.md</code></div>
-<p>Instructions for the reader on Github. Also instructions on how to
+<p>Instructions for the reader on GitHub. Also instructions on how to
 build the documentation and where to go next.</p>
 </div>
 <div class="paragraph">
@@ -4407,7 +4572,7 @@ boot process and print out a failure.</p>
 </div>
 <div class="paragraph">
 <div class="title"><code>src/sw_core_db.hrl</code></div>
-<p>This header file contains the records we are using in our mnesia
+<p>This header file contains the records we are using in our Mnesia
 database. One could have spread these over multiple files, but since
 the system is fairly small we use a single file for this. It is likely
 a larger system would split this into smaller sections.</p>
@@ -4455,7 +4620,7 @@ of the Core application.</p>
 </div>
 <div class="paragraph">
 <div class="title"><code>src/sw_web_app.erl</code></div>
-<p>Application callback for the <code>sw_web</code> application. Also initializees
+<p>Application callback for the <code>sw_web</code> application. Also initializes
 the cowboy web server with its dispatch rules and the configuration of
 cowboy.</p>
 </div>
@@ -4474,7 +4639,7 @@ running.</p>
 <div class="paragraph">
 <div class="title"><code>src/sw_web_response.erl</code></div>
 <p>Wrapper around responses. It makes sure that an Erlang term is
-renderable in JSON by converting something like a tuple into a binary
+representable in JSON by converting something like a tuple into a binary
 value. This allows a JSON encoder to handle the Erlang term without
 problems.</p>
 </div>
@@ -4489,7 +4654,7 @@ code responses from the system.</p>
 <div id="footnotes">
 <hr>
 <div class="footnote" id="_footnote_1">
-<a href="#_footnoteref_1">1</a>. The spec has toyed with the idea of adding more classes in additon to queries and mutations. Most notably the concept of a <em>subscription</em>
+<a href="#_footnoteref_1">1</a>. The spec has toyed with the idea of adding more classes in addition to queries and mutations. Most notably the concept of a <em>subscription</em>
 </div>
 <div class="footnote" id="_footnote_2">
 <a href="#_footnoteref_2">2</a>. Through the use of the <code>@streamed</code> and <code>@defer</code> directives among other things
@@ -4501,7 +4666,7 @@ code responses from the system.</p>
 <a href="#_footnoteref_4">4</a>. We call operations for <code>functions</code> in the GraphQL system because that is what they really are, from a language perspective
 </div>
 <div class="footnote" id="_footnote_5">
-<a href="#_footnoteref_5">5</a>. In Erlang/OTP 20.0 and onwards, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
+<a href="#_footnoteref_5">5</a>. In Erlang/OTP 20.0 and onward, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
 </div>
 <div class="footnote" id="_footnote_6">
 <a href="#_footnoteref_6">6</a>. Isomorphic stems from ancient greek and means &#8220;equal shape&#8221;
@@ -4509,7 +4674,7 @@ code responses from the system.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-19 15:15:40 CEST
+Last updated 2017-05-20 15:32:06 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
