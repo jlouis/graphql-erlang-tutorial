@@ -474,7 +474,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_object_types">Object types</a></li>
 <li><a href="#queries-and-mutations">Queries &amp; Mutations</a></li>
 <li><a href="#_input_objects">Input objects</a></li>
-<li><a href="#_interfaces_unions">Interfaces &amp; Unions</a></li>
+<li><a href="#interfaces-and-unions">Interfaces &amp; Unions</a></li>
 <li><a href="#_schema_default_values">Schema default values</a></li>
 </ul>
 </li>
@@ -491,6 +491,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_execution">Execution</a></li>
 <li><a href="#input-argument-rules">Input argument rules</a></li>
 <li><a href="#_handling_planets">Handling Planets</a></li>
+<li><a href="#_handling_starships">Handling Starships</a></li>
 <li><a href="#_loading_data">Loading Data</a></li>
 <li><a href="#walking-in-the-graph">Walking in the Graph</a></li>
 <li><a href="#_default_mapping">Default Mapping</a></li>
@@ -776,9 +777,9 @@ limitations under the License.</p>
 <p>A worthy question to ask is &#8220;Why GraphQL?&#8221;</p>
 </div>
 <div class="paragraph">
-<p>In many ways, GraphQL is a natural extension of what we are already
-doing on the Web. As our systems grow, we start realizing our systems
-become gradually more heterogeneous in the sense that data becomes more
+<p>GraphQL is a natural extension of what we are already doing on the
+Web. As our systems grow, we start realizing our systems become
+gradually more heterogeneous in the sense that data becomes more
 complex and data gets more variance.</p>
 </div>
 <div class="paragraph">
@@ -1916,7 +1917,7 @@ which fields we want to grab inside the starship:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_interfaces_unions">Interfaces &amp; Unions</h3>
+<h3 id="interfaces-and-unions">Interfaces &amp; Unions</h3>
 <div class="paragraph">
 <p>In GraphQL, an interface is a way to handle the heterogeneous nature of
 modern data. Several objects may share the same fields with the same
@@ -2163,7 +2164,7 @@ kind.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_interfaces_unions_2">Interfaces &amp; Unions</h4>
+<h4 id="_interfaces_unions">Interfaces &amp; Unions</h4>
 <div class="paragraph">
 <p>In GraphQL, two kinds of <em>abstract</em> types are defined: interfaces and
 unions. Interfaces abstract over concrete types which have some fields
@@ -2331,7 +2332,9 @@ by providing an example.
 </table>
 </div>
 <div class="paragraph">
-<p>TBD</p>
+<p>TBD: Write about Scalar values as part of the specification.
+Dependency: mutations in the specification, because otherwise the
+input coercion parts are a bit moot.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2451,13 +2454,12 @@ flexibility for this reason.
 </table>
 </div>
 <div class="paragraph">
-<p>Use pattern matching in the <code>execute/1</code> function to vary what
-kinds of data you can process. Do not be afraid to wrap your objects
-into other objects if that makes it easier to process. Since you can
-handle any Erlang term, you can often wrap your objects in a map of
-metadata and use the metadata for figuring out the type of the object.
-See <a href="#object-representation">Object Representation</a> for a discussion of several commonly
-used variants.</p>
+<p>Use pattern matching in the <code>execute/1</code> function to vary what kinds of
+data you can process. Do not be afraid to wrap your objects into other
+objects if that makes it easier to process. Since you can handle any
+Erlang term, you can often wrap your objects in a map of metadata and
+use the metadata for figuring out the type of the object. See
+<a href="#object-representation">Object Representation</a> for a discussion of commonly used variants.</p>
 </div>
 </div>
 </div>
@@ -2808,6 +2810,69 @@ to match the names in the GraphQL specification. In our experience, it
 is often the case that things evolve and you need to rename fields. So
 this is not always a desirable solution.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_handling_starships">Handling Starships</h3>
+<div class="paragraph">
+<p>When a <strong>Starhip</strong> is loaded from the database, remember from
+<a href="#interfaces-and-unions">Interfaces &amp; Unions</a> that we are loading a starship as two rows:
+One for the transport part, which is shared with vehicles, and one for
+the starship part which is unique to starships. This means that the
+&#8220;current object&#8221; when field resolving on a starship is a pair of a
+transport and a starship row. The resolver function must handle this,
+by retrieving the field from either the transport or the starship.
+This is easily done in the <code>execute/4</code> function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, #{ starship := Starship,
+                 transport := Transport }, Field, _Args) -&gt;
+    case Field of
+        &lt;&lt;"id"&gt;&gt; -&gt;
+            {ok, sw_core_id:encode({'Starship', Starship#starship.id})};
+        &lt;&lt;"name"&gt;&gt; -&gt; {ok, Transport#transport.name};
+        &lt;&lt;"model"&gt;&gt; -&gt; {ok, Transport#transport.model};
+        &lt;&lt;"starshipClass"&gt;&gt; -&gt; {ok, Starship#starship.starship_class};
+        &lt;&lt;"costInCredits"&gt;&gt; -&gt; {ok, Transport#transport.cost};
+        &lt;&lt;"length"&gt;&gt; -&gt; {ok, Transport#transport.length};
+        &lt;&lt;"crew"&gt;&gt; -&gt; {ok, Transport#transport.crew};
+        &lt;&lt;"passengers"&gt;&gt; -&gt; {ok, Transport#transport.passengers};
+        &lt;&lt;"maxAtmospheringSpeed"&gt;&gt; -&gt;
+            {ok, Transport#transport.max_atmosphering_speed};
+        &lt;&lt;"hyperdriveRating"&gt;&gt; -&gt;
+            {ok, Starship#starship.hyperdrive_rating};
+        &lt;&lt;"MGLT"&gt;&gt; -&gt;
+            {ok, Starship#starship.mglt};
+        &lt;&lt;"cargoCapacity"&gt;&gt; -&gt; {ok, Transport#transport.cargo_capacity};
+        &lt;&lt;"consumables"&gt;&gt; -&gt; {ok, Transport#transport.consumables};
+        &lt;&lt;"created"&gt;&gt; -&gt; {ok, Transport#transport.created};
+        &lt;&lt;"edited"&gt;&gt; -&gt;  {ok, Transport#transport.edited}
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The example here exemplifies that a current object can be <em>any</em> Erlang
+term you like. The output from the GraphQL system is always being
+mediated by an <code>execute/4</code> function, so as long as you can translate
+from that Erlang term and into a valid field value, you are golden.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+An alternative implementation of the current object for
+Starships would be to return a <code>map()</code> which had all the relevant
+fields from the <code>#transport{}</code> and <code>#starship{}</code> rows merged. In
+short, it would be the same as if you had executed <code>SELECT * FROM
+Starship INNER JOIN Tranport USING (Id)</code>. It is worth examining if a
+different representation will help in a given situation.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="_id_handling">Id handling</h4>
 <div class="paragraph">
@@ -2884,7 +2949,7 @@ helper routine which carries out the actual load. The loader asks the
 database to load data, and also verifies the allowed types if needed.</p>
 </div>
 <div class="sect3">
-<h4 id="_db_loading">DB Loading</h4>
+<h4 id="db-loading">DB Loading</h4>
 <div class="paragraph">
 <p>The database code contains a way to fetch various objects from the
 database and return in a GraphQL friendly representation. First, we
@@ -3210,10 +3275,9 @@ its own way to tell the outside world about errors, since it cannot
 rely on the surrounding system to do so.</p>
 </div>
 <div class="paragraph">
-<p>The interface to GraphQL at its very base needs support for sending
-requests and receiving replies. There is relatively little need for
-out-of-order requests since queries tend to be large and
-all-encompassing.</p>
+<p>The interface to GraphQL at its base needs support for sending
+requests and receiving replies. There is little need for out-of-order
+requests since queries tend to be large and all-encompassing.</p>
 </div>
 <div class="paragraph">
 <p>However, newer parts of GraphQL which is currently being tried out has
@@ -3261,16 +3325,16 @@ transports. The web application needs a dispatcher in order to run:</p>
 code uses <code>/</code> at the root.</p>
 </div>
 <div class="paragraph">
-<p>The Cowboy setup is completely out of the box, except that we
-manipulate a couple of variables in order to make cowboy play better
-with <a href="#graphiql">GraphiQL</a>. Look at the file <code>sw_web_app.erl</code> for the details.</p>
+<p>The Cowboy setup is straightforward, except that we manipulate a
+couple of variables in order to make cowboy play better with
+<a href="#graphiql">GraphiQL</a>. Look at the file <code>sw_web_app.erl</code> for the details.</p>
 </div>
 <div class="paragraph">
-<p>We set up the cowboy handler as a REST handler. Mostly because it is
-fairly easy to do and because it automates a large set of things we&#8217;d
-like to do. Our plan is to use content-negotiation: a web server will
-be served an UI for GraphQL by default, but if the a client request
-comes in, we will pass that to the GraphQL system.</p>
+<p>We set up the cowboy handler as a REST handler, because it is easy to
+do, and because it automates a large set of things we&#8217;d like to do.
+Our plan is to use content-negotiation: a web server will be served an
+UI for GraphQL by default, but if the a client request comes in, we
+will pass that to the GraphQL system.</p>
 </div>
 <div class="paragraph">
 <p>The <code>cowboy_rest</code> model stems from an idea pioneered by Webmachine. We
@@ -3479,7 +3543,7 @@ what we need to do:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Gather parameters. The system allows several ways of entering
+<p>Gather parameters. The system allows multiple ways of entering
 parameters, either as part of the URL, or as part of an input
 document.</p>
 </li>
@@ -3639,7 +3703,7 @@ run_request(#{ document := Doc} = ReqCtx, Req, State) -&gt;
 Query. This step can be done once and for all for a given query and
 the same query could be re-run with the same document over and over.
 It corresponds to a prepared statement in the SQL world. In the
-pre-processing step, we carry out several of the needed operations:</p>
+pre-processing step, we carry out all operations up until execution:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3681,16 +3745,16 @@ query.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_foo
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Any query which is well-defined type wise can be executed. Yet many
-of those queries are nonsensical in one way or another. If they
-are executed, they yield results which are valid responses&#8212;&#8203;but
-they are often not what the client meant. Validation is a step
-which adds a &#8220;linting&#8221; pass on top of the system and rejects
-queries which are likely to be bad. For instance, it is checked
-that every fragment in the document has at least one use, or that
-a fragment spread expansion has at least one match. As queries
-grow in size and become automatically generated, validation
-becomes even more important.</td>
+<td>Any query which is well-defined type wise can be executed. Yet
+those queries can still be nonsensical. If they are executed, they
+yield results which are valid responses&#8212;&#8203;but they are often not
+what the client meant. Validation is a step which adds a
+&#8220;linting&#8221; pass on top of the system and rejects queries which
+are likely to be bad. For instance, it is checked that every
+fragment in the document has at least one use, or that a fragment
+spread expansion has at least one match. As queries grow in size
+and become automatically generated, validation becomes even more
+important.</td>
 </tr>
 </table>
 </div>
@@ -3916,12 +3980,34 @@ about a particular query which doesn&#8217;t operate as expected.</p>
 <h2 id="_relay_modern">Relay Modern</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>TBD</p>
+<p>Facebook&#8217;s use of GraphQL adds a layer on top through the Relay Modern
+framework. This layer adds some standards on top of the GraphQL system
+such that it has uniform ways of handling problems. The interaction
+with GraphQL is defined through specifications for each part.</p>
+</div>
+<div class="paragraph">
+<p>This chapter explains the concepts in relation to Erlang GraphQL and how
+one will achieve those standard pieces.</p>
 </div>
 <div class="sect2">
 <h3 id="_node_interface">Node Interface</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>Relay Modern defines an object identification specification together
+with a interface <strong>Node</strong> used to retrieve objects which are cached on
+the client side. The specification
+<a href="https://facebook.github.io/relay/graphql/objectidentification.htm" class="bare">https://facebook.github.io/relay/graphql/objectidentification.htm</a>
+defines the details of this.</p>
+</div>
+<div class="paragraph">
+<p>This tutorial already implements the Node interface. The section
+<a href="#identity-encoding">Identity encoding</a> talks about the creation of globally unique
+identifiers, and the section on <a href="#queries-and-mutations">Queries &amp; Mutations</a> describes
+the concept of a <strong>Node</strong>. Finally, the section <a href="#db-loading">DB Loading</a> describes
+how nodes are loaded, generically, from the database backend.</p>
+</div>
+<div class="paragraph">
+<p>Taken together, this implements the object identification
+specification.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -4266,13 +4352,13 @@ the base data fields which the client can request.</p>
 into the map which is used by the GraphQL system. You can add those
 fields as you load the object from the backend database, in order to
 make it easier to work with later. In Erlang systems, due to
-immutability, a pointer to some static data is essentially free, even
-if many terms refer to it, due to sharing. So don&#8217;t be afraid to add
+immutability, a pointer to some static data is essentially free, as
+long as terms share the same base value. So don&#8217;t be afraid to add
 some metadata on your object.</p>
 </div>
 <div class="paragraph">
 <p>A common convention is to use a special atom such as
-<code>'$tag'</code>.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup> You can then add data under that key in the map which
+<code>'$tag'</code>.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup> You can then add data under that key in the map which
 is useful to the GraphQL backend only.</p>
 </div>
 <div class="paragraph">
@@ -4299,7 +4385,7 @@ resolution code.</p>
 continual translation of backend data to the GraphQL schema. A
 common solution to this problem is to make the database schema 1-1
 with the GraphQL schema, often called an isomorphic
-representation.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup> However, our experience is that such a 1-1 mapping is
+representation.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnote_7" title="View footnote.">7</a>]</sup> However, our experience is that such a 1-1 mapping is
 detrimental to the development of the system. It is common the GraphQL
 schema and the underlying data evolve at different paces and that new
 data sources are added as you go along.</p>
@@ -4666,10 +4752,13 @@ code responses from the system.</p>
 <a href="#_footnoteref_4">4</a>. We call operations for <code>functions</code> in the GraphQL system because that is what they really are, from a language perspective
 </div>
 <div class="footnote" id="_footnote_5">
-<a href="#_footnoteref_5">5</a>. In Erlang/OTP 20.0 and onward, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
+<a href="#_footnoteref_5">5</a>. You must also do &#8220;Node plurality&#8221; correct, through this tutorial doesn&#8217;t have a place where that gets used. Node plurality is the idea that if you load objects by a list, the return value retains the order in the list.
 </div>
 <div class="footnote" id="_footnote_6">
-<a href="#_footnoteref_6">6</a>. Isomorphic stems from ancient greek and means &#8220;equal shape&#8221;
+<a href="#_footnoteref_6">6</a>. In Erlang/OTP 20.0 and onward, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
+</div>
+<div class="footnote" id="_footnote_7">
+<a href="#_footnoteref_7">7</a>. Isomorphic stems from ancient greek and means &#8220;equal shape&#8221;
 </div>
 </div>
 <div id="footer">
