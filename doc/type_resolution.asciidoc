@@ -6,7 +6,7 @@ unions. When the GraphQL system encounters an abstract type, it must
 have a way to _resolve_ those abstract types into concrete (output)
 types. This is handled by the type resolution mapping.
 
-The exeuctor of GraphQL queries uses the type resolver when it wants
+The executor of GraphQL queries uses the type resolver when it wants
 to make an abstract object concrete. The executor can then continue
 working with the concretized object and thus determine if fragments
 should expand and so on.
@@ -27,7 +27,7 @@ The `Term` is often some piece of data loaded from a database, but it
 can be any representation of data in the Erlang system. The purpose of
 the `execute/1` function is to analyze that data and return what type
 it belongs to (as an atom). In our case, we can assume resolution
-works on mnesia objects. Hence, by matching on mnesia objects, we can
+works on Mnesia objects. Hence, by matching on Mnesia objects, we can
 resolve the type in the Graph of those objects (file: `sw_core_type.erl`):
 
 [source,erlang]

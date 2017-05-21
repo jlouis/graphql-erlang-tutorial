@@ -18,7 +18,7 @@ requesting the *name* of the Starship.
 Second, field resolution on objects are used to _derive_ values from
 other values. Suppose a *Starship* had two fields internally
 *cargoCapacity* and *cargoLoad*. We might want to compute the load
-factor of the starship as a value between 0.0 and 1.0. This amounts to
+factor of the Starship as a value between 0.0 and 1.0. This amounts to
 running the computation `CargoLoad / CargoCapacity`. Rather than
 storing this value in the data, we can just compute it by derivation
 if the client happens to request the field. Otherwise, we abstain from
@@ -42,7 +42,7 @@ a backend data store. Consider the field `node(id: ID!)` on the
 include::{sw_core}/priv/sw.schema[tags=queryObject]
 ----
 
-When a `query` starts executing, an _intial_term_ is injected in by
+When a `query` starts executing, an _initial_term_ is injected in by
 the developer. By convention this object is often either `null` or
 `#{}` signifying we currently have no current object. The reference to
 the `node` field states that the client wants to load a _Node_ object.
@@ -194,7 +194,7 @@ In short, an object resolution module can assume that _all_ fields are
 always present in the `Args` map, either populated by a default value
 or by a `null` value if that field has no default. It is a brilliant
 design choice by the GraphQL specification designers: clients have one
-unambigous way to input "`no value`" and servers have one unambigous
+unambiguous way to input "`no value`" and servers have one unambiguous
 way of processing "`no value`".
 
 TIP: Add sane defaults to your schema. If an input is a list, default
@@ -242,7 +242,7 @@ this is not always a desirable solution.
 
 ==== Id handling
 
-In our system, we need to turn an ID on the mnesia side into an ID in
+In our system, we need to turn an ID on the Mnesia side into an ID in
 GraphQL. Luckily, we've already defined the ID encoder/decoder in the
 section <<identity-generation>>, so we can simply utilize those
 methods whenever we want to return an ID.
@@ -283,7 +283,7 @@ include::{sw_core}/src/sw_core_query.erl[tags=loadNode]
 ----
 
 To load a particular node, we first attempt to decode the ID into its
-type and its mnesia ID. Once we know its decoded form, we have a
+type and its Mnesia ID. Once we know its decoded form, we have a
 helper routine which carries out the actual load. The loader asks the
 database to load data, and also verifies the allowed types if needed.
 
@@ -300,7 +300,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=recordOf]
 ----
 
 This may seem a bit redundant, but in a larger system it is common to
-have GraphQL objeccts backed by several data stores. In this case, the
+have GraphQL objects backed by several data stores. In this case, the
 mapping also becomes a data source router which tells the system where
 to go and fetch a given piece of data. Another common case is that the
 naming in the database does not match the naming in the GraphQL
@@ -388,7 +388,7 @@ often bake the pagination into the data fetching in order to achieve
 this.
 
 The pagination here follows the Relay Modern specification for
-paginations and is described in the section <<pagination>>.
+pagination and is described in the section <<pagination>>.
 
 === Default Mapping
 

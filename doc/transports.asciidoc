@@ -6,7 +6,7 @@ its own way to tell the outside world about errors, since it cannot
 rely on the surrounding system to do so.
 
 The interface to GraphQL at its very base needs support for sending
-requests and recieving replies. There is relatively little need for
+requests and receiving replies. There is relatively little need for
 out-of-order requests since queries tend to be large and
 all-encompassing.
 
@@ -154,7 +154,7 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=charsets_provided]
 ----
 
 We only provide UTF-8. By doing so, we can simplify our backend a bit
-because it doesn't have to reencode data as long as all the data we
+because it doesn't have to re-encode data as long as all the data we
 store are in proper UTF-8 encoding. A more advanced system would
 analyze the desired content type from the client and eventually
 restructure its documents to fit this desired content type. For
@@ -293,7 +293,7 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_preprocess]
     and a `FunEnv` which is the type scheme for each operation in the
     query.footnote:[We call operations for `functions` in the GraphQL
     system because that is what they really are, from a language perspective]
-<3> Any query which is well-defined typewise can be executed. Yet many
+<3> Any query which is well-defined type wise can be executed. Yet many
     of those queries are nonsensical in one way or another. If they
     are executed, they yield results which are valid responses--but
     they are often not what the client meant. Validation is a step
@@ -304,17 +304,17 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_preprocess]
     grow in size and become automatically generated, validation
     becomes even more important.
 
-Once preprocessing is complete, we can execute the query itself:
+Once pre-processing is complete, we can execute the query itself:
 
 [source,erlang]
 ----
 include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_execute]
 ----
 <1> Type checking of parameters is a separate operation from type
-    checking the document. This is because the preprocessing of the
+    checking the document. This is because the pre-processing of the
     document can be handled separately from running the actual query.
     Since an _operation_ in an existing document may have _variables_,
-    we must type check these variables for correctness. Preprocessing
+    we must type check these variables for correctness. Pre-processing
     yielded a function environment of the operations in the query. So
     we proceed by checking the `Vars` against the `FunEnv`'s type
     schema.
@@ -325,7 +325,7 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=run_execute]
     into JSON-valid responses (see <<response-formatter>>).
 <4> In order to make `cowboy` behave, we override its normal response
     path. This gives us the processing path of `cowboy_rest` up until
-    we start returning data and then we overrride the system in order
+    we start returning data and then we override the system in order
     to satisfy the typical response expected by <<graphiql>> and
     typical GraphQL systems.
 

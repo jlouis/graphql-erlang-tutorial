@@ -104,7 +104,7 @@ type in order to describe what is going on.
 
 ==== Planets
 
-Since we have planets in the mnesia database from the previous
+Since we have planets in the Mnesia database from the previous
 section, we can define the GraphQL Schema for them as well. The
 definition is quite straightforward given the Star Wars API we are
 trying to mimic already contains all the important parts.
@@ -124,7 +124,7 @@ include::{sw_core}/priv/sw.schema[tags=planetObject]
 ==== Query Object
 
 All GraphQL queries are either a _query_ or a _mutation_.footnote:[The
-spec has toyed with the idea of adding more classes in additon to
+spec has toyed with the idea of adding more classes in addition to
 queries and mutations. Most notably the concept of a _subscription_]
 Correspondingly, the schema specification contains entries for two
 (output) objects, which are commonly called `Query` and `Mutation`
@@ -176,7 +176,7 @@ TBD
 
 === Interfaces & Unions
 
-In GraphQL, an interface is a way to handle the heterogenous nature of
+In GraphQL, an interface is a way to handle the heterogeneous nature of
 modern data. Several objects may share the same fields with the same
 types. In this case, we can provide an `interface` for those fields
 they have in common.
@@ -316,7 +316,7 @@ In GraphQL, two kinds of _abstract_ types are defined: interfaces and
 unions. Interfaces abstract over concrete types which have some fields
 in common (and thus the fields must also agree on types). Unions
 abstract over concrete types that has nothing in common and thus
-simply defines a heterogenous collection of types.
+simply defines a heterogeneous collection of types.
 
 For the GraphQL system to operate correctly, execution must have a way
 to take an abstract type and make it concrete. Say, for instance, you

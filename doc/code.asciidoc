@@ -24,7 +24,7 @@ that, so you don't forget what is to be done.
 
 .`README.md`
 
-Instructions for the reader on Github. Also instructions on how to
+Instructions for the reader on GitHub. Also instructions on how to
 build the documentation and where to go next.
 
 .`rebar.lock`
@@ -90,7 +90,7 @@ boot process and print out a failure.
 
 .`src/sw_core_db.hrl`
 
-This header file contains the records we are using in our mnesia
+This header file contains the records we are using in our Mnesia
 database. One could have spread these over multiple files, but since
 the system is fairly small we use a single file for this. It is likely
 a larger system would split this into smaller sections.
@@ -126,7 +126,7 @@ of the Core application.
 
 .`src/sw_web_app.erl`
 
-Application callback for the `sw_web` application. Also initializees
+Application callback for the `sw_web` application. Also initializes
 the cowboy web server with its dispatch rules and the configuration of
 cowboy.
 
@@ -145,7 +145,7 @@ running.
 .`src/sw_web_response.erl`
 
 Wrapper around responses. It makes sure that an Erlang term is
-renderable in JSON by converting something like a tuple into a binary
+representable in JSON by converting something like a tuple into a binary
 value. This allows a JSON encoder to handle the Erlang term without
 problems.
 

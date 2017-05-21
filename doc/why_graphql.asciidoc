@@ -6,7 +6,7 @@ A worthy question to ask is "`Why GraphQL?`"
 
 In many ways, GraphQL is a natural extension of what we are already
 doing on the Web. As our systems grow, we start realizing our systems
-become gradually more heterogenous in the sense that data becomes more
+become gradually more heterogeneous in the sense that data becomes more
 complex and data gets more variance.
 
 In addition--since we usually have a single API serving multiple
@@ -16,7 +16,7 @@ to evolve dynamically, non-linearly, and at different paces. Thus, the
 backend must support evolution while retaining backwards
 compatibility. Also, we must have a contract or protocol between the
 clients and the server that is standardized. Otherwise, we end up
-inventing our own system again and again, and this is a strenous
+inventing our own system again and again, and this is a strenuous
 affair which has little to no reuse between systems.
 
 The defining characteristic of GraphQL is that the system is
@@ -33,14 +33,14 @@ if you have a system requiring more complex interaction, chances are
 you are better off by taking the plunge and switching your system to
 GraphQL.
 
-.Efficency
+.Efficiency
 
 RESTful APIs recently got a powerful improvement in HTTP/2 which
 allows RESTful APIs to pipeline far better than what they did earlier.
 However, you still pay the round trip time between data dependencies
 in an HTTP/2 setting: You need the listing of keys before you can
 start requesting the data objects on those keys. In contrast, GraphQL
-queries tend to be a single roundtrip only. A full declarative query
+queries tend to be a single round-trip only. A full declarative query
 is formulated and executed, without the need of any intermediate
 query. This means faster response times. Even in the case where a
 single query becomes slower since there is no need for followup
@@ -48,11 +48,11 @@ queries.
 
 A major (subtle) insight is that in a GraphQL server, you don't have
 to hand-code the looping constructs which tend to be present in a lot
-of RESTful APIs. To avoid the roundtrip describes in the preceeding
+of RESTful APIs. To avoid the round-trip describes in the preceding
 paragraph, you often resolve to a solution where a specialized
 optimized query is constructed and added to the system. This
 specialized endpoint is then looping over the data in one go so you
-avoid having to do multiple roundtrips.
+avoid having to do multiple round-trips.
 
 In a GraphQL system, that looping is handled once-and-for-all by the
 GraphQL engine. You are only implementing callbacks that run as part

@@ -1,7 +1,7 @@
 [[graphiql]]
 == GraphiQL
 
-The ubiquituous front-end for GraphQL servers is a system called
+The ubiquitous front-end for GraphQL servers is a system called
 GraphiQL, https://github.com/graphql/graphiql, which provides a nice
 user interface for a GraphQL server. We use this system as the
 front-end in the demo, whereas real applications will of course skip
@@ -40,8 +40,8 @@ The GraphiQL User Interface provides a number of features for the
 developer:
 
 * The system provides documentation by clicking the `Docs` tab. The
-  documentation is searchable and fully intospectible.
-* The system provides autocompletion and guidance when developing
+  documentation is searchable and fully introspectable.
+* The system provides auto-completion and guidance when developing
   queries. It uses the introspection features to figure out what can
   be written.
 

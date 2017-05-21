@@ -49,8 +49,8 @@ document to run that query.
 This is much faster since the Server only has to execute the query and
 can avoid going through the validation steps again and again. While
 the {project} system is fast, about 4/5 of a query is
-preprocessing time before execution. In other words, you can speed up
-the GraphQL by quite a margin if you use stored procedres.
+pre-processing time before execution. In other words, you can speed up
+the GraphQL by quite a margin if you use stored procedures.
 
 In addition, you can also arrange that a client isn't able to
 construct new query documents without authorization. This means
@@ -72,7 +72,7 @@ are far less likely to "`take out`" your system.
 If you give developers access through an API key, you can demand that
 they build query document should they want to run more than, say, 600
 queries per hour against your system. This is 10 queries per minute,
-which is usually fine for developement--Once the system is done, you
+which is usually fine for development--Once the system is done, you
 provide a query document for preparation, and then the prepared
 document is used.
 

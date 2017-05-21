@@ -57,7 +57,7 @@ include::{sw_core}/src/sw_core_paginate.erl[tags=paginate]
     render cursors correctly on the data.
 <4> Given the cut `Sliced` pick either the first or last `K` elements
     in that window. Then build the map `#{ node => Edge, cursor =>
-    Cursor }` via the functin `format/1`.
+    Cursor }` via the function `format/1`.
 <5> Compute the `PageInfo` object.
 <6> Return the desired result as a map.
 

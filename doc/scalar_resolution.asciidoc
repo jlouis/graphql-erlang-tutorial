@@ -40,9 +40,9 @@ with.
 
 In particular, we can chose an internal representation which is
 unrepresentable on the client side. That is, the client could be Java
-or Javascript and neither of those languages has a construct for
+or JavaScript and neither of those languages has a construct for
 tuples which is nice to work with. At least not when we consider JSON
-as a transport for those languages. Yet, due to canonicaliztion, we
+as a transport for those languages. Yet, due to canonicalization, we
 may still use tuples and atoms internally in our Erlang code, as long
 as we make sure to output-coerce values such that they are
 representable by the transport and by the client.

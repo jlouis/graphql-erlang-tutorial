@@ -17,7 +17,7 @@ release consists of:
   release.
 * Every dependent application needed by the release-configuration.
 * Support libraries for executing the emulator, binary NIF shared
-  objects (NIF: Natively implemented function), and so on.
+  objects (NIF: Native implemented function), and so on.
 * Configuration for the system and runtime
 
 A release is a self-contained Erlang system living in its own
@@ -38,7 +38,7 @@ $ make release
 
 This builds a release inside the `_build` directory and makes it
 available. In order to run the release, we can ask to run it with a
-console frontend, so we get a shell on the Erlang system:
+console front-end, so we get a shell on the Erlang system:
 
 [source]
 ----

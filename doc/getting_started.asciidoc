@@ -105,7 +105,7 @@ system is allowed to parallelize queries but not mutations. But from
 the perspective of the client, the starting points in the graph is
 either the _query_ or the _mutation_ object.
 
-CQRS stands for Command-Query Responsiblity Separation. The idea stems
+CQRS stands for Command-Query Responsibility Separation. The idea stems
 from the observation that querying data often have a different feel
 than commanding the system to do changes. So rather than trying to
 solve both in one interface, you slice the system such that you have a
@@ -120,7 +120,7 @@ execution.
 
 .Mnesia
 
-Our Star Wars schema uses the database *mnesia* as a backend. It is
+Our Star Wars schema uses the database *Mnesia* as a backend. It is
 important to stress that you often have a situation where your
 database backend doesn't map 1-1 onto the GraphQL schema you specify.
 In larger systems, this is particularly important: the GraphQL schema
@@ -142,7 +142,7 @@ consequence in all of the stack. Worse, you can't evolve part of the
 system without evolving other parts which impairs the flexibility of
 the system.
 
-Another problem is that you may end up with an impedence mismatch
+Another problem is that you may end up with an impedance mismatch
 between the Objects and links of the GraphQL query and the way you
 store your data in the backend. If you force a 1-1 relationship
 between the two, you can get into trouble because your GraphQL schema
@@ -170,9 +170,9 @@ because of Rails/Django like systems in which databases are
 migrate-established, we've started using different models.
 
 == Mnesia
-=== Setting up an initial mnesia schema
+=== Setting up an initial Mnesia schema
 
-To get up and running, we begin by constructing a mnesia schema we can
+To get up and running, we begin by constructing a Mnesia schema we can
 start from. We do this by starting a shell on the Erlang node and then
 asking it to create the schema:
 
@@ -189,7 +189,7 @@ Eshell V8.3  (abort with ^G)
 ----
 <1> Clean out the source code repository to make sure there is no lingering files
 <2> Compile the code so we have compiled versions of modules we can loaded
-<3> Run the erlang interpreter with an altered path for our newly compiled modules
+<3> Run the Erlang interpreter with an altered path for our newly compiled modules
 <4> Create the schema
 
 The call the `create_schema()` runs the the following schema creation code:
@@ -200,7 +200,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=createSchema]
 ----
 
 Creating the schema amounts to running a set of commands from the
-mnesia documentation. The helper function to create tables contains a
+Mnesia documentation. The helper function to create tables contains a
 large number of tables, so we are just going to show one here:
 
 [source,erlang]
@@ -208,7 +208,7 @@ large number of tables, so we are just going to show one here:
 include::{sw_core}/src/sw_core_db.erl[tags=createTables]
 ----
 
-In mnesia, tables are Erlang records. The `#planet{}` record needs
+In Mnesia, tables are Erlang records. The `#planet{}` record needs
 definition and is in the header file `sw_core_db.hrl`. We simply list
 the entries which are defined the SWAPI GraphQL schema so we can store
 the concept of a planet in the system:
@@ -227,13 +227,13 @@ Once we have introduced tables into the system, we can turn our
 attention to populating the database tables. For this, we use the
 SWAPI data set as the primary data source. This set has its fixtures
 stored as JSON document. So we use `jsx` to decode those JSON
-documents and turn them into mnesia records, which we then insert into
+documents and turn them into Mnesia records, which we then insert into
 the database.
 
 We can fairly easily write a function which take the JSON and turn them
-into appropriate mnesia records. Planets live in a fixture file
+into appropriate Mnesia records. Planets live in a fixture file
 `planets.json`, so we need a function that can turn a part said JSON
-file into a mnesia record. Some conversion is necessary on the way:
+file into a Mnesia record. Some conversion is necessary on the way:
 
 [source,erlang]
 ----
@@ -241,7 +241,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=json_to_planet]
 ----
 
 Once we have this function down, we can utilize it to get a list of
-mnesia records, which we can then insert into the database through a
+Mnesia records, which we can then insert into the database through a
 transaction:
 
 [source,erlang]
@@ -261,7 +261,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=populatingTables]
 
 This creates a fixture in the database such that when we boot the
 database, the planets, transports, people, ..., will be present in the
-mnesia database when we boot the system.
+Mnesia database when we boot the system.
 
 === Creating a FALLBACK for the database
 
@@ -274,7 +274,7 @@ $ cp FALLBACK.BUP db/FALLBACK.BUP
 ----
 which makes the empty schema available for the release manager of the
 Erlang system. When we cook a release, we will make sure to copy this
-initial schema into the correct mnesia-directory of the release.
+initial schema into the correct Mnesia-directory of the release.
 Because the file is named `FALLBACK.BUP`, it is a fallback backup file.
 This will "`unpack`" itself to become a new empty database as if you
 had rolled in a backup on the first boot of the system. Thus we avoid
@@ -290,5 +290,5 @@ upgrade the Erlang system without having to protect the database as
 much.
 
 We now have the ability to create new database tables easily and we
-have a mnesia database for backing our data. This means we can start
+have a Mnesia database for backing our data. This means we can start
 turning our attention to the GraphQL schema.

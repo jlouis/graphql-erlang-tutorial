@@ -54,7 +54,7 @@ an omission on our part which should have been included.
 
 Some Erlang knowledge is expected for reading this guide. General
 Erlang concept will not be explained, but assumed to be known. Some
-mnesia knowledge will also help a bit in understanding what is going
+Mnesia knowledge will also help a bit in understanding what is going
 on, though if you know anything about databases in general, that is
 probably enough. Furthermore, some knowledge of the web in general is
 assumed. We don't cover the intricacies of HTTP 1.1 or HTTP/2 for
@@ -115,7 +115,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-=== Acknowledgements
+=== Acknowledgments
 
 * Everyone involved in the Star Wars API. We use that data extensively.
 * The GraphQL people who did an excellent job at answering questions and   provided us with a well-written specification.
