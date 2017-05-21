@@ -316,6 +316,7 @@ type and its Mnesia ID. Once we know its decoded form, we have a
 helper routine which carries out the actual load. The loader asks the
 database to load data, and also verifies the allowed types if needed.
 
+[[db-loading]]
 ==== DB Loading
 
 The database code contains a way to fetch various objects from the

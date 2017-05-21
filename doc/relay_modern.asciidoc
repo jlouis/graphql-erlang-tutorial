@@ -1,10 +1,33 @@
 == Relay Modern
 
-TBD
+Facebook's use of GraphQL adds a layer on top through the Relay Modern
+framework. This layer adds some standards on top of the GraphQL system
+such that it has uniform ways of handling problems. The interaction
+with GraphQL is defined through specifications for each part.
+
+This chapter explains the concepts in relation to {project} and how
+one will achieve those standard pieces.
 
 === Node Interface
 
-TBD
+Relay Modern defines an object identification specification together
+with a interface *Node* used to retrieve objects which are cached on
+the client side. The specification 
+https://facebook.github.io/relay/graphql/objectidentification.htm
+defines the details of this.
+
+This tutorial already implements the Node interface. The section
+<<identity-encoding>> talks about the creation of globally unique
+identifiers, and the section on <<queries-and-mutations>> describes
+the concept of a *Node*. Finally, the section <<db-loading>> describes
+how nodes are loaded, generically, from the database backend.
+
+Taken together, this implements the object identification
+specification.footnote:[You must also do "`Node plurality`" correct,
+through this tutorial doesn't have a place where that gets used. Node
+plurality is the idea that if you load objects by a list, the return
+value retains the order in the list.]
+
 
 === Inputs & Payloads
 
