@@ -1,6 +1,6 @@
 = {project} Tutorial
 Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Martin Gausby <martin@gausby.dk>; ShopGun ApS <contact@shopgun.com>
-:toc:
+:toc: left
 :icons: font
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
