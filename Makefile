@@ -32,4 +32,5 @@ index.html: doc/book.html
 
 documentation: doc/book.html
 publish: index.html
+	touch doc/book.asciidoc # Bump the last-updated-label
 	cp -r $(IMAGE_SOURCES) images
