@@ -19,11 +19,11 @@
          created :: binary(),
          cargo_capacity :: float(),
          passengers :: binary(),
-         max_speed :: integer(),
          crew :: binary(),
          length :: float(),
          model :: binary(),
          cost :: float(),
+         max_atmosphering_speed :: integer(),
          manufacturers :: [binary()]
 }).
 %% end::transportRecord[]

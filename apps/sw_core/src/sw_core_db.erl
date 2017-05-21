@@ -244,7 +244,7 @@ json_to_transport(
        edited = Edited,
        length = Length,
        manufacturers = [Manufacturer],
-       max_speed = MaxAtmosSpeed,
+       max_atmosphering_speed = MaxAtmosSpeed,
        model = Model,
        name = Name,
        passengers = Passengers }.

@@ -29,14 +29,6 @@ type PageInfo {
   hasPreviousPage : Boolean!
 }
 
-type StarshipPilotsConnection {
-  pageInfo : PageInfo
-}
-
-type StarshipFilmsConnection {
-  pageInfo : PageInfo
-}
-
 # tag::starshipObject[]
 +description(text: "Representation of Star Ships")
 type Starship implements Node, Transport {
@@ -249,5 +241,13 @@ type FilmCharactersConnection {
 type FilmCharactersEdge {
   node : Person
   cursor : String!
+}
+
+type StarshipPilotsConnection {
+  pageInfo : PageInfo
+}
+
+type StarshipFilmsConnection {
+  pageInfo : PageInfo
 }
 

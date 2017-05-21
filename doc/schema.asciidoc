@@ -174,6 +174,7 @@ TBD
 
 TBD
 
+[[interfaces-and-unions]]
 === Interfaces & Unions
 
 In GraphQL, an interface is a way to handle the heterogeneous nature of

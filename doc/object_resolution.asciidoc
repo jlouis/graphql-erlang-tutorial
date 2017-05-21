@@ -240,6 +240,35 @@ to match the names in the GraphQL specification. In our experience, it
 is often the case that things evolve and you need to rename fields. So
 this is not always a desirable solution.
 
+=== Handling Starships
+
+When a *Starhip* is loaded from the database, remember from
+<<interfaces-and-unions>> that we are loading a starship as two rows:
+One for the transport part, which is shared with vehicles, and one for
+the starship part which is unique to starships. This means that the
+"`current object`" when field resolving on a starship is a pair of a
+transport and a starship row. The resolver function must handle this,
+by retrieving the field from either the transport or the starship.
+This is easily done in the `execute/4` function:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_starship.erl[tags=starshipExecute]
+...
+----
+
+The example here exemplifies that a current object can be _any_ Erlang
+term you like. The output from the GraphQL system is always being
+mediated by an `execute/4` function, so as long as you can translate
+from that Erlang term and into a valid field value, you are golden.
+
+NOTE: An alternative implementation of the current object for
+Starships would be to return a `map()` which had all the relevant
+fields from the `#transport{}` and `#starship{}` rows merged. In
+short, it would be the same as if you had executed `SELECT * FROM
+Starship INNER JOIN Tranport USING (Id)`. It is worth examining if a
+different representation will help in a given situation.
+
 ==== Id handling
 
 In our system, we need to turn an ID on the Mnesia side into an ID in
