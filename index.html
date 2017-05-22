@@ -425,11 +425,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Erlang GraphQL Tutorial</h1>
 <div class="details">
 <span id="author" class="author">Jesper Louis Andersen</span><br>
-<span id="email" class="email"><a href="mailto:jesper.louis.andersen@gmail.com">jesper.louis.andersen@gmail.com</a></span><br>
+<span id="email" class="email"><a href="mailto:jesper.louis.andersen@gmail.com">jesper.louis.andersen@gmail.com</a> / <a href="mailto:jla@shopgun.com">jla@shopgun.com</a></span><br>
 <span id="author2" class="author">Martin Gausby</span><br>
-<span id="email2" class="email"><a href="mailto:martin@gausby.dk">martin@gausby.dk</a></span><br>
+<span id="email2" class="email"><a href="mailto:mg@shopgun.com">mg@shopgun.com</a> / <a href="mailto:martin@gausby.dk">martin@gausby.dk</a></span><br>
 <span id="author3" class="author">ShopGun ApS</span><br>
-<span id="email3" class="email"><a href="mailto:contact@shopgun.com">contact@shopgun.com</a></span><br>
+<span id="email3" class="email"><a href="mailto:hello@shopgun.com">hello@shopgun.com</a></span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -951,7 +951,7 @@ ask it to close gracefully one application at a time by entering
 </table>
 </div>
 <div class="paragraph">
-<p>One the Erlang emulator is running our <code>sw</code> release, we can point a
+<p>Once the Erlang emulator is running our <code>sw</code> release, we can point a
 browser to <a href="http://localhost:17290/" class="bare">http://localhost:17290/</a> and you should be greeted
 with the following screen:</p>
 </div>
@@ -1464,7 +1464,7 @@ Eshell V8.3  (abort with ^G)
 <div class="paragraph">
 <p>Creating the schema amounts to running a set of commands from the
 Mnesia documentation. The helper function to create tables contains a
-large number of tables, so we are just going to show one here:</p>
+large number of tables, so we are just going to show two here:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1686,8 +1686,8 @@ client.</p>
 <p>To make this more obvious, the GraphQL people usually base64 encode
 their ID-values. Furthermore, we have the problem that in Mnesia, our
 rows IDs will be integers. This means we may have overlapping integers
-between different types. To avoid problem, we use a common encoding in
-GraphQL. The Starship with id 3 will be encoded as
+between different types. To avoid this problem, we use a common
+encoding in GraphQL. The Starship with id 3 will be encoded as
 <code>base64("Starship:3")</code> for example. And the planet Tatooine taken from
 the <a href="#system-tour">System Tour</a> is encoded as <code>base64("Planet:1")</code>. This
 definition somewhat hides the implementation and also allows the
@@ -4763,7 +4763,7 @@ code responses from the system.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-21 22:02:11 CEST
+Last updated 2017-05-22 15:32:40 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
