@@ -67,7 +67,7 @@ which stops the system abruptly. Or you can be nice to the system and
 ask it to close gracefully one application at a time by entering
 `q().<RET>` in the shell.
 
-One the Erlang emulator is running our `sw` release, we can point a
+Once the Erlang emulator is running our `sw` release, we can point a
 browser to http://localhost:{port-number}/ and you should be greeted
 with the following screen:
 
