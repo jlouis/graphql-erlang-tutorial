@@ -1,5 +1,5 @@
 = {project} Tutorial
-Jesper Louis Andersen <jesper.louis.andersen@gmail.com / jla@shopgun.com>; Martin Gausby <mg@shopgun.com / martin@gausby.dk>; ShopGun ApS <hello@shopgun.com>
+Jesper Louis Andersen <jla@shopgun.com / jesper.louis.andersen@gmail.com>; Martin Gausby <mg@shopgun.com / martin@gausby.dk>; ShopGun ApS <hello@shopgun.com>
 :toc: left
 :icons: font
 :source-highlighter: prettify
