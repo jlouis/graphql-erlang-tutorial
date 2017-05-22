@@ -1,9 +1,9 @@
 # A tutorial for GraphQL-Erlang
 
-This repository contains a tutoral for the graphql-erlang system. It
+This repository contains a tutorial for the graphql-erlang system. It
 implements (a subset of) the SWAPI as an example project in order to
 clarify how the system is supposed to be used in a full
-implementation. The idea is that it can used as a starting point for
+implementation. The idea is that it can be used as a starting point for
 your own implementation of your own GraphQL schema.
 
 # Documentation
