@@ -1,11 +1,12 @@
 = {project} Tutorial
-Jesper Louis Andersen <jesper.louis.andersen@gmail.com>; Martin Gausby <martin@gausby.dk>; ShopGun ApS <contact@shopgun.com>
+Jesper Louis Andersen <jesper.louis.andersen@gmail.com / jla@shopgun.com>; Martin Gausby <mg@shopgun.com / martin@gausby.dk>; ShopGun ApS <hello@shopgun.com>
 :toc: left
 :icons: font
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
 :sw_web: ../apps/sw_web
 :project: Erlang GraphQL
+:shopgun: ShopGun ApS
 :cowboy-version: 1.1.x
 :port-number: 17290
 :imagesdir: ./images
