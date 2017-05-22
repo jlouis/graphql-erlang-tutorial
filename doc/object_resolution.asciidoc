@@ -451,11 +451,57 @@ returned from GraphQL "`as is`" but always goes through some
 `execute/4` function in some module. Exploit this fact to make it
 easier to write your own code.
 
+[[resolving-lists]]
 === Resolving lists
 
-TBD
+A particularly common case is when a type is an array `[T]` of a
+certain type `T`. To resolve an array type in GraphQL, you must return
+a value in which every object in the list is wrapped in an option
+tuple: `{ok, Val} | {error, Reason}`.
 
-* Return format of list-like values
+Suppose, for instance, we have retrieved three values `A, B, and C`
+and the retrieval of the `B` value failed. In this case you would
+return
+
+[source,erlang]
+----
+{ok, [{ok, A}, {error, Reason}, {ok, C}]}
+----
+
+to signify that the two values `A` and `C` suceeded but `B` failed. If
+the data fetch fails as a whole you can of course fail the full field
+by returning `{error, Reason}`.
+
+.Example
+
+In the Star Wars schema, we have a type *Species* for each possible
+species in the star wars world. Every *Person* belong to a *Species*.
+Since species have a set of possible eye-colors, we have a type
+*eyeColors : [String]* in the specification. The `execute/4` function
+uses the above rules to generate a list of eye colors:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_species.erl[tags=execute]
+----
+
+Since the result can't fail, we wrap every result in an `{ok, EC}` to
+state that every eye colors loaded succesfully.
+
+.Alternative representation
+****
+When we initially built the system, we did not wrap individual objects
+in a optional construction. This meant a list load either succeeded or
+failed globally. It created a number of fundamental problems because
+the description isn't precise.
+
+As a result, we made the decision to change the specification to its
+current form. While it is a bit more cumbersome to write, it has the
+advantage of additional flexibility. You can now discriminate between
+`{ok, null}`--There is no value, and that is ok--versus
+`{error, Reason}`--there is a problem which isn't handled
+appropriately.
+****
 
 === Anatomy of a query
 

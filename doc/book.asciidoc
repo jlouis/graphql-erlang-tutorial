@@ -47,3 +47,10 @@ include::terms.asciidoc[Terms]
 
 [appendix]
 include::code.asciidoc[Code Overview]
+[appendix]
+[[changelog]]
+== Changelog
+
+May 22nd, 2017::
+  Documented how to resolve array objects in <<resolving-lists>>.
+

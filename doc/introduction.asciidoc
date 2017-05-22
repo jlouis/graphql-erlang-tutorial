@@ -15,6 +15,11 @@ the schema. The GraphQL system then figures out a _query plan_ for the
 query and executes the query. This in turn calls your bound modules
 and this allows you to process the query, load data, and so on.
 
+.Changes
+
+For a complete list of changes over time to this document, take a look
+at the <<changelog>> appendix.
+
 === On this tutorial
 
 CAUTION: We are currently building the document and are still making

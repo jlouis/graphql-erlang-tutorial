@@ -4,16 +4,18 @@
 
 -export([execute/4]).
 
+%% tag::execute[]
 execute(_Ctx, #species { id = Id } = Species, Field, Args) ->
     case Field of
         <<"id">> -> {ok, sw_core_id:encode({'Species', Id})};
+        <<"eyeColors">> ->
+            {ok,
+             [{ok, EC} || EC <- Species#species.eye_colors]};
+%% end::execute[]
         <<"classification">> -> {ok, Species#species.classification};
         <<"designation">> -> {ok, Species#species.designation};
         <<"averageHeight">> -> {ok, Species#species.average_height};
         <<"averageLifespan">> -> {ok, Species#species.average_lifespan};
-        <<"eyeColors">> ->
-            {ok,
-             [{ok, EC} || EC <- Species#species.eye_colors]};
         <<"hairColors">> ->
             {ok,
              [{ok, EC} || EC <- Species#species.hair_colors]};
