@@ -201,7 +201,7 @@ include::{sw_core}/src/sw_core_db.erl[tags=createSchema]
 
 Creating the schema amounts to running a set of commands from the
 Mnesia documentation. The helper function to create tables contains a
-large number of tables, so we are just going to show one here:
+large number of tables, so we are just going to show two here:
 
 [source,erlang]
 ----

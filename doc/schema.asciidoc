@@ -26,8 +26,8 @@ client.
 To make this more obvious, the GraphQL people usually base64 encode
 their ID-values. Furthermore, we have the problem that in Mnesia, our
 rows IDs will be integers. This means we may have overlapping integers
-between different types. To avoid problem, we use a common encoding in
-GraphQL. The Starship with id 3 will be encoded as
+between different types. To avoid this problem, we use a common
+encoding in GraphQL. The Starship with id 3 will be encoded as
 `base64("Starship:3")` for example. And the planet Tatooine taken from
 the <<system-tour>> is encoded as `base64("Planet:1")`. This
 definition somewhat hides the implementation and also allows the
