@@ -495,7 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_loading_data">Loading Data</a></li>
 <li><a href="#walking-in-the-graph">Walking in the Graph</a></li>
 <li><a href="#_default_mapping">Default Mapping</a></li>
-<li><a href="#_resolving_lists">Resolving lists</a></li>
+<li><a href="#resolving-lists">Resolving lists</a></li>
 <li><a href="#_anatomy_of_a_query">Anatomy of a query</a></li>
 </ul>
 </li>
@@ -545,6 +545,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_application_code_sw_web_code">Application <code>sw_web</code></a></li>
 </ul>
 </li>
+<li><a href="#changelog">Appendix C: Changelog</a></li>
 </ul>
 </div>
 </div>
@@ -584,6 +585,11 @@ unto Erlang modules which then defines a binding of the two worlds.</p>
 the schema. The GraphQL system then figures out a <em>query plan</em> for the
 query and executes the query. This in turn calls your bound modules
 and this allows you to process the query, load data, and so on.</p>
+</div>
+<div class="paragraph">
+<div class="title">Changes</div>
+<p>For a complete list of changes over time to this document, take a look
+at the <a href="#changelog">Changelog</a> appendix.</p>
 </div>
 <div class="sect2">
 <h3 id="_on_this_tutorial">On this tutorial</h3>
@@ -3170,16 +3176,68 @@ easier to write your own code.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_resolving_lists">Resolving lists</h3>
+<h3 id="resolving-lists">Resolving lists</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>A particularly common case is when a type is an array <code>[T]</code> of a
+certain type <code>T</code>. To resolve an array type in GraphQL, you must return
+a value in which every object in the list is wrapped in an option
+tuple: <code>{ok, Val} | {error, Reason}</code>.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Return format of list-like values</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Suppose, for instance, we have retrieved three values <code>A, B, and C</code>
+and the retrieval of the <code>B</code> value failed. In this case you would
+return</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">{ok, [{ok, A}, {error, Reason}, {ok, C}]}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to signify that the two values <code>A</code> and <code>C</code> suceeded but <code>B</code> failed. If
+the data fetch fails as a whole you can of course fail the full field
+by returning <code>{error, Reason}</code>.</p>
+</div>
+<div class="paragraph">
+<div class="title">Example</div>
+<p>In the Star Wars schema, we have a type <strong>Species</strong> for each possible
+species in the star wars world. Every <strong>Person</strong> belong to a <strong>Species</strong>.
+Since species have a set of possible eye-colors, we have a type
+<strong>eyeColors : [String]</strong> in the specification. The <code>execute/4</code> function
+uses the above rules to generate a list of eye colors:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, #species { id = Id } = Species, Field, Args) -&gt;
+    case Field of
+        &lt;&lt;"id"&gt;&gt; -&gt; {ok, sw_core_id:encode({'Species', Id})};
+        &lt;&lt;"eyeColors"&gt;&gt; -&gt;
+            {ok,
+             [{ok, EC} || EC &lt;- Species#species.eye_colors]};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since the result can&#8217;t fail, we wrap every result in an <code>{ok, EC}</code> to
+state that every eye colors loaded succesfully.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Alternative representation</div>
+<div class="paragraph">
+<p>When we initially built the system, we did not wrap individual objects
+in a optional construction. This meant a list load either succeeded or
+failed globally. It created a number of fundamental problems because
+the description isn&#8217;t precise.</p>
+</div>
+<div class="paragraph">
+<p>As a result, we made the decision to change the specification to its
+current form. While it is a bit more cumbersome to write, it has the
+advantage of additional flexibility. You can now discriminate between
+<code>{ok, null}</code>--There is no value, and that is ok&#8212;&#8203;versus
+<code>{error, Reason}</code>--there is a problem which isn&#8217;t handled
+appropriately.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -4736,6 +4794,19 @@ code responses from the system.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="changelog">Appendix C: Changelog</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">May 22nd, 2017</dt>
+<dd>
+<p>Documented how to resolve array objects in <a href="#resolving-lists">Resolving lists</a>.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
 </div>
 <div id="footnotes">
 <hr>
@@ -4763,7 +4834,7 @@ code responses from the system.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-22 15:42:22 CEST
+Last updated 2017-05-22 20:43:19 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

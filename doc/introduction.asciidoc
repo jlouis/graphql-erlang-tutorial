@@ -29,6 +29,11 @@ At the same time, we recognize other people might be interested in the
 system and its development. Hence the decision was made to open source
 the system.
 
+.Changes
+
+For a complete list of changes over time to this document, take a look
+at the <<changelog>> appendix.
+
 === On this tutorial
 
 CAUTION: We are currently building the document and are still making
