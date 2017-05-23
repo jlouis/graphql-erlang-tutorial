@@ -302,6 +302,7 @@ function:
 [source,erlang]
 ----
 include::{sw_core}/src/sw_core_query.erl[tags=execute]
+...
 ----
 
 The function which actually loads the object can now be written:

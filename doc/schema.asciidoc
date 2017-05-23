@@ -166,6 +166,13 @@ query StarShipQuery($id : ID!) {
 }
 ----
 
+Fields such as `allStarships` are in the schema in order to make it
+easier to peruse the API. In a real system, such a query would be
+dangerous since it potentially allows you to request very large data
+sets. In practice you would use pagination or use a search engine to
+return such results. Specifically, you would never return all possible
+values, but only a subset thereof.
+
 ==== Mutation Object
 
 TBD

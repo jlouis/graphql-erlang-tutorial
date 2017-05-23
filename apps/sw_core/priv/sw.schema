@@ -189,6 +189,12 @@ type Query {
   node(id : ID!) : Node
   +description(text: "Fetch a starship with a given Id")
   starship(id : ID!) : Starship
+  allStarships : [Starship]
+  allPlanets : [Planet]
+  allPeople : [Person]
+  allVehicles : [Vehicle]
+  allSpecies : [Species]
+  allFilms : [Film]
 }
 # end::queryObject[]
 
