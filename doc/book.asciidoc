@@ -1,12 +1,12 @@
 = {project} Tutorial
-Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https://github.com/gausby[@gausby]>; ShopGun ApS <https://github.com/shopgun[@shopgun]>
+Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https://github.com/gausby[@gausby]>; ShopGun <https://github.com/shopgun[@shopgun]>
 :toc: left
 :icons: font
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
 :sw_web: ../apps/sw_web
 :project: Erlang GraphQL
-:shopgun: ShopGun ApS
+:shopgun: ShopGun
 :cowboy-version: 1.1.x
 :port-number: 17290
 :imagesdir: ./images
