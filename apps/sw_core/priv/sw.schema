@@ -111,7 +111,6 @@ type Species implements Node {
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : SpeciesFilmConnection
-    
   created : String
   edited : String
   id : ID!
@@ -148,7 +147,7 @@ type Person implements Node {
   gender : String
   hairColor : String
   height : Int
-  mass : Int
+  mass : Float
   skinColor : String
   homeworld : Planet
   species : Species

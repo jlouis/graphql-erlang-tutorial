@@ -293,7 +293,7 @@ json_to_film(
        species = Species,
        producer = commasplit(Producer),
        title = Title,
-       episode_id = integer_like(EpisodeId),
+       episode_id = number_like(EpisodeId),
        director = Director,
        opening_crawl = OpeningCrawl,
        characters = Characters,
@@ -327,8 +327,8 @@ json_to_species(
        language = Language,
        hair_colors = commasplit(HairColors),
        homeworld = HomeWorld,
-       average_lifespan = integer_like(LifeSpan),
-       average_height = integer_like(Height) }.
+       average_lifespan = number_like(LifeSpan),
+       average_height = number_like(Height) }.
 
 %% tag::json_to_planet[]
 json_to_planet(
@@ -350,15 +350,15 @@ json_to_planet(
        id = ID,
        edited = Edited,
        climate = Climate,
-       surface_water = integer_like(SWater),
+       surface_water = number_like(SWater),
        name = Name,
-       diameter = integer_like(Diameter),
-       rotation_period = integer_like(RotationPeriod),
+       diameter = number_like(Diameter),
+       rotation_period = number_like(RotationPeriod),
        created = Created,
        terrain = commasplit(Terrain),
-       gravity = integer_like(Gravity),
-       orbital_period = integer_like(OrbPeriod),
-       population = integer_like(Population)
+       gravity = Gravity,
+       orbital_period = number_like(OrbPeriod),
+       population = number_like(Population)
 }.
 %% end::json_to_planet[]
 
@@ -385,9 +385,9 @@ json_to_person(
        gender = Gender,
        skin_color = SkinColor,
        hair_color = HairColor,
-       height = integer_like(Height),
+       height = number_like(Height),
        eye_color = EyeColor,
-       mass = integer_like(Mass),
+       mass = number_like(Mass),
        homeworld = HomeWorld,
        birth_year = BirthYear
       }.
@@ -408,8 +408,16 @@ json_to_vehicle(
 commasplit(String) ->
     binary:split(String, <<", ">>, [global]).
 
-integer_like(<<"indefinite">>) -> infinity;
-integer_like(<<"n/a">>)        -> nan;
-integer_like(<<"unknown">>)    -> nan;
-integer_like(String)           -> binary_to_integer(String).
+number_like(<<"indefinite">>)              -> infinity;
+number_like(<<"n/a">>)                     -> nan;
+number_like(<<"unknown">>)                 -> nan;
+number_like(F) when is_float(F)            -> F;
+number_like(I) when is_integer(I)          -> I;
+number_like(String) when is_binary(String) ->
+    case binary:match(String, <<".">>) of
+        nomatch ->
+            binary_to_integer(binary:replace(String, <<",">>, <<>>));
+        _Found ->
+            binary_to_float(String)
+    end.
 
