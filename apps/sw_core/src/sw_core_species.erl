@@ -23,7 +23,12 @@ execute(_Ctx, #species { id = Id } = Species, Field, Args) ->
             {ok,
              [{ok, EC} || EC <- Species#species.skin_colors]};
         <<"language">> -> {ok, Species#species.language};
-        <<"homeworld">> -> {ok, Species#species.homeworld};
+        <<"homeworld">> ->
+            Txn = fun() ->
+                          mnesia:read(planet, Species#species.homeworld)
+                  end,
+            {atomic, [Planet]} = mnesia:transaction(Txn),
+            {ok, Planet};
         <<"personConnection">> ->
             Txn = fun() ->
                           QH = qlc:q([P || P <- mnesia:table(person),
