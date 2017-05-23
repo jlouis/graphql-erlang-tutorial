@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<meta name="author" content="Jesper Louis Andersen, Martin Gausby, ShopGun ApS">
+<meta name="author" content="Jesper Louis Andersen, Martin Gausby, ShopGun">
 <title>Erlang GraphQL Tutorial</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -428,7 +428,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email" class="email"><a href="https://github.com/jlouis">@jlouis</a></span><br>
 <span id="author2" class="author">Martin Gausby</span><br>
 <span id="email2" class="email"><a href="https://github.com/gausby">@gausby</a></span><br>
-<span id="author3" class="author">ShopGun ApS</span><br>
+<span id="author3" class="author">ShopGun</span><br>
 <span id="email3" class="email"><a href="https://github.com/shopgun">@shopgun</a></span><br>
 </div>
 <div id="toc" class="toc2">
@@ -751,7 +751,7 @@ other repositories, infecting them with the same mistakes.</p>
 <div class="sect2">
 <h3 id="_license">License</h3>
 <div class="paragraph">
-<p>Copyright &#169; 2017 ShopGun ApS.</p>
+<p>Copyright &#169; 2017 ShopGun.</p>
 </div>
 <div class="paragraph">
 <p>Licensed under the Apache License, Version 2.0 (the "License");
@@ -1333,7 +1333,7 @@ However, as your GraphQL systems grows in size, it turns out this
 choice is the right one. You quickly run into situations where a
 client supplies a desired specific change where many of the fields on
 the output object doesn&#8217;t make sense. By splitting the input and
-output world, it is easily to facilitate since the input objects can
+output world, it is easy to facilitate since the input objects can
 omit many fields that doesn&#8217;t make sense.</p>
 </div>
 <div class="paragraph">
@@ -1568,15 +1568,15 @@ file into a Mnesia record. Some conversion is necessary on the way:</p>
        id = ID,
        edited = Edited,
        climate = Climate,
-       surface_water = SWater,
+       surface_water = number_like(SWater),
        name = Name,
-       diameter = Diameter,
-       rotation_period = RotationPeriod,
+       diameter = number_like(Diameter),
+       rotation_period = number_like(RotationPeriod),
        created = Created,
-       terrain = Terrain,
+       terrain = commasplit(Terrain),
        gravity = Gravity,
-       orbital_period = OrbPeriod,
-       population = Population
+       orbital_period = number_like(OrbPeriod),
+       population = number_like(Population)
 }.</code></pre>
 </div>
 </div>
@@ -1840,18 +1840,18 @@ documentation on each field to a fine detail.</p>
   rotationPeriod : Int
   orbitalPeriod : Int
   gravity : String
-  population : Float
+  population : Int
   climate : String
   terrains : [String]
-  surfaceWater : Float
+  surfaceWater : Int
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : PlanetFilmsConnection
   residentConnection(after: String, first: Int,
                      before: String, last: Int)
     : PlanetResidentsConnection
-  created : String
-  edited : String
+  created : DateTime
+  edited : DateTime
   id : ID!
 }</code></pre>
 </div>
@@ -1875,6 +1875,12 @@ respectively. For example, the query object looks like:</p>
   node(id : ID!) : Node
   +description(text: "Fetch a starship with a given Id")
   starship(id : ID!) : Starship
+  allStarships : [Starship]
+  allPlanets : [Planet]
+  allPeople : [Person]
+  allVehicles : [Vehicle]
+  allSpecies : [Species]
+  allFilms : [Film]
 }</code></pre>
 </div>
 </div>
@@ -1921,6 +1927,14 @@ which fields we want to grab inside the starship:</p>
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Fields such as <code>allStarships</code> are in the schema in order to make it
+easier to peruse the API. In a real system, such a query would be
+dangerous since it potentially allows you to request very large data
+sets. In practice you would use pagination or use a search engine to
+return such results. Specifically, you would never return all possible
+values, but only a subset thereof.</p>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_mutation_object">Mutation Object</h4>
@@ -1965,17 +1979,17 @@ by declaring an interface for transports:</p>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">interface Transport {
   id : ID!
-  edited : String
+  edited : DateTime
   consumables : String
   name : String
-  created : String
-  cargoCapacity : Int
+  created : DateTime
+  cargoCapacity : Float
   passengers : String
   maxAtmospheringSpeed : Int
   crew : String
   length : Float
   model : String
-  costInCredits : Int
+  costInCredits : Float
   manufacturers : [String]
 }</code></pre>
 </div>
@@ -1993,17 +2007,17 @@ type Starship implements Node, Transport {
   model : String
   starshipClass : String
   manufacturers : [String]
-  costInCredits : Int
+  costInCredits : Float
   length : Float
   crew : String
   passengers : String
   maxAtmospheringSpeed : Int
   hyperdriveRating : Float
   MGLT : Int
-  cargoCapacity : Int
+  cargoCapacity : Float
   consumables : String
-  created: String
-  edited: String
+  created: DateTime
+  edited: DateTime
 ...</code></pre>
 </div>
 </div>
@@ -2162,8 +2176,10 @@ handling that particular schema type.</p>
        unions =&gt; #{ default =&gt; sw_core_type },
        objects =&gt; #{
          'Planet' =&gt; sw_core_planet,
-         'Starship' =&gt; sw_core_starship,
          'Film' =&gt; sw_core_film,
+         'Species' =&gt; sw_core_species,
+         'Vehicle' =&gt; sw_core_vehicle,
+         'Starship' =&gt; sw_core_starship,
          'Person' =&gt; sw_core_person,
          'Query' =&gt; sw_core_query,
          'Mutation' =&gt; sw_core_mutation,
@@ -2218,7 +2234,7 @@ to the same resolver.</p>
 <div class="paragraph">
 <p>The reason this needs to be handled by the programmer is because the
 GraphQL system doesn&#8217;t know about your representation. In turn, it
-call back into your code in order to learn which type your
+will call back into your code in order to learn which type your
 representation has.</p>
 </div>
 </div>
@@ -2227,7 +2243,7 @@ representation has.</p>
 <div class="paragraph">
 <p>The mapping of objects is likely to have a special mapping for each
 object type you have defined. This is because each kind of (output)
-object tend to be different and require its own handler.</p>
+object tends to be different and requires its own handler.</p>
 </div>
 <div class="paragraph">
 <p>Note that it is possible to define the type of the object as an
@@ -2488,7 +2504,7 @@ use the metadata for figuring out the type of the object. See
 <div class="paragraph">
 <p>The meat of a GraphQL system is the resolver for objects. You have a
 concrete object on which you are resolving <em>fields</em>. As we shall see,
-this is used for two kinds of things a client want to do with the
+this is used for two kinds of things a client wants to do with the
 graph.</p>
 </div>
 <div class="paragraph">
@@ -2513,9 +2529,9 @@ computing it.</p>
 <p>An advantage of derivation is that you can handle things lazily. Once
 the client wants a field, you start doing the work for computing and
 returning that field. Also, derivation improves data normalization in
-many cases. Modern computers are fast and data fetching tend to be the
+many cases. Modern computers are fast and data fetches tend to be the
 major part of a client request. A bit of computation before returning
-data is rarely going to be dominant in the large scale of things.</p>
+data is rarely going to be dominant in the grand scheme of things.</p>
 </div>
 <div class="paragraph">
 <div class="title">Data Fetching Field Access</div>
@@ -2530,6 +2546,12 @@ a backend data store. Consider the field <code>node(id: ID!)</code> on the
   node(id : ID!) : Node
   +description(text: "Fetch a starship with a given Id")
   starship(id : ID!) : Starship
+  allStarships : [Starship]
+  allPlanets : [Planet]
+  allPeople : [Person]
+  allVehicles : [Vehicle]
+  allSpecies : [Species]
+  allFilms : [Film]
 }</code></pre>
 </div>
 </div>
@@ -2557,8 +2579,8 @@ in the planet type. Once the recursion ends, we have constructed a
 <li>
 <p>Next, it returns the underlying recursive response as a mapping
 <code>"node" &#8658; Response</code> and returns this for the field. Once every
-field on the top-level <code>Query</code> object are satisfied, we have our
-final response.</p>
+field on the top-level <code>Query</code> object has been satisfied, we have
+our final response.</p>
 </li>
 </ul>
 </div>
@@ -2576,13 +2598,13 @@ on the database level.</p>
 </td>
 <td class="content">
 It is also possible to return a whole subtree at once when a
-field is resolved. This correspond to eager/strict loading in an ORM
+field is resolved. This corresponds to eager/strict loading in an ORM
 and is useful in the situation where you expect the client to request
 the data with high probability, or when fetching the extra data is
 done anyway. In this case, making the data available for further query
 in the Graph is almost always beneficial. The price for fetching the
 data has already been paid anyway. The implementation is simply to
-make sure that recursive objects test if the data are already loaded.
+make sure that recursive objects test if the data is already loaded.
 </td>
 </tr>
 </table>
@@ -2660,7 +2682,7 @@ outside of the GraphQL system:</p>
 <p>What type of transport was used to initiate the query.</p>
 </li>
 <li>
-<p>Process <code>pid()</code> values for processes that pertains to this query.</p>
+<p>Process <code>pid()</code> values for processes that pertain to this query.</p>
 </li>
 </ul>
 </div>
@@ -2681,7 +2703,7 @@ Sizable graph schemas tend to contain a number of administrative
 &#8220;filler&#8221; objects used to glue other objects together. These are
 often possible to handle by a single default executor which looks at
 the context in order to derive what to do with the particular object.
-If an type becomes non-generic, you can then work gradually and shift
+If a type becomes non-generic, you can then work gradually and shift
 it to a specific <code>execute/4</code> handler for that particular object.
 </td>
 </tr>
@@ -2729,9 +2751,9 @@ can proceed by pattern matching on this object.</p>
 <h3 id="input-argument-rules">Input argument rules</h3>
 <div class="paragraph">
 <p>An important thing to cover at this point is how mappings of input
-arguments is done in GraphQL. A GraphQL client has <em>no</em> way of
+arguments are done in GraphQL. A GraphQL client has <em>no</em> way of
 inputting a <code>null</code> value. It is not allowed for the client to ever use
-a <code>null</code> in any input position. Rather, the way a client specifies is
+a <code>null</code> in any input position. Rather, the way a client specifies it
 has no value, is by omission of a given input field.</p>
 </div>
 <div class="paragraph">
@@ -2770,7 +2792,7 @@ way of processing &#8220;no value&#8221;.</p>
 </td>
 <td class="content">
 Add sane defaults to your schema. If an input is a list, default
-it to the empty list <code>[]</code>, such that you code can <code>lists:map/2</code> over
+it to the empty list <code>[]</code>, such that your code can <code>lists:map/2</code> over
 the input. But because the list is <code>[]</code> nothing happens. This can be
 used to eliminate code paths in your code by using default values for
 the data structures you are working on.
@@ -2783,7 +2805,7 @@ the data structures you are working on.
 <h3 id="_handling_planets">Handling Planets</h3>
 <div class="paragraph">
 <p>In our system, we have a module <code>sw_core_planet</code> which handles the
-execution parts of planets. Planets are rather simple object in that
+execution parts of planets. Planets are rather simple objects in that
 most of their internals are directly mapped to an underlying Mnesia
 database. The <code>execute/4</code> function describes how the Mnesia records
 are mapped into the GraphQL world of fields the client requested.</p>
@@ -2801,8 +2823,8 @@ We omit some parts which are not very interesting as of now:</p>
         &lt;&lt;"climate"&gt;&gt; -&gt; {ok, Planet#planet.climate};
         &lt;&lt;"surfaceWater"&gt;&gt; -&gt; {ok, Planet#planet.surface_water};
         &lt;&lt;"name"&gt;&gt; -&gt; {ok, Planet#planet.name};
-        &lt;&lt;"diameter"&gt;&gt; -&gt; {ok, Planet#planet.diameter};
-        &lt;&lt;"rotationPeriod"&gt;&gt; -&gt; {ok, Planet#planet.rotation_period};
+        &lt;&lt;"diameter"&gt;&gt; -&gt; {ok, integer(Planet#planet.diameter)};
+        &lt;&lt;"rotationPeriod"&gt;&gt; -&gt; {ok, integer(Planet#planet.rotation_period)};
 ...</code></pre>
 </div>
 </div>
@@ -2844,28 +2866,33 @@ This is easily done in the <code>execute/4</code> function:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, #{ starship := Starship,
-                 transport := Transport }, Field, _Args) -&gt;
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
+                 transport := Transport }, Field, Args) -&gt;
     case Field of
         &lt;&lt;"id"&gt;&gt; -&gt;
             {ok, sw_core_id:encode({'Starship', Starship#starship.id})};
         &lt;&lt;"name"&gt;&gt; -&gt; {ok, Transport#transport.name};
         &lt;&lt;"model"&gt;&gt; -&gt; {ok, Transport#transport.model};
         &lt;&lt;"starshipClass"&gt;&gt; -&gt; {ok, Starship#starship.starship_class};
-        &lt;&lt;"costInCredits"&gt;&gt; -&gt; {ok, Transport#transport.cost};
+        &lt;&lt;"costInCredits"&gt;&gt; -&gt; {ok, floatify(Transport#transport.cost)};
         &lt;&lt;"length"&gt;&gt; -&gt; {ok, Transport#transport.length};
         &lt;&lt;"crew"&gt;&gt; -&gt; {ok, Transport#transport.crew};
-        &lt;&lt;"passengers"&gt;&gt; -&gt; {ok, Transport#transport.passengers};
+        &lt;&lt;"passengers"&gt;&gt; -&gt;
+            Passengers = Transport#transport.passengers,
+            {ok, Passengers};
+        &lt;&lt;"manufacturers"&gt;&gt; -&gt; {ok, [{ok, M} || M &lt;- Transport#transport.manufacturers]};
         &lt;&lt;"maxAtmospheringSpeed"&gt;&gt; -&gt;
             {ok, Transport#transport.max_atmosphering_speed};
         &lt;&lt;"hyperdriveRating"&gt;&gt; -&gt;
             {ok, Starship#starship.hyperdrive_rating};
         &lt;&lt;"MGLT"&gt;&gt; -&gt;
             {ok, Starship#starship.mglt};
-        &lt;&lt;"cargoCapacity"&gt;&gt; -&gt; {ok, Transport#transport.cargo_capacity};
+        &lt;&lt;"cargoCapacity"&gt;&gt; -&gt;
+            Capacity = Transport#transport.cargo_capacity,
+            {ok, floatify(Capacity)};
         &lt;&lt;"consumables"&gt;&gt; -&gt; {ok, Transport#transport.consumables};
         &lt;&lt;"created"&gt;&gt; -&gt; {ok, Transport#transport.created};
-        &lt;&lt;"edited"&gt;&gt; -&gt;  {ok, Transport#transport.edited}
+        &lt;&lt;"edited"&gt;&gt; -&gt;  {ok, Transport#transport.edited};
 ...</code></pre>
 </div>
 </div>
@@ -2933,8 +2960,7 @@ function:</p>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, _DummyObj, &lt;&lt;"node"&gt;&gt;, #{ &lt;&lt;"id"&gt;&gt; := ID }) -&gt;
     load_node(any, ID);
-execute(_Ctx, _DummyObj, &lt;&lt;"starship"&gt;&gt;, #{ &lt;&lt;"id"&gt;&gt; := ID }) -&gt;
-    load_node(['Starship'], ID).</code></pre>
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3159,7 +3185,7 @@ execute(_Ctx, Obj, Field, _Args) -&gt;
 <p>The default mapper assumes it is given a <code>map()</code> type and then it
 looks inside that map for fields. This is convenient because you will
 have lots of output types which are plain and simple. You don&#8217;t want
-to invent a specific record for such an object, nor do you want to
+to invent a specific record for such an object, nor do you want the
 tedium of writing an <code>execute/4</code> function for all of them.</p>
 </div>
 <div class="paragraph">
@@ -3224,6 +3250,7 @@ uses the above rules to generate a list of eye colors:</p>
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(_Ctx, #species { id = Id } = Species, Field, Args) -&gt;
     case Field of
         &lt;&lt;"id"&gt;&gt; -&gt; {ok, sw_core_id:encode({'Species', Id})};
+        &lt;&lt;"name"&gt;&gt; -&gt; {ok, Species#species.name};
         &lt;&lt;"eyeColors"&gt;&gt; -&gt;
             {ok,
              [{ok, EC} || EC &lt;- Species#species.eye_colors]};</code></pre>
@@ -3238,9 +3265,9 @@ state that every eye colors loaded succesfully.</p>
 <div class="title">Alternative representation</div>
 <div class="paragraph">
 <p>When we initially built the system, we did not wrap individual objects
-in a optional construction. This meant a list load either succeeded or
-failed globally. It created a number of fundamental problems because
-the description isn&#8217;t precise.</p>
+in an optional construction. This meant a list load either succeeded
+or failed globally. It created a number of fundamental problems
+because the description isn&#8217;t precise.</p>
 </div>
 <div class="paragraph">
 <p>As a result, we made the decision to change the specification to its
@@ -3403,15 +3430,15 @@ couple of variables in order to make cowboy play better with
 <div class="paragraph">
 <p>We set up the cowboy handler as a REST handler, because it is easy to
 do, and because it automates a large set of things we&#8217;d like to do.
-Our plan is to use content-negotiation: a web server will be served an
+Our plan is to use content-negotiation: a web server will be served a
 UI for GraphQL by default, but if the a client request comes in, we
 will pass that to the GraphQL system.</p>
 </div>
 <div class="paragraph">
 <p>The <code>cowboy_rest</code> model stems from an idea pioneered by Webmachine. We
 can depict an HTTP request as a flow chart where each decision point
-is a node in the chart. Since every request follow this flow chart, it
-makes sense to use a classic Erlang model: write the generic/general
+is a node in the chart. Since every request follows this flow chart,
+it makes sense to use a classic Erlang model: code the generic/general
 parts inside a main module <code>cowboy_rest</code>, and then provide it with a
 callback module. Whenever a decision node is reached, the callback
 will be executed and the decision will follow the choice made by the
@@ -3422,7 +3449,7 @@ resolution.</p>
 <h4 id="_handler_code">Handler code</h4>
 <div class="paragraph">
 <p>The handler starts by declaring the callbacks it has. Each of these
-will described in the following sections for those who are not
+will be described in the following sections for those who are not
 familiar with <code>cowboy_rest</code>:</p>
 </div>
 <div class="listingblock">
@@ -3632,7 +3659,7 @@ document.</p>
 <p>Create an initial object for the cursor to point to</p>
 </li>
 <li>
-<p>Execute the query will all of the above</p>
+<p>Execute the query with all of the above</p>
 </li>
 <li>
 <p>Format a proper response to the client</p>
@@ -3655,7 +3682,7 @@ to_json(Req, State) -&gt; json_request(Req, State).</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The main function delegate work to other functions in a top-down
+<p>The main function delegates work to other functions in a top-down
 fashion. In the following we will describe each of these parts. We
 want the processing to work both for a POST and for a GET, so we
 implement the same path on top of the functions <code>from_json</code> and
@@ -4104,10 +4131,10 @@ be used as a start.</p>
 </div>
 <div class="paragraph">
 <p>Furthermore, different data sources tend to provide different ways to
-paginate. An RDBMS can use the OFFSET/LIMIT pairs, or an
-time-interval column.footnote[Oracle and MS SQL Server uses different
-notions, but can achieve the same thing] Some systems provide cursors
-which can be sent with a follow-up query. And so on.</p>
+paginate. An RDBMS can use the OFFSET/LIMIT pairs, or a time-interval
+column. [Oracle and MS SQL Server use different notions, but can
+achieve the same thing] Some systems provide cursors which can be
+sent with a follow-up query. And so on.</p>
 </div>
 <div class="paragraph">
 <p>In the Relay Modern specification, the cursor is a <em>server side</em>
@@ -4282,7 +4309,7 @@ has_next(Sliced, First) -&gt; length(Sliced) &gt; First.</code></pre>
 <h2 id="_security">Security</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section describes different security aspect of GraphQL and how
+<p>This section describes different security aspects of GraphQL and how
 they pertain to the Erlang implementation of GraphQL. Any real world
 implementation of a system must combat enemies on the web. In general,
 you can expect requests to be evil.</p>
@@ -4328,7 +4355,7 @@ the world, you may get into trouble with overload. Your system has to
 parse, type check &amp; validate each request. And if the request is
 expensive, it puts unnecessary toll on your backend systems. To avoid
 this, production implementations support the ability to <em>prepare</em> a
-query document containing all the queries a client want to make. Once
+query document containing all the queries a client wants to make. Once
 and for all the document is parsed, type checked, and validated. Then
 a reference is given back to the client. Clients who wish to run a
 query can then supply this reference and an <code>opName</code> inside the query
@@ -4344,9 +4371,9 @@ the GraphQL by quite a margin if you use stored procedures.</p>
 <div class="paragraph">
 <p>In addition, you can also arrange that a client isn&#8217;t able to
 construct new query documents without authorization. This means
-developers can deploy new query document when they deploy new versions
-of an application, but a user of said application cannot produce new
-queries dynamically.</p>
+developers can deploy new query documents when they deploy new
+versions of an application, but a user of said application cannot
+produce new queries dynamically.</p>
 </div>
 <div class="paragraph">
 <p>In short:</p>
@@ -4354,7 +4381,7 @@ queries dynamically.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Developers now has the full dynamic query language at their
+<p>Developers now have the full dynamic query language at their
 disposal</p>
 </li>
 <li>
@@ -4476,7 +4503,7 @@ explain to people what the mapping means.</p>
 <ul>
 <li>
 <p>Look out for the situation where a simple change in the contract
-starts an avalanche of changes all throughout your stack. This tend
+starts an avalanche of changes all throughout your stack. This tends
 to mean you have built a system where each layer transforms the
 data. Keep transformers down to as few layers as possible and let
 the end-points in the data passing handle the transformations.</p>
@@ -4847,7 +4874,7 @@ code responses from the system.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-23 14:24:38 CEST
+Last updated 2017-05-24 00:12:04 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
