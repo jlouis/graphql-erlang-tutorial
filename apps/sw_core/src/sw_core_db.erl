@@ -236,18 +236,18 @@ json_to_transport(
          <<"manufacturer">> := Manufacturer }}) ->
     #transport {
        id = ID,
-       cargo_capacity = CargoCapacity,
+       cargo_capacity = number_like(CargoCapacity),
        consumables = Consumables,
-       cost = Cost,
+       cost = number_like(Cost),
        created = Created,
        crew = Crew,
        edited = Edited,
-       length = Length,
-       manufacturers = [Manufacturer],
-       max_atmosphering_speed = MaxAtmosSpeed,
+       length = number_like(Length),
+       manufacturers = commasplit(Manufacturer),
+       max_atmosphering_speed = number_like(MaxAtmosSpeed),
        model = Model,
        name = Name,
-       passengers = Passengers }.
+       passengers = number_like(Passengers) }.
 %% end::jsonToTransport[]
 
 json_to_starship(
@@ -261,9 +261,9 @@ json_to_starship(
     #starship {
        id = ID,
        pilots = Pilots,
-       mglt = MGLT,
+       mglt = number_like(MGLT),
        starship_class = Class,
-       hyperdrive_rating = HyperRating
+       hyperdrive_rating = number_like(HyperRating)
       }.
 
 json_to_film(

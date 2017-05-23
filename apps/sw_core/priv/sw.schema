@@ -14,14 +14,14 @@ interface Transport {
   edited : DateTime
   consumables : String
   name : String
-  created : String
-  cargoCapacity : Int
+  created : DateTime
+  cargoCapacity : Float
   passengers : String
   maxAtmospheringSpeed : Int
   crew : String
   length : Float
   model : String
-  costInCredits : Int
+  costInCredits : Float
   manufacturers : [String]
 }
 # end::transportInterface[]
@@ -29,6 +29,33 @@ interface Transport {
 type PageInfo {
   hasNextPage : Boolean!
   hasPreviousPage : Boolean!
+}
+
+type Vehicle implements Node, Transport {
+  id : ID!
+  name : String
+  model : String
+  vehicleClass : String
+  manufacturers : [String]
+  costInCredits : Float
+  length : Float
+  crew : String
+  passengers : String
+  maxAtmospheringSpeed : Int
+  cargoCapacity : Float
+  consumables : String
+  created: DateTime
+  edited: DateTime
+  pilotConnection(
+    after : String
+    first : Int
+    before : String
+    last : Int) : VehiclePilotsConnection
+  filmConnection(
+    after : String
+    first : Int
+    before: String
+    last: Int) : VehicleFilmsConnection
 }
 
 # tag::starshipObject[]
@@ -39,17 +66,17 @@ type Starship implements Node, Transport {
   model : String
   starshipClass : String
   manufacturers : [String]
-  costInCredits : Int
+  costInCredits : Float
   length : Float
   crew : String
   passengers : String
   maxAtmospheringSpeed : Int
   hyperdriveRating : Float
   MGLT : Int
-  cargoCapacity : Int
+  cargoCapacity : Float
   consumables : String
-  created: String
-  edited: String
+  created: DateTime
+  edited: DateTime
 # end::starshipObject[]
   pilotConnection(
     after : String
@@ -75,10 +102,10 @@ type Film implements Node {
                     before: String, last: Int)
     : FilmSpeciesConnection
   starshipConnection(after: String, first: Int,
-                     before: Stirng, last: Int)
+                     before: String, last: Int)
     : FilmStarshipConnection
   vehicleConnection(after: String, first: Int,
-                    before: Stirng, last: Int)
+                    before: String, last: Int)
     : FilmVehicleConnection
   planetConnection(after: String, first: Int,
                    before: String, last: Int)
@@ -237,6 +264,28 @@ type FilmPlanetConnection {
 
 type FilmPlanetEdge {
   node : Planet
+  cursor : String!
+}
+
+type VehiclePilotsConnection {
+  pageInfo : PageInfo!
+  edges : [VehiclePilotsEdge]
+  totalCount : Int
+}
+
+type VehiclePilotsEdge {
+  node : Person
+  cursor : String!
+}
+
+type VehicleFilmsConnection {
+  pageInfo : PageInfo!
+  edges : [VehicleFilmsEdge]
+  totalCount : Int
+}
+
+type VehicleFilmsEdge {
+  node : Film
   cursor : String!
 }
 
