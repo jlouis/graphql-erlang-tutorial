@@ -10,10 +10,10 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
         <<"id">> -> {ok, sw_core_id:encode({'Planet', Planet#planet.id})};
         <<"edited">> -> {ok, Planet#planet.edited};
         <<"climate">> -> {ok, Planet#planet.climate};
-        <<"surfaceWater">> -> {ok, Planet#planet.surface_water};
+        <<"surfaceWater">> -> {ok, integer(Planet#planet.surface_water)};
         <<"name">> -> {ok, Planet#planet.name};
-        <<"diameter">> -> {ok, Planet#planet.diameter};
-        <<"rotationPeriod">> -> {ok, Planet#planet.rotation_period};
+        <<"diameter">> -> {ok, integer(Planet#planet.diameter)};
+        <<"rotationPeriod">> -> {ok, integer(Planet#planet.rotation_period)};
 %% end::planetExecute[]
         <<"filmConnection">> ->
             Txn = fun() ->
@@ -34,8 +34,14 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
             sw_core_paginate:select(People, Args);
 %% end::residentConnection[]
         <<"created">> -> {ok, Planet#planet.created};
-        <<"terrain">> -> {ok, Planet#planet.terrain};
-        <<"gravity">> -> {ok, Planet#planet.gravity};
-        <<"orbitalPeriod">> -> {ok, Planet#planet.orbital_period};
-        <<"population">> -> {ok, Planet#planet.population}
+        <<"terrain">> ->
+            Terrains = Planet#planet.terrain,
+            {ok, [{ok, T} || T <- Terrains]};
+        <<"gravity">> -> {ok, integer(Planet#planet.gravity)};
+        <<"orbitalPeriod">> -> {ok, integer(Planet#planet.orbital_period)};
+        <<"population">> -> {ok, integer(Planet#planet.population)}
     end.
+
+integer(I) when is_integer(I) -> I;
+integer(nan) -> null.
+    

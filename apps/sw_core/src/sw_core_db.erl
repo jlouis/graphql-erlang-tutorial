@@ -344,15 +344,15 @@ json_to_planet(
        id = ID,
        edited = Edited,
        climate = Climate,
-       surface_water = SWater,
+       surface_water = integer_like(SWater),
        name = Name,
-       diameter = Diameter,
-       rotation_period = RotationPeriod,
+       diameter = integer_like(Diameter),
+       rotation_period = integer_like(RotationPeriod),
        created = Created,
-       terrain = Terrain,
-       gravity = Gravity,
-       orbital_period = OrbPeriod,
-       population = Population
+       terrain = commasplit(Terrain),
+       gravity = integer_like(Gravity),
+       orbital_period = integer_like(OrbPeriod),
+       population = integer_like(Population)
 }.
 %% end::json_to_planet[]
 

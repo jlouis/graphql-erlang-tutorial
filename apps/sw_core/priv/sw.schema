@@ -1,3 +1,5 @@
+scalar DateTime
+
 # tag::nodeInterface[]
 +description(text: "Relay Modern Node Interface")
 interface Node {
@@ -9,7 +11,7 @@ interface Node {
 # tag::transportInterface[]
 interface Transport {
   id : ID!
-  edited : String
+  edited : DateTime
   consumables : String
   name : String
   created : String
@@ -116,18 +118,18 @@ type Planet implements Node {
   rotationPeriod : Int
   orbitalPeriod : Int
   gravity : String
-  population : Float
+  population : Int
   climate : String
   terrains : [String]
-  surfaceWater : Float
+  surfaceWater : Int
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : PlanetFilmsConnection
   residentConnection(after: String, first: Int,
                      before: String, last: Int)
     : PlanetResidentsConnection
-  created : String
-  edited : String
+  created : DateTime
+  edited : DateTime
   id : ID!
 }
 # end::planetObject[]
