@@ -247,7 +247,7 @@ json_to_transport(
        max_atmosphering_speed = number_like(MaxAtmosSpeed),
        model = Model,
        name = Name,
-       passengers = number_like(Passengers) }.
+       passengers = Passengers }.
 %% end::jsonToTransport[]
 
 json_to_starship(

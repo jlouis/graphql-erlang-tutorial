@@ -330,9 +330,23 @@ type FilmCharactersEdge {
 
 type StarshipPilotsConnection {
   pageInfo : PageInfo
+  edges : [StarshipPilotsEdge]
+  totalCount : Int
+}
+
+type StarshipPilotsEdge {
+  node : Person
+  cursor : String!
 }
 
 type StarshipFilmsConnection {
   pageInfo : PageInfo
+  edges : [StarshipFilmsEdge]
+  totalCount : Int
+}
+
+type StarshipFilmsEdge {
+  node : Film
+  cursor : String!
 }
 

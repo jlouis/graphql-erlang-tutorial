@@ -30,6 +30,22 @@ execute(_Ctx, _DummyObj, <<"allFilms">>, _Args) ->
     {atomic, Films} = mnesia:transaction(load_all(film)),
     {ok, Films}.
 
+load_all(vehicle) ->
+    fun() ->
+            QH = qlc:q([{ok, #{ vehicle => V, transport => T }} ||
+                           V <- mnesia:table(vehicle),
+                           T <- mnesia:table(transport),
+                           V#vehicle.id == T#transport.id]),
+            qlc:e(QH)
+    end;
+load_all(starship) ->
+    fun() ->
+            QH = qlc:q([{ok, #{ starship => S, transport => T }} ||
+                           S <- mnesia:table(starship),
+                           T <- mnesia:table(transport),
+                           S#starship.id == T#transport.id]),
+            qlc:e(QH)
+    end;
 load_all(Tab) ->
     fun() ->
             QH = qlc:q([{ok, F} || F <- mnesia:table(Tab)]),

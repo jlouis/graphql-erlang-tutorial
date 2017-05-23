@@ -16,7 +16,7 @@ execute(_Ctx, #person { id = PersonId } = Person, Field, _Args) ->
         <<"hairColor">> -> {ok, Person#person.hair_color};
         <<"height">> -> {ok, Person#person.height};
         <<"eyeColor">> -> {ok, Person#person.eye_color};
-        <<"mass">> -> {ok, Person#person.mass};
+        <<"mass">> -> {ok, floatify(Person#person.mass)};
         <<"homeworld">> ->
             Txn = fun() ->
                           mnesia:read(planet, Person#person.homeworld)
@@ -29,7 +29,12 @@ execute(_Ctx, #person { id = PersonId } = Person, Field, _Args) ->
                                            lists:member(PersonId, S#species.people)]),
                           qlc:e(QH)
                   end,
-            {atomic, [Species]} = mnesia:transaction(Txn),
-            {ok, Species};
+            case mnesia:transaction(Txn) of
+                {atomic, [Species]} -> {ok, Species};
+                {atomic, []} -> {ok, null}
+            end;
         <<"birthYear">> -> {ok, Person#person.birth_year}
     end.
+
+floatify(nan) -> null;
+floatify(I) -> float(I).

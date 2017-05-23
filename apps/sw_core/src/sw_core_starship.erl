@@ -13,17 +13,22 @@ execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
         <<"name">> -> {ok, Transport#transport.name};
         <<"model">> -> {ok, Transport#transport.model};
         <<"starshipClass">> -> {ok, Starship#starship.starship_class};
-        <<"costInCredits">> -> {ok, Transport#transport.cost};
+        <<"costInCredits">> -> {ok, floatify(Transport#transport.cost)};
         <<"length">> -> {ok, Transport#transport.length};
         <<"crew">> -> {ok, Transport#transport.crew};
-        <<"passengers">> -> {ok, Transport#transport.passengers};
+        <<"passengers">> ->
+            Passengers = Transport#transport.passengers,
+            {ok, Passengers};
+        <<"manufacturers">> -> {ok, [{ok, M} || M <- Transport#transport.manufacturers]};
         <<"maxAtmospheringSpeed">> ->
             {ok, Transport#transport.max_atmosphering_speed};
         <<"hyperdriveRating">> ->
             {ok, Starship#starship.hyperdrive_rating};
         <<"MGLT">> ->
             {ok, Starship#starship.mglt};
-        <<"cargoCapacity">> -> {ok, Transport#transport.cargo_capacity};
+        <<"cargoCapacity">> ->
+            Capacity = Transport#transport.cargo_capacity,
+            {ok, floatify(Capacity)};
         <<"consumables">> -> {ok, Transport#transport.consumables};
         <<"created">> -> {ok, Transport#transport.created};
         <<"edited">> ->  {ok, Transport#transport.edited};
@@ -44,3 +49,6 @@ execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
             {atomic, Records} = mnesia:transaction(Txn),
             sw_core_paginate:select(Records, Args)
     end.
+
+floatify(nan) -> null;
+floatify(I) -> float(I).

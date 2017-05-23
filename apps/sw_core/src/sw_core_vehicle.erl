@@ -17,6 +17,7 @@ execute(_Ctx, #{ vehicle := #vehicle { id = VehicleId } = Vehicle,
         <<"length">> -> {ok, Transport#transport.length};
         <<"crew">> -> {ok, Transport#transport.crew};
         <<"passengers">> -> {ok, Transport#transport.passengers};
+        <<"manufacturers">> -> {ok, [{ok, M} || M <- Transport#transport.manufacturers]};
         <<"maxAtmospheringSpeed">> ->
             {ok, Transport#transport.max_atmosphering_speed};
         <<"cargoCapacity">> -> {ok, Transport#transport.cargo_capacity};
