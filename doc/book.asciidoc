@@ -1,5 +1,5 @@
 = {project} Tutorial
-Jesper Louis Andersen <jla@shopgun.com / jesper.louis.andersen@gmail.com>; Martin Gausby <mg@shopgun.com / martin@gausby.dk>; ShopGun ApS <hello@shopgun.com>
+Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https://github.com/gausby[@gausby]>; ShopGun ApS <https://github.com/shopgun[@shopgun]>
 :toc: left
 :icons: font
 :source-highlighter: prettify
@@ -18,8 +18,8 @@ in Erlang through the ShopGun GraphQL engine. The intent is to provide
 readers with enough information they can go build their own GraphQL
 servers in Erlang.
 
-The GraphQL system is used by https://shopgun.com as a data backend.
-They also sponsored this tutorial as part of their Open Source efforts.
+We use the GraphQL system at https://shopgun.com as a data backend. We
+sponsor this tutorial as part of our Open Source efforts.
 
 include::introduction.asciidoc[Introduction]
 include::why_graphql.asciidoc[Why GraphQL]
