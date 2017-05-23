@@ -89,7 +89,7 @@ However, as your GraphQL systems grows in size, it turns out this
 choice is the right one. You quickly run into situations where a
 client supplies a desired specific change where many of the fields on
 the output object doesn't make sense. By splitting the input and
-output world, it is easily to facilitate since the input objects can
+output world, it is easy to facilitate since the input objects can
 omit many fields that doesn't make sense.
 
 In a way, your GraphQL system is built such that changes to the data

@@ -48,14 +48,14 @@ couple of variables in order to make cowboy play better with
 
 We set up the cowboy handler as a REST handler, because it is easy to
 do, and because it automates a large set of things we'd like to do.
-Our plan is to use content-negotiation: a web server will be served an
+Our plan is to use content-negotiation: a web server will be served a
 UI for GraphQL by default, but if the a client request comes in, we
 will pass that to the GraphQL system.
 
 The `cowboy_rest` model stems from an idea pioneered by Webmachine. We
 can depict an HTTP request as a flow chart where each decision point
-is a node in the chart. Since every request follow this flow chart, it
-makes sense to use a classic Erlang model: write the generic/general
+is a node in the chart. Since every request follows this flow chart, 
+it makes sense to use a classic Erlang model: code the generic/general
 parts inside a main module `cowboy_rest`, and then provide it with a
 callback module. Whenever a decision node is reached, the callback
 will be executed and the decision will follow the choice made by the
@@ -65,7 +65,7 @@ resolution.
 ==== Handler code
 
 The handler starts by declaring the callbacks it has. Each of these
-will described in the following sections for those who are not
+will be described in the following sections for those who are not
 familiar with `cowboy_rest`:
 
 [source,erlang]
@@ -199,7 +199,7 @@ what we need to do:
 * Parse, type check and validate the query
 * Create an initial context
 * Create an initial object for the cursor to point to
-* Execute the query will all of the above
+* Execute the query with all of the above
 * Format a proper response to the client
 
 
@@ -209,7 +209,7 @@ what we need to do:
 include::{sw_web}/src/sw_web_graphql_handler.erl[tags=json_processing]
 ----
 
-The main function delegate work to other functions in a top-down
+The main function delegates work to other functions in a top-down
 fashion. In the following we will describe each of these parts. We
 want the processing to work both for a POST and for a GET, so we
 implement the same path on top of the functions `from_json` and

@@ -3,7 +3,7 @@
 
 The meat of a GraphQL system is the resolver for objects. You have a
 concrete object on which you are resolving _fields_. As we shall see,
-this is used for two kinds of things a client want to do with the
+this is used for two kinds of things a client wants to do with the
 graph.
 
 .Raw Field Access
@@ -27,9 +27,9 @@ computing it.
 An advantage of derivation is that you can handle things lazily. Once
 the client wants a field, you start doing the work for computing and
 returning that field. Also, derivation improves data normalization in
-many cases. Modern computers are fast and data fetching tend to be the
+many cases. Modern computers are fast and data fetches tend to be the
 major part of a client request. A bit of computation before returning
-data is rarely going to be dominant in the large scale of things.
+data is rarely going to be dominant in the grand scheme of things.
 
 .Data Fetching Field Access
 
@@ -59,8 +59,8 @@ The GraphQL server now does two things:
   `Response` for the `node` object.
 * Next, it returns the underlying recursive response as a mapping
   `"node" => Response` and returns this for the field. Once every
-  field on the top-level `Query` object are satisfied, we have our
-  final response.
+  field on the top-level `Query` object has been satisfied, we have 
+  our final response.
 
 Hopefully it is clear that the field resolution here is used as a way
 to load and fetch data. The same mechanism is used to "`follow`"
@@ -68,13 +68,13 @@ associations between data in the database, by lazily executing JOINs
 on the database level.
 
 TIP: It is also possible to return a whole subtree at once when a
-field is resolved. This correspond to eager/strict loading in an ORM
+field is resolved. This corresponds to eager/strict loading in an ORM
 and is useful in the situation where you expect the client to request
 the data with high probability, or when fetching the extra data is
 done anyway. In this case, making the data available for further query
 in the Graph is almost always beneficial. The price for fetching the
 data has already been paid anyway. The implementation is simply to
-make sure that recursive objects test if the data are already loaded.
+make sure that recursive objects test if the data is already loaded.
 
 === Execution
 
@@ -121,7 +121,7 @@ outside of the GraphQL system:
 * User authentication information.
 * The source IP address executing the query.
 * What type of transport was used to initiate the query.
-* Process `pid()` values for processes that pertains to this query.
+* Process `pid()` values for processes that pertain to this query.
 
 Additionally, the context also contains some base information added by
 the GraphQL system. Most notably the current object type and field.
@@ -132,7 +132,7 @@ TIP: Sizable graph schemas tend to contain a number of administrative
 "`filler`" objects used to glue other objects together. These are
 often possible to handle by a single default executor which looks at
 the context in order to derive what to do with the particular object.
-If an type becomes non-generic, you can then work gradually and shift
+If a type becomes non-generic, you can then work gradually and shift
 it to a specific `execute/4` handler for that particular object.
 
 .Obj
@@ -175,9 +175,9 @@ can proceed by pattern matching on this object.
 === Input argument rules
 
 An important thing to cover at this point is how mappings of input
-arguments is done in GraphQL. A GraphQL client has _no_ way of
+arguments are done in GraphQL. A GraphQL client has _no_ way of
 inputting a `null` value. It is not allowed for the client to ever use
-a `null` in any input position. Rather, the way a client specifies is
+a `null` in any input position. Rather, the way a client specifies it
 has no value, is by omission of a given input field.
 
 The GraphQL system considers the omission of a field depending on the
@@ -198,7 +198,7 @@ unambiguous way to input "`no value`" and servers have one unambiguous
 way of processing "`no value`".
 
 TIP: Add sane defaults to your schema. If an input is a list, default
-it to the empty list `[]`, such that you code can `lists:map/2` over
+it to the empty list `[]`, such that your code can `lists:map/2` over
 the input. But because the list is `[]` nothing happens. This can be
 used to eliminate code paths in your code by using default values for
 the data structures you are working on.
@@ -206,7 +206,7 @@ the data structures you are working on.
 === Handling Planets
 
 In our system, we have a module `sw_core_planet` which handles the
-execution parts of planets. Planets are rather simple object in that
+execution parts of planets. Planets are rather simple objects in that
 most of their internals are directly mapped to an underlying Mnesia
 database. The `execute/4` function describes how the Mnesia records
 are mapped into the GraphQL world of fields the client requested.
@@ -434,7 +434,7 @@ include::{sw_core}/src/sw_core_object.erl[]
 The default mapper assumes it is given a `map()` type and then it
 looks inside that map for fields. This is convenient because you will
 have lots of output types which are plain and simple. You don't want
-to invent a specific record for such an object, nor do you want to
+to invent a specific record for such an object, nor do you want the 
 tedium of writing an `execute/4` function for all of them.
 
 As an example the `residentConnection` field we just handled in
@@ -491,9 +491,9 @@ state that every eye colors loaded succesfully.
 .Alternative representation
 ****
 When we initially built the system, we did not wrap individual objects
-in a optional construction. This meant a list load either succeeded or
-failed globally. It created a number of fundamental problems because
-the description isn't precise.
+in an optional construction. This meant a list load either succeeded 
+or failed globally. It created a number of fundamental problems 
+because the description isn't precise.
 
 As a result, we made the decision to change the specification to its
 current form. While it is a bit more cumbersome to write, it has the

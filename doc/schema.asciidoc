@@ -343,14 +343,14 @@ to the same resolver.
 
 The reason this needs to be handled by the programmer is because the
 GraphQL system doesn't know about your representation. In turn, it
-call back into your code in order to learn which type your
+will call back into your code in order to learn which type your
 representation has.
 
 ==== Objects
 
 The mapping of objects is likely to have a special mapping for each
 object type you have defined. This is because each kind of (output)
-object tend to be different and require its own handler.
+object tends to be different and requires its own handler.
 
 Note that it is possible to define the type of the object as an
 `atom()` here. This is common in GraphQL for Erlang. You can write

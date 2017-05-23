@@ -48,10 +48,10 @@ desired. The implementation is faithful to the specification and can
 be used as a start.
 
 Furthermore, different data sources tend to provide different ways to
-paginate. An RDBMS can use the OFFSET/LIMIT pairs, or an
-time-interval column.footnote[Oracle and MS SQL Server uses different
-notions, but can achieve the same thing] Some systems provide cursors
-which can be sent with a follow-up query. And so on.
+paginate. An RDBMS can use the OFFSET/LIMIT pairs, or a time-interval 
+column. [Oracle and MS SQL Server use different notions, but can 
+achieve the same thing] Some systems provide cursors which can be 
+sent with a follow-up query. And so on.
 
 In the Relay Modern specification, the cursor is a _server side_
 controlled piece of data. A client is not allowed to manipulate it.
