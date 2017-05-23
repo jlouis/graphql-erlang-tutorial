@@ -45,7 +45,7 @@
         "passengers": "30",
         "max_atmosphering_speed": "30",
         "crew": "46",
-        "length": "36.8 ",
+        "length": "36.8",
         "model": "Digger Crawler",
         "cost_in_credits": "150000",
         "manufacturer": "Corellia Mining Corporation"
@@ -81,7 +81,7 @@
         "passengers": "1",
         "max_atmosphering_speed": "1200",
         "crew": "1",
-        "length": "10.4 ",
+        "length": "10.4",
         "model": "T-16 skyhopper",
         "cost_in_credits": "14500",
         "manufacturer": "Incom Corporation"
@@ -99,7 +99,7 @@
         "passengers": "1",
         "max_atmosphering_speed": "250",
         "crew": "1",
-        "length": "3.4 ",
+        "length": "3.4",
         "model": "X-34 landspeeder",
         "cost_in_credits": "10550",
         "manufacturer": "SoroSuub Corporation"
@@ -169,7 +169,7 @@
         "created": "2014-12-12T11:00:39.817Z",
         "cargo_capacity": "110",
         "passengers": "0",
-        "max_atmosphering_speed": "1000km",
+        "max_atmosphering_speed": "1000",
         "crew": "2",
         "length": "14",
         "model": "BTL Y-wing",

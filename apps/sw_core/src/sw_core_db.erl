@@ -409,6 +409,7 @@ commasplit(String) ->
     binary:split(String, <<", ">>, [global]).
 
 number_like(<<"indefinite">>)              -> infinity;
+number_like(<<"none">>)                    -> nan;
 number_like(<<"n/a">>)                     -> nan;
 number_like(<<"unknown">>)                 -> nan;
 number_like(F) when is_float(F)            -> F;
