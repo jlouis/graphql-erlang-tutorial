@@ -64,7 +64,7 @@ between the contract and the database is that you don't have to
 explain to people what the mapping means.
 
 * Look out for the situation where a simple change in the contract
-  starts an avalanche of changes all throughout your stack. This tend
+  starts an avalanche of changes all throughout your stack. This tends
   to mean you have built a system where each layer transforms the
   data. Keep transformers down to as few layers as possible and let
   the end-points in the data passing handle the transformations.
