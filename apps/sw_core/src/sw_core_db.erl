@@ -272,13 +272,16 @@ json_to_film(
          <<"edited">> := Edited,
          <<"created">> := Created,
          <<"vehicles">> := Vehicles,
+         <<"starships">> := Starships,
+         <<"species">> := Species,
          <<"planets">> := Planets,
          <<"producer">> := Producer,
          <<"title">> := Title,
          <<"episode_id">> := EpisodeId,
          <<"director">> := Director,
          <<"opening_crawl">> := OpeningCrawl,
-         <<"characters">> := Characters
+         <<"characters">> := Characters,
+         <<"release_date">> := ReleaseDate
         }}) ->
     #film {
        id = ID,
@@ -286,12 +289,15 @@ json_to_film(
        created = Created,
        vehicles = Vehicles,
        planets = Planets,
-       producer = Producer,
+       starships = Starships,
+       species = Species,
+       producer = commasplit(Producer),
        title = Title,
-       episode_id = EpisodeId,
+       episode_id = integer_like(EpisodeId),
        director = Director,
        opening_crawl = OpeningCrawl,
-       characters = Characters
+       characters = Characters,
+       release_date = ReleaseDate
       }.
   
 json_to_species(
@@ -379,9 +385,9 @@ json_to_person(
        gender = Gender,
        skin_color = SkinColor,
        hair_color = HairColor,
-       height = Height,
+       height = integer_like(Height),
        eye_color = EyeColor,
-       mass = Mass,
+       mass = integer_like(Mass),
        homeworld = HomeWorld,
        birth_year = BirthYear
       }.

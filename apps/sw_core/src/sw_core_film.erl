@@ -10,7 +10,7 @@ execute(_Ctx, Film, Field, Args) ->
         <<"id">> -> {ok, sw_core_id:encode({'Film', Film#film.id})};
         <<"edited">> -> {ok, Film#film.edited};
         <<"created">> -> {ok, Film#film.created};
-        <<"producer">> -> {ok, Film#film.producer};
+        <<"producers">> -> {ok, [{ok, P} || P <- Film#film.producer]};
         <<"title">> -> {ok, Film#film.title};
         <<"episodeID">> -> {ok, Film#film.episode_id};
         <<"director">> -> {ok, Film#film.director};
@@ -27,6 +27,27 @@ execute(_Ctx, Film, Field, Args) ->
             #film { characters = Characters } = Film,
             Txn = fun() ->
                           [mnesia:read(person, P) || P <- Characters]
+                  end,
+            {atomic, Records} = mnesia:transaction(Txn),
+            sw_core_paginate:select(lists:append(Records), Args);
+        <<"speciesConnection">> ->
+            #film { species = Species } = Film,
+            Txn = fun() ->
+                          [mnesia:read(species, S) || S <- Species]
+                  end,
+            {atomic, Records} = mnesia:transaction(Txn),
+            sw_core_paginate:select(lists:append(Records), Args);
+        <<"starshipConnection">> ->
+            #film { starships = Starships } = Film,
+            Txn = fun() ->
+                          [mnesia:read(species, S) || S <- Starships]
+                  end,
+            {atomic, Records} = mnesia:transaction(Txn),
+            sw_core_paginate:select(lists:append(Records), Args);
+        <<"vehicleConnection">> ->
+            #film { vehicles = Vehicles } = Film,
+            Txn = fun() ->
+                          [mnesia:read(species, V) || V <- Vehicles]
                   end,
             {atomic, Records} = mnesia:transaction(Txn),
             sw_core_paginate:select(lists:append(Records), Args)

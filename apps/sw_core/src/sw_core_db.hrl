@@ -33,6 +33,7 @@
          edited :: binary(),
          created :: binary(),
          starships :: [integer()],
+         species :: [integer()],
          vehicles :: [integer()],
          planets :: [integer()],
          producer :: binary(),

@@ -70,18 +70,25 @@ type Film implements Node {
   openingCrawl : String
   director : String
   producers : [String]
-  releaseDate : String
+  releaseDate : DateTime
   speciesConnection(after: String, first: Int,
                     before: String, last: Int)
     : FilmSpeciesConnection
+  starshipConnection(after: String, first: Int,
+                     before: Stirng, last: Int)
+    : FilmStarshipConnection
+  vehicleConnection(after: String, first: Int,
+                    before: Stirng, last: Int)
+    : FilmVehicleConnection
   planetConnection(after: String, first: Int,
                    before: String, last: Int)
     : FilmPlanetConnection
   characterConnection(after: String, first: Int,
                       before: String, last: Int)
     : FilmCharactersConnection
-  created : String
-  edited : String
+  
+  created : DateTime
+  edited : DateTime
   id : ID!
 }
 # end::filmObject[]
@@ -141,7 +148,7 @@ type Person implements Node {
   gender : String
   hairColor : String
   height : Int
-  mass : Float
+  mass : Int
   skinColor : String
   homeworld : Planet
   species : Species
@@ -231,6 +238,28 @@ type FilmPlanetConnection {
 
 type FilmPlanetEdge {
   node : Planet
+  cursor : String!
+}
+
+type FilmStarshipConnection {
+  pageInfo : PageInfo!
+  edges : [FilmStarshipEdge]
+  totalCount : Int
+}
+
+type FilmStarshipEdge {
+  node : Starship
+  cursor : String!
+}
+
+type FilmVehicleConnection {
+  pageInfo : PageInfo!
+  edges : [FilmVehicleEdge]
+  totalCount : Int
+}
+
+type FilmVehicleEdge {
+  node : Vehicle
   cursor : String!
 }
 

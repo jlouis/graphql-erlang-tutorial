@@ -1,5 +1,6 @@
 -module(sw_core_person).
 -include("sw_core_db.hrl").
+-include_lib("stdlib/include/qlc.hrl").
 
 -export([execute/4]).
 
@@ -16,7 +17,19 @@ execute(_Ctx, #person { id = PersonId } = Person, Field, _Args) ->
         <<"height">> -> {ok, Person#person.height};
         <<"eyeColor">> -> {ok, Person#person.eye_color};
         <<"mass">> -> {ok, Person#person.mass};
-        %% TBD
-        <<"homeworld">> -> {ok, Person#person.homeworld};
+        <<"homeworld">> ->
+            Txn = fun() ->
+                          mnesia:read(planet, Person#person.homeworld)
+                  end,
+            {atomic, [Planet]} = mnesia:transaction(Txn),
+            {ok, Planet};
+        <<"species">> ->
+            Txn = fun() ->
+                          QH = qlc:q([S || S <- mnesia:table(species),
+                                           lists:member(PersonId, S#species.people)]),
+                          qlc:e(QH)
+                  end,
+            {atomic, [Species]} = mnesia:transaction(Txn),
+            {ok, Species};
         <<"birthYear">> -> {ok, Person#person.birth_year}
     end.
