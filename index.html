@@ -563,7 +563,20 @@ servers in Erlang.</p>
 </div>
 <div class="paragraph">
 <p>We use the GraphQL system at <a href="https://shopgun.com" class="bare">https://shopgun.com</a> as a data backend. We
-sponsor this tutorial as part of our Open Source efforts.</p>
+sponsor this tutorial as part of our Open Source efforts. We developed
+this GraphQL system to meet our demands as our system evolves. The
+world of tracking businesses and offers is a highly heterogeneous
+dataset, which requires the flexibility of something like GraphQL.</p>
+</div>
+<div class="paragraph">
+<p>Because GraphQL provides a lot of great tooling, we decided to move
+forward and implement a server backend for Erlang, which didn&#8217;t exist
+at the time.</p>
+</div>
+<div class="paragraph">
+<p>At the same time, we recognize other people may be interested in the
+system and its development. Hence the decision was made to open source
+the GraphQL parts of the system.</p>
 </div>
 </div>
 </div>
@@ -585,22 +598,6 @@ unto Erlang modules which then defines a binding of the two worlds.</p>
 the schema. The GraphQL system then figures out a <em>query plan</em> for the
 query and executes the query. This in turn calls your bound modules
 and this allows you to process the query, load data, and so on.</p>
-</div>
-<div class="paragraph">
-<div class="title">Background</div>
-<p>At ShopGun ApS we developed this GraphQL system to meet out demand. The
-world of tracking businesses and offers is a highly heterogeneous
-dataset, which requires the flexibility of something like GraphQL.</p>
-</div>
-<div class="paragraph">
-<p>Because GraphQL provides a lot of great tooling, we decided to move
-forward and implement a server backend for Erlang, which didn&#8217;t exist
-at the time.</p>
-</div>
-<div class="paragraph">
-<p>At the same time, we recognize other people might be interested in the
-system and its development. Hence the decision was made to open source
-the system.</p>
 </div>
 <div class="paragraph">
 <div class="title">Changes</div>
@@ -4850,7 +4847,7 @@ code responses from the system.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-23 14:12:09 CEST
+Last updated 2017-05-23 14:24:38 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

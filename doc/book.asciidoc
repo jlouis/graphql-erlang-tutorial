@@ -19,7 +19,18 @@ readers with enough information they can go build their own GraphQL
 servers in Erlang.
 
 We use the GraphQL system at https://shopgun.com as a data backend. We
-sponsor this tutorial as part of our Open Source efforts.
+sponsor this tutorial as part of our Open Source efforts. We developed
+this GraphQL system to meet our demands as our system evolves. The
+world of tracking businesses and offers is a highly heterogeneous
+dataset, which requires the flexibility of something like GraphQL.
+
+Because GraphQL provides a lot of great tooling, we decided to move
+forward and implement a server backend for Erlang, which didn't exist
+at the time.
+
+At the same time, we recognize other people may be interested in the
+system and its development. Hence the decision was made to open source
+the GraphQL parts of the system.
 
 include::introduction.asciidoc[Introduction]
 include::why_graphql.asciidoc[Why GraphQL]
