@@ -12,8 +12,8 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
         <<"climate">> -> {ok, Planet#planet.climate};
         <<"surfaceWater">> -> {ok, Planet#planet.surface_water};
         <<"name">> -> {ok, Planet#planet.name};
-        <<"diameter">> -> {ok, Planet#planet.diameter};
-        <<"rotationPeriod">> -> {ok, Planet#planet.rotation_period};
+        <<"diameter">> -> {ok, integer(Planet#planet.diameter)};
+        <<"rotationPeriod">> -> {ok, integer(Planet#planet.rotation_period)};
 %% end::planetExecute[]
         <<"filmConnection">> ->
             Txn = fun() ->
@@ -34,8 +34,14 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
             sw_core_paginate:select(People, Args);
 %% end::residentConnection[]
         <<"created">> -> {ok, Planet#planet.created};
-        <<"terrain">> -> {ok, Planet#planet.terrain};
+        <<"terrains">> ->
+            Terrains = Planet#planet.terrain,
+            {ok, [{ok, T} || T <- Terrains]};
         <<"gravity">> -> {ok, Planet#planet.gravity};
-        <<"orbitalPeriod">> -> {ok, Planet#planet.orbital_period};
-        <<"population">> -> {ok, Planet#planet.population}
+        <<"orbitalPeriod">> -> {ok, integer(Planet#planet.orbital_period)};
+        <<"population">> -> {ok, integer(Planet#planet.population)}
     end.
+
+integer(I) when is_integer(I) -> I;
+integer(nan) -> null.
+    

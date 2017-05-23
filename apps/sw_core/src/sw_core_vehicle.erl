@@ -1,40 +1,32 @@
--module(sw_core_starship).
+-module(sw_core_vehicle).
 -include("sw_core_db.hrl").
 -include_lib("stdlib/include/qlc.hrl").
 
 -export([execute/4]).
 
 %% tag::starshipExecute[]
-execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
+execute(_Ctx, #{ vehicle := #vehicle { id = VehicleId } = Vehicle,
                  transport := Transport }, Field, Args) ->
     case Field of
         <<"id">> ->
-            {ok, sw_core_id:encode({'Starship', Starship#starship.id})};
+            {ok, sw_core_id:encode({'Vehicle', Vehicle#vehicle.id})};
         <<"name">> -> {ok, Transport#transport.name};
         <<"model">> -> {ok, Transport#transport.model};
-        <<"starshipClass">> -> {ok, Starship#starship.starship_class};
-        <<"costInCredits">> -> {ok, floatify(Transport#transport.cost)};
+        <<"vehicleClass">> -> {ok, Vehicle#vehicle.vehicle_class};
+        <<"costInCredits">> -> {ok, Transport#transport.cost};
         <<"length">> -> {ok, Transport#transport.length};
         <<"crew">> -> {ok, Transport#transport.crew};
-        <<"passengers">> ->
-            Passengers = Transport#transport.passengers,
-            {ok, Passengers};
+        <<"passengers">> -> {ok, Transport#transport.passengers};
         <<"manufacturers">> -> {ok, [{ok, M} || M <- Transport#transport.manufacturers]};
         <<"maxAtmospheringSpeed">> ->
             {ok, Transport#transport.max_atmosphering_speed};
-        <<"hyperdriveRating">> ->
-            {ok, Starship#starship.hyperdrive_rating};
-        <<"MGLT">> ->
-            {ok, Starship#starship.mglt};
-        <<"cargoCapacity">> ->
-            Capacity = Transport#transport.cargo_capacity,
-            {ok, floatify(Capacity)};
+        <<"cargoCapacity">> -> {ok, Transport#transport.cargo_capacity};
         <<"consumables">> -> {ok, Transport#transport.consumables};
         <<"created">> -> {ok, Transport#transport.created};
         <<"edited">> ->  {ok, Transport#transport.edited};
 %% end::starshipExecute[]
         <<"pilotConnection">> ->
-            #starship { pilots = Pilots } = Starship,
+            #vehicle { pilots = Pilots } = Vehicle,
             Txn = fun() ->
                           [mnesia:read(person, P) || P <- Pilots]
                   end,
@@ -43,12 +35,9 @@ execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
         <<"filmConnection">> ->
             Txn = fun() ->
                           QH = qlc:q([F || F <- mnesia:table(film),
-                                           lists:member(StarshipId, F#film.starships)]),
+                                           lists:member(VehicleId, F#film.vehicles)]),
                           qlc:e(QH)
                   end,
             {atomic, Records} = mnesia:transaction(Txn),
             sw_core_paginate:select(Records, Args)
     end.
-
-floatify(nan) -> null;
-floatify(I) -> float(I).

@@ -8,6 +8,7 @@
 execute(_Ctx, #species { id = Id } = Species, Field, Args) ->
     case Field of
         <<"id">> -> {ok, sw_core_id:encode({'Species', Id})};
+        <<"name">> -> {ok, Species#species.name};
         <<"eyeColors">> ->
             {ok,
              [{ok, EC} || EC <- Species#species.eye_colors]};
@@ -23,7 +24,15 @@ execute(_Ctx, #species { id = Id } = Species, Field, Args) ->
             {ok,
              [{ok, EC} || EC <- Species#species.skin_colors]};
         <<"language">> -> {ok, Species#species.language};
-        <<"homeworld">> -> {ok, Species#species.homeworld};
+        <<"homeworld">> ->
+            Txn = fun() ->
+                          mnesia:read(planet, Species#species.homeworld)
+                  end,
+            %% Droids do not have homeworlds
+            case mnesia:transaction(Txn) of
+                {atomic, [Planet]} -> {ok, Planet};
+                {atomic, []} -> {ok, null}
+            end;
         <<"personConnection">> ->
             Txn = fun() ->
                           QH = qlc:q([P || P <- mnesia:table(person),

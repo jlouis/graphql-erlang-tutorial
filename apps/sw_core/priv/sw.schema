@@ -1,3 +1,5 @@
+scalar DateTime
+
 # tag::nodeInterface[]
 +description(text: "Relay Modern Node Interface")
 interface Node {
@@ -9,17 +11,17 @@ interface Node {
 # tag::transportInterface[]
 interface Transport {
   id : ID!
-  edited : String
+  edited : DateTime
   consumables : String
   name : String
-  created : String
-  cargoCapacity : Int
+  created : DateTime
+  cargoCapacity : Float
   passengers : String
   maxAtmospheringSpeed : Int
   crew : String
   length : Float
   model : String
-  costInCredits : Int
+  costInCredits : Float
   manufacturers : [String]
 }
 # end::transportInterface[]
@@ -27,6 +29,33 @@ interface Transport {
 type PageInfo {
   hasNextPage : Boolean!
   hasPreviousPage : Boolean!
+}
+
+type Vehicle implements Node, Transport {
+  id : ID!
+  name : String
+  model : String
+  vehicleClass : String
+  manufacturers : [String]
+  costInCredits : Float
+  length : Float
+  crew : String
+  passengers : String
+  maxAtmospheringSpeed : Int
+  cargoCapacity : Float
+  consumables : String
+  created: DateTime
+  edited: DateTime
+  pilotConnection(
+    after : String
+    first : Int
+    before : String
+    last : Int) : VehiclePilotsConnection
+  filmConnection(
+    after : String
+    first : Int
+    before: String
+    last: Int) : VehicleFilmsConnection
 }
 
 # tag::starshipObject[]
@@ -37,17 +66,17 @@ type Starship implements Node, Transport {
   model : String
   starshipClass : String
   manufacturers : [String]
-  costInCredits : Int
+  costInCredits : Float
   length : Float
   crew : String
   passengers : String
   maxAtmospheringSpeed : Int
   hyperdriveRating : Float
   MGLT : Int
-  cargoCapacity : Int
+  cargoCapacity : Float
   consumables : String
-  created: String
-  edited: String
+  created: DateTime
+  edited: DateTime
 # end::starshipObject[]
   pilotConnection(
     after : String
@@ -68,18 +97,25 @@ type Film implements Node {
   openingCrawl : String
   director : String
   producers : [String]
-  releaseDate : String
+  releaseDate : DateTime
   speciesConnection(after: String, first: Int,
                     before: String, last: Int)
     : FilmSpeciesConnection
+  starshipConnection(after: String, first: Int,
+                     before: String, last: Int)
+    : FilmStarshipConnection
+  vehicleConnection(after: String, first: Int,
+                    before: String, last: Int)
+    : FilmVehicleConnection
   planetConnection(after: String, first: Int,
                    before: String, last: Int)
     : FilmPlanetConnection
   characterConnection(after: String, first: Int,
                       before: String, last: Int)
     : FilmCharactersConnection
-  created : String
-  edited : String
+  
+  created : DateTime
+  edited : DateTime
   id : ID!
 }
 # end::filmObject[]
@@ -102,7 +138,6 @@ type Species implements Node {
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : SpeciesFilmConnection
-    
   created : String
   edited : String
   id : ID!
@@ -116,18 +151,18 @@ type Planet implements Node {
   rotationPeriod : Int
   orbitalPeriod : Int
   gravity : String
-  population : Float
+  population : Int
   climate : String
   terrains : [String]
-  surfaceWater : Float
+  surfaceWater : Int
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : PlanetFilmsConnection
   residentConnection(after: String, first: Int,
                      before: String, last: Int)
     : PlanetResidentsConnection
-  created : String
-  edited : String
+  created : DateTime
+  edited : DateTime
   id : ID!
 }
 # end::planetObject[]
@@ -154,6 +189,12 @@ type Query {
   node(id : ID!) : Node
   +description(text: "Fetch a starship with a given Id")
   starship(id : ID!) : Starship
+  allStarships : [Starship]
+  allPlanets : [Planet]
+  allPeople : [Person]
+  allVehicles : [Vehicle]
+  allSpecies : [Species]
+  allFilms : [Film]
 }
 # end::queryObject[]
 
@@ -232,6 +273,50 @@ type FilmPlanetEdge {
   cursor : String!
 }
 
+type VehiclePilotsConnection {
+  pageInfo : PageInfo!
+  edges : [VehiclePilotsEdge]
+  totalCount : Int
+}
+
+type VehiclePilotsEdge {
+  node : Person
+  cursor : String!
+}
+
+type VehicleFilmsConnection {
+  pageInfo : PageInfo!
+  edges : [VehicleFilmsEdge]
+  totalCount : Int
+}
+
+type VehicleFilmsEdge {
+  node : Film
+  cursor : String!
+}
+
+type FilmStarshipConnection {
+  pageInfo : PageInfo!
+  edges : [FilmStarshipEdge]
+  totalCount : Int
+}
+
+type FilmStarshipEdge {
+  node : Starship
+  cursor : String!
+}
+
+type FilmVehicleConnection {
+  pageInfo : PageInfo!
+  edges : [FilmVehicleEdge]
+  totalCount : Int
+}
+
+type FilmVehicleEdge {
+  node : Vehicle
+  cursor : String!
+}
+
 type FilmCharactersConnection {
   pageInfo : PageInfo!
   edges : [FilmCharactersEdge]
@@ -245,9 +330,23 @@ type FilmCharactersEdge {
 
 type StarshipPilotsConnection {
   pageInfo : PageInfo
+  edges : [StarshipPilotsEdge]
+  totalCount : Int
+}
+
+type StarshipPilotsEdge {
+  node : Person
+  cursor : String!
 }
 
 type StarshipFilmsConnection {
   pageInfo : PageInfo
+  edges : [StarshipFilmsEdge]
+  totalCount : Int
+}
+
+type StarshipFilmsEdge {
+  node : Film
+  cursor : String!
 }
 

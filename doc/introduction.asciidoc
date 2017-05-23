@@ -106,7 +106,7 @@ Things we are particularly interested in:
 
 === License
 
-Copyright (C) 2017 ShopGun ApS.
+Copyright (C) 2017 {shopgun}.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

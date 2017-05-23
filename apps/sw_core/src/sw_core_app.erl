@@ -35,8 +35,10 @@ mapping_rules() ->
        unions => #{ default => sw_core_type },
        objects => #{
          'Planet' => sw_core_planet,
-         'Starship' => sw_core_starship,
          'Film' => sw_core_film,
+         'Species' => sw_core_species,
+         'Vehicle' => sw_core_vehicle,
+         'Starship' => sw_core_starship,
          'Person' => sw_core_person,
          'Query' => sw_core_query,
          'Mutation' => sw_core_mutation,
