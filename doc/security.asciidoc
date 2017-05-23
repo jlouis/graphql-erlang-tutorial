@@ -1,6 +1,6 @@
 == Security
 
-This section describes different security aspect of GraphQL and how
+This section describes different security aspects of GraphQL and how
 they pertain to the Erlang implementation of GraphQL. Any real world
 implementation of a system must combat enemies on the web. In general,
 you can expect requests to be evil.
@@ -40,7 +40,7 @@ the world, you may get into trouble with overload. Your system has to
 parse, type check & validate each request. And if the request is
 expensive, it puts unnecessary toll on your backend systems. To avoid
 this, production implementations support the ability to _prepare_ a
-query document containing all the queries a client want to make. Once
+query document containing all the queries a client wants to make. Once
 and for all the document is parsed, type checked, and validated. Then
 a reference is given back to the client. Clients who wish to run a
 query can then supply this reference and an `opName` inside the query
@@ -54,13 +54,13 @@ the GraphQL by quite a margin if you use stored procedures.
 
 In addition, you can also arrange that a client isn't able to
 construct new query documents without authorization. This means
-developers can deploy new query document when they deploy new versions
-of an application, but a user of said application cannot produce new
-queries dynamically.
+developers can deploy new query documents when they deploy new 
+versions of an application, but a user of said application cannot 
+produce new queries dynamically.
 
 In short:
 
-* Developers now has the full dynamic query language at their
+* Developers now have the full dynamic query language at their
   disposal
 * Users of the application can only proceed by calling prepared stored
   procedures.
