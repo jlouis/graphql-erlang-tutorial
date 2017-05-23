@@ -425,11 +425,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h1>Erlang GraphQL Tutorial</h1>
 <div class="details">
 <span id="author" class="author">Jesper Louis Andersen</span><br>
-<span id="email" class="email"><a href="mailto:jla@shopgun.com">jla@shopgun.com</a> / <a href="mailto:jesper.louis.andersen@gmail.com">jesper.louis.andersen@gmail.com</a></span><br>
+<span id="email" class="email"><a href="https://github.com/jlouis">@jlouis</a></span><br>
 <span id="author2" class="author">Martin Gausby</span><br>
-<span id="email2" class="email"><a href="mailto:mg@shopgun.com">mg@shopgun.com</a> / <a href="mailto:martin@gausby.dk">martin@gausby.dk</a></span><br>
+<span id="email2" class="email"><a href="https://github.com/gausby">@gausby</a></span><br>
 <span id="author3" class="author">ShopGun ApS</span><br>
-<span id="email3" class="email"><a href="mailto:hello@shopgun.com">hello@shopgun.com</a></span><br>
+<span id="email3" class="email"><a href="https://github.com/shopgun">@shopgun</a></span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -562,8 +562,8 @@ readers with enough information they can go build their own GraphQL
 servers in Erlang.</p>
 </div>
 <div class="paragraph">
-<p>The GraphQL system is used by <a href="https://shopgun.com" class="bare">https://shopgun.com</a> as a data backend.
-They also sponsored this tutorial as part of their Open Source efforts.</p>
+<p>We use the GraphQL system at <a href="https://shopgun.com" class="bare">https://shopgun.com</a> as a data backend. We
+sponsor this tutorial as part of our Open Source efforts.</p>
 </div>
 </div>
 </div>
@@ -585,6 +585,22 @@ unto Erlang modules which then defines a binding of the two worlds.</p>
 the schema. The GraphQL system then figures out a <em>query plan</em> for the
 query and executes the query. This in turn calls your bound modules
 and this allows you to process the query, load data, and so on.</p>
+</div>
+<div class="paragraph">
+<div class="title">Background</div>
+<p>At ShopGun ApS we developed this GraphQL system to meet out demand. The
+world of tracking businesses and offers is a highly heterogeneous
+dataset, which requires the flexibility of something like GraphQL.</p>
+</div>
+<div class="paragraph">
+<p>Because GraphQL provides a lot of great tooling, we decided to move
+forward and implement a server backend for Erlang, which didn&#8217;t exist
+at the time.</p>
+</div>
+<div class="paragraph">
+<p>At the same time, we recognize other people might be interested in the
+system and its development. Hence the decision was made to open source
+the system.</p>
 </div>
 <div class="paragraph">
 <div class="title">Changes</div>
@@ -4834,7 +4850,7 @@ code responses from the system.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-22 20:43:19 CEST
+Last updated 2017-05-23 14:12:09 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
