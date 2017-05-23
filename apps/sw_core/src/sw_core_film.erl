@@ -4,7 +4,7 @@
 -export([execute/4]).
 
 %% tag::filmExecute[]
-execute(_Ctx, Film, Field, Args) ->
+execute(_Ctx, #film{} = Film, Field, Args) ->
     case Field of
         %% Plain Fields
         <<"id">> -> {ok, sw_core_id:encode({'Film', Film#film.id})};
