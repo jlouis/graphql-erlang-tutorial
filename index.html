@@ -484,7 +484,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_mapping_rules">Mapping rules</a></li>
 </ul>
 </li>
-<li><a href="#scalar_resolution">Scalar Resolution</a></li>
+<li><a href="#scalar-resolution">Scalar Resolution</a>
+<ul class="sectlevel2">
+<li><a href="#_example">Example</a></li>
+</ul>
+</li>
 <li><a href="#type-resolution">Type Resolution</a></li>
 <li><a href="#object-resolution">Object Resolution</a>
 <ul class="sectlevel2">
@@ -779,10 +783,12 @@ limitations under the License.</p>
 <p>Everyone involved in the Star Wars API. We use that data extensively.</p>
 </li>
 <li>
-<p>The GraphQL people who did an excellent job at answering questions and   provided us with a well-written specification.</p>
+<p>The GraphQL people who did an excellent job at answering questions
+and provided us with a well-written specification.</p>
 </li>
 <li>
-<p>Josh Price. The parser was derived from his initial work though it has   been changed a lot since the initial commit.</p>
+<p>Josh Price. The parser was derived from his initial work though it
+has been changed a lot since the initial commit.</p>
 </li>
 </ul>
 </div>
@@ -1030,7 +1036,7 @@ button, you should get the following response:</p>
   "data": {
     "node": {
       "climate": "arid",
-      "id": "cGxhbmV0OjE=",
+      "id": "UGxhbmV0OjE=",
       "name": "Tatooine"
     }
   }
@@ -1512,8 +1518,8 @@ the concept of a planet in the system:</p>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-record(planet,
         {id :: binary(),
-         edited :: binary(),
-         climate :: binary(),
+         edited :: calendar:datetime(),
+         climate :: calendar:datetime(),
          surface_water :: integer(),
          name :: binary(),
          diameter :: integer(),
@@ -1566,13 +1572,13 @@ file into a Mnesia record. Some conversion is necessary on the way:</p>
         }}) -&gt;
     #planet {
        id = ID,
-       edited = Edited,
+       edited = datetime(Edited),
        climate = Climate,
        surface_water = number_like(SWater),
        name = Name,
        diameter = number_like(Diameter),
        rotation_period = number_like(RotationPeriod),
-       created = Created,
+       created = datetime(Created),
        terrain = commasplit(Terrain),
        gravity = Gravity,
        orbital_period = number_like(OrbPeriod),
@@ -2274,7 +2280,7 @@ internally.
 </div>
 </div>
 <div class="sect1">
-<h2 id="scalar_resolution">Scalar Resolution</h2>
+<h2 id="scalar-resolution">Scalar Resolution</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In a GraphQL specification, the structure of queries are defined by
@@ -2350,63 +2356,84 @@ may still use tuples and atoms internally in our Erlang code, as long
 as we make sure to output-coerce values such that they are
 representable by the transport and by the client.</p>
 </div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="title">Star Wars and Scalar values</div>
-The current implementation of the Star Wars doesn&#8217;t utilize
-this feature of GraphQL very much. So for now, our implementation here
-doesn&#8217;t utilize the full feature set. A later update will solve this
-by providing an example.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>TBD: Write about Scalar values as part of the specification.
-Dependency: mutations in the specification, because otherwise the
-input coercion parts are a bit moot.</p>
+<div class="title">Star Wars and Scalar values</div>
+<p>In the Star Wars schema, we have defined scalar <strong>DateTime</strong> which we
+use to coerce datetimes. If a client supplies a datetime, we will run
+that through the <code>iso8601</code> parsing library and obtain a
+<code>calendar:datetime()</code> tuple in Erlang. On output coercion, we will
+convert it back into ISO8601/RFC3339 representation. This demonstrates
+the common phenomenon in which an internal representation (tuples) are
+not realizable in the external representation&#8212;&#8203;yet we can work around
+representation problems through coercion:</p>
 </div>
 <div class="listingblock">
+<div class="title">Schema Definition (<code>sw.schema</code>)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">scalar DateTime</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We have arranged that data loaded into Mnesia undergoes iso8601
+conversion by default such that the internal data are
+<code>calendar:datetime()</code> objects in Mnesia. When output-coercing these
+objects, the GraphQL system realizes they are of type <strong>DateTime</strong>. This
+calls into the scalar conversion code we have mapped into the Star
+Wars schema:</p>
+</div>
+<div class="listingblock">
+<div class="title">Coercion code (<code>sw_core_scalar.erl</code>)</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-module(sw_core_scalar).
 
 -export([input/2, output/2]).
 
+input(&lt;&lt;"DateTime"&gt;&gt;, Input) -&gt;
+    try iso8601:parse(Input) of
+        DateTime -&gt; {ok, DateTime}
+    catch
+        error:badarg -&gt;
+            {error, bad_date}
+    end;
 input(_Type, Val) -&gt;
     {ok, Val}.
 
+output(&lt;&lt;"DateTime"&gt;&gt;, DateTime) -&gt;
+    {ok, iso8601:format(DateTime)};
 output(_Type, Val) -&gt;
     {ok, Val}.</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The implementation here just defaults scalar conversion to convert a
-string into a string, and doing no conversion on the scalar values at
-all. The function is provided for completeness, not because it is
-needed.</p>
+<p>A scalar coercion is a pair of two functions</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">input/2</dt>
+<dd>
+<p>Called whenever an scalar value needs to be coerced from
+<em>client</em> to <em>server</em>. The valid responses are <code>{ok, Val} | {error,
+Reason}</code>. The converted response is substituted into the query so
+the rest of the code can work with converted vales only. If <code>{error,
+Reason}</code> is returned, the query is failed. This can be used to
+white-list certain inputs only and serves as a correctness/security
+feature.</p>
+</dd>
+<dt class="hdlist1">output/2</dt>
+<dd>
+<p>Called whenever an scalar value needs to coerced from
+<em>server</em> to <em>client</em>. The valid responses are <code>{ok, Val} | {error,
+Reason}</code>. Conversion makes sure that a client only sees coerced
+values. If an error is returned, the field is regarded as an error.
+It will be replaced by a <code>null</code> and <a href="#null-propagation">Null Propagation</a> will occur.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>The possible return values are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>{ok, Val}</code> where <code>Val</code> is a transformation of the scalar value,
-perhaps to an internal representation.</p>
-</li>
-<li>
-<p><code>{ok, null}</code> which signifies that the value isn&#8217;t an error, but
-there is no meaningful value to give to this particular field.</p>
-</li>
-<li>
-<p><code>{error, Reason}</code> in which case the coercion fails with that error.</p>
-</li>
-</ul>
+<p>In our scalar conversion pair, we handle <strong>DateTime</strong> by using the
+<code>iso8601</code> module to convert to/from ISO8601 representation. We also
+handle other manually defined scalar values by simply passing them
+through.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2415,11 +2442,90 @@ there is no meaningful value to give to this particular field.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The notion of <a href="#null-propagation">Null Propagation</a> holds for scalar values as
-well.
+Built-in scalars such as Int, Float, String, Bool are handled by
+the system internally and does not currently undergo Scalar
+conversion. A special case exists for Int and Float. These are coerced
+between automatically if it is safe to do so.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>
 </td>
 </tr>
 </table>
+</div>
+<div class="sect2">
+<h3 id="_example">Example</h3>
+<div class="paragraph">
+<p>Consider the following GraphQL query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query SpeciesQ {
+  node(id: "U3BlY2llczoxNQ==") {
+    id
+    ... on Species {
+      name
+      created
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which returns the following response:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-json" data-lang="json">{
+  "data": {
+    "node": {
+      "created": "2014-12-20T09:48:02Z",
+      "id": "U3BlY2llczoxNQ==",
+      "name": "Twi'lek"
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>id</code> given here can be decoded to <code>"Species:15"</code>. We can use the
+Erlang shell to read in that species:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code>(sw@127.0.0.1)1&gt; rr(sw_core_db). % <i class="conum" data-value="1"></i><b>(1)</b>
+[film,person,planet,sequences,species,starship,transport,
+ vehicle]
+(sw@127.0.0.1)2&gt; mnesia:dirty_read(species, 15).
+[#species{id = 15,
+          edited = {{2014,12,20},{21,36,42}},
+          created = {{2014,12,20},{9,48,2}}, <i class="conum" data-value="2"></i><b>(2)</b>
+          classification = &lt;&lt;"mammals"&gt;&gt;,name = &lt;&lt;"Twi'lek"&gt;&gt;,
+          designation = undefined,
+          eye_colors = [&lt;&lt;"blue"&gt;&gt;,&lt;&lt;"brown"&gt;&gt;,&lt;&lt;"orange"&gt;&gt;,
+                        &lt;&lt;"pink"&gt;&gt;],
+          ...}]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Tell EShell where the records live so we can get better printing
+in the shell.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Note the representation in the backend.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When the field <code>created</code> is requested, the system will return it as
+<code>{{2014,12,20},{9,48,2}}</code> and because it has type <strong>DateTime</strong> it will
+undergo output coercion to the ISO8601 representation.</p>
+</div>
+<div class="paragraph">
+<p>How the field is requested and fetched out of the Mnesia database is
+described in the section <a href="#object-resolution">Object Resolution</a>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -3379,7 +3485,7 @@ requests since queries tend to be large and all-encompassing.</p>
 </div>
 <div class="paragraph">
 <p>However, newer parts of GraphQL which is currently being tried out has
-support for delayed and streamed responses.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup> Because
+support for delayed and streamed responses.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup> Because
 of this, GraphQL will need a more powerful transport for those kinds
 of features.</p>
 </div>
@@ -3781,7 +3887,7 @@ which has to be decoded. So we let the code handle both cases.</p>
 <p>The request processing starts by a parsing step. If that step fails,
 we can exit with an error. If it succeeds, we proceed by running
 pre-processing. The output of the parsing step is an abstract syntax
-tree.<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</sup></p>
+tree.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3839,7 +3945,7 @@ the types which are allowed in that position. The output of the
 type checking is a new syntax tree, <code>AST2</code> on which scalar
 conversion has been run (for static variables) as an optimization;
 and a <code>FunEnv</code> which is the type scheme for each operation in the
-query.<sup class="footnote">[<a id="_footnoteref_4" class="footnote" href="#_footnote_4" title="View footnote.">4</a>]</sup></td>
+query.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup></td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -4105,7 +4211,7 @@ how nodes are loaded, generically, from the database backend.</p>
 </div>
 <div class="paragraph">
 <p>Taken together, this implements the object identification
-specification.<sup class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</sup></p>
+specification.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup></p>
 </div>
 </div>
 <div class="sect2">
@@ -4456,7 +4562,7 @@ some metadata on your object.</p>
 </div>
 <div class="paragraph">
 <p>A common convention is to use a special atom such as
-<code>'$tag'</code>.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" href="#_footnote_6" title="View footnote.">6</a>]</sup> You can then add data under that key in the map which
+<code>'$tag'</code>.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnote_7" title="View footnote.">7</a>]</sup> You can then add data under that key in the map which
 is useful to the GraphQL backend only.</p>
 </div>
 <div class="paragraph">
@@ -4483,7 +4589,7 @@ resolution code.</p>
 continual translation of backend data to the GraphQL schema. A
 common solution to this problem is to make the database schema 1-1
 with the GraphQL schema, often called an isomorphic
-representation.<sup class="footnote">[<a id="_footnoteref_7" class="footnote" href="#_footnote_7" title="View footnote.">7</a>]</sup> However, our experience is that such a 1-1 mapping is
+representation.<sup class="footnote">[<a id="_footnoteref_8" class="footnote" href="#_footnote_8" title="View footnote.">8</a>]</sup> However, our experience is that such a 1-1 mapping is
 detrimental to the development of the system. It is common the GraphQL
 schema and the underlying data evolve at different paces and that new
 data sources are added as you go along.</p>
@@ -4778,6 +4884,13 @@ refer to internally.</p>
 <p>Input and output coercion for scalar values</p>
 </div>
 <div class="paragraph">
+<div class="title"><code>src/sw_core_type.erl</code></div>
+<p>Describes how this GraphQL instance converts from abstract types such
+as Interfaces and Unions to concrete types. For instance how the
+system converts from the <strong>Transport</strong> interface to a <strong>Starship</strong> or
+<strong>Vehicle</strong>.</p>
+</div>
+<div class="paragraph">
 <div class="title"><code>src/sw_core_sup.erl</code></div>
 <p>Top level supervisor referring to long-lived processes in this
 application.</p>
@@ -4794,6 +4907,51 @@ application.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_film.erl</code></div>
+<p>Code for resolving objects of type <strong>Film</strong>.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_object.erl</code></div>
+<p>Code for resolving generic objects not covered more modules which
+specialize to a particular object type. Generic objects are
+represented as maps in the system and this module handles maps in
+general. This allows us to easily construct new types in the Graph
+without having to write special handlers for each.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_paginate.erl</code></div>
+<p>This file implements generic pagination code for the API. It is an
+implementation of {relay}'s conventions for paginations and cursors
+(see <a href="#pagination">Pagination</a>).</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_person.erl</code></div>
+<p>Code for resolving objects of type <strong>Person</strong>.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_planet.erl</code></div>
+<p>Code for resolving objects of type <strong>Planet</strong>.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_query.erl</code></div>
+<p>Code for resolving objects of type <strong>Query</strong>. The query object is main
+entry-point into the graph for data queries in which data is read out
+of the API. Notably it contains code for loading arbitrary objects if
+the client obtained a handle (id) on the object earlier.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_species.erl</code></div>
+<p>Code for resolving objects of type <strong>Species</strong>.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_starship.erl</code></div>
+<p>Code for resolving objects of type <strong>Starship</strong>.</p>
+</div>
+<div class="paragraph">
+<div class="title"><code>src/sw_core_vehicle.erl</code></div>
+<p>Code for resolving objects of type <strong>Vehicle</strong>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -4839,9 +4997,17 @@ code responses from the system.</p>
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">May 24th, 2017</dt>
+<dd>
+<p>Described Scalar Coercion in more detail in
+<a href="#scalar-resolution">Scalar Resolution</a>. Change the schema such that a <strong>DateTime</strong>
+scalar is used for the fields <code>created</code> and <code>edited</code> in all output
+objects. Then demonstrate how this is used to coerce values.</p>
+</dd>
 <dt class="hdlist1">May 22nd, 2017</dt>
 <dd>
-<p>Documented how to resolve array objects in <a href="#resolving-lists">Resolving lists</a>.</p>
+<p>Documented how to resolve array objects in
+<a href="#resolving-lists">Resolving lists</a>.</p>
 </dd>
 </dl>
 </div>
@@ -4854,27 +5020,30 @@ code responses from the system.</p>
 <a href="#_footnoteref_1">1</a>. The spec has toyed with the idea of adding more classes in addition to queries and mutations. Most notably the concept of a <em>subscription</em>
 </div>
 <div class="footnote" id="_footnote_2">
-<a href="#_footnoteref_2">2</a>. Through the use of the <code>@streamed</code> and <code>@defer</code> directives among other things
+<a href="#_footnoteref_2">2</a>. Some people call this weak typing, but type promotion is probably a more apt term
 </div>
 <div class="footnote" id="_footnote_3">
-<a href="#_footnoteref_3">3</a>. A later version of GraphQL is likely to use abstract binding trees instead, but for now, we run with the classic structure
+<a href="#_footnoteref_3">3</a>. Through the use of the <code>@streamed</code> and <code>@defer</code> directives among other things
 </div>
 <div class="footnote" id="_footnote_4">
-<a href="#_footnoteref_4">4</a>. We call operations for <code>functions</code> in the GraphQL system because that is what they really are, from a language perspective
+<a href="#_footnoteref_4">4</a>. A later version of GraphQL is likely to use abstract binding trees instead, but for now, we run with the classic structure
 </div>
 <div class="footnote" id="_footnote_5">
-<a href="#_footnoteref_5">5</a>. You must also do &#8220;Node plurality&#8221; correct, through this tutorial doesn&#8217;t have a place where that gets used. Node plurality is the idea that if you load objects by a list, the return value retains the order in the list.
+<a href="#_footnoteref_5">5</a>. We call operations for <code>functions</code> in the GraphQL system because that is what they really are, from a language perspective
 </div>
 <div class="footnote" id="_footnote_6">
-<a href="#_footnoteref_6">6</a>. In Erlang/OTP 20.0 and onward, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
+<a href="#_footnoteref_6">6</a>. You must also do &#8220;Node plurality&#8221; correct, through this tutorial doesn&#8217;t have a place where that gets used. Node plurality is the idea that if you load objects by a list, the return value retains the order in the list.
 </div>
 <div class="footnote" id="_footnote_7">
-<a href="#_footnoteref_7">7</a>. Isomorphic stems from ancient greek and means &#8220;equal shape&#8221;
+<a href="#_footnoteref_7">7</a>. In Erlang/OTP 20.0 and onward, atoms can be arbitrary Unicode data, so you can pick a special symbol to mark special atoms
+</div>
+<div class="footnote" id="_footnote_8">
+<a href="#_footnoteref_8">8</a>. Isomorphic stems from ancient greek and means &#8220;equal shape&#8221;
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-24 00:12:04 CEST
+Last updated 2017-05-24 15:54:27 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">

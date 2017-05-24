@@ -111,6 +111,13 @@ refer to internally.
 
 Input and output coercion for scalar values
 
+.`src/sw_core_type.erl`
+
+Describes how this GraphQL instance converts from abstract types such
+as Interfaces and Unions to concrete types. For instance how the
+system converts from the *Transport* interface to a *Starship* or
+*Vehicle*.
+
 .`src/sw_core_sup.erl`
 
 Top level supervisor referring to long-lived processes in this
@@ -118,6 +125,51 @@ application.
 
 NOTE: Currently there are no such long-lived processes in the
 application.
+
+.`src/sw_core_film.erl`
+
+Code for resolving objects of type *Film*.
+
+.`src/sw_core_object.erl`
+
+Code for resolving generic objects not covered more modules which
+specialize to a particular object type. Generic objects are
+represented as maps in the system and this module handles maps in
+general. This allows us to easily construct new types in the Graph
+without having to write special handlers for each.
+
+.`src/sw_core_paginate.erl`
+
+This file implements generic pagination code for the API. It is an
+implementation of {relay}'s conventions for paginations and cursors
+(see <<pagination>>).
+
+.`src/sw_core_person.erl`
+
+Code for resolving objects of type *Person*.
+
+.`src/sw_core_planet.erl`
+
+Code for resolving objects of type *Planet*.
+
+.`src/sw_core_query.erl`
+
+Code for resolving objects of type *Query*. The query object is main
+entry-point into the graph for data queries in which data is read out
+of the API. Notably it contains code for loading arbitrary objects if
+the client obtained a handle (id) on the object earlier.
+
+.`src/sw_core_species.erl`
+
+Code for resolving objects of type *Species*.
+
+.`src/sw_core_starship.erl`
+
+Code for resolving objects of type *Starship*.
+
+.`src/sw_core_vehicle.erl`
+
+Code for resolving objects of type *Vehicle*.
 
 === Application `sw_web`
 
