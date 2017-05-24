@@ -1,4 +1,6 @@
+# tag::scalarDateTime[]
 scalar DateTime
+# end::scalarDateTime[]
 
 # tag::nodeInterface[]
 +description(text: "Relay Modern Node Interface")
