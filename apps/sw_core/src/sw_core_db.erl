@@ -239,9 +239,9 @@ json_to_transport(
        cargo_capacity = number_like(CargoCapacity),
        consumables = Consumables,
        cost = number_like(Cost),
-       created = Created,
+       created = datetime(Created),
        crew = Crew,
-       edited = Edited,
+       edited = datetime(Edited),
        length = number_like(Length),
        manufacturers = commasplit(Manufacturer),
        max_atmosphering_speed = number_like(MaxAtmosSpeed),
@@ -285,8 +285,8 @@ json_to_film(
         }}) ->
     #film {
        id = ID,
-       edited = Edited,
-       created = Created,
+       edited = datetime(Edited),
+       created = datetime(Created),
        vehicles = Vehicles,
        planets = Planets,
        starships = Starships,
@@ -317,8 +317,8 @@ json_to_species(
          <<"average_height">> := Height }}) ->
     #species {
        id = ID,
-       edited = Edited,
-       created = Created,
+       edited = datetime(Edited),
+       created = datetime(Created),
        classification = Classification,
        name = Name,
        eye_colors = commasplit(EyeColors),
@@ -348,13 +348,13 @@ json_to_planet(
         }}) ->
     #planet {
        id = ID,
-       edited = Edited,
+       edited = datetime(Edited),
        climate = Climate,
        surface_water = number_like(SWater),
        name = Name,
        diameter = number_like(Diameter),
        rotation_period = number_like(RotationPeriod),
-       created = Created,
+       created = datetime(Created),
        terrain = commasplit(Terrain),
        gravity = Gravity,
        orbital_period = number_like(OrbPeriod),
@@ -379,9 +379,9 @@ json_to_person(
         }}) ->
     #person {
        id = ID,
-       edited = Edited,
+       edited = datetime(Edited),
        name = Name,
-       created = Created,
+       created = datetime(Created),
        gender = Gender,
        skin_color = SkinColor,
        hair_color = HairColor,
@@ -422,3 +422,6 @@ number_like(String) when is_binary(String) ->
             binary_to_float(String)
     end.
 
+datetime(DT) ->
+    {ok, Val} = sw_core_scalar:input(<<"DateTime">>, DT),
+    Val.

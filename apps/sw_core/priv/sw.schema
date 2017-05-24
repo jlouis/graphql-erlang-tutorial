@@ -1,4 +1,6 @@
+# tag::scalarDateTime[]
 scalar DateTime
+# end::scalarDateTime[]
 
 # tag::nodeInterface[]
 +description(text: "Relay Modern Node Interface")
@@ -138,8 +140,8 @@ type Species implements Node {
   filmConnection(after: String, first: Int,
                  before: String, last: Int)
     : SpeciesFilmConnection
-  created : String
-  edited : String
+  created : DateTime
+  edited : DateTime
   id : ID!
 }
 # end::speciesObject[]
@@ -178,8 +180,8 @@ type Person implements Node {
   skinColor : String
   homeworld : Planet
   species : Species
-  created : String
-  edited : String
+  created : DateTime
+  edited : DateTime
   id : ID!
 }
 

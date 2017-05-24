@@ -1,4 +1,4 @@
-[[scalar_resolution]]
+[[scalar-resolution]]
 
 == Scalar Resolution
 
@@ -49,32 +49,119 @@ representable by the transport and by the client.
 
 .Star Wars and Scalar values
 
-CAUTION: The current implementation of the Star Wars doesn't utilize
-this feature of GraphQL very much. So for now, our implementation here
-doesn't utilize the full feature set. A later update will solve this
-by providing an example.
+In the Star Wars schema, we have defined scalar *DateTime* which we
+use to coerce datetimes. If a client supplies a datetime, we will run
+that through the `iso8601` parsing library and obtain a
+`calendar:datetime()` tuple in Erlang. On output coercion, we will
+convert it back into ISO8601/RFC3339 representation. This demonstrates
+the common phenomenon in which an internal representation (tuples) are
+not realizable in the external representation--yet we can work around
+representation problems through coercion:
 
-TBD: Write about Scalar values as part of the specification.
-Dependency: mutations in the specification, because otherwise the
-input coercion parts are a bit moot.
+.Schema Definition (`sw.schema`)
+[source,erlang]
+----
+include::{sw_core}/priv/sw.schema[tags=scalarDateTime]
+----
 
+We have arranged that data loaded into Mnesia undergoes iso8601
+conversion by default such that the internal data are
+`calendar:datetime()` objects in Mnesia. When output-coercing these
+objects, the GraphQL system realizes they are of type *DateTime*. This
+calls into the scalar conversion code we have mapped into the Star
+Wars schema:
+
+.Coercion code (`sw_core_scalar.erl`)
 [source,erlang]
 ----
 include::{sw_core}/src/sw_core_scalar.erl[tags=scalarRepr]
 ----
 
-The implementation here just defaults scalar conversion to convert a
-string into a string, and doing no conversion on the scalar values at
-all. The function is provided for completeness, not because it is
-needed.
+A scalar coercion is a pair of two functions
 
-The possible return values are:
+input/2:: Called whenever an scalar value needs to be coerced from
+  _client_ to _server_. The valid responses are `{ok, Val} | {error,
+  Reason}`. The converted response is substituted into the query so
+  the rest of the code can work with converted vales only. If `{error,
+  Reason}` is returned, the query is failed. This can be used to
+  white-list certain inputs only and serves as a correctness/security
+  feature.
 
-* `{ok, Val}` where `Val` is a transformation of the scalar value,
-  perhaps to an internal representation.
-* `{ok, null}` which signifies that the value isn't an error, but
-  there is no meaningful value to give to this particular field.
-* `{error, Reason}` in which case the coercion fails with that error.
+output/2:: Called whenever an scalar value needs to coerced from
+  _server_ to _client_. The valid responses are `{ok, Val} | {error,
+  Reason}`. Conversion makes sure that a client only sees coerced
+  values. If an error is returned, the field is regarded as an error.
+  It will be replaced by a `null` and <<null-propagation>> will occur.
 
-NOTE: The notion of <<null-propagation>> holds for scalar values as
-well.
+In our scalar conversion pair, we handle *DateTime* by using the
+`iso8601` module to convert to/from ISO8601 representation. We also
+handle other manually defined scalar values by simply passing them
+through.
+
+NOTE: Built-in scalars such as Int, Float, String, Bool are handled by
+the system internally and does not currently undergo Scalar
+conversion. A special case exists for Int and Float. These are coerced
+between automatically if it is safe to do so.footnote:[Some people call
+this weak typing, but type promotion is probably a more apt term]
+
+=== Example
+
+Consider the following GraphQL query:
+
+[source,graphql]
+----
+query SpeciesQ {
+  node(id: "U3BlY2llczoxNQ==") {
+    id
+    ... on Species {
+      name
+      created
+    }
+  }
+}
+----
+
+which returns the following response:
+
+[source,json]
+----
+{
+  "data": {
+    "node": {
+      "created": "2014-12-20T09:48:02Z",
+      "id": "U3BlY2llczoxNQ==",
+      "name": "Twi'lek"
+    }
+  }
+}
+----
+
+The `id` given here can be decoded to `"Species:15"`. We can use the
+Erlang shell to read in that species:
+
+[source]
+----
+(sw@127.0.0.1)1> rr(sw_core_db). % <1>
+[film,person,planet,sequences,species,starship,transport,
+ vehicle]
+(sw@127.0.0.1)2> mnesia:dirty_read(species, 15).
+[#species{id = 15,
+          edited = {{2014,12,20},{21,36,42}},
+          created = {{2014,12,20},{9,48,2}}, <2>
+          classification = <<"mammals">>,name = <<"Twi'lek">>,
+          designation = undefined,
+          eye_colors = [<<"blue">>,<<"brown">>,<<"orange">>,
+                        <<"pink">>],
+          ...}]
+----          
+<1> Tell EShell where the records live so we can get better printing
+  in the shell.
+<2> Note the representation in the backend.
+
+When the field `created` is requested, the system will return it as
+`{{2014,12,20},{9,48,2}}` and because it has type *DateTime* it will
+undergo output coercion to the ISO8601 representation.
+
+How the field is requested and fetched out of the Mnesia database is
+described in the section <<object-resolution>>.
+

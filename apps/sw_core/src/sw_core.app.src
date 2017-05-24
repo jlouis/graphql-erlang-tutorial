@@ -8,6 +8,7 @@
     stdlib,
     mnesia,
 
+    iso8601,
     jsx,
     lager,
     graphql
