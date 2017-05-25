@@ -45,16 +45,6 @@ whole. Apart from being a small self-contained functional GraphQL
 project, it is also a small self-contained functional rebar3 project.
 So there's that.
 
-==== Suggestions
-
-Most of the source code in this tutorial refers inside the real source
-code. If a section doesn't make sense anymore because the underlying
-code has changed, please submit a bug report.
-
-Another kind of bug report we are interested in, are "`I tried doing
-this, but the result was not what I expected`". These often indicate
-an omission on our part which should have been included.
-
 === Prerequisites
 
 Some Erlang knowledge is expected for reading this guide. General
@@ -86,8 +76,9 @@ The official repository location is
 https://github.com/shopgun/graphql-erlang-tutorial
 
 If you have comments on the document or corrections, please open an
-https://github.com/shopgun/graphql-erlang-tutorial/issues[Issue] in the above repository on the thing that is missing. Also, feel
-free to provide pull requests against the code itself.
+https://github.com/shopgun/graphql-erlang-tutorial/issues[Issue] in
+the above repository on the thing that is missing. Also, feel free to
+provide pull requests against the code itself.
 
 Things we are particularly interested in:
 
@@ -103,7 +94,10 @@ Things we are particularly interested in:
   can "`infect`" code in the future. People copy from this repository,
   so if it contains bad style, then that bad style is copied into
   other repositories, infecting them with the same mistakes.
-
+* Stale documentation. Parts of the documentation which were relevant
+  in the past but isn't anymore. For instance ID entries which doesn't
+  work anymore.
+  
 === License
 
 Copyright (C) 2017 {shopgun}.
