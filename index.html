@@ -560,10 +560,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Erlang GraphQL Tutorial</p>
 </div>
 <div class="paragraph">
-<p>The guide here is a running example of the "Star Wars" API implemented
-in Erlang through the ShopGun GraphQL engine. The intent is to provide
-readers with enough information they can go build their own GraphQL
-servers in Erlang.</p>
+<p>The guide here is a running example of an API implemented in Erlang
+through the ShopGun GraphQL engine. The API is a frontend to a
+database, containing information about the Star Wars films by George
+Lucas. The intent is to provide readers with enough information they
+can go build their own GraphQL servers in Erlang.</p>
 </div>
 <div class="paragraph">
 <p>We use the GraphQL system at <a href="https://shopgun.com" class="bare">https://shopgun.com</a> as a data backend. We
@@ -655,19 +656,6 @@ whole. Apart from being a small self-contained functional GraphQL
 project, it is also a small self-contained functional rebar3 project.
 So there&#8217;s that.</p>
 </div>
-<div class="sect3">
-<h4 id="_suggestions">Suggestions</h4>
-<div class="paragraph">
-<p>Most of the source code in this tutorial refers inside the real source
-code. If a section doesn&#8217;t make sense anymore because the underlying
-code has changed, please submit a bug report.</p>
-</div>
-<div class="paragraph">
-<p>Another kind of bug report we are interested in, are &#8220;I tried doing
-this, but the result was not what I expected&#8221;. These often indicate
-an omission on our part which should have been included.</p>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_prerequisites">Prerequisites</h3>
@@ -719,8 +707,9 @@ chances are that GraphQL will too.</p>
 </div>
 <div class="paragraph">
 <p>If you have comments on the document or corrections, please open an
-<a href="https://github.com/shopgun/graphql-erlang-tutorial/issues">Issue</a> in the above repository on the thing that is missing. Also, feel
-free to provide pull requests against the code itself.</p>
+<a href="https://github.com/shopgun/graphql-erlang-tutorial/issues">Issue</a> in
+the above repository on the thing that is missing. Also, feel free to
+provide pull requests against the code itself.</p>
 </div>
 <div class="paragraph">
 <p>Things we are particularly interested in:</p>
@@ -748,6 +737,11 @@ then confuse the next reader.</p>
 can &#8220;infect&#8221; code in the future. People copy from this repository,
 so if it contains bad style, then that bad style is copied into
 other repositories, infecting them with the same mistakes.</p>
+</li>
+<li>
+<p>Stale documentation. Parts of the documentation which were relevant
+in the past but isn&#8217;t anymore. For instance ID entries which doesn&#8217;t
+work anymore.</p>
 </li>
 </ul>
 </div>
@@ -1213,9 +1207,38 @@ and how you achieve the above.</p>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This tutorial takes you through the creation of a GraphQL server
-implementing the now ubiquitous <em>Star Wars</em> schema. It is a complete
-implementation of the schema given as an example in order to make it
-clear how to implement a fully-fledged GraphQL server in Erlang.</p>
+implementing the now ubiquitous <em>Star Wars</em> API. This API was created
+a couple of years ago to showcase a REST interface describing good
+style for creation of APIs. The system revolves around a database
+containing information about the Star Wars universe: species, planets,
+starships, people and so on.</p>
+</div>
+<div class="paragraph">
+<p>GraphQL, when it was first released, ported the Star Wars system from
+REST to GraphQL in order to showcase how an API would look once
+translated. Because of its ubiquity, we have chosen to implement this
+schema in the tutorial you are now reading:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It is a small straightforward example. Yet it is large enough that
+it will cover most parts of GraphQL.</p>
+</li>
+<li>
+<p>If the reader is already familiar with the system in another GraphQL
+implemented, they can relate to the implementation which makes
+pickup of Erlang GraphQL faster.</p>
+</li>
+<li>
+<p>We can use a full system as a driving example for this tutorial.</p>
+</li>
+<li>
+<p>If Erlang GraphQL has a bug, it may be possible to showcase the bug
+through this repository. This makes it easier to work on since you
+have immediate common ground.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The goal of the tutorial is to provide a developer with a working
@@ -5043,7 +5066,7 @@ objects. Then demonstrate how this is used to coerce values.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-24 15:54:27 CEST
+Last updated 2017-05-25 14:41:19 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
