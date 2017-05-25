@@ -13,10 +13,11 @@ Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https
 
 {project} Tutorial
 
-The guide here is a running example of the "Star Wars" API implemented
-in Erlang through the ShopGun GraphQL engine. The intent is to provide
-readers with enough information they can go build their own GraphQL
-servers in Erlang.
+The guide here is a running example of an API implemented in Erlang
+through the ShopGun GraphQL engine. The API is a frontend to a
+database, containing information about the Star Wars films by George
+Lucas. The intent is to provide readers with enough information they
+can go build their own GraphQL servers in Erlang.
 
 We use the GraphQL system at https://shopgun.com as a data backend. We
 sponsor this tutorial as part of our Open Source efforts. We developed

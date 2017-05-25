@@ -3,9 +3,26 @@
 == Getting Started
 
 This tutorial takes you through the creation of a GraphQL server
-implementing the now ubiquitous _Star Wars_ schema. It is a complete
-implementation of the schema given as an example in order to make it
-clear how to implement a fully-fledged GraphQL server in Erlang.
+implementing the now ubiquitous _Star Wars_ API. This API was created
+a couple of years ago to showcase a REST interface describing good
+style for creation of APIs. The system revolves around a database
+containing information about the Star Wars universe: species, planets,
+starships, people and so on.
+
+GraphQL, when it was first released, ported the Star Wars system from
+REST to GraphQL in order to showcase how an API would look once
+translated. Because of its ubiquity, we have chosen to implement this
+schema in the tutorial you are now reading:
+
+* It is a small straightforward example. Yet it is large enough that
+  it will cover most parts of GraphQL.
+* If the reader is already familiar with the system in another GraphQL
+  implemented, they can relate to the implementation which makes
+  pickup of {project} faster.
+* We can use a full system as a driving example for this tutorial.
+* If {project} has a bug, it may be possible to showcase the bug
+  through this repository. This makes it easier to work on since you
+  have immediate common ground.
 
 The goal of the tutorial is to provide a developer with a working
 example from which you can start. Once completed, you can start adding
