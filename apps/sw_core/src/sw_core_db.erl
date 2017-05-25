@@ -297,7 +297,7 @@ json_to_film(
        director = Director,
        opening_crawl = OpeningCrawl,
        characters = Characters,
-       release_date = ReleaseDate
+       release_date = datetime(ReleaseDate)
       }.
   
 json_to_species(
