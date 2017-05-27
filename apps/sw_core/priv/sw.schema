@@ -105,7 +105,7 @@ type Film implements Node {
     : FilmSpeciesConnection
   starshipConnection(after: String, first: Int,
                      before: String, last: Int)
-    : FilmStarshipConnection
+    : StarshipConnection
   vehicleConnection(after: String, first: Int,
                     before: String, last: Int)
     : FilmVehicleConnection
@@ -200,8 +200,46 @@ type Query {
 }
 # end::queryObject[]
 
+type Faction {
+  id : ID!
+  name : String
+  ships: StarshipConnection
+}
+
 type Mutation {
-  dummy : Node
+  introduceFaction(input: IntroduceFactionInput!) : IntroduceFactionPayload
+  introduceShip(input: IntroduceShipInput!) : IntroduceShipPayload
+}
+
+## -- MUTATION OBJECTS ----------
+
+input IntroduceFactionInput {
+  clientMutationId : String
+  name : String!
+}
+
+type IntroduceFactionPayload {
+  clientMutationId : String
+  faction : Faction
+}
+
+input IntroduceShipInput {
+  clientMutationId : String
+
+  name : String
+  model : String
+  starshipClass : String!
+  manufacturers : [String] = []
+  costInCredits : Float!
+  length : Float!
+  crew : String!
+
+  faction : ID!
+}
+
+type IntroduceShipPayload {
+  clientMutationId : String
+  starship : Starship
 }
 
 ## -- CONNECTION OBJECTS --------
@@ -297,13 +335,13 @@ type VehicleFilmsEdge {
   cursor : String!
 }
 
-type FilmStarshipConnection {
+type StarshipConnection {
   pageInfo : PageInfo!
-  edges : [FilmStarshipEdge]
+  edges : [StarshipEdge]
   totalCount : Int
 }
 
-type FilmStarshipEdge {
+type StarshipEdge {
   node : Starship
   cursor : String!
 }
