@@ -40,6 +40,9 @@ mapping_rules() ->
          'Vehicle' => sw_core_vehicle,
          'Starship' => sw_core_starship,
          'Person' => sw_core_person,
+
+         'Faction' => sw_core_faction,
+
          'Query' => sw_core_query,
          'Mutation' => sw_core_mutation,
          default => sw_core_object }

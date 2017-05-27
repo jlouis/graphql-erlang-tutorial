@@ -11,6 +11,7 @@ execute(#species{}) -> {ok, 'Species'};
 execute(#starship{}) -> {ok, 'Starship'};
 execute(#transport{}) -> {ok, 'Transport'};
 execute(#vehicle{}) -> {ok, 'Vehicle'};
+execute(#faction{}) -> {ok, 'Faction'};
 execute(_Otherwise) -> {error, unknown_type}.
 %% end::resolveType[]
     

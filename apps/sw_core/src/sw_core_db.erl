@@ -1,7 +1,7 @@
 -module(sw_core_db).
 
 -include("sw_core_db.hrl").
--export([load/2]).
+-export([load/2, nextval/1]).
 -export([wait_for_tables/0]).
 
 -export([create_schema/0]).
@@ -13,11 +13,12 @@ record_of('Planet') -> planet;
 record_of('Species') -> species;
 record_of('Starship') -> starship;
 record_of('Transport') -> transport;
-record_of('Vehicle') -> vehicle.
+record_of('Vehicle') -> vehicle;
+record_of('Faction') -> faction.
 %% end::recordOf[]
 
 tables() ->
-    [starship, transport, film,
+    [starship, transport, film, faction,
      species, person, planet, vehicle].
 
 wait_for_tables() ->
@@ -118,6 +119,12 @@ create_tables() ->
            {attributes, record_info(fields, vehicle)}]),
     {atomic, ok} =
         mnesia:create_table(
+          faction,
+          [{disc_copies, [node()]},
+           {type, set},
+           {attributes, record_info(fields, faction)}]),
+    {atomic, ok} =
+        mnesia:create_table(
           sequences,
           [{disc_copies, [node()]},
            {type, set},
@@ -161,6 +168,9 @@ setup_sequences() ->
           end,
     {atomic, ok} = mnesia:transaction(Txn),
     ok.
+
+nextval(Key) ->
+    mnesia:dirty_update_counter(sequences, Key, 1).
 
 populate_starships(Terms) ->
     Starships = [json_to_starship(T) || T <- Terms],
