@@ -1,5 +1,10 @@
 %% Database Schema definition files
 
+%% tag::factionRecord[]
+-record(faction,
+        {id :: integer(),
+         name :: integer()}).
+
 %% tag::starshipRecord[]
 -record(starship,
         {id :: integer(),
@@ -24,7 +29,8 @@
          model :: binary(),
          cost :: float(),
          max_atmosphering_speed :: integer(),
-         manufacturers :: [binary()]
+         manufacturers :: [binary()],
+         faction = undefined :: undefined | integer()
 }).
 %% end::transportRecord[]
 
