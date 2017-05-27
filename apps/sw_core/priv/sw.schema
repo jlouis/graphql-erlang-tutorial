@@ -207,8 +207,10 @@ type Faction {
 }
 
 type Mutation {
-  introduceFaction(input: IntroduceFactionInput!) : IntroduceFactionPayload
-  introduceShip(input: IntroduceShipInput!) : IntroduceShipPayload
+  introduceFaction(input: IntroduceFactionInput!)
+    : IntroduceFactionPayload
+  introduceStarship(input: IntroduceStarshipInput!)
+    : IntroduceStarshipPayload
 }
 
 ## -- MUTATION OBJECTS ----------
@@ -223,7 +225,7 @@ type IntroduceFactionPayload {
   faction : Faction
 }
 
-input IntroduceShipInput {
+input IntroduceStarshipInput {
   clientMutationId : String
 
   name : String
@@ -237,8 +239,9 @@ input IntroduceShipInput {
   faction : ID!
 }
 
-type IntroduceShipPayload {
+type IntroduceStarshipPayload {
   clientMutationId : String
+  faction : Faction
   starship : Starship
 }
 
