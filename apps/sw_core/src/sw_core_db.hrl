@@ -4,6 +4,7 @@
 -record(faction,
         {id :: integer(),
          name :: integer()}).
+%% end::factionRecord[]
 
 %% tag::starshipRecord[]
 -record(starship,
