@@ -229,19 +229,21 @@ type IntroduceFactionPayload {
   faction : Faction
 }
 
+# tag::introduceStarshipInput[]
 input IntroduceStarshipInput {
   clientMutationId : String
 
   name : String
   model : String
   starshipClass : String!
-  manufacturers : [String] = []
+  manufacturers : [String] = [] # <1>
   costInCredits : Float!
   length : Float!
   crew : String!
 
   faction : ID!
 }
+# end::introduceStarshipInput[]
 
 # tag::introduceStarshipPayload[]
 type IntroduceStarshipPayload {

@@ -56,7 +56,7 @@ include::{sw_core}/src/sw_core_id.erl[tags=idDecode]
 
 === The Node Interface
 
-The Relay Modern specification contains a number of standards for how
+The {relay} specification contains a number of standards for how
 to implement different parts of the GraphQL schema. One such standard
 is the *Node* interface. This interface allows you to "`start from`"
 any node in the graph which has an _id_ field. That is, every node
@@ -251,13 +251,106 @@ mutation IF($input : IntroduceStarshipInput!) {
 }
 ----
 
-It is very common to get "`cross-talk`" updates like this in GraphQL
+It is typical use to get "`cross-talk`" updates like this in GraphQL
 when you refresh objects in the cache, or when you change the data
 through a mutation. 
 
+The mutations given here follow the conventions Facebook has defined
+for {relay} and a further treatment is given in the section
+<<inputs-and-payloads>>.
+
 === Input objects
 
-TBD
+The type system of GraphQL is "`moded`" as in Prolog/Twelf/Mercury or
+is "`polarized`" in the sense of type systems and semantics. Some data
+has "`positive`" mode/polarity and flows from the client to the
+server. Some data has "`negative`" mode/polarity and flows from the
+server to the client. Finally, some data are unmoded and can flow in
+either direction.
+
+GraphQL distinguishes between _input_ and _output_ types. An input is
+positive and an output is negative. While at first, this might seem
+like a redundant and bad idea, our experience is that it helps a lot
+once your system starts to grow.
+
+In GraphQL, the way you should think about Mutations are that they are
+"`stored procedures`" in the backend you can execute. You don't in
+general get access to a command which says "`PUT this object back`".
+Rather, you get access to a mutation which alters the object in some
+predetermined way: `favoriteStarship(starshipId: ID!)` for instance.
+
+Because of this, GraphQL is built to discriminate between what types
+of data the client can send and what types of data the server can
+respond with.
+
+Input and output objects are subject to different rules. In
+particular, there is no way to input a `null` value in an input. They
+way a client inputs a _no value_ input is by omission of the input
+parameter in question. This choice simplifies clients and servers.
+
+There are times where the client wants to input a number of values at
+the same time. You could add more parameters to the field:
+
+[source,graphql]
+----
+type Mutation {
+    introduceStarship(name: String,
+                      class: String,
+                      manufacturers: [String], ....)
+       : IntroduceStarshipPayload
+}
+----
+
+but this often gets unwieldy in the longer run. Rather than this, you
+can also solve the problem by creating an _input object_ which only
+works in the input direction:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=introduceStarshipInput]
+----
+<1> Default parameter value
+
+In turn, the client can now input all these values as one. Grouping of
+like parameters are quite common in GraphQL schemas. Note how input
+object fields are often vastly different from the output object it
+corresponds to. This is the reason why having two worlds--input &
+output--is  useful.
+
+NOTE: The input object presented here doesn't contain a full starship
+input. In a full solution, you would provide means to add in pilots,
+films, hyperdrive ratings and so on.
+
+It is possible to define default parameters in the schema as well, as
+seen in the above example. This is highly useful as a way to simplify
+the backend of the system. By providing sensible defaults, you can
+often avoid a specialized code path which accounts for an unknown
+value. It also simplifies the client as it doesn't have to input all
+values unless it wants to make changes from the defaults. Finally it
+documents, to the client, what the defaults are.
+
+==== clientMutationId
+
+By now, you have seen that an input object has a `clientMutationId`
+and the corresponding payload also has a `clientMutationId`. This is
+part of {relay} conventions.
+
+Every *...Input* object in a mutation contains a field `clientMutationId`
+which is an optional string. The server reflects the contents of
+`clientMutationId` back to the client in its *...Payload* response. It
+is used by clients to determine what request a given response pertains
+to. The client can generate a UUID say, and send it round-trip to the
+server. It can then store a reference to the UUID internally. Once the
+response arrives, it can use the `clientMutationId` as a correlation
+system and link up which request generated said response.
+
+The solution allows out-of-order processing of multiple mutations at
+the same time by the client. In an environment where you have no true
+parallelism and have to simulate concurrency through a continuation
+passing style, it tends to be useful.
+
+We will later on see how to implement a "`middleware`" which handles
+the mutation IDs globally in the system once and for all.
 
 [[interfaces-and-unions]]
 === Interfaces & Unions

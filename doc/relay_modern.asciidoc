@@ -1,6 +1,6 @@
 == Relay Modern
 
-Facebook's use of GraphQL adds a layer on top through the Relay Modern
+Facebook's use of GraphQL adds a layer on top through the {relay}
 framework. This layer adds some standards on top of the GraphQL system
 such that it has uniform ways of handling problems. The interaction
 with GraphQL is defined through specifications for each part.
@@ -10,7 +10,7 @@ one will achieve those standard pieces.
 
 === Node Interface
 
-Relay Modern defines an object identification specification together
+{relay} defines an object identification specification together
 with a interface *Node* used to retrieve objects which are cached on
 the client side. The specification 
 https://facebook.github.io/relay/graphql/objectidentification.htm
@@ -28,7 +28,7 @@ through this tutorial doesn't have a place where that gets used. Node
 plurality is the idea that if you load objects by a list, the return
 value retains the order in the list.]
 
-
+[[inputs-and-payloads]]
 === Inputs & Payloads
 
 TBD
@@ -36,7 +36,7 @@ TBD
 [[pagination]]
 === Pagination
 
-The Relay Modern pagination specification
+The {relay} pagination specification
 (https://facebook.github.io/relay/graphql/connections.htm) defines how
 pagination connections and cursors are supposed to work. We have a
 simple implementation of these ideas in Erlang in this tutorial.
@@ -53,7 +53,7 @@ column. [Oracle and MS SQL Server use different notions, but can
 achieve the same thing] Some systems provide cursors which can be 
 sent with a follow-up query. And so on.
 
-In the Relay Modern specification, the cursor is a _server side_
+In the {relay} specification, the cursor is a _server side_
 controlled piece of data. A client is not allowed to manipulate it.
 This allows the server to use the same pagination scheme for many
 different types of data stores. And this provides a large amount of

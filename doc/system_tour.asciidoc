@@ -78,7 +78,7 @@ image::graphiql.png[GraphiQL]
 === First query
 
 The first query we will run requests a given *Planet* from the system.
-In accordance with the rules of Relay Modern GraphQL conventions, we
+In accordance with the rules of {relay} GraphQL conventions, we
 will load this *Planet* via the _Object Identification_ conventions:
 
 [source,graphql]

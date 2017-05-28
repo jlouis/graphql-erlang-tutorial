@@ -418,7 +418,7 @@ the window only, which is far more efficient. Real implementations
 often bake the pagination into the data fetching in order to achieve
 this.
 
-The pagination here follows the Relay Modern specification for
+The pagination here follows the {relay} specification for
 pagination and is described in the section <<pagination>>.
 
 === Default Mapping
