@@ -203,7 +203,9 @@ type Query {
 type Faction {
   id : ID!
   name : String
-  ships: StarshipConnection
+  ships(first: Int, after: String,
+        last: Int, before: String)
+    : StarshipConnection
 }
 
 type Mutation {
