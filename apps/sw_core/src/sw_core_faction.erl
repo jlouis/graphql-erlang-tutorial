@@ -24,7 +24,7 @@ execute(_Ctx, #faction { id = ID,
                                      S#starship.id == T#transport.id]),
                           qlc:e(QH)
                   end,
-            {atomic, Records} = mnesia:transcation(Txn),
+            {atomic, Records} = mnesia:transaction(Txn),
             sw_core_paginate:select(Records, Args)
     end.
 
@@ -34,7 +34,7 @@ introduce(_Ctx, #{ <<"name">> := Name }) ->
     Txn = fun() ->
                   mnesia:write(Faction)
           end,
-    case mensia:transaction(Txn) of
+    case mnesia:transaction(Txn) of
         {atomic, ok} ->
             {ok, Faction}
     end.
