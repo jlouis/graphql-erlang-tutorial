@@ -121,6 +121,7 @@ include::{sw_core}/priv/sw.schema[tags=planetObject]
 [[queries-and-mutations]]
 === Queries & Mutations
 
+[[query-object]]
 ==== Query Object
 
 All GraphQL queries are either a _query_ or a _mutation_.footnote:[The
@@ -135,9 +136,9 @@ respectively. For example, the query object looks like:
 include::{sw_core}/priv/sw.schema[tags=queryObject]
 ----
 
-The Query object defines the (public) API of your backend. All queries
-will start from here, and the specification defines what you can do
-with the given query.
+The Query object defines the (public) query/read API of your backend.
+All queries will start from here, and the specification defines what
+you can do with the given query.
 
 NOTE: The introspection capabilities of GraphQL will have the astute
 reader recognize that this predefined rule of what you can do with a
@@ -173,9 +174,86 @@ sets. In practice you would use pagination or use a search engine to
 return such results. Specifically, you would never return all possible
 values, but only a subset thereof.
 
+[[mutation-object]]
 ==== Mutation Object
 
-TBD
+The *Query* object concerns itself about reading data. The *Mutation*
+object is for altering data. In a <<cqrs>> understanding, the
+*Mutation* object is the _command_.
+
+GraphQL treats mutations the same way as queries except for one subtle
+detail: queries may be executed in parallel on the server side whereas
+a mutation may not. Otherwise, a mutation works exactly like a query.
+
+Because queries and mutations are the same for the GraphQL engine, we
+need to build up conventions in the mutation path in order to make
+things work out. First, since mutations starts off from the *Mutation*
+object, we can add fields to that object which isn't present in the
+Graph otherwise. This allows us to execute transactions at the server
+side for changes.
+
+Each transaction becomes a field on the *Mutation* object. And the
+result type of the given field is the return value of the mutation.
+This return type, often called the _payload_ contains other objects in
+the graph. It allows a client to run a mutation on the server side and
+then query on the data it just changed. This corresponds to the
+situtation in RESTful models where a POST provides a `location:`
+response header containing the URI of the newly created object. But as
+we want to avoid a roundtrip, we "`bake`" the query into the mutation
+in GraphQL.
+
+.sw.schema
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=mutationObject]
+----
+
+Our mutation object grants a client access to a number of commands it
+can execute. First, it can create new factions by means of the
+`introduceFaction` field on the object. It can also create a new
+*Starship* through the `introduceStarship` field.
+
+Both fields take a single parameter, `input` of a given type (which we
+will explain later). It provides data relevant to the given mutation. The
+return value is a regular output type in the graph, for instance
+*IntroduceStarshipPayload*:
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=introduceStarshipPayload]
+----
+
+It is common that a payload-style object returns every object which
+was manipulated as part of the update. In this case, since starship
+introduction creates a new starship and refers to a faction, we return
+the fields `starship` and `faction`. It allows a client to execute
+queries pertaining to the current situation. Suppose for example we
+add a new starship to a faction. We'd like the starship count of that
+faction. This is easy due to the payload object. Factions have a
+*StarshipConnection*, so we can just utilize that to get the count:
+
+[source,graphql]
+----
+mutation IF($input : IntroduceStarshipInput!) {
+  introduceStarship(input: $input) {
+    starship {
+      id
+      name
+    }
+    faction {
+      id
+      name
+      ships {
+        totalCount
+      }
+    }
+  }
+}
+----
+
+It is very common to get "`cross-talk`" updates like this in GraphQL
+when you refresh objects in the cache, or when you change the data
+through a mutation. 
 
 === Input objects
 

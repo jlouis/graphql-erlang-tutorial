@@ -208,12 +208,14 @@ type Faction {
     : StarshipConnection
 }
 
+# tag::mutationObject[]
 type Mutation {
   introduceFaction(input: IntroduceFactionInput!)
     : IntroduceFactionPayload
   introduceStarship(input: IntroduceStarshipInput!)
     : IntroduceStarshipPayload
 }
+# end::mutationObject[]
 
 ## -- MUTATION OBJECTS ----------
 
@@ -241,11 +243,13 @@ input IntroduceStarshipInput {
   faction : ID!
 }
 
+# tag::introduceStarshipPayload[]
 type IntroduceStarshipPayload {
   clientMutationId : String
   faction : Faction
   starship : Starship
 }
+# end::introduceStarshipPayload[]
 
 ## -- CONNECTION OBJECTS --------
 ##
