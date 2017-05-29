@@ -449,7 +449,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_first_query">First query</a></li>
 <li><a href="#_more_advanced_queries">More advanced queries</a></li>
-<li><a href="#_mutations">Mutations</a></li>
+<li><a href="#_simple_mutations">Simple Mutations</a></li>
+<li><a href="#_more_complex_mutations">More complex mutations</a></li>
 <li><a href="#_this_tutorial">This tutorial</a></li>
 </ul>
 </li>
@@ -475,7 +476,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#queries-and-mutations">Queries &amp; Mutations</a></li>
 <li><a href="#_input_objects">Input objects</a></li>
 <li><a href="#interfaces-and-unions">Interfaces &amp; Unions</a></li>
-<li><a href="#_schema_default_values">Schema default values</a></li>
+<li><a href="#schema-default-values">Schema default values</a></li>
 </ul>
 </li>
 <li><a href="#_loading_the_schema">Loading the Schema</a>
@@ -500,6 +501,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#walking-in-the-graph">Walking in the Graph</a></li>
 <li><a href="#_default_mapping">Default Mapping</a></li>
 <li><a href="#resolving-lists">Resolving lists</a></li>
+<li><a href="#resolution-of-mutations">Mutations</a></li>
+<li><a href="#_mutation_examples">Mutation Examples</a></li>
 <li><a href="#_anatomy_of_a_query">Anatomy of a query</a></li>
 </ul>
 </li>
@@ -513,15 +516,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_relay_modern">Relay Modern</a>
 <ul class="sectlevel2">
 <li><a href="#_node_interface">Node Interface</a></li>
-<li><a href="#_inputs_payloads">Inputs &amp; Payloads</a></li>
+<li><a href="#inputs-and-payloads">Inputs &amp; Payloads</a></li>
 <li><a href="#pagination">Pagination</a></li>
 </ul>
 </li>
 <li><a href="#_security">Security</a>
 <ul class="sectlevel2">
 <li><a href="#_limiting_clients_stored_procedures">Limiting Clients&#8212;&#8203;Stored Procedures</a></li>
-<li><a href="#_authentication">Authentication</a></li>
-<li><a href="#_authorization">Authorization</a></li>
+<li><a href="#authentication">Authentication</a></li>
+<li><a href="#authorization">Authorization</a></li>
 </ul>
 </li>
 <li><a href="#annotations">Annotations</a></li>
@@ -529,7 +532,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#object-representation">Object Representation</a></li>
 <li><a href="#non-isomorphism">Avoid Isomorphic representations</a></li>
-<li><a href="#_middleware_stacks">Middleware stacks</a></li>
+<li><a href="#middleware-stacks">Middleware stacks</a></li>
 <li><a href="#_data_loader">Data Loader</a></li>
 <li><a href="#_fragments">Fragments</a></li>
 </ul>
@@ -539,6 +542,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#null-propagation">Null Propagation</a></li>
 <li><a href="#HATEOAS">Hypertext as the engine of application state</a></li>
 <li><a href="#context">Context</a></li>
+<li><a href="#cqrs">CQRS</a></li>
 <li><a href="#cursor">Cursor</a></li>
 </ul>
 </li>
@@ -1186,7 +1190,137 @@ capability of GraphQL. The result follows the structure of the query:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mutations">Mutations</h3>
+<h3 id="_simple_mutations">Simple Mutations</h3>
+<div class="paragraph">
+<p>Now, let us focus on altering the database through a <em>mutation</em>. In
+GraphQL, this is the way a client runs &#8220;stored procedures&#8221; on the
+Server side. The Star Wars example has tooling for factions in the
+Star Wars universe, but there are currently no factions defined. Let
+us amend that by introducing the rebels:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">mutation IntroduceRebels($input: IntroduceFactionInput!) {
+  introduceFaction(input: $input) {
+    clientMutationId
+    faction {
+      id
+      name
+      ships {
+        totalCount
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This query uses the GraphQL feature of input variables. In the UI, you
+can click and expand the section <em>Query Variables</em> under the query
+pane. This allows us to build a generic query like the one above and
+then repurpose it for creating any faction by providing the input
+variables for the query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-json" data-lang="json">{
+  "input": {
+    "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", <i class="conum" data-value="1"></i><b>(1)</b>
+    "name": "Rebels"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This is chosen arbitrarily by the client and can be any string.
+Here we use an UUID.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The server, when you execute this query, will respond with the
+creation of a new <strong>Faction</strong> and return its id, name and starships:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-json" data-lang="json">{
+  "data": {
+    "introduceFaction": {
+      "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", <i class="conum" data-value="1"></i><b>(1)</b>
+      "faction": {
+        "id": "RmFjdGlvbjoxMDAy", <i class="conum" data-value="2"></i><b>(2)</b>
+        "name": "Rebels",
+        "ships": {
+          "totalCount": 0 <i class="conum" data-value="3"></i><b>(3)</b>
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The server reflects back the unique client-generated Id for
+correlation purposes.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The Id migth be different depending on how many <strong>Faction</strong> objects
+you created.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>We have yet to assign any starships to the faction, so the count
+is currently 0.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We can now query this faction by its Id because it was added to the
+system:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query FactionQuery {
+  node(id: "RmFjdGlvbjoxMDAy") {
+     ... on Faction {
+       id
+       name
+     }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The system also persisted the newly created faction in its database so
+restarting the system keeps the added faction.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Use <code>q()</code> in the shell to close the system gracefully.
+Otherwise you may be in a situation where a change isn&#8217;t reflected on
+disk. The system will still load a consistent view of the database,
+but it will be from before the transaction were run. The Mnesia system
+used is usually quick at adding data to its WAL, but there is no
+guarantee.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_more_complex_mutations">More complex mutations</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
@@ -1380,15 +1514,7 @@ the perspective of the client, the starting points in the graph is
 either the <em>query</em> or the <em>mutation</em> object.</p>
 </div>
 <div class="paragraph">
-<p>CQRS stands for Command-Query Responsibility Separation. The idea stems
-from the observation that querying data often have a different feel
-than commanding the system to do changes. So rather than trying to
-solve both in one interface, you slice the system such that you have a
-query-part which pertains only to querying data, and a command-part
-which pertains to mutating data.</p>
-</div>
-<div class="paragraph">
-<p>GraphQL implements what is essentially CQRS by making a distinction
+<p>GraphQL implements what is essentially <a href="#cqrs">CQRS</a> by making a distinction
 between the notion of a <em>query</em> and a <em>mutation</em>. Likewise, the server
 side makes this distinction. But on the server side it is merely
 implemented by having different starting objects in the graph
@@ -1890,7 +2016,7 @@ documentation on each field to a fine detail.</p>
 <div class="sect2">
 <h3 id="queries-and-mutations">Queries &amp; Mutations</h3>
 <div class="sect3">
-<h4 id="_query_object">Query Object</h4>
+<h4 id="query-object">Query Object</h4>
 <div class="paragraph">
 <p>All GraphQL queries are either a <em>query</em> or a <em>mutation</em>.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</sup>
 Correspondingly, the schema specification contains entries for two
@@ -1914,9 +2040,9 @@ respectively. For example, the query object looks like:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The Query object defines the (public) API of your backend. All queries
-will start from here, and the specification defines what you can do
-with the given query.</p>
+<p>The Query object defines the (public) query/read API of your backend.
+All queries will start from here, and the specification defines what
+you can do with the given query.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1966,16 +2092,244 @@ values, but only a subset thereof.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_mutation_object">Mutation Object</h4>
+<h4 id="mutation-object">Mutation Object</h4>
 <div class="paragraph">
-<p>TBD</p>
+<p>The <strong>Query</strong> object concerns itself about reading data. The <strong>Mutation</strong>
+object is for altering data. In a <a href="#cqrs">CQRS</a> understanding, the
+<strong>Mutation</strong> object is the <em>command</em>.</p>
+</div>
+<div class="paragraph">
+<p>GraphQL treats mutations the same way as queries except for one subtle
+detail: queries may be executed in parallel on the server side whereas
+a mutation may not. Otherwise, a mutation works exactly like a query.</p>
+</div>
+<div class="paragraph">
+<p>Because queries and mutations are the same for the GraphQL engine, we
+need to build up conventions in the mutation path in order to make
+things work out. First, since mutations starts off from the <strong>Mutation</strong>
+object, we can add fields to that object which isn&#8217;t present in the
+Graph otherwise. This allows us to execute transactions at the server
+side for changes.</p>
+</div>
+<div class="paragraph">
+<p>Each transaction becomes a field on the <strong>Mutation</strong> object. And the
+result type of the given field is the return value of the mutation.
+This return type, often called the <em>payload</em> contains other objects in
+the graph. It allows a client to run a mutation on the server side and
+then query on the data it just changed. This corresponds to the
+situtation in RESTful models where a POST provides a <code>location:</code>
+response header containing the URI of the newly created object. But as
+we want to avoid a roundtrip, we &#8220;bake&#8221; the query into the mutation
+in GraphQL.</p>
+</div>
+<div class="listingblock">
+<div class="title">sw.schema</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">type Mutation {
+  introduceFaction(input: IntroduceFactionInput!)
+    : IntroduceFactionPayload
+  introduceStarship(input: IntroduceStarshipInput!)
+    : IntroduceStarshipPayload
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Our mutation object grants a client access to a number of commands it
+can execute. First, it can create new factions by means of the
+<code>introduceFaction</code> field on the object. It can also create a new
+<strong>Starship</strong> through the <code>introduceStarship</code> field.</p>
+</div>
+<div class="paragraph">
+<p>Both fields take a single parameter, <code>input</code> of a given type (which we
+will explain later). It provides data relevant to the given mutation. The
+return value is a regular output type in the graph, for instance
+<strong>IntroduceStarshipPayload</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">type IntroduceStarshipPayload {
+  clientMutationId : String
+  faction : Faction
+  starship : Starship
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is common that a payload-style object returns every object which
+was manipulated as part of the update. In this case, since starship
+introduction creates a new starship and refers to a faction, we return
+the fields <code>starship</code> and <code>faction</code>. It allows a client to execute
+queries pertaining to the current situation. Suppose for example we
+add a new starship to a faction. We&#8217;d like the starship count of that
+faction. This is easy due to the payload object. Factions have a
+<strong>StarshipConnection</strong>, so we can just utilize that to get the count:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">mutation IF($input : IntroduceStarshipInput!) {
+  introduceStarship(input: $input) {
+    starship {
+      id
+      name
+    }
+    faction {
+      id
+      name
+      ships {
+        totalCount
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is typical use to get &#8220;cross-talk&#8221; updates like this in GraphQL
+when you refresh objects in the cache, or when you change the data
+through a mutation.</p>
+</div>
+<div class="paragraph">
+<p>The mutations given here follow the conventions Facebook has defined
+for Relay Modern and a further treatment is given in the section
+<a href="#inputs-and-payloads">Inputs &amp; Payloads</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_input_objects">Input objects</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>The type system of GraphQL is &#8220;moded&#8221; as in Prolog/Twelf/Mercury or
+is &#8220;polarized&#8221; in the sense of type systems and semantics. Some data
+has &#8220;positive&#8221; mode/polarity and flows from the client to the
+server. Some data has &#8220;negative&#8221; mode/polarity and flows from the
+server to the client. Finally, some data are unmoded and can flow in
+either direction.</p>
+</div>
+<div class="paragraph">
+<p>GraphQL distinguishes between <em>input</em> and <em>output</em> types. An input is
+positive and an output is negative. While at first, this might seem
+like a redundant and bad idea, our experience is that it helps a lot
+once your system starts to grow.</p>
+</div>
+<div class="paragraph">
+<p>In GraphQL, the way you should think about Mutations are that they are
+&#8220;stored procedures&#8221; in the backend you can execute. You don&#8217;t in
+general get access to a command which says &#8220;PUT this object back&#8221;.
+Rather, you get access to a mutation which alters the object in some
+predetermined way: <code>favoriteStarship(starshipId: ID!)</code> for instance.</p>
+</div>
+<div class="paragraph">
+<p>Because of this, GraphQL is built to discriminate between what types
+of data the client can send and what types of data the server can
+respond with.</p>
+</div>
+<div class="paragraph">
+<p>Input and output objects are subject to different rules. In
+particular, there is no way to input a <code>null</code> value in an input. They
+way a client inputs a <em>no value</em> input is by omission of the input
+parameter in question. This choice simplifies clients and servers.</p>
+</div>
+<div class="paragraph">
+<p>There are times where the client wants to input a number of values at
+the same time. You could add more parameters to the field:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">type Mutation {
+    introduceStarship(name: String,
+                      class: String,
+                      manufacturers: [String], ....)
+       : IntroduceStarshipPayload
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>but this often gets unwieldy in the longer run. Rather than this, you
+can also solve the problem by creating an <em>input object</em> which only
+works in the input direction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">input IntroduceStarshipInput {
+  clientMutationId : String
+
+  name : String
+  model : String
+  starshipClass : String!
+  manufacturers : [String] = [] <i class="conum" data-value="1"></i><b>(1)</b>
+  costInCredits : Float!
+  length : Float!
+  crew : String!
+
+  faction : ID!
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Default parameter value, see <a href="#schema-default-values">Schema default values</a>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In turn, the client can now input all these values as one. Grouping of
+like parameters are quite common in GraphQL schemas. Note how input
+object fields are often vastly different from the output object it
+corresponds to. This is the reason why having two worlds&#8212;&#8203;input &amp;
+output&#8212;&#8203;is  useful.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The input object presented here doesn&#8217;t contain a full starship
+input. In a full solution, you would provide means to add in pilots,
+films, hyperdrive ratings and so on.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is possible to define default parameters in the schema as well, as
+seen in the above example. This is highly useful as a way to simplify
+the backend of the system. By providing sensible defaults, you can
+often avoid a specialized code path which accounts for an unknown
+value. It also simplifies the client as it doesn&#8217;t have to input all
+values unless it wants to make changes from the defaults. Finally it
+documents, to the client, what the defaults are.</p>
+</div>
+<div class="sect3">
+<h4 id="_clientmutationid">clientMutationId</h4>
+<div class="paragraph">
+<p>By now, you have seen that an input object has a <code>clientMutationId</code>
+and the corresponding payload also has a <code>clientMutationId</code>. This is
+part of Relay Modern conventions.</p>
+</div>
+<div class="paragraph">
+<p>Every <strong>&#8230;&#8203;Input</strong> object in a mutation contains a field <code>clientMutationId</code>
+which is an optional string. The server reflects the contents of
+<code>clientMutationId</code> back to the client in its <strong>&#8230;&#8203;Payload</strong> response. It
+is used by clients to determine what request a given response pertains
+to. The client can generate a UUID say, and send it round-trip to the
+server. It can then store a reference to the UUID internally. Once the
+response arrives, it can use the <code>clientMutationId</code> as a correlation
+system and link up which request generated said response.</p>
+</div>
+<div class="paragraph">
+<p>The solution allows out-of-order processing of multiple mutations at
+the same time by the client. In an environment where you have no true
+parallelism and have to simulate concurrency through a continuation
+passing style, it tends to be useful.</p>
+</div>
+<div class="paragraph">
+<p>We will later on see how to implement a &#8220;middleware&#8221; which handles
+the mutation IDs globally in the system once and for all.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2077,9 +2431,35 @@ down, the system can figure out when you make this error.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_schema_default_values">Schema default values</h3>
+<h3 id="schema-default-values">Schema default values</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>In the schema, it is possible to enter default values: <code>field : Type =
+Default</code>. We already saw an example of this in the section on inputs
+for introducing starships.</p>
+</div>
+<div class="paragraph">
+<p>Defaults can be supplied on input types in general. So input objects
+and field arguments can take default values. When a client is omitting
+a field or a parameter, it is substituted according to GraphQL rules
+for its input default.</p>
+</div>
+<div class="paragraph">
+<p>This is highly useful because you can often avoid code paths which
+fork in your code. Omission of an array of strings, say, can be
+substituted with the default <code>[]</code> which is better than <code>null</code> in
+Erlang code in many cases. Default counters can be initialized to some
+zero-value and so on. Furthermore, in the schema a default will be
+documented explicitly. So a client knows what the default value is and
+what is expected. We advise programmers to utilize schema defaults
+whenever possible to make the system easier to work with on the client
+and server side.</p>
+</div>
+<div class="paragraph">
+<p>Schema defaults must be type-valid for the type they have. You can&#8217;t
+default a string value in for an integer type for instance. Also, the
+rule is that <em>non-null</em> yields to default values. If a default value
+is given, it is as if that variable is always given (See the GraphQL
+specification on coercion of variable values).</p>
 </div>
 </div>
 </div>
@@ -2210,6 +2590,9 @@ handling that particular schema type.</p>
          'Vehicle' =&gt; sw_core_vehicle,
          'Starship' =&gt; sw_core_starship,
          'Person' =&gt; sw_core_person,
+
+         'Faction' =&gt; sw_core_faction,
+
          'Query' =&gt; sw_core_query,
          'Mutation' =&gt; sw_core_mutation,
          default =&gt; sw_core_object }
@@ -2597,6 +2980,7 @@ execute(#species{}) -&gt; {ok, 'Species'};
 execute(#starship{}) -&gt; {ok, 'Starship'};
 execute(#transport{}) -&gt; {ok, 'Transport'};
 execute(#vehicle{}) -&gt; {ok, 'Vehicle'};
+execute(#faction{}) -&gt; {ok, 'Faction'};
 execute(_Otherwise) -&gt; {error, unknown_type}.</code></pre>
 </div>
 </div>
@@ -3138,7 +3522,8 @@ record_of('Planet') -&gt; planet;
 record_of('Species') -&gt; species;
 record_of('Starship') -&gt; starship;
 record_of('Transport') -&gt; transport;
-record_of('Vehicle') -&gt; vehicle.</code></pre>
+record_of('Vehicle') -&gt; vehicle;
+record_of('Faction') -&gt; faction.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3406,6 +3791,171 @@ advantage of additional flexibility. You can now discriminate between
 <code>{error, Reason}</code>--there is a problem which isn&#8217;t handled
 appropriately.</p>
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="resolution-of-mutations">Mutations</h3>
+<div class="paragraph">
+<p>Object resolution of mutations works the same way as object resolution
+for every other kind of type in the graph. When the <strong>Mutation</strong> object
+is request in a mutation, the field resovler will run and call an
+<code>execute/4</code> function for the mutation. In our example, our mutation
+code looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(Ctx, _, Field, #{ &lt;&lt;"input"&gt;&gt; := Input}) -&gt;
+    with_client_mutation(Ctx, Field, Input).
+
+with_client_mutation(Ctx, Field, Input) -&gt;
+    {CM, Rest} = maps:take(&lt;&lt;"clientMutationId"&gt;&gt;, Input),
+    case execute_mutation(Ctx, Field, Rest) of
+        {ok, Payload} -&gt;
+            {ok, Payload#{ &lt;&lt;"clientMutationId"&gt;&gt; =&gt; CM }};
+        {error, Reason} -&gt;
+            {error, Reason}
+    end.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We write a generic mutation path. First we unwrap the <code>input</code> argument
+and then dispatch to a function which handles the <code>clientMutationId</code>
+entries inside the input. It then calls the actual mutation code in
+<code>execute_mutation</code> and builds up an appropriate result containing
+<code>clientMutationId</code> inside the payload.</p>
+</div>
+<div class="paragraph">
+<p>The reason we do this is due to Relay Modern and its conventions for
+mutations (see <a href="#inputs-and-payloads">Inputs &amp; Payloads</a>). Because every mutation
+contains a mutation id, we can just handle all of them in one go and
+then dispatch later on. While here, we also make the input data
+cleaner so it is easier for the <code>execute_mutation</code> call to work.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The solution presented here is the beginning of a middleware
+stack. See <a href="#middleware-stacks">Middleware stacks</a> for further explanation.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The execution function simply forwards to the target module and then
+packs the result in a map so it satisfies the <strong>&#8230;&#8203;Payload</strong> objects.
+the idea being that we are then returning something of the correct
+type according to the conventions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute_mutation(Ctx, &lt;&lt;"introduceFaction"&gt;&gt;, Input) -&gt;
+    {ok, Faction} = sw_core_faction:introduce(Ctx, Input),
+    {ok, #{ &lt;&lt;"faction"&gt;&gt; =&gt; Faction }};
+execute_mutation(Ctx, &lt;&lt;"introduceStarship"&gt;&gt;, Input) -&gt;
+    {ok, Faction, Starship} = sw_core_starship:introduce(Ctx, Input),
+    {ok, #{ &lt;&lt;"faction"&gt;&gt; =&gt; Faction,
+            &lt;&lt;"starship"&gt;&gt; =&gt; Starship }}.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The choice of dispatching to modules such as <code>sw_core_faction</code> and
+<code>sw_core_starship</code> is entirely a convention which served us well. For
+some GraphQL servers it is better to pick another module for this. As
+an example, at ShopGun we dispatch to a general business logic layer
+for mutations rather than handling in the same module as the query
+layer. Due to <a href="#cqrs">CQRS</a>, it was easier to build the system in this
+fashion.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Create a convention which works for you and stick to it.
+Consistency in your internals are more important than anything else.
+The choice you make is worse off if things are not consistent.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_mutation_then_query">Mutation-then-query</h4>
+<div class="paragraph">
+<p>Note how the GraphQL system will handle a mutation: First field
+execution will <em>mutate</em> the data store and the we proceed by field
+execution on the returned result. This means that after a mutation we
+continue with a <em>query</em>. The system runs mutation-then-query. This is
+useful for grabbing data out of objects which were changed by the
+mutation.</p>
+</div>
+<div class="paragraph">
+<p>In order to satisfy this, you must have the mutation return valid
+objects in the graph as if they had been loaded by a <code>node(&#8230;&#8203;)</code> field
+say. But often, when you execute a mutation you either create a new
+object, or you load, update and persist an object which already
+exists. In both situations, you have some contextual objects which you
+can return.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mutation_examples">Mutation Examples</h3>
+<div class="sect3">
+<h4 id="_introducing_factions">Introducing Factions</h4>
+<div class="paragraph">
+<p>To create a new faction, the user supplies a <code>name</code> in the input as a
+parameter. For instance <code>"rebels"</code> or <code>"sith lords"</code>. To create a new
+faction we must execute a transaction in Mnesia which will insert the
+faction into the database:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">introduce(_Ctx, #{ &lt;&lt;"name"&gt;&gt; := Name }) -&gt;
+    ID = sw_core_db:nextval(faction), % <i class="conum" data-value="1"></i><b>(1)</b>
+    Faction = #faction { id = ID, name = Name }, % <i class="conum" data-value="2"></i><b>(2)</b>
+    Txn = fun() -&gt;
+                  mnesia:write(Faction) % <i class="conum" data-value="3"></i><b>(3)</b>
+          end,
+    case mnesia:transaction(Txn) of
+        {atomic, ok} -&gt;
+            {ok, Faction} % <i class="conum" data-value="4"></i><b>(4)</b>
+    end.</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Generate a new unique ID from the database sequences.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Create the newly formed faction record with name and id.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Write the faction record to the database (the record type
+determines the table).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Return the created <code>#faction{}</code> record so the system can continue
+by query on the record.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_introducing_starships">Introducing Starships</h4>
+<div class="paragraph">
+<p>TBD</p>
 </div>
 </div>
 </div>
@@ -4238,7 +4788,7 @@ specification.<sup class="footnote">[<a id="_footnoteref_6" class="footnote" hre
 </div>
 </div>
 <div class="sect2">
-<h3 id="_inputs_payloads">Inputs &amp; Payloads</h3>
+<h3 id="inputs-and-payloads">Inputs &amp; Payloads</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
@@ -4542,13 +5092,13 @@ should be fixed by altering the server to become more robust.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_authentication">Authentication</h3>
+<h3 id="authentication">Authentication</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_authorization">Authorization</h3>
+<h3 id="authorization">Authorization</h3>
 <div class="paragraph">
 <p>TBD</p>
 </div>
@@ -4649,9 +5199,122 @@ everything at once.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_middleware_stacks">Middleware stacks</h3>
+<h3 id="middleware-stacks">Middleware stacks</h3>
 <div class="paragraph">
-<p>TBD</p>
+<p>In many larger HTTP systems, it is common to have a &#8220;middleware
+stack&#8221;. In a middleware stack, there is a section of code which is
+run for every request to the system. It is often used for a number of
+different cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authentication of clients if they provide authentication tokens.</p>
+</li>
+<li>
+<p>Proxy setup by coercing the underlying IP addresses from proxy-added
+headers.</p>
+</li>
+<li>
+<p>IP Blacklist handling</p>
+</li>
+<li>
+<p>Request limitation systems</p>
+</li>
+<li>
+<p>Metric gathering for requests</p>
+</li>
+<li>
+<p>CORS&#8212;&#8203;Cross-Origin Resource Sharing</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In a GraphQL, these concerns tend to split into two groups:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Contextual middleware</dt>
+<dd>
+<p>This is run before the GraphQL execution
+begins.</p>
+</dd>
+<dt class="hdlist1">Mutation middleware</dt>
+<dd>
+<p>This is run as part of a mutation.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In Erlang GraphQL we decided to create a system in which middleware
+handling is put into the hands of the programmer outside of the
+GraphQL system. There is no way to &#8220;inject&#8221; middlewares in the
+system. Rather we handle the stack by providing functionality which
+allows the programmer to write their own equivalent.</p>
+</div>
+<div class="paragraph">
+<p>The reason is we recognize how these stacks tend to be application
+specific and also tend to be changing a lot. So by keeping them
+outside the Erlang GraphQL itself we avoid having to cater for them all the
+time.</p>
+</div>
+<div class="sect3">
+<h4 id="_the_context">The Context</h4>
+<div class="paragraph">
+<p>Many parts of the execution depends on the transport in which we run.
+An HTTP transport will have different handling than a raw TCP socket
+on which we exchange protocol buffers, a Kafka topic, or a RabbitMQ
+broker for instance.</p>
+</div>
+<div class="paragraph">
+<p>Things such as CORS and authentication is usually handled on the
+transport. You then setup of extra parameters for the context and
+start GraphQL execution with that added context. We tend to use a
+field <code>#{ auth_context &#8658; Auth } = Ctx</code> inside the context for
+authentication. Now, when your GraphQL query executes, it has access
+to authentication data and can act accordingly.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_mutations">The Mutations</h4>
+<div class="paragraph">
+<p>For mutations, we like to write the execution function such that it
+handles all fields at the top level. This allows you to use typical
+Erlang function calls to build up a stack. At the very bottom of the
+stack you dispatch on the <code>Field</code> in <code>execute/4</code> <a href="#object-resolution">Object Resolution</a>
+to handle each mutation. The function calls allows you to manipulate
+the <code>Ctx</code> and <code>Args</code> with further information as you process the
+mutation.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p>We&#8217;ve found these two tricks to be adequate for all of our handling.
+Note that the context is immutable in a query. We don&#8217;t in general
+allow the context to be manipulated by the queries. If you need to
+&#8220;pass down&#8221; extra data, embed it into the <strong>Obj</strong> which is returned
+such that when the cursor moves down to the object, you can inspect it
+for data.</p>
+</div>
+<div class="paragraph">
+<p>Say you want to protect certain fields on an object based on auth.
+When you load the object, you can mask out fields the auth-context
+doesn&#8217;t have access to by replacing them with an atom such as
+<code>access_denied</code>. Then you write a function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">access(Obj, Field) -&gt;
+    case maps:get(Obj, Field, not_found) of
+      not_found -&gt; {ok, null}; % Or appropriate answer
+      access_denied -&gt; {error, access_denied}; % or perhaps {ok, null}
+      Val -&gt; {ok, Val}
+    end.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More advanced solutions are possible and are covered in the sections
+of <a href="#authentication">Authentication</a> and <a href="#authorization">Authorization</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -4745,6 +5408,31 @@ those fields and their purpose:</p>
 <p>TBD</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cqrs">CQRS</h3>
+<div class="paragraph">
+<p>CQRS stands for Command-Query Responsibility Separation. The idea stems
+from the observation that querying data often have a different feel
+than commanding the system to do changes. So rather than trying to
+solve both in one interface, you slice the system such that you have a
+query-part which pertains only to querying data, and a command-part
+which pertains to mutating data.</p>
+</div>
+<div class="paragraph">
+<p>Often, the command section becomes a system based on an append-only
+event log in which command processors read events and make changes to
+the system. These changes are then made persistent and ready for
+query.</p>
+</div>
+<div class="paragraph">
+<p>The Query system is built with dynamic arbitrary queries in mind and
+is focused on this only.</p>
+</div>
+<div class="paragraph">
+<p>The splitting often helps larger system as they tend to have large
+differences in the Query part and the Command part.</p>
 </div>
 </div>
 <div class="sect2">
@@ -4946,7 +5634,7 @@ without having to write special handlers for each.</p>
 <div class="paragraph">
 <div class="title"><code>src/sw_core_paginate.erl</code></div>
 <p>This file implements generic pagination code for the API. It is an
-implementation of {relay}'s conventions for paginations and cursors
+implementation of Relay Modern&#8217;s conventions for paginations and cursors
 (see <a href="#pagination">Pagination</a>).</p>
 </div>
 <div class="paragraph">
@@ -5020,6 +5708,14 @@ code responses from the system.</p>
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">May 29th, 2017</dt>
+<dd>
+<p>Moved <a href="#cqrs">CQRS</a> into terminology so it can be
+referenced from other places in the document easily. Described
+<a href="#schema-default-values">Schema default values</a>. Described <a href="#middleware-stacks">Middleware stacks</a>. Made the
+first sweep on the documentation describing the notion of mutations.
+The <a href="#system-tour">System Tour</a> now includes simple mutations as an example.</p>
+</dd>
 <dt class="hdlist1">May 24th, 2017</dt>
 <dd>
 <p>Described Scalar Coercion in more detail in
@@ -5066,7 +5762,7 @@ objects. Then demonstrate how this is used to coerce values.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-25 14:41:19 CEST
+Last updated 2017-05-29 16:41:15 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
