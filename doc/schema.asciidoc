@@ -309,7 +309,7 @@ works in the input direction:
 ----
 include::{sw_core}/priv/sw.schema[tags=introduceStarshipInput]
 ----
-<1> Default parameter value
+<1> Default parameter value, see <<schema-default-values>>.
 
 In turn, the client can now input all these values as one. Grouping of
 like parameters are quite common in GraphQL schemas. Note how input
@@ -404,9 +404,33 @@ validator which will validate your fields to be in order. It is fairly
 easy to mess up schema types in subtle ways, but if you write them
 down, the system can figure out when you make this error.
 
+[[schema-default-values]]
 === Schema default values
 
-TBD
+In the schema, it is possible to enter default values: `field : Type =
+Default`. We already saw an example of this in the section on inputs
+for introducing starships.
+
+Defaults can be supplied on input types in general. So input objects
+and field arguments can take default values. When a client is omitting
+a field or a parameter, it is substituted according to GraphQL rules
+for its input default.
+
+This is highly useful because you can often avoid code paths which
+fork in your code. Omission of an array of strings, say, can be
+substituted with the default `[]` which is better than `null` in
+Erlang code in many cases. Default counters can be initialized to some
+zero-value and so on. Furthermore, in the schema a default will be
+documented explicitly. So a client knows what the default value is and
+what is expected. We advise programmers to utilize schema defaults
+whenever possible to make the system easier to work with on the client
+and server side.
+
+Schema defaults must be type-valid for the type they have. You can't
+default a string value in for an integer type for instance. Also, the
+rule is that _non-null_ yields to default values. If a default value
+is given, it is as if that variable is always given (See the GraphQL
+specification on coercion of variable values).
 
 == Loading the Schema
 
