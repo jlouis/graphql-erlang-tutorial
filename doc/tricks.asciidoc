@@ -78,7 +78,86 @@ explain to people what the mapping means.
 [[middleware-stacks]]
 === Middleware stacks
 
-TBD
+In many larger HTTP systems, it is common to have a "`middleware
+stack`". In a middleware stack, there is a section of code which is
+run for every request to the system. It is often used for a number of
+different cases:
+
+* Authentication of clients if they provide authentication tokens.
+* Proxy setup by coercing the underlying IP addresses from proxy-added
+  headers.
+* IP Blacklist handling
+* Request limitation systems
+* Metric gathering for requests
+* CORS--Cross-Origin Resource Sharing
+
+In a GraphQL, these concerns tend to split into two groups:
+
+Contextual middleware:: This is run before the GraphQL execution
+    begins.
+Mutation middleware:: This is run as part of a mutation.
+
+In {project} we decided to create a system in which middleware
+handling is put into the hands of the programmer outside of the
+GraphQL system. There is no way to "`inject`" middlewares in the
+system. Rather we handle the stack by providing functionality which
+allows the programmer to write their own equivalent.
+
+The reason is we recognize how these stacks tend to be application
+specific and also tend to be changing a lot. So by keeping them
+outside the {project} itself we avoid having to cater for them all the
+time.
+
+==== The Context
+
+Many parts of the execution depends on the transport in which we run.
+An HTTP transport will have different handling than a raw TCP socket
+on which we exchange protocol buffers, a Kafka topic, or a RabbitMQ
+broker for instance.
+
+Things such as CORS and authentication is usually handled on the
+transport. You then setup of extra parameters for the context and
+start GraphQL execution with that added context. We tend to use a
+field `#{ auth_context => Auth } = Ctx` inside the context for
+authentication. Now, when your GraphQL query executes, it has access
+to authentication data and can act accordingly.
+
+==== The Mutations
+
+For mutations, we like to write the execution function such that it
+handles all fields at the top level. This allows you to use typical
+Erlang function calls to build up a stack. At the very bottom of the
+stack you dispatch on the `Field` in `execute/4` <<object-resolution>>
+to handle each mutation. The function calls allows you to manipulate
+the `Ctx` and `Args` with further information as you process the
+mutation.
+
+---
+
+We've found these two tricks to be adequate for all of our handling.
+Note that the context is immutable in a query. We don't in general
+allow the context to be manipulated by the queries. If you need to
+"`pass down`" extra data, embed it into the *Obj* which is returned
+such that when the cursor moves down to the object, you can inspect it
+for data.
+
+Say you want to protect certain fields on an object based on auth.
+When you load the object, you can mask out fields the auth-context
+doesn't have access to by replacing them with an atom such as
+`access_denied`. Then you write a function:
+
+[source,erlang]
+----
+access(Obj, Field) ->
+    case maps:get(Obj, Field, not_found) of
+      not_found -> {ok, null}; % Or appropriate answer
+      access_denied -> {error, access_denied}; % or perhaps {ok, null}
+      Val -> {ok, Val}
+    end.
+----
+
+More advanced solutions are possible and are covered in the sections
+of <<authentication>> and <<authorization>>.
 
 === Data Loader
 

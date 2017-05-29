@@ -83,10 +83,12 @@ size of a pagination window, or making the query simpler by not
 providing certain parts. On the other hand, many of those problems
 should be fixed by altering the server to become more robust.
 
+[[authentication]]
 === Authentication
 
 TBD
 
+[[authorization]]
 === Authorization
 
 TBD
