@@ -200,7 +200,7 @@ type Query {
 }
 # end::queryObject[]
 
-type Faction {
+type Faction implements Node {
   id : ID!
   name : String
   ships(first: Int, after: String,

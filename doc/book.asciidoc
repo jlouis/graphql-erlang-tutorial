@@ -66,7 +66,8 @@ include::code.asciidoc[Code Overview]
 
 May 29th, 2017:: Moved <<cqrs>> into terminology so it can be referenced
   from other places in the document easily. Described
-  <<schema-default-values>>.  Described <<middleware-stacks>>
+  <<schema-default-values>>.  Described <<middleware-stacks>>. The
+  <<system-tour>> now includes simple mutations as an example.
 
 May 24th, 2017:: Described Scalar Coercion in more detail in
   <<scalar-resolution>>. Change the schema such that a *DateTime*

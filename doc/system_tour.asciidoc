@@ -259,7 +259,101 @@ capability of GraphQL. The result follows the structure of the query:
 }
 ----
 
-=== Mutations
+=== Simple Mutations
+
+Now, let us focus on altering the database through a _mutation_. In
+GraphQL, this is the way a client runs "`stored procedures`" on the
+Server side. The Star Wars example has tooling for factions in the
+Star Wars universe, but there are currently no factions defined. Let
+us amend that by introducing the rebels:
+
+[source,graphql]
+----
+mutation IntroduceRebels($input: IntroduceFactionInput!) {
+  introduceFaction(input: $input) {
+    clientMutationId
+    faction {
+      id
+      name
+      ships {
+        totalCount
+      }
+    }
+  }
+}
+----
+
+This query uses the GraphQL feature of input variables. In the UI, you
+can click and expand the section _Query Variables_ under the query
+pane. This allows us to build a generic query like the one above and
+then repurpose it for creating any faction by providing the input
+variables for the query:
+
+[source,json]
+----
+{
+  "input": {
+    "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", # <1>
+    "name": "Rebels"
+  }
+}
+----
+<1> This is chosen arbitrarily by the client and can be any string.
+Here we use an UUID.
+
+The server, when you execute this query, will respond with the
+creation of a new *Faction* and return its id, name and starships:
+
+[source,json]
+----
+{
+  "data": {
+    "introduceFaction": {
+      "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", # <1>
+      "faction": {
+        "id": "RmFjdGlvbjoxMDAy", # <2>
+        "name": "Rebels",
+        "ships": {
+          "totalCount": 0 # <3>
+        }
+      }
+    }
+  }
+}
+----
+<1> The server reflects back the unique client-generated Id for
+correlation purposes.
+<2> The Id migth be different depending on how many *Faction* objects
+    you created.
+<3> We have yet to assign any starships to the faction, so the count
+    is currently 0.
+
+We can now query this faction by its Id because it was added to the
+system:
+
+[source,graphql]
+----
+query FactionQuery {
+  node(id: "RmFjdGlvbjoxMDAy") {
+     ... on Faction {
+       id
+       name
+     }
+  }
+}
+----
+
+The system also persisted the newly created faction in its database so
+restarting the system keeps the added faction.
+
+CAUTION: Use `q()` in the shell to close the system gracefully.
+Otherwise you may be in a situation where a change isn't reflected on
+disk. The system will still load a consistent view of the database,
+but it will be from before the transaction were run. The Mnesia system
+used is usually quick at adding data to its WAL, but there is no
+guarantee.
+
+=== More complex mutations
 
 TBD
 
