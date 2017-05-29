@@ -64,6 +64,8 @@ include::code.asciidoc[Code Overview]
 [[changelog]]
 == Changelog
 
+May 29th, 2017:: Moved CQRS into terminology so it can be referenced
+  from other places in the document easily.
 May 24th, 2017:: Described Scalar Coercion in more detail in
   <<scalar-resolution>>. Change the schema such that a *DateTime*
   scalar is used for the fields `created` and `edited` in all output

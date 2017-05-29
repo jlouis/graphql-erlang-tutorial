@@ -54,6 +54,27 @@ those fields and their purpose:
 
 * TBD
 
+[[cqrs]]
+=== CQRS
+
+CQRS stands for Command-Query Responsibility Separation. The idea stems
+from the observation that querying data often have a different feel
+than commanding the system to do changes. So rather than trying to
+solve both in one interface, you slice the system such that you have a
+query-part which pertains only to querying data, and a command-part
+which pertains to mutating data.
+
+Often, the command section becomes a system based on an append-only
+event log in which command processors read events and make changes to
+the system. These changes are then made persistent and ready for
+query.
+
+The Query system is built with dynamic arbitrary queries in mind and
+is focused on this only.
+
+The splitting often helps larger system as they tend to have large
+differences in the Query part and the Command part.
+
 [[cursor]]
 
 === Cursor

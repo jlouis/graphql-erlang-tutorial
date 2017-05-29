@@ -2,6 +2,7 @@
 
 -export([execute/4]).
 
+%% tag::execute[]
 execute(Ctx, _, Field, #{ <<"input">> := Input}) ->
     with_client_mutation(Ctx, Field, Input).
 
@@ -13,7 +14,9 @@ with_client_mutation(Ctx, Field, Input) ->
         {error, Reason} ->
             {error, Reason}
     end.
+%% end::execute[]
 
+%% tag::executeMutation[]
 execute_mutation(Ctx, <<"introduceFaction">>, Input) ->
     {ok, Faction} = sw_core_faction:introduce(Ctx, Input),
     {ok, #{ <<"faction">> => Faction }};
@@ -21,5 +24,5 @@ execute_mutation(Ctx, <<"introduceStarship">>, Input) ->
     {ok, Faction, Starship} = sw_core_starship:introduce(Ctx, Input),
     {ok, #{ <<"faction">> => Faction,
             <<"starship">> => Starship }}.
+%% end::executeMutation[]
 
-    

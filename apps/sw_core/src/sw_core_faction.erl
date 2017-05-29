@@ -28,14 +28,16 @@ execute(_Ctx, #faction { id = ID,
             sw_core_paginate:select(Records, Args)
     end.
 
+%% tag::introduce[]
 introduce(_Ctx, #{ <<"name">> := Name }) ->
-    ID = sw_core_db:nextval(faction),
-    Faction = #faction { id = ID, name = Name },
+    ID = sw_core_db:nextval(faction), % <1>
+    Faction = #faction { id = ID, name = Name }, % <2>
     Txn = fun() ->
-                  mnesia:write(Faction)
+                  mnesia:write(Faction) % <3>
           end,
     case mnesia:transaction(Txn) of
         {atomic, ok} ->
-            {ok, Faction}
+            {ok, Faction} % <4>
     end.
+%% end::introduce[]
 

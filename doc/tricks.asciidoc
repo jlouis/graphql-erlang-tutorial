@@ -75,6 +75,7 @@ explain to people what the mapping means.
   gradually change the large system rather than having to change
   everything at once.
 
+[[middleware-stacks]]
 === Middleware stacks
 
 TBD

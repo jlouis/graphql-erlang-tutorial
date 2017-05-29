@@ -504,6 +504,97 @@ advantage of additional flexibility. You can now discriminate between
 appropriately.
 ****
 
+[[resolution-of-mutations]]
+=== Mutations
+
+Object resolution of mutations works the same way as object resolution
+for every other kind of type in the graph. When the *Mutation* object
+is request in a mutation, the field resovler will run and call an
+`execute/4` function for the mutation. In our example, our mutation
+code looks like:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_mutation.erl[tags=execute]
+----
+
+We write a generic mutation path. First we unwrap the `input` argument
+and then dispatch to a function which handles the `clientMutationId`
+entries inside the input. It then calls the actual mutation code in
+`execute_mutation` and builds up an appropriate result containing
+`clientMutationId` inside the payload.
+
+The reason we do this is due to {relay} and its conventions for
+mutations (see <<inputs-and-payloads>>). Because every mutation
+contains a mutation id, we can just handle all of them in one go and
+then dispatch later on. While here, we also make the input data
+cleaner so it is easier for the `execute_mutation` call to work.
+
+TIP: The solution presented here is the beginning of a middleware
+stack. See <<middleware-stacks>> for further explanation.
+
+The execution function simply forwards to the target module and then
+packs the result in a map so it satisfies the *...Payload* objects.
+the idea being that we are then returning something of the correct
+type according to the conventions:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_mutation.erl[tags=executeMutation]
+----
+
+The choice of dispatching to modules such as `sw_core_faction` and
+`sw_core_starship` is entirely a convention which served us well. For
+some GraphQL servers it is better to pick another module for this. As
+an example, at {shopgun} we dispatch to a general business logic layer
+for mutations rather than handling in the same module as the query
+layer. Due to <<cqrs>>, it was easier to build the system in this
+fashion.
+
+TIP: Create a convention which works for you and stick to it.
+Consistency in your internals are more important than anything else.
+The choice you make is worse off if things are not consistent.
+
+==== Mutation-then-query
+
+Note how the GraphQL system will handle a mutation: First field
+execution will _mutate_ the data store and the we proceed by field
+execution on the returned result. This means that after a mutation we
+continue with a _query_. The system runs mutation-then-query. This is
+useful for grabbing data out of objects which were changed by the
+mutation.
+
+In order to satisfy this, you must have the mutation return valid
+objects in the graph as if they had been loaded by a `node(...)` field
+say. But often, when you execute a mutation you either create a new
+object, or you load, update and persist an object which already
+exists. In both situations, you have some contextual objects which you
+can return.
+
+=== Mutation Examples
+
+==== Introducing Factions
+
+To create a new faction, the user supplies a `name` in the input as a
+parameter. For instance `"rebels"` or `"sith lords"`. To create a new
+faction we must execute a transaction in Mnesia which will insert the
+faction into the database:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_faction.erl[tags=introduce]
+----
+<1> Generate a new unique ID from the database sequences.
+<2> Create the newly formed faction record with name and id.
+<3> Write the faction record to the database (the record type
+    determines the table).
+<4> Return the created `#faction{}` record so the system can continue
+    by query on the record.
+
+==== Introducing Starships
+
+TBD
+
 === Anatomy of a query
 
 We now turn our attention to the notion of executing a query. It is

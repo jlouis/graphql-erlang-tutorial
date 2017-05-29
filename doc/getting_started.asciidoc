@@ -122,14 +122,7 @@ system is allowed to parallelize queries but not mutations. But from
 the perspective of the client, the starting points in the graph is
 either the _query_ or the _mutation_ object.
 
-CQRS stands for Command-Query Responsibility Separation. The idea stems
-from the observation that querying data often have a different feel
-than commanding the system to do changes. So rather than trying to
-solve both in one interface, you slice the system such that you have a
-query-part which pertains only to querying data, and a command-part
-which pertains to mutating data.
-
-GraphQL implements what is essentially CQRS by making a distinction
+GraphQL implements what is essentially <<cqrs>> by making a distinction
 between the notion of a _query_ and a _mutation_. Likewise, the server
 side makes this distinction. But on the server side it is merely
 implemented by having different starting objects in the graph
