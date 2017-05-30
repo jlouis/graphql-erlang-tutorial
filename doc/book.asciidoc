@@ -64,6 +64,11 @@ include::code.asciidoc[Code Overview]
 [[changelog]]
 == Changelog
 
+May 30th, 2017:: Documented a more complex mutation example,
+  <<introducing-starships>>, which explains how to carry out more
+  complex queries. Also added this as an example to the
+  <<system-tour>>.
+
 May 29th, 2017:: Moved <<cqrs>> into terminology so it can be
   referenced from other places in the document easily. Described
   <<schema-default-values>>. Described <<middleware-stacks>>. Made the

@@ -3,6 +3,7 @@
 -include_lib("stdlib/include/qlc.hrl").
 
 -export([execute/4]).
+-export([introduce/2]).
 
 %% tag::starshipExecute[]
 execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
@@ -50,5 +51,53 @@ execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
             sw_core_paginate:select(Records, Args)
     end.
 
+%% tag::introduce[]
+introduce(_Ctx, #{ <<"name">> := Name,
+                   <<"model">> := Model,
+                   <<"starshipClass">> := Class,
+                   <<"manufacturers">> := Manufacturers,
+                   <<"costInCredits">> := Cost,
+                   <<"length">> := Length,
+                   <<"crew">> := Crew,
+
+                   <<"faction">> := FactionInput }) ->
+    ID = sw_core_db:nextval(transport), % <1>
+    Transport = #transport { id = ID,
+                             name = Name,
+                             created = current_time(),
+                             edited = current_time(),
+                             crew = Crew,
+                             model = Model,
+                             cost = Cost,
+                             length = Length,
+                             manufacturers = Manufacturers },
+    Starship = #starship { id = ID,
+                           starship_class = Class }, % <2>
+    {ok, {'Faction', FactionID}} =
+        sw_core_id:decode(FactionInput), % <3>
+    case sw_core_db:load('Faction', FactionID) of % <4>
+        {ok, #faction { id = FactionRef } = Faction} ->
+            Txn = fun() ->
+                          ok = mnesia:write(Starship),
+                          ok = mnesia:write(Transport#transport {
+                                              faction = FactionRef
+                                             }), % <5>
+                          ok
+                  end,
+            {atomic, ok} = mnesia:transaction(Txn),
+            {ok, Faction, #{ starship => Starship,
+                             transport => Transport#transport {
+                                            faction = FactionRef
+                                           }}}; % <6>
+        {error, Reason} ->
+            {error, Reason}
+    end.
+%% end::introduce[]
+
+
 floatify(nan) -> null;
 floatify(I) -> float(I).
+
+current_time() ->
+    calendar:universal_time().
+

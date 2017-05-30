@@ -591,9 +591,49 @@ include::{sw_core}/src/sw_core_faction.erl[tags=introduce]
 <4> Return the created `#faction{}` record so the system can continue
     by query on the record.
 
+[[introducing-starships]]
 ==== Introducing Starships
 
-TBD
+To create a new starship, we generally follow the same pattern as for
+faction introduction. However, in this case the introduction is a bit
+more complex as there are more work to be done in the process:
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_starship.erl[tags=introduce]
+----
+<1> Generate a new ID entry from the database sequence.
+<2> We generate the `#transport{}` and `#starship{}` records and fill
+    in data according to where the data belong. They share the ID.
+<3> We decode the *Faction* ID to obtain the underlying database
+    primary key.
+<4> Load the faction from the database and fail if it is not present.
+<5> Supply the Factions Primary Key in the transport to relate them.
+<6> Return both the *Faction* and *Starship*.
+
+In our schema, transports and starships share the same primary key id.
+So we use the transport sequence to obtain a new ID, using it in both
+the transport and starship records. Were we to add vehicles, the same
+would happen, but with transport and vehicle respectively.
+
+The decoding of faction IDs assumes that the faction ID can be decoded
+and crashes otherwise. A more complete implementation would fail if
+this were not the case. A more complete implementation would also fold
+the decoding into the call `sw_core_db:load/2` to avoid the explicit
+decoding in every object resolution function.
+
+When you have loaded objects in the context, it is customary to return
+those in GraphQL. Loading objects is usually where most of the effort
+is spent by the system, so returning them is almost free. If the
+client doesn't need the object, the client will not request the object
+and it won't cost bandwidth in data transfer.
+
+TIP: The example here describes a typical invocation: load the objects
+you operate on and make sure every object is valid. Then use
+<<authorization>> in the `_Ctx` to check if the desired operation is
+valid on the object. Next, execute a transaction and if succesful,
+return all the loaded objects in the *...Payload* result. This
+load-then-auth-then-txn invocation is very common in GraphQL.
 
 === Anatomy of a query
 
