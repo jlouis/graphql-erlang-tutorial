@@ -540,7 +540,7 @@ query Q($nid : ID!) {
 
 we need to know if the concrete node loaded indeed _was_ a starship.
 The type resolver is responsible for figuring out what concrete type
-we have. Commonly, we map both the interface and union type resolver
+we have. Commonly, we map both the interface type and the union type
 to the same resolver.
 
 The reason this needs to be handled by the programmer is because the
