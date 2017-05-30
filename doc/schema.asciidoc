@@ -393,13 +393,13 @@ include::{sw_core}/priv/sw.schema[tags=starshipObject]
 
 Interfaces and Unions are so-called _abstract types_ in the GraphQL
 specification. They never occur in concrete data, but is a type-level
-relationship only. Thus, when handling an interface or a unions, you
+relationship only. Thus, when handling an interface or a union, you
 just return concrete objects. In the section <<type-resolution>> we
 will see how the server will handle abstract types.
 
 TIP: If you have an object which naturally shares fields with other
 objects, consider creating an interface--even in the case where you
-have no use for the interface. The {project} contains a schema
+have no use for the interface. {project} contains a schema
 validator which will validate your fields to be in order. It is fairly
 easy to mess up schema types in subtle ways, but if you write them
 down, the system can figure out when you make this error.
@@ -453,8 +453,8 @@ schema.
 
 After the schema loads, we set up a _schema root_ which is how to
 start out a _query_ or a _mutation_. Finally, we validate the schema.
-This runs some correctness checks on the schema and fails of the
-sanity checks doesn't pass. It forces you to define everything you
+This runs some correctness checks on the schema and fails if the
+sanity checks don't pass. It forces you to define everything you
 use, and it also verifies that interfaces are correctly implemented.
 
 NOTE: Currently, the schema root is set up "`manually`" outside the
@@ -465,7 +465,7 @@ root, but by having the root being part of the schema definition.
 TIP: Always run the schema validator once you've finished assembling
 your schema. Many errors are caught automatically by the validator,
 and it removes the hassle of debugging later. Also, it runs fairly
-quickly, so run it as part of your systems boot phase. This ensures
+quickly, so run it as part of your system's boot phase. This ensures
 your system won't boot if there is some kind of problem with your
 schema definition. If you have a boot-test as part of your testing
 framework or CI system, you should be able to use this as a "`schema
