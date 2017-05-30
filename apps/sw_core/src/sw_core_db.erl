@@ -210,9 +210,9 @@ populate_people(Terms) ->
 
 %% tag::populate_planets[]
 populate_planets(Terms) ->
-    People = [json_to_planet(P) || P <- Terms],
+    Planets = [json_to_planet(P) || P <- Terms],
     Txn = fun() ->
-                  [mnesia:write(P) || P <- People],
+                  [mnesia:write(P) || P <- Planets],
                   ok
           end,
     {atomic, ok} = mnesia:transaction(Txn),
