@@ -99,7 +99,7 @@ handle other manually defined scalar values by simply passing them
 through.
 
 NOTE: Built-in scalars such as Int, Float, String, Bool are handled by
-the system internally and does not currently undergo Scalar
+the system internally and do not currently undergo Scalar
 conversion. A special case exists for Int and Float. These are coerced
 between automatically if it is safe to do so.footnote:[Some people call
 this weak typing, but type promotion is probably a more apt term]
