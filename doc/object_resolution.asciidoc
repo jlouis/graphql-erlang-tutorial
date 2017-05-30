@@ -591,6 +591,7 @@ include::{sw_core}/src/sw_core_faction.erl[tags=introduce]
 <4> Return the created `#faction{}` record so the system can continue
     by query on the record.
 
+[[introducing-starships]]
 ==== Introducing Starships
 
 To create a new starship, we generally follow the same pattern as for
