@@ -60,7 +60,7 @@ introduce(_Ctx, #{ <<"name">> := Name,
                    <<"length">> := Length,
                    <<"crew">> := Crew,
 
-                   <<"faction">> := FactionID }) ->
+                   <<"faction">> := FactionInput }) ->
     ID = sw_core_db:nextval(transport),
     Transport = #transport { id = ID,
                              name = Name,
@@ -73,6 +73,7 @@ introduce(_Ctx, #{ <<"name">> := Name,
                              manufacturers = Manufacturers },
     Starship = #starship { id = ID,
                            starship_class = Class },
+    {ok, {'Faction', FactionID}} = sw_core_id:decode(FactionInput),
     case sw_core_db:load('Faction', FactionID) of
         {ok, #faction { id = FactionRef } = Faction} ->
             Txn = fun() ->
