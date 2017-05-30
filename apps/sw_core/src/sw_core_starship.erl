@@ -61,7 +61,7 @@ introduce(_Ctx, #{ <<"name">> := Name,
                    <<"crew">> := Crew,
 
                    <<"faction">> := FactionInput }) ->
-    ID = sw_core_db:nextval(transport),
+    ID = sw_core_db:nextval(transport), % <1>
     Transport = #transport { id = ID,
                              name = Name,
                              created = current_time(),
@@ -72,27 +72,29 @@ introduce(_Ctx, #{ <<"name">> := Name,
                              length = Length,
                              manufacturers = Manufacturers },
     Starship = #starship { id = ID,
-                           starship_class = Class },
-    {ok, {'Faction', FactionID}} = sw_core_id:decode(FactionInput),
-    case sw_core_db:load('Faction', FactionID) of
+                           starship_class = Class }, % <2>
+    {ok, {'Faction', FactionID}} =
+        sw_core_id:decode(FactionInput), % <3>
+    case sw_core_db:load('Faction', FactionID) of % <4>
         {ok, #faction { id = FactionRef } = Faction} ->
             Txn = fun() ->
                           ok = mnesia:write(Starship),
                           ok = mnesia:write(Transport#transport {
                                               faction = FactionRef
-                                             }),
+                                             }), % <5>
                           ok
                   end,
             {atomic, ok} = mnesia:transaction(Txn),
             {ok, Faction, #{ starship => Starship,
                              transport => Transport#transport {
                                             faction = FactionRef
-                                           }}};
+                                           }}}; % <6>
         {error, Reason} ->
             {error, Reason}
     end.
-                           
 %% end::introduce[]
+
+
 floatify(nan) -> null;
 floatify(I) -> float(I).
 
