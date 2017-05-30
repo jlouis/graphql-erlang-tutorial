@@ -7,7 +7,7 @@ certain behaviors in a GraphQL implementation.
 [[null-propagation]]
 === Null Propagation
 
-In GraphQL, fields _nullable_ by default. A generic field `f : T` can
+In GraphQL, fields are _nullable_ by default. A generic field `f : T` can
 either take on the value of `T` or the value `null` if the rendering
 of the field fails for some reason.
 
