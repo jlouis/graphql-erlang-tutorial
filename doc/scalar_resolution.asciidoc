@@ -87,7 +87,7 @@ input/2:: Called whenever an scalar value needs to be coerced from
   white-list certain inputs only and serves as a correctness/security
   feature.
 
-output/2:: Called whenever an scalar value needs to coerced from
+output/2:: Called whenever an scalar value needs to be coerced from
   _server_ to _client_. The valid responses are `{ok, Val} | {error,
   Reason}`. Conversion makes sure that a client only sees coerced
   values. If an error is returned, the field is regarded as an error.
