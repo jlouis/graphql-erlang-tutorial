@@ -11,7 +11,7 @@ one will achieve those standard pieces.
 === Node Interface
 
 {relay} defines an object identification specification together
-with a interface *Node* used to retrieve objects which are cached on
+with an interface *Node* used to retrieve objects which are cached on
 the client side. The specification 
 https://facebook.github.io/relay/graphql/objectidentification.htm
 defines the details of this.
