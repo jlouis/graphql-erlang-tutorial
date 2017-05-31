@@ -558,7 +558,7 @@ The choice you make is worse off if things are not consistent.
 ==== Mutation-then-query
 
 Note how the GraphQL system will handle a mutation: First field
-execution will _mutate_ the data store and the we proceed by field
+execution will _mutate_ the data store and then we proceed by field
 execution on the returned result. This means that after a mutation we
 continue with a _query_. The system runs mutation-then-query. This is
 useful for grabbing data out of objects which were changed by the
