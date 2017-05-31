@@ -15,7 +15,7 @@ requesting the *name* of the Starship.
 
 .Derived Field Access
 
-Second, field resolution on objects are used to _derive_ values from
+Second, field resolution on objects is used to _derive_ values from
 other values. Suppose a *Starship* had two fields internally
 *cargoCapacity* and *cargoLoad*. We might want to compute the load
 factor of the Starship as a value between 0.0 and 1.0. This amounts to
@@ -33,7 +33,7 @@ data is rarely going to be dominant in the grand scheme of things.
 
 .Data Fetching Field Access
 
-Finally, field resolution on objects are used to _fetch_ objects from
+Finally, field resolution on objects is used to _fetch_ objects from
 a backend data store. Consider the field `node(id: ID!)` on the
 `Query` object in the schema:
 
