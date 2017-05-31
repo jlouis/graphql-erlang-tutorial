@@ -87,7 +87,7 @@ input/2:: Called whenever an scalar value needs to be coerced from
   white-list certain inputs only and serves as a correctness/security
   feature.
 
-output/2:: Called whenever an scalar value needs to coerced from
+output/2:: Called whenever an scalar value needs to be coerced from
   _server_ to _client_. The valid responses are `{ok, Val} | {error,
   Reason}`. Conversion makes sure that a client only sees coerced
   values. If an error is returned, the field is regarded as an error.
@@ -99,7 +99,7 @@ handle other manually defined scalar values by simply passing them
 through.
 
 NOTE: Built-in scalars such as Int, Float, String, Bool are handled by
-the system internally and does not currently undergo Scalar
+the system internally and do not currently undergo Scalar
 conversion. A special case exists for Int and Float. These are coerced
 between automatically if it is safe to do so.footnote:[Some people call
 this weak typing, but type promotion is probably a more apt term]
