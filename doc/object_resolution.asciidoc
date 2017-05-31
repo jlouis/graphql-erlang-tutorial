@@ -659,12 +659,12 @@ fragment PlanetFragment on Planet {
 
 and look at how the system will execute such a query.
 
-First, query of the keyword `query` the system will begin by starting
-the _root_ of the query on the `Query` object in the Graph. Since this
-is mapped by the schema into the module `sw_core_query`, we start by
-executing fields in that module. The current object points to what is
-the _initial object_ of the query which is set by the developer. We
-ignore that object in our implementation.
+First, a cursor will be set in the _root_ of the currently selected
+`Query` object in the Graph. Since this is mapped by the schema into
+the module `sw_core_query`, we start by visiting that module and
+execute fields there. The cursor will point to an _initial object_ of
+the query, which is set by the developer. We will ignore this object
+in our implementation.
 
 Next, since the field `node` is requested, we execute the call
 
