@@ -1,5 +1,5 @@
 \documentclass[lualatex]{beamer}
-
+\usepackage{textcomp}
 \usepackage{fontspec}
 \usepackage{fancyvrb}
 \fvset{fontsize=\scriptsize}
@@ -10,9 +10,10 @@
 \usepackage{unicode-math}
 \setmathfont{Asana Math}
 
-\author{Jesper Louis Andersen\\jesper.louis.andersen@gmail.com}
+\author{Jesper Louis
+  Andersen\\jesper.louis.andersen@gmail.com\\ShopGun}
 \date{\today{}}
-\title{GraphQL\\A Data Query Language}
+\title{GraphQL Erlang}
 \begin{document}
 
 \maketitle
@@ -20,39 +21,98 @@
 \begin{frame}
   Overview:
   \begin{itemize}
+  \item Background
   \item GraphQL Itself
-  \item A GraphQL implementation
+  \item The implementation
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Disclaimer}
+  \frametitle{Not covered}
+  All of these has a story within GraphQL, but I have no time to cover
+  them. GraphQL is fairly large:
   \begin{itemize}
-  \item Only an introduction. The real GraphQL can do more.
-  \item Deliberate skipping of concepts
+  \item Subscriptions
+  \item Abstract types: Interfaces, Unions
+  \item Authentication/Authorization
+  \item Error handling
+  \item Schema Loading and Validation
+  \item Directives
+  \item Aliasing of field names
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Initial Commit}
+  \frametitle{Once upon a time\ldots{}}
+  \begin{itemize}
+  \item ShopGun's mission: index the worlds shopping data
+  \item Shopping data: Semi-structured data set
+  \item Think Time Zones and Calendars
+  \item Densely populated dataset, many links
+  \end{itemize}
+
+  How do we create an API for such a data model?
+\end{frame}
+
+\begin{frame}
+  \frametitle{State}
+  We started with some analysis:
+  \begin{itemize}
+  \item Have existing HTTP/1.1 API
+  \item HTTP/1.1 ng?
+  \item Falcor?
+  \item GraphQL?
+  \end{itemize}
+
+  Ended with GraphQL: heaviest solution but also solves our problems.
+\end{frame}
+
+\begin{frame}
+  What are our major problems in the current API?
+  \begin{itemize}
+  \item Multiple clients: Each client needs different data
+  \item Some clients use typed languages, some use untyped languages
+  \item Many obvious type errors occur and slows development
+  \item The data evolves over time, and requires lots of server-side
+    tuning
+  \item Documentation is added ad-hoc to the API
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GraphQL: Initial Commit}
   \begin{itemize}
   \item Created by Facebook in 2012, public (draft) spec in 2015
   \item Used on Android (Java), iOS (Obj-C), Web (Javascript)
-  \item Can be used to replace RESTful web services
+  \item Can be used to replace (RESTful) web services
   \item Client/Server \emph{Query Language}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \begin{itemize}
-  \item There is a schema-definition of data
-  \item The schema is checked for internal consistency
+  \item There is a schema-definition of data (contract)
+  \item The schema is checked for internal consistency (contract checking)
   \item Client \emph{declares} what it wants through \emph{query}
-  \item The server handles and processes the queries
+    (declarative)
+  \item Client declarations must explicitly mention the data wanted in
+    the request
+  \item The server handles and processes the queries (query execution)
   \end{itemize}
-  
   \rule{\textwidth}{1pt}
-  A wrong but first approximation: SQL for the Web
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+  \item The schema is fully typed
+  \item An request with a (non-coercible) type error is rejected
+  \item A response with a type error is \emph{coerced} into a valid
+    response
+  \item The server allows introspection queries on the meta-structure
+    of the contract (automatic discovery)
+  \end{itemize}
+  \rule{\textwidth}{1pt}
+  Note: These things solves our current major problems.
 \end{frame}
 
 \begin{frame}[fragile]
@@ -62,10 +122,13 @@
 \color{black}\rule{\linewidth}{1pt}
 Input (GraphQL):
 \begin{verbatim}
-query Q {
-  monster(id: "bW9uc3Rlcjo") {
-    id
-    name
+query Planet {
+  node(id: "UGxhbmV0OjE=") {
+    ... on Planet {
+      id
+      name
+      orbitalPeriod
+    }
   }
 }
 \end{verbatim}
@@ -76,9 +139,12 @@ query Q {
 Output (JSON):
 \begin{verbatim}
 {
-  "monster": {
-    "id": "bW9uc3Rlcjox",
-    "name": "goblin"
+  "data": {
+    "node": {
+      "id": "UGxhbmV0OjE=",
+      "name": "Tatooine",
+      "orbitalPeriod": 304
+    }
   }
 }
 \end{verbatim}
@@ -99,6 +165,7 @@ Output (JSON):
 \begin{verbatim}
 query Q {
   room(id: "cm9vbToz") {
+    description
     exits {
       direction
       room {
@@ -139,29 +206,21 @@ query Q {
 \end{frame}
 
 \begin{frame}
-  Main points about GraphQL:
+  Our current API responds slowly at times, due to the round-trip
+  time between the client and the server. Especially on mobile phones
+  with bad connectivity.
+  
   \begin{itemize}
-  \item Hierarchical: Query in a hierarchy of fields
-  \item Front-end drives: product centric view
-  \item Type Checked input language
-  \item Contract between the client and server
+  \item How do we solve this?
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  More main points about GraphQL:
-  \begin{itemize}
-  \item Validated: Guard against bad queries
-  \item Introspective: We can query the server for the schema
-  \item Backward/forward compatible: You can extend the schema
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  This is not RESTful:
   \begin{itemize}
   \item One query, all operations happen on the server side
-  \item Lower latency is often achieved
+  \item Round trip time is between servers, often a few milliseconds
+    at most
+  \item Lower latency achieved as a result
   \item Can avoid lots of ``boiler plate'' endpoints
   \item Move most ``looping'' in RESTful services to the GraphQL
     execution engine
@@ -196,11 +255,12 @@ fragment MonsterFrag on Monster {
 \end{frame}
 
 \begin{frame}
-  \frametitle{Interfaces and Unions}
+  \frametitle{Fragments (2)}
   \begin{itemize}
-  \item Heterogenous queries are handled by use of fragments
-  \item Interface: common fields. Implemented by Objects
-  \item Unions: ``disjoint'' collections of Objects
+  \item Clients build a fragment for each of their UI elements
+  \item Throws every fragment they got at the server
+  \item Server performs ``field collection'' to merge the fragments
+    into one query.
   \end{itemize}
 \end{frame}
 \begin{frame}[fragile]
@@ -215,8 +275,11 @@ query Q($monsterId: Id!) {
 \begin{itemize}
 \item Parameterize Q so it can be reused again and again
 \item Query document contains 50-60 queries. You select one query by
-  its name and provide its parameters.
-\item Arguably safer once you lock down the query document in production.
+  its name and provide its parameters
+\item Arguably safer once you lock down the query document in
+  production
+\item Maximally flexible in development, execution of ``stored
+  procedures'' in production
 \end{itemize}
 \end{frame}
 
@@ -265,24 +328,52 @@ mutation NewMonster {
 \begin{frame}
   \frametitle{What you have seen until now}
   \begin{itemize}
-  \item This is a dungeon schema (presumably for a small dungeon
-    crawler game)
+  \item The queries are from GraphQL test cases
   \item There is a GraphQL server written in Erlang
-  \item The dungeon is backed by an in-memory, disk-backed persistent
+  \item There is a complete tutorial implementing a database for Star
+    Wars\texttrademark{} entities.
+  \item The tutorial is backed by an in-memory, disk-backed persistent
     mnesia instance
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  DEMO (Famous last words, its fragile atm)
+  DEMO(!!)
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Server-side}
+  \begin{itemize}
+  \item We have a parser for typical GraphQL specifications
+  \item You then \emph{map} Erlang modules to schema types
+  \item Creates relationship between type and code
+  \end{itemize}
+\begin{verbatim}
+%% In Schema spec:
+type Planet implements Node {
+  id : ID!
+  name : String
+  diameter : Int
+  rotationPeriod : Int
+  orbitalPeriod : Int
+  ...
+}
+
+%% In Erlang code:
+#{ 'Planet' => sw_core_planet, ... }
+\end{verbatim}
 \end{frame}
 
 \begin{frame}
   \frametitle{Erlang Implementation}
-  The GraphQL system is a programming language
+  Insight: The GraphQL system is a programming language
   \begin{itemize}
   \item Turn GQL query documents into (optimized) query plans
+  \item Currently about 1/3 of the official de-facto Node.js
+    implementation
+  \item Almost feature complete
   \end{itemize}
+  \includegraphics[scale=0.5]{compiler.pdf}
 \end{frame}
 
 \begin{frame}
@@ -312,48 +403,78 @@ mutation NewMonster {
   \item Validator steps further verifies query document correctness
     for common mistakes.
   \item Not on the critical path
+  \item Note: digression from the spec---Push more things to the type
+    checker where it belongs. Push more to the elaborator where it belongs.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Execution}
   \begin{itemize}
-  \item Runs the query.
+  \item Runs the query
   \item On the critical path!
-  \item Uses user-supplied ``resolver'' functions to resolve the
+  \item Uses user-supplied ``resolver'' modules to resolve the
     actual data query.
-  \item Resolvers can be backed any code you want.
+  \item Resolvers can be backed any code you want
+  \item Note: we resolve by modules whereas everyone else resolves by
+    functions. (Pattern matching FTW!)
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Not Covered}
-  All of these has a story within GraphQL, but I have no time to cover
-  them:
+  \frametitle{Resolver example: Planets}
+  TODO
+\end{frame}
+
+\begin{frame}
+  \frametitle{Performance}
   \begin{itemize}
-  \item Subscriptions
-  \item Authentication/Authorization
-  \item Error handling
-  \item Linking to React/Relay
-  \item Internal Schema Validation
-  \item Directives
-  \item Aliasing of field names
+  \item Only parameter checking and execution is time critical
+  \item execution, even for large queries are measured in $\mu{}$s,
+    usually in the 5-10 range
+  \item Fetching data is measured in ms and some times much higher
+  \item Your efficiency kernel is likely to be in data fetching
+  \item Allows our code to be cleaner as efficiency isn't that
+    important
+  \item Can really play Erlang's concurrency strength here
   \end{itemize}
-  Standard is evolving fast. I currently can't keep up with the
-  official de-facto implementation.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Further Work}
+  \begin{itemize}
+  \item Introduce a small functional language as the IR
+  \item Translate GraphQL to IR, type check IR
+  \item Hunch: This is way easier
+  \item Type system obviously has modes/polarity in it
+  \item Want to formalize type system in Coq/Agda/Twelf at some point
+    (Twelf is alluring if we manage to build a $\lambda{}$-calc based IR)
+  \item QuickCheck approaches are obvious candidates for testing as well
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Further Work (2)}
+  \begin{itemize}
+  \item Some validations are still missing
+  \item The code is somewhat mature, but has failing corner cases
+  \item Concurrent/Parallel query execution is not yet in. Foci:
+    correctness first
+  \item Some older ideas in the system can be cut out
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Wanna try it?}
-  Server implementations in at least:
   \begin{itemize}
-  \item Javascript (Node.js)
-  \item Elixir
-  \item Python
+  \item Code is at \url{https://github.com/shopgun/graphql-erlang}
+  \item Tutorial is at
+    \url{https://github.com/shopgun/graphql-erlang-tutorial}
+  \item Tutorial can be viewed at
+    \url{https://shopgun.github.io/graphql-erlang-tutorial/}
   \end{itemize}
-  Client implementations also exist, though I'm only familiar with
-  React/Relay.
 \end{frame}
+
 \begin{frame}
   QUESTIONS?
 \end{frame}
@@ -361,9 +482,9 @@ mutation NewMonster {
 \begin{frame}
   \frametitle{Subscriptions}
   \begin{itemize}
-  \item Method to subscribe to updates on an object.
-  \item Rather new functionality, not yet part of the draft spec.
-  \item Works just like a mutation, however, trivially implemented.
+  \item Method to subscribe to updates on an object
+  \item Rather new functionality, not yet part of the draft spec
+  \item Works just like a mutation, however, trivially implemented
   \end{itemize}
 \end{frame}
 

@@ -1,11 +1,8 @@
-default: dht
+default: graphql.pdf
 
-graphql:
+graphql.pdf: graphql.tex compiler.pdf
 	lualatex graphql.tex
 
-dht: module_layout.pdf
-	lualatex dht.tex
-
-module_layout.pdf: module_layout.dot
-	dot -Tpdf module_layout.dot > module_layout.pdf
+compiler.pdf: compiler.dot
+	dot -Tpdf compiler.dot > compiler.pdf
 
