@@ -479,7 +479,7 @@ respectively. By convention, these types are always called `Query` and
 `Mutation` so it is easy to find the Root's entry points in the
 Graph.
 
-The query root must be injected into the schema so the GraphQL systems
+The query root must be injected into the schema so the GraphQL system
 knows where to start. This is done in the file `sw_core_app` in the
 function `setup_root`:
 
