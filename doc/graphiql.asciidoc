@@ -58,7 +58,7 @@ we can write a query for this particular planet:
 
 [source,graphql]
 ----
-query StarShipQuery {
+query PlanetQuery {
     node(id: "UGxhbmV0OjM=") {
       ... on planet {
         id
