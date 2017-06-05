@@ -138,7 +138,7 @@ is often served by multiple different backends, and those backends are
 not going to cleanly map onto the world we expose to the clients. So
 the GraphQL schema contract becomes a way to mediate between the
 different data stores. As an example, you may satisfy some parts of
-the GraphQL from a dedicated search system--such as
+the GraphQL query from a dedicated search system--such as
 ElasticSearch--while others are served as rows from a traditional
 database, such as MySQL or Postgresql. You may even have a message
 queue broker or some other subsystem in which you have relevant data
