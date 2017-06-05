@@ -1,0 +1,385 @@
+\documentclass[lualatex]{beamer}
+
+\usepackage{fontspec}
+\usepackage{fancyvrb}
+\fvset{fontsize=\scriptsize}
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{}
+\usefonttheme{professionalfonts}
+\setmainfont{Lucida Grande}
+\setsansfont{Lucida Grande}
+\usepackage{unicode-math}
+\setmathfont{Asana Math}
+
+\author{Jesper Louis Andersen\\jesper.louis.andersen@gmail.com}
+\date{\today{}}
+\title{GraphQL\\A Data Query Language}
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+  Overview:
+  \begin{itemize}
+  \item GraphQL Itself
+  \item A GraphQL implementation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Disclaimer}
+  \begin{itemize}
+  \item Only an introduction. The real GraphQL can do more.
+  \item Deliberate skipping of concepts
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Initial Commit}
+  \begin{itemize}
+  \item Created by Facebook in 2012, public (draft) spec in 2015
+  \item Used on Android (Java), iOS (Obj-C), Web (Javascript)
+  \item Can be used to replace RESTful web services
+  \item Client/Server \emph{Query Language}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+  \item There is a schema-definition of data
+  \item The schema is checked for internal consistency
+  \item Client \emph{declares} what it wants through \emph{query}
+  \item The server handles and processes the queries
+  \end{itemize}
+  
+  \rule{\textwidth}{1pt}
+  A wrong but first approximation: SQL for the Web
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example}
+\begin{columns}[T] % align columns
+\begin{column}{.5\textwidth}
+\color{black}\rule{\linewidth}{1pt}
+Input (GraphQL):
+\begin{verbatim}
+query Q {
+  monster(id: "bW9uc3Rlcjo") {
+    id
+    name
+  }
+}
+\end{verbatim}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+\color{gray}\rule{\linewidth}{1pt}
+Output (JSON):
+\begin{verbatim}
+{
+  "monster": {
+    "id": "bW9uc3Rlcjox",
+    "name": "goblin"
+  }
+}
+\end{verbatim}
+\end{column}%
+\end{columns}
+\begin{itemize}
+\item Only requested fields are returned
+\item Must request all fields
+\item Output structure reflects input structure
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example}
+\begin{columns}[T] % align columns
+\begin{column}{.5\textwidth}
+\color{black}\rule{\linewidth}{1pt}
+\begin{verbatim}
+query Q {
+  room(id: "cm9vbToz") {
+    exits {
+      direction
+      room {
+        id
+        description
+      }
+    }
+  }
+}
+\end{verbatim}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+\color{gray}\rule{\linewidth}{1pt}
+\begin{verbatim}
+"room": {
+  "description": "Dungeon Entrance",
+  "exits": [
+   {
+    "direction": "north",
+    "room": {
+     "description": "A dark tunnel",
+     "id": "cm9vbTox" } },
+   {
+    "direction": "secret_passage",
+    "room": {
+     "description":
+       "In a secret passage",
+     "id": "cm9vbToy" } }]
+}
+\end{verbatim}
+\end{column}
+\end{columns}
+\begin{itemize}
+\item Schema defines if a field is a scalar or object
+\item Schema defines if a field is composite: (array, non-null)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  Main points about GraphQL:
+  \begin{itemize}
+  \item Hierarchical: Query in a hierarchy of fields
+  \item Front-end drives: product centric view
+  \item Type Checked input language
+  \item Contract between the client and server
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  More main points about GraphQL:
+  \begin{itemize}
+  \item Validated: Guard against bad queries
+  \item Introspective: We can query the server for the schema
+  \item Backward/forward compatible: You can extend the schema
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  This is not RESTful:
+  \begin{itemize}
+  \item One query, all operations happen on the server side
+  \item Lower latency is often achieved
+  \item Can avoid lots of ``boiler plate'' endpoints
+  \item Move most ``looping'' in RESTful services to the GraphQL
+    execution engine
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Fragments}
+\begin{verbatim}
+query Q {
+  monster(id:"...") {
+    ...MonsterFrag
+  }
+  room(id:"...") {
+    contents {
+      ...MonsterFrag
+    }
+  }
+}
+
+fragment MonsterFrag on Monster {
+  id
+  name
+  hitpoints
+}
+\end{verbatim}
+\begin{itemize}
+\item Fragments allow concise reference to fields
+\item Fragments also provide ``downcasting'' (contents ``can'' be a
+  monster)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Interfaces and Unions}
+  \begin{itemize}
+  \item Heterogenous queries are handled by use of fragments
+  \item Interface: common fields. Implemented by Objects
+  \item Unions: ``disjoint'' collections of Objects
+  \end{itemize}
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{Parameterized queries}
+\begin{verbatim}
+query Q($monsterId: Id!) {
+  monster(id: $monsterId) {
+    ...MonsterFrag
+  }
+}
+\end{verbatim}
+\begin{itemize}
+\item Parameterize Q so it can be reused again and again
+\item Query document contains 50-60 queries. You select one query by
+  its name and provide its parameters.
+\item Arguably safer once you lock down the query document in production.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Mutations}
+\begin{columns}[T] % align columns
+\begin{column}{.5\textwidth}
+\color{black}\rule{\linewidth}{1pt}
+\begin{verbatim}
+mutation NewMonster {
+  introduceMonster(input:
+    {clientMutationId: "123",
+     name: "Succubus",
+     hitpoints: 24,
+     color: "#bbbb00"}) {
+    clientMutationId
+    monster {
+      id
+      name
+    }
+  }
+}
+\end{verbatim}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+\color{gray}\rule{\linewidth}{1pt}
+\begin{verbatim}
+"introduceMonster": {
+  "clientMutationId": "123",
+  "monster": {
+    "id": "bW9uc3Rlcjoz",
+    "name": "Succubus"
+  }
+}
+\end{verbatim}
+\end{column}
+\end{columns}
+\begin{itemize}
+\item Changes are through mutations
+\item A mutation is \emph{like} a query (but the server handles it differently)
+\item Note input objects!
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What you have seen until now}
+  \begin{itemize}
+  \item This is a dungeon schema (presumably for a small dungeon
+    crawler game)
+  \item There is a GraphQL server written in Erlang
+  \item The dungeon is backed by an in-memory, disk-backed persistent
+    mnesia instance
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  DEMO (Famous last words, its fragile atm)
+\end{frame}
+
+\begin{frame}
+  \frametitle{Erlang Implementation}
+  The GraphQL system is a programming language
+  \begin{itemize}
+  \item Turn GQL query documents into (optimized) query plans
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Lexing and Parsing}
+  \begin{itemize}
+  \item Standard Erlang lexer generator leex
+  \item Could be hand rolled
+  \item Not on the critical path
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Elaboration}
+  \begin{itemize}
+  \item Trick from Standard ML compilers (type inference,
+    defunctorization, etc)
+  \item Elaborate the query by annotating schema types
+  \item Makes the later stages far easier to write
+  \item Not on the critical path
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Type Check and Validation}
+  \begin{itemize}
+  \item Fairly standard type checker
+  \item Validator steps further verifies query document correctness
+    for common mistakes.
+  \item Not on the critical path
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Execution}
+  \begin{itemize}
+  \item Runs the query.
+  \item On the critical path!
+  \item Uses user-supplied ``resolver'' functions to resolve the
+    actual data query.
+  \item Resolvers can be backed any code you want.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Not Covered}
+  All of these has a story within GraphQL, but I have no time to cover
+  them:
+  \begin{itemize}
+  \item Subscriptions
+  \item Authentication/Authorization
+  \item Error handling
+  \item Linking to React/Relay
+  \item Internal Schema Validation
+  \item Directives
+  \item Aliasing of field names
+  \end{itemize}
+  Standard is evolving fast. I currently can't keep up with the
+  official de-facto implementation.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wanna try it?}
+  Server implementations in at least:
+  \begin{itemize}
+  \item Javascript (Node.js)
+  \item Elixir
+  \item Python
+  \end{itemize}
+  Client implementations also exist, though I'm only familiar with
+  React/Relay.
+\end{frame}
+\begin{frame}
+  QUESTIONS?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Subscriptions}
+  \begin{itemize}
+  \item Method to subscribe to updates on an object.
+  \item Rather new functionality, not yet part of the draft spec.
+  \item Works just like a mutation, however, trivially implemented.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Authentication}
+  \begin{itemize}
+  \item Pass around a context to each resolver.
+  \item Store Authentication/Authorization info in the context.
+  \item Write the resolver such that it inspects the context for auth
+    information.
+  \item special objects: me, viewer, \ldots.
+  \end{itemize}
+\end{frame}
+
+\end{document}
+% Local Variables:
+% TeX-engine: luatex
+% TeX-master: t
+% End:
