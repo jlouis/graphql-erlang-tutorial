@@ -284,7 +284,7 @@ of data the client can send and what types of data the server can
 respond with.
 
 Input and output objects are subject to different rules. In
-particular, there is no way to input a `null` value in an input. They
+particular, there is no way to input a `null` value in an input. The
 way a client inputs a _no value_ input is by omission of the input
 parameter in question. This choice simplifies clients and servers.
 
