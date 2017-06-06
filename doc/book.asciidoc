@@ -65,6 +65,9 @@ include::code.asciidoc[Code Overview]
 [[changelog]]
 == Changelog
 
+June 5th, 2017:: Merged a set of typo fixes to the documentation by
+  @benbro.
+
 May 30th, 2017:: Documented a more complex mutation example,
   <<introducing-starships>>, which explains how to carry out more
   complex queries. Also added this as an example to the
