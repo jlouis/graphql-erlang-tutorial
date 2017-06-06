@@ -26,17 +26,17 @@ wait_for_tables() ->
 
 load('Vehicle', ID) ->
     F = fun() ->
-                [Transport] = mnesia:read('Transport', ID, read),
-                [Vehicle]  = mnesia:read('Vehicle', ID, read),
-                #{ starship => Vehicle,
+                [Transport] = mnesia:read(transport, ID, read),
+                [Vehicle]  = mnesia:read(vehicle, ID, read),
+                #{ vehicle => Vehicle,
                    transport => Transport }
         end,
     txn(F);
 %% tag::loadStarship[]
 load('Starship', ID) ->
     F = fun() ->
-                [Transport] = mnesia:read('Transport', ID, read),
-                [Starship]  = mnesia:read('Starship', ID, read),
+                [Transport] = mnesia:read(transport, ID, read),
+                [Starship]  = mnesia:read(starship, ID, read),
                 #{ starship => Starship,
                    transport => Transport }
         end,
