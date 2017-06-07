@@ -59,7 +59,7 @@
   We started with some analysis:
   \begin{itemize}
   \item Have existing HTTP/1.1 API
-  \item HTTP/1.1 ng?
+  \item HTTP/1.1 or HTTP/2 ng?
   \item Falcor?
   \item GraphQL?
   \end{itemize}
@@ -76,6 +76,8 @@
   \item The data evolves over time, and requires lots of server-side
     tuning
   \item Documentation is added ad-hoc to the API
+  \item Request/Response structure is unclear and client developers
+    spend time adapting
   \end{itemize}
 \end{frame}
 
@@ -86,12 +88,13 @@
   \item Used on Android (Java), iOS (Obj-C), Web (Javascript)
   \item Can be used to replace (RESTful) web services
   \item Client/Server \emph{Query Language}
-  \item Some ideas from Armstrong's UBF are in here
+  \item Some ideas from Armstrong's UBF are in there
   \item Often JSON output, but isn't bound to JSON
   \end{itemize}
 \end{frame}
 
 \begin{frame}
+  \frametitle{GraphQL Major features we like}
   \begin{itemize}
   \item There is a schema-definition of data (contract)
   \item The schema is checked for internal consistency (contract checking)
@@ -262,7 +265,9 @@ fragment MonsterFrag on Monster {
   \item Clients build a fragment for each of their UI elements
   \item Throws every fragment they got at the server
   \item Server performs ``field collection'' to merge the fragments
-    into one query.
+    into one query
+  \item Clients are free to use these features or not
+  \item Clients can evolve at different pace
   \end{itemize}
 \end{frame}
 \begin{frame}[fragile]
@@ -374,6 +379,8 @@ type Planet implements Node {
   \item Currently about 1/3 of the official de-facto Node.js
     implementation
   \item Almost feature complete
+  \item Many other engines use an Object-Oriented visitor pattern
+    scheme. We thought we could use a functional approach
   \end{itemize}
   \includegraphics[scale=0.5]{compiler.pdf}
 \end{frame}
@@ -391,7 +398,7 @@ type Planet implements Node {
   \frametitle{Elaboration}
   \begin{itemize}
   \item Trick from Standard ML compilers (type inference,
-    defunctorization, etc)
+    defunctorization, phase splitting etc)
   \item Elaborate the query by annotating schema types
   \item Makes the later stages far easier to write
   \item Not on the critical path
@@ -468,7 +475,7 @@ execute(_Ctx, Obj, Field, _Args) ->
   \item Type system obviously has modes/polarity in it
   \item Want to formalize type system in Coq/Agda/Twelf at some point
     (Twelf is alluring if we manage to build a $\lambda{}$-calc based IR)
-  \item QuickCheck approaches are obvious candidates for testing as well
+  \item QuickCheck approaches are obvious for testing as well
   \end{itemize}
 \end{frame}
 
@@ -480,6 +487,7 @@ execute(_Ctx, Obj, Field, _Args) ->
   \item Concurrent/Parallel query execution is not yet in. Foci:
     correctness first
   \item Some older ideas in the system can be cut out
+  \item Build a dedicated handler for Cowboy (awaits Cowboy 2.0)
   \end{itemize}
 \end{frame}
 
