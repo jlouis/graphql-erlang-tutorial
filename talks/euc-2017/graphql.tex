@@ -86,6 +86,8 @@
   \item Used on Android (Java), iOS (Obj-C), Web (Javascript)
   \item Can be used to replace (RESTful) web services
   \item Client/Server \emph{Query Language}
+  \item Some ideas from Armstrong's UBF are in here
+  \item Often JSON output, but isn't bound to JSON
   \end{itemize}
 \end{frame}
 
@@ -421,9 +423,26 @@ type Planet implements Node {
   \end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile,fragile,fragile]
   \frametitle{Resolver example: Planets}
-  TODO
+\begin{verbatim}
+execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
+    case Field of
+        <<"id">> -> {ok, sw_core_id:encode({'Planet', Planet#planet.id})};
+        <<"edited">> -> {ok, Planet#planet.edited};
+        <<"climate">> -> {ok, Planet#planet.climate};
+        <<"surfaceWater">> -> {ok, Planet#planet.surface_water};
+        <<"name">> -> {ok, Planet#planet.name};
+        <<"diameter">> -> {ok, integer(Planet#planet.diameter)};
+        <<"rotationPeriod">> -> {ok, integer(Planet#planet.rotation_period)};
+        ...;
+    end
+\end{verbatim}
+  Generic resolver:
+\begin{verbatim}
+execute(_Ctx, Obj, Field, _Args) ->
+    {ok, maps:get(Field, Obj, null)}.
+\end{verbatim}
 \end{frame}
 
 \begin{frame}
