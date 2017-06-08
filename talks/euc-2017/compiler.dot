@@ -1,0 +1,23 @@
+digraph compiler {
+        node [fontname="Helvetica",fontsize=12,shape=plaintext,labelfontname=Helvetica];
+        rankdir=LR;
+        labeljust = l;
+        labelloc = t;
+        fontsize = 24;
+        fontname="Helvetica";
+        nodesep=0.5;
+
+        query [label=Query]
+        ast [label=AST]
+        annot [label="AST2"]
+        result [label="Result"]
+        params [label="Parameters"]
+        elab_params [label="Elab Params"]
+
+        query -> ast [label="Lex/Parse"]
+        ast -> annot [label="Elaborate"]
+        annot -> annot [label="Type Check / Validate"]
+        annot -> result [label="Execute", color="red"]
+        params -> elab_params [label="Type Check", color="red"]
+        elab_params -> annot [color="red"]
+}

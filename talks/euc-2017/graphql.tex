@@ -1,0 +1,543 @@
+\documentclass[lualatex]{beamer}
+\usepackage{textcomp}
+\usepackage{fontspec}
+\usepackage{fancyvrb}
+\fvset{fontsize=\scriptsize}
+\RecustomVerbatimEnvironment{verbatim}{Verbatim}{}
+\usefonttheme{professionalfonts}
+\setmainfont{Lucida Grande}
+\setsansfont{Lucida Grande}
+\usepackage{unicode-math}
+\setmathfont{Asana Math}
+
+\author{Jesper Louis
+  Andersen\\jesper.louis.andersen@gmail.com\\ShopGun}
+\date{\today{}}
+\title{GraphQL Erlang}
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+  Overview:
+  \begin{itemize}
+  \item Background
+  \item GraphQL Itself
+  \item The implementation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Not covered}
+  I can't cover everything. A list of things which has a story in
+  GraphQL, but I skip:
+  \begin{itemize}
+  \item Subscriptions
+  \item Abstract types: Interfaces, Unions
+  \item Authentication/Authorization
+  \item Error handling
+  \item Schema Loading and Validation
+  \item Directives
+  \item Aliasing of field names
+  \item \ldots{}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Once upon a time\ldots{}}
+  \begin{itemize}
+  \item ShopGun's mission: index the worlds shopping data
+  \item Shopping data: Semi-structured data set
+  \item Think Time Zones and Calendars
+  \item Densely populated dataset, many links
+  \end{itemize}
+
+  How do we create an API for such a data model?
+\end{frame}
+
+\begin{frame}
+  \frametitle{State}
+  We started with some analysis:
+  \begin{itemize}
+  \item Have existing HTTP/1.1 API
+  \item HTTP/1.1 or HTTP/2 ng?
+  \item Falcor?
+  \item GraphQL?
+  \end{itemize}
+
+  Ended with GraphQL: heaviest solution but also solves our problems.
+\end{frame}
+
+\begin{frame}
+  What are our major problems in the current API?
+  \begin{itemize}
+  \item Multiple clients: Each client needs different data
+  \item Some clients use typed languages, some use untyped languages
+  \item Many obvious type errors occur and slows development
+  \item The data evolves over time, and requires lots of server-side
+    tuning
+  \item Documentation is added ad-hoc to the API
+  \item Request/Response structure is unclear and client developers
+    spend time adapting
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GraphQL: Initial Commit}
+  \begin{itemize}
+  \item Created by Facebook in 2012, public (draft) spec in 2015
+  \item Used on Android (Java), iOS (Obj-C), Web (Javascript)
+  \item Can be used to replace (RESTful) web services
+  \item Client/Server \emph{Query Language}
+  \item Some ideas from Armstrong's UBF are in there
+  \item Often JSON output, but isn't bound to JSON
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{GraphQL Major features we like}
+  \begin{itemize}
+  \item There is a schema-definition of data (contract)
+  \item The schema is checked for internal consistency (contract checking)
+  \item Client \emph{declares} what it wants through \emph{query}
+    (declarative)
+  \item Client declarations must explicitly mention the data wanted in
+    the request
+  \item The server handles and processes the queries (query execution)
+  \end{itemize}
+  \rule{\textwidth}{1pt}
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+  \item The schema is fully typed
+  \item An request with a (non-coercible) type error is rejected
+  \item A response with a type error is \emph{coerced} into a valid
+    response
+  \item The server allows introspection queries on the meta-structure
+    of the contract (automatic discovery)
+  \end{itemize}
+  \rule{\textwidth}{1pt}
+  Note: These things solves our current major problems.
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example}
+\begin{columns}[T] % align columns
+\begin{column}{.5\textwidth}
+\color{black}\rule{\linewidth}{1pt}
+Input (GraphQL):
+\begin{verbatim}
+query Planet {
+  node(id: "UGxhbmV0OjE=") {
+    ... on Planet {
+      id
+      name
+      orbitalPeriod
+    }
+  }
+}
+\end{verbatim}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+\color{gray}\rule{\linewidth}{1pt}
+Output (JSON):
+\begin{verbatim}
+{
+  "data": {
+    "node": {
+      "id": "UGxhbmV0OjE=",
+      "name": "Tatooine",
+      "orbitalPeriod": 304
+    }
+  }
+}
+\end{verbatim}
+\end{column}%
+\end{columns}
+\begin{itemize}
+\item Only requested fields are returned
+\item Must request all fields
+\item Output structure reflects input structure
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Example}
+\begin{columns}[T] % align columns
+\begin{column}{.5\textwidth}
+\color{black}\rule{\linewidth}{1pt}
+\begin{verbatim}
+query Q {
+  room(id: "cm9vbToz") {
+    description
+    exits {
+      direction
+      room {
+        id
+        description
+      }
+    }
+  }
+}
+\end{verbatim}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+\color{gray}\rule{\linewidth}{1pt}
+\begin{verbatim}
+"room": {
+  "description": "Dungeon Entrance",
+  "exits": [
+   {
+    "direction": "north",
+    "room": {
+     "description": "A dark tunnel",
+     "id": "cm9vbTox" } },
+   {
+    "direction": "secret_passage",
+    "room": {
+     "description":
+       "In a secret passage",
+     "id": "cm9vbToy" } }]
+}
+\end{verbatim}
+\end{column}
+\end{columns}
+\begin{itemize}
+\item Schema defines if a field is a scalar or object
+\item Schema defines if a field is composite: (array, non-null)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  Our current API responds slowly at times, due to the round-trip
+  time between the client and the server. Especially on mobile phones
+  with bad connectivity.
+  
+  \begin{itemize}
+  \item How do we solve this?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \begin{itemize}
+  \item One query, all operations happen on the server side
+  \item Round trip time is between servers, often a few milliseconds
+    at most
+  \item Lower latency achieved as a result
+  \item Can avoid lots of ``boiler plate'' endpoints
+  \item Move most ``looping'' in RESTful services to the GraphQL
+    execution engine
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Fragments}
+\begin{verbatim}
+query Q {
+  monster(id:"...") {
+    ...MonsterFrag
+  }
+  room(id:"...") {
+    contents {
+      ...MonsterFrag
+    }
+  }
+}
+
+fragment MonsterFrag on Monster {
+  id
+  name
+  hitpoints
+}
+\end{verbatim}
+\begin{itemize}
+\item Fragments allow concise reference to fields
+\item Fragments also provide ``downcasting'' (contents ``can'' be a
+  monster)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fragments (2)}
+  \begin{itemize}
+  \item Clients build a fragment for each of their UI elements
+  \item Throws every fragment they got at the server
+  \item Server performs ``field collection'' to merge the fragments
+    into one query
+  \item Clients are free to use these features or not
+  \item Clients can evolve at different pace
+  \end{itemize}
+\end{frame}
+\begin{frame}[fragile]
+  \frametitle{Parameterized queries}
+\begin{verbatim}
+query Q($monsterId: Id!) {
+  monster(id: $monsterId) {
+    ...MonsterFrag
+  }
+}
+\end{verbatim}
+\begin{itemize}
+\item Parameterize Q so it can be reused again and again
+\item Query document contains 50-60 queries. You select one query by
+  its name and provide its parameters
+\item Arguably safer once you lock down the query document in
+  production
+\item Maximally flexible in development, execution of ``stored
+  procedures'' in production
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Mutations}
+\begin{columns}[T] % align columns
+\begin{column}{.5\textwidth}
+\color{black}\rule{\linewidth}{1pt}
+\begin{verbatim}
+mutation NewMonster {
+  introduceMonster(input:
+    {clientMutationId: "123",
+     name: "Succubus",
+     hitpoints: 24,
+     color: "#bbbb00"}) {
+    clientMutationId
+    monster {
+      id
+      name
+    }
+  }
+}
+\end{verbatim}
+\end{column}
+\hfill
+\begin{column}{.5\textwidth}
+\color{gray}\rule{\linewidth}{1pt}
+\begin{verbatim}
+"introduceMonster": {
+  "clientMutationId": "123",
+  "monster": {
+    "id": "bW9uc3Rlcjoz",
+    "name": "Succubus"
+  }
+}
+\end{verbatim}
+\end{column}
+\end{columns}
+\begin{itemize}
+\item Changes are through mutations
+\item A mutation is \emph{like} a query (but the server handles it differently)
+\item Note input objects!
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{What you have seen until now}
+  \begin{itemize}
+  \item The queries are from GraphQL test cases
+  \item There is a GraphQL server written in Erlang
+  \item There is a complete tutorial implementing a database for Star
+    Wars\texttrademark{} entities.
+  \item The tutorial is backed by an in-memory, disk-backed persistent
+    mnesia instance
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  DEMO(!!)
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Server-side}
+  \begin{itemize}
+  \item We have a parser for typical GraphQL specifications
+  \item You then \emph{map} Erlang modules to schema types
+  \item Creates relationship between type and code
+  \end{itemize}
+\begin{verbatim}
+%% In Schema spec:
+type Planet implements Node {
+  id : ID!
+  name : String
+  diameter : Int
+  rotationPeriod : Int
+  orbitalPeriod : Int
+  ...
+}
+
+%% In Erlang code:
+#{ 'Planet' => sw_core_planet, ... }
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Erlang Implementation}
+  Insight: The GraphQL system is a programming language
+  \begin{itemize}
+  \item Turn GQL query documents into (optimized) query plans
+  \item Currently about 1/3 of the official de-facto Node.js
+    implementation
+  \item Almost feature complete
+  \item Many other engines use an Object-Oriented visitor pattern
+    scheme. We thought we could use a functional approach
+  \end{itemize}
+  \includegraphics[scale=0.5]{compiler.pdf}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Lexing and Parsing}
+  \begin{itemize}
+  \item Standard Erlang lexer generator leex
+  \item Could be hand rolled
+  \item Not on the critical path
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Elaboration}
+  \begin{itemize}
+  \item Trick from Standard ML compilers (type inference,
+    defunctorization, phase splitting etc)
+  \item Elaborate the query by annotating schema types
+  \item Makes the later stages far easier to write
+  \item Not on the critical path
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Type Check and Validation}
+  \begin{itemize}
+  \item Fairly standard type checker
+  \item Validator steps further verifies query document correctness
+    for common mistakes.
+  \item Not on the critical path
+  \item Note: digression from the spec---Push more things to the type
+    checker where it belongs. Push more to the elaborator where it belongs.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Execution}
+  \begin{itemize}
+  \item Runs the query
+  \item On the critical path!
+  \item Uses user-supplied ``resolver'' modules to resolve the
+    actual data query.
+  \item Resolvers can be backed any code you want
+  \item Note: we resolve by modules whereas everyone else resolves by
+    functions. (Pattern matching FTW!)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,fragile,fragile]
+  \frametitle{Resolver example: Planets}
+\begin{verbatim}
+execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
+    case Field of
+        <<"id">> -> {ok, sw_core_id:encode({'Planet', Planet#planet.id})};
+        <<"edited">> -> {ok, Planet#planet.edited};
+        <<"climate">> -> {ok, Planet#planet.climate};
+        <<"surfaceWater">> -> {ok, Planet#planet.surface_water};
+        <<"name">> -> {ok, Planet#planet.name};
+        <<"diameter">> -> {ok, integer(Planet#planet.diameter)};
+        <<"rotationPeriod">> -> {ok, integer(Planet#planet.rotation_period)};
+        ...;
+    end
+\end{verbatim}
+  Generic resolver:
+\begin{verbatim}
+execute(_Ctx, Obj, Field, _Args) ->
+    {ok, maps:get(Field, Obj, null)}.
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Performance}
+  \begin{itemize}
+  \item Only parameter checking and execution is time critical
+  \item execution, even for large queries are measured in $\mu{}$s,
+    usually in the 5-10 range
+  \item Fetching data is measured in ms and some times much higher
+  \item Your efficiency kernel is likely to be in data fetching
+  \item Allows our code to be cleaner as efficiency isn't that
+    important
+  \item Can really play Erlang's concurrency strength here
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Further Work}
+  \begin{itemize}
+  \item Introduce a small functional language as the IR
+  \item Translate GraphQL to IR, type check IR
+  \item Hunch: This is way easier
+  \item Type system obviously has modes/polarity in it
+  \item Want to formalize type system in Coq/Agda/Twelf at some point
+    (Twelf is alluring if we manage to build a $\lambda{}$-calc based IR)
+  \item QuickCheck approaches are obvious for testing as well
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Further Work (2)}
+  \begin{itemize}
+  \item Some validations are still missing
+  \item The code is somewhat mature, but has failing corner cases
+  \item Concurrent/Parallel query execution is not yet in. Foci:
+    correctness first
+  \item Some older ideas in the system can be cut out
+  \item Build a dedicated handler for Cowboy (awaits Cowboy 2.0)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Wanna try it?}
+  \begin{itemize}
+  \item Code is at \url{https://github.com/shopgun/graphql-erlang}
+  \item Tutorial is at
+    \url{https://github.com/shopgun/graphql-erlang-tutorial}
+  \item Tutorial can be viewed at
+    \url{https://shopgun.github.io/graphql-erlang-tutorial/}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  QUESTIONS?
+\end{frame}
+
+\begin{frame}
+  \frametitle{What went right}
+  \begin{itemize}
+  \item Write a tutorial early
+  \item Documentation forces specification
+  \item Iterate the solution. The current one is iteration 3
+  \item Don't care about efficiency early
+  \end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{Subscriptions}
+  \begin{itemize}
+  \item Method to subscribe to updates on an object
+  \item Rather new functionality, not yet part of the draft spec
+  \item Works just like a mutation, however, trivially implemented
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Authentication}
+  \begin{itemize}
+  \item Pass around a context to each resolver.
+  \item Store Authentication/Authorization info in the context.
+  \item Write the resolver such that it inspects the context for auth
+    information.
+  \item special objects: me, viewer, \ldots.
+  \end{itemize}
+\end{frame}
+
+\end{document}
+% Local Variables:
+% TeX-engine: luatex
+% TeX-master: t
+% End:

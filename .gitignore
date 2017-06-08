@@ -1,3 +1,13 @@
 _build
 /doc/book.html
 /doc/book.xml
+/talks/euc-2017/compiler.pdf
+/talks/euc-2017/compiler.png
+/talks/euc-2017/graphql.aux
+/talks/euc-2017/graphql.log
+/talks/euc-2017/graphql.nav
+/talks/euc-2017/graphql.out
+/talks/euc-2017/graphql.snm
+/talks/euc-2017/graphql.toc
+/talks/euc-2017/graphql.vrb
+talks/euc-2017/auto/
