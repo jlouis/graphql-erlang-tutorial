@@ -1,5 +1,5 @@
 language: erlang
-sudo: false
+sudo: true
 
 os: linux
 otp_release: 19.3
