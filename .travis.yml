@@ -14,8 +14,7 @@ matrix:
 script: "make compile documentation REBAR=./rebar3"
 
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y asciidoctor
+  - gem install asciidoctor
 
 install:
   - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
