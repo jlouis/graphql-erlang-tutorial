@@ -17,8 +17,7 @@ schema in the tutorial you are now reading:
 * It is a small straightforward example. Yet it is large enough that
   it will cover most parts of GraphQL.
 * If the reader is already familiar with the system in another GraphQL
-  implemented, they can relate to the implementation which makes
-  pickup of {project} faster.
+  implementation, it makes pickup of {project} faster.
 * We can use a full system as a driving example for this tutorial.
 * If {project} has a bug, it may be possible to showcase the bug
   through this repository. This makes it easier to work on since you
