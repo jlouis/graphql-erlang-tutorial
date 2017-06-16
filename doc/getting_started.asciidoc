@@ -137,7 +137,7 @@ execution.
 
 Our Star Wars schema uses the database *Mnesia* as a backend. It is
 important to stress that you often have a situation where your
-database backend doesn't map 1-1 onto the GraphQL schema you specify.
+database backend doesn't map 1-1 onto your specified GraphQL schema.
 In larger systems, this is particularly important: the GraphQL schema
 is often served by multiple different backends, and those backends are
 not going to cleanly map onto the world we expose to the clients. So
