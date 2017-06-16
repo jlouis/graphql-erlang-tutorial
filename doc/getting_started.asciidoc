@@ -99,6 +99,12 @@ Input and Output objects differ. In general, a Client has no way to
 systems. From a type-level perspective, client requests and server
 responses have different _polarity_.
 
+////
+TODO: Explain/Link to explanation of "polarity" or leave out.
+Wiki page on type theory doesn't even contain the word "polarity":
+https://en.wikipedia.org/wiki/Type_theory
+////
+
 It may seem as if this is an irritating choice. You often have to
 specify the "`same`" object twice: once for input and once for output.
 However, as your GraphQL systems grows in size, it turns out this
