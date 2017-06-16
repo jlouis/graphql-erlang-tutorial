@@ -85,7 +85,7 @@ The GraphQL schema defines the client/server contract. It consists of
 several GraphQL entity kinds. For example:
 
 * Scalar types--Extensions on top of the default types. Often used
-  for Dates, DateTime's, URI's, Color's, Currency, Locales and so on.
+  for Dates, DateTimes, URIs, Colors, Currency, Locales and so on.
 * Enumerations--Values taken from a limited set. An example could be
   the enumeration of weekdays: "`MONDAY, TUESDAY, WEDNESDAY, ...,
   SUNDAY`".
