@@ -116,7 +116,7 @@ omit many fields that doesn't make sense.
 
 In a way, your GraphQL system is built such that changes to the data
 is done by executing "`transactions`" through a set of stored
-procedures. This can be seen as using the "`_PATCH_`" method of RESTful
+procedures. This can be seen as using the _"`PATCH`"_ method of RESTful
 interfaces and not having a definition of PUT.
 
 .CQRS
