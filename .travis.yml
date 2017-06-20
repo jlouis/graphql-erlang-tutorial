@@ -1,0 +1,24 @@
+language: erlang
+sudo: false
+
+os: linux
+otp_release: 19.3
+
+matrix:
+  include:
+    - os: linux
+      otp_release: 19.3
+    - os: linux
+      otp_release: 20.0-rc1
+
+script: "make compile documentation REBAR=./rebar3"
+
+before_install:
+  - gem install asciidoctor
+
+install:
+  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
+
+notifications:
+  recipients:
+    - jesper.louis.andersen@gmail.com

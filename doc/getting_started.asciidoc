@@ -17,8 +17,7 @@ schema in the tutorial you are now reading:
 * It is a small straightforward example. Yet it is large enough that
   it will cover most parts of GraphQL.
 * If the reader is already familiar with the system in another GraphQL
-  implemented, they can relate to the implementation which makes
-  pickup of {project} faster.
+  implementation, it makes pickup of {project} faster.
 * We can use a full system as a driving example for this tutorial.
 * If {project} has a bug, it may be possible to showcase the bug
   through this repository. This makes it easier to work on since you
@@ -86,7 +85,7 @@ The GraphQL schema defines the client/server contract. It consists of
 several GraphQL entity kinds. For example:
 
 * Scalar types--Extensions on top of the default types. Often used
-  for Dates, DateTime's, URI's, Color's, Currency, Locales and so on.
+  for Dates, DateTimes, URIs, Colors, Currency, Locales and so on.
 * Enumerations--Values taken from a limited set. An example could be
   the enumeration of weekdays: "`MONDAY, TUESDAY, WEDNESDAY, ...,
   SUNDAY`".
@@ -100,6 +99,12 @@ Input and Output objects differ. In general, a Client has no way to
 systems. From a type-level perspective, client requests and server
 responses have different _polarity_.
 
+////
+TODO: Explain/Link to explanation of "polarity" or leave out.
+Wiki page on type theory doesn't even contain the word "polarity":
+https://en.wikipedia.org/wiki/Type_theory
+////
+
 It may seem as if this is an irritating choice. You often have to
 specify the "`same`" object twice: once for input and once for output.
 However, as your GraphQL systems grows in size, it turns out this
@@ -111,7 +116,7 @@ omit many fields that doesn't make sense.
 
 In a way, your GraphQL system is built such that changes to the data
 is done by executing "`transactions`" through a set of stored
-procedures. This can be seen as using the "`_PATCH_`" method of RESTful
+procedures. This can be seen as using the _"`PATCH`"_ method of RESTful
 interfaces and not having a definition of PUT.
 
 .CQRS
@@ -132,7 +137,7 @@ execution.
 
 Our Star Wars schema uses the database *Mnesia* as a backend. It is
 important to stress that you often have a situation where your
-database backend doesn't map 1-1 onto the GraphQL schema you specify.
+database backend doesn't map 1-1 onto your specified GraphQL schema.
 In larger systems, this is particularly important: the GraphQL schema
 is often served by multiple different backends, and those backends are
 not going to cleanly map onto the world we expose to the clients. So

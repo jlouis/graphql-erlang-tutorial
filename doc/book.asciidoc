@@ -1,5 +1,6 @@
 = {project} Tutorial
 Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https://github.com/gausby[@gausby]>; ShopGun <https://github.com/shopgun[@shopgun]>
+May 2017
 :toc: left
 :icons: font
 :source-highlighter: prettify
@@ -63,6 +64,9 @@ include::code.asciidoc[Code Overview]
 [appendix]
 [[changelog]]
 == Changelog
+
+June 5th, 2017:: Merged a set of typo fixes to the documentation by
+  @benbro.
 
 May 30th, 2017:: Documented a more complex mutation example,
   <<introducing-starships>>, which explains how to carry out more

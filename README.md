@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/shopgun/graphql-erlang-tutorial.svg?branch=master)](https://travis-ci.org/shopgun/graphql-erlang-tutorial)
+
+
 # A tutorial for GraphQL-Erlang
 
 This repository contains a tutorial for the graphql-erlang system. It
