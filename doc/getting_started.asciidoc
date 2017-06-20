@@ -202,7 +202,8 @@ Erlang/OTP 19 [erts-8.3] [source] [64-bit] [smp:8:8] [async-threads:10] [hipe] [
 Eshell V8.3  (abort with ^G)
 1> sw_core_db:create_schema(). % <4>
 ----
-<1> Clean out the source code repository to make sure there is no lingering files
+<1> Clean out the source code repository to make sure there is no lingering files:
+    Caution when using this command as it could potentially delete files if used in wrong directory.
 <2> Compile the code so we have compiled versions of modules we can loaded
 <3> Run the Erlang interpreter with an altered path for our newly compiled modules
 <4> Create the schema
