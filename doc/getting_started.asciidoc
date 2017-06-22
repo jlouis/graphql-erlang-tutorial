@@ -246,10 +246,11 @@ stored as JSON document. So we use `jsx` to decode those JSON
 documents and turn them into Mnesia records, which we then insert into
 the database.
 
-We can fairly easily write a function which take the JSON and turn them
-into appropriate Mnesia records. Planets live in a fixture file
-`planets.json`, so we need a function that can turn a part said JSON
-file into a Mnesia record. Some conversion is necessary on the way:
+We can fairly easily write a transformer function which take the JSON
+terms and turn them into appropriate Mnesia records. Planets live in a
+fixture file `planets.json`, which we can read and transform. Some
+conversion is necessary on the way since the internal representation
+differ slightly from the representation in the fixture:
 
 [source,erlang]
 ----
