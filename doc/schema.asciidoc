@@ -74,12 +74,13 @@ include::{sw_core}/priv/sw.schema[tags=nodeInterface]
 
 .On Documentation
 
-The Erlang version of GraphQL allows a certain extension by the Apollo
-people. This extension allows you to use <<annotations>> in GraphQL
-schemas to attach more information to particular objects of interest.
-We use this for documentation. You can annotate almost anything with
-`+description(text: "documentation")` which in turn attaches that
-documentation to an entity in the Graph.
+The Erlang version of GraphQL allows a certain extension by the
+https://github.com/apollographql[Apollo Community @ *Github*], who are
+building tools GraphQL in general. This extension allows you to use
+<<annotations>> in GraphQL schemas to attach more information to
+particular objects of interest. We use this for documentation. You can
+annotate almost anything with `+description(text: "documentation")`
+which in turn attaches that documentation to an entity in the Graph.
 
 Multi-line comments are also possible by using a backtick (`) rather
 than a quote symbol ("). These allows larger Markdown entries to be
