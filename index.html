@@ -430,6 +430,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <span id="email2" class="email"><a href="https://github.com/gausby">@gausby</a></span><br>
 <span id="author3" class="author">ShopGun</span><br>
 <span id="email3" class="email"><a href="https://github.com/shopgun">@shopgun</a></span><br>
+<span id="revdate">May 2017</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -513,7 +514,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#graphiql">GraphiQL</a></li>
 <li><a href="#error-handling">Error Handling</a></li>
-<li><a href="#_relay_modern">Relay Modern</a>
+<li><a href="#relay-modern">Relay Modern</a>
 <ul class="sectlevel2">
 <li><a href="#_node_interface">Node Interface</a></li>
 <li><a href="#inputs-and-payloads">Inputs &amp; Payloads</a></li>
@@ -988,8 +989,17 @@ with the following screen:</p>
 <h3 id="_first_query">First query</h3>
 <div class="paragraph">
 <p>The first query we will run requests a given <strong>Planet</strong> from the system.
-In accordance with the rules of Relay Modern GraphQL conventions, we
-will load this <strong>Planet</strong> via the <em>Object Identification</em> conventions:</p>
+This query follows a set of rules, the Relay Modern GraphQL conventions.
+These conventions are formed by Facebook as part of their Relay Modern
+system. It defines a common set of functionality on top of the GraphQL
+system which clients can rely on.</p>
+</div>
+<div class="paragraph">
+<p>In particular, our first query uses the rules of <em>Object
+Identification</em> which is a way to load an object for which you already
+know its identity. A more complete exposition of the conventions are
+in the section <a href="#relay-modern">Relay Modern</a>, but here we skip the introduction for
+the sake of brevity:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1464,8 +1474,7 @@ it will cover most parts of GraphQL.</p>
 </li>
 <li>
 <p>If the reader is already familiar with the system in another GraphQL
-implemented, they can relate to the implementation which makes
-pickup of Erlang GraphQL faster.</p>
+implementation, it makes pickup of Erlang GraphQL faster.</p>
 </li>
 <li>
 <p>We can use a full system as a driving example for this tutorial.</p>
@@ -1569,7 +1578,7 @@ several GraphQL entity kinds. For example:</p>
 <ul>
 <li>
 <p>Scalar types&#8212;&#8203;Extensions on top of the default types. Often used
-for Dates, DateTime&#8217;s, URI&#8217;s, Color&#8217;s, Currency, Locales and so on.</p>
+for Dates, DateTimes, URIs, Colors, Currency, Locales and so on.</p>
 </li>
 <li>
 <p>Enumerations&#8212;&#8203;Values taken from a limited set. An example could be
@@ -1605,7 +1614,7 @@ omit many fields that doesn&#8217;t make sense.</p>
 <div class="paragraph">
 <p>In a way, your GraphQL system is built such that changes to the data
 is done by executing &#8220;transactions&#8221; through a set of stored
-procedures. This can be seen as using the &#8220;_PATCH_&#8221; method of RESTful
+procedures. This can be seen as using the <em>"`PATCH`"</em> method of RESTful
 interfaces and not having a definition of PUT.</p>
 </div>
 <div class="paragraph">
@@ -1627,13 +1636,13 @@ execution.</p>
 <div class="title">Mnesia</div>
 <p>Our Star Wars schema uses the database <strong>Mnesia</strong> as a backend. It is
 important to stress that you often have a situation where your
-database backend doesn&#8217;t map 1-1 onto the GraphQL schema you specify.
+database backend doesn&#8217;t map 1-1 onto your specified GraphQL schema.
 In larger systems, this is particularly important: the GraphQL schema
 is often served by multiple different backends, and those backends are
 not going to cleanly map onto the world we expose to the clients. So
 the GraphQL schema contract becomes a way to mediate between the
 different data stores. As an example, you may satisfy some parts of
-the GraphQL from a dedicated search system&#8212;&#8203;such as
+the GraphQL query from a dedicated search system&#8212;&#8203;such as
 ElasticSearch&#8212;&#8203;while others are served as rows from a traditional
 database, such as MySQL or Postgresql. You may even have a message
 queue broker or some other subsystem in which you have relevant data
@@ -1707,7 +1716,8 @@ Eshell V8.3  (abort with ^G)
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Clean out the source code repository to make sure there is no lingering files</td>
+<td>Clean out the source code repository to make sure there is no lingering files:
+Caution when using this command as it could potentially delete files if used in wrong directory.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1724,7 +1734,7 @@ Eshell V8.3  (abort with ^G)
 </table>
 </div>
 <div class="paragraph">
-<p>The call the <code>create_schema()</code> runs the following schema creation code:</p>
+<p>The call <code>create_schema()</code> runs the following schema creation code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1771,12 +1781,12 @@ the concept of a planet in the system:</p>
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-record(planet,
         {id :: binary(),
          edited :: calendar:datetime(),
-         climate :: calendar:datetime(),
+         climate :: binary(),
          surface_water :: integer(),
          name :: binary(),
          diameter :: integer(),
          rotation_period :: integer(),
-         created :: binary(),
+         created :: calendar:datetime(),
          terrain :: binary(),
          gravity :: binary(),
          orbital_period :: integer(),
@@ -1800,10 +1810,11 @@ documents and turn them into Mnesia records, which we then insert into
 the database.</p>
 </div>
 <div class="paragraph">
-<p>We can fairly easily write a function which take the JSON and turn them
-into appropriate Mnesia records. Planets live in a fixture file
-<code>planets.json</code>, so we need a function that can turn a part said JSON
-file into a Mnesia record. Some conversion is necessary on the way:</p>
+<p>We can fairly easily write a transformer function which take the JSON
+terms and turn them into appropriate Mnesia records. Planets live in a
+fixture file <code>planets.json</code>, which we can read and transform. Some
+conversion is necessary on the way since the internal representation
+differ slightly from the representation in the fixture:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1846,9 +1857,9 @@ transaction:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">populate_planets(Terms) -&gt;
-    People = [json_to_planet(P) || P &lt;- Terms],
+    Planets = [json_to_planet(P) || P &lt;- Terms],
     Txn = fun() -&gt;
-                  [mnesia:write(P) || P &lt;- People],
+                  [mnesia:write(P) || P &lt;- Planets],
                   ok
           end,
     {atomic, ok} = mnesia:transaction(Txn),
@@ -1952,26 +1963,28 @@ the system boots up.</p>
 <h3 id="identity-encoding">Identity encoding</h3>
 <div class="paragraph">
 <p>In GraphQL, you have a special type, <em>ID</em>, which is used to attach an
-identity to objects. It is often construed as a &#8220;PRIMARY KEY&#8221; of
-sorts on objects, such that you can refer to objects uniquely. The
-rule is that a client must only treat an <em>ID</em> as an opaque string
-value and never parse on the string value. Thus, an <em>ID</em> is
-represented as a <em>String</em>, but you are not allowed to parse it as a
-client.</p>
+identity to objects. It is typically used as a globally
+unique identifier for each object in the graph. Even across different
+object types; no two objects share a ID, even if they are of different
+type.</p>
 </div>
 <div class="paragraph">
-<p>To make this more obvious, the GraphQL people usually base64 encode
-their ID-values. Furthermore, we have the problem that in Mnesia, our
-rows IDs will be integers. This means we may have overlapping integers
-between different types. To avoid this problem, we use a common
-encoding in GraphQL. The Starship with id 3 will be encoded as
-<code>base64("Starship:3")</code> for example. And the planet Tatooine taken from
-the <a href="#system-tour">System Tour</a> is encoded as <code>base64("Planet:1")</code>. This
-definition somewhat hides the implementation and also allows the
-server backend to redefine IDs later for objects. Another use of the
-encoding is that it can define what datasource a given came from, so
-you can figure out where to find that object. It is highly useful in
-migration scenarios.</p>
+<p>The <em>ID</em> is always generated by the server. Hence, a client must only
+treat an <em>ID</em> as an opaque string value and never parse on the string
+value. It can only return the <em>ID</em> value back to the server later on.</p>
+</div>
+<div class="paragraph">
+<p>To make this more obvious, GraphQL implementations usually base64 encode
+their ID-values. In Mnesia, our rows IDs will be integers, and they
+will overlap between different types/tables in the database. Since IDs
+should be globally unique, we use an encoding in GraphQL. The Starship
+with id 3 will be encoded as <code>base64("Starship:3")</code>. And the planet
+Tatooine taken from the <a href="#system-tour">System Tour</a> is encoded as
+<code>base64("Planet:1")</code>. This definition somewhat hides the
+implementation and also allows the server backend to redefine IDs
+later for objects. Another use of the encoding is that it can define
+what datasource a given came from, so you can figure out where to find
+that object. It is highly useful in migration scenarios.</p>
 </div>
 <div class="paragraph">
 <p>The encoder is simple because we can assume the server provides valid
@@ -2013,17 +2026,22 @@ usually uncover the details anyway as we dig into a failure.</p>
 <div class="sect2">
 <h3 id="_the_node_interface">The Node Interface</h3>
 <div class="paragraph">
-<p>The Relay Modern specification contains a number of standards for how
-to implement different parts of the GraphQL schema. One such standard
-is the <strong>Node</strong> interface. This interface allows you to &#8220;start from&#8221;
-any node in the graph which has an <em>id</em> field. That is, every node
-with identity can be a starting point for a query.</p>
+<p>The Relay Modern specification (see <a href="#relay-modern">Relay Modern</a>) contains a standard
+for an <em>Object Identification</em> interface. Our schema implements this
+standard in order to make integration simpler for clients supporting
+the standard. The interface, also called the <strong>Node</strong> interface because
+of its type, allows you to &#8220;start from&#8221; any node in the graph which
+has an <em>id</em> field. That is, every node with identity can be a starting
+point for a query.</p>
 </div>
 <div class="paragraph">
-<p>The interface is most often used as a way to cache-refresh objects you
-have loaded a long time ago in order to make sure they have the right
-kinds of data. The interface specification follows the standard
-closely:</p>
+<p>The interface is most often used as a way to refresh objects in a
+client cache. If the client has a stale object in the cache, and the
+object has identity, then you can refresh a subset of the graph,
+setting out from that object.</p>
+</div>
+<div class="paragraph">
+<p>The interface specification follows the standard closely:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2036,12 +2054,13 @@ interface Node {
 </div>
 <div class="paragraph">
 <div class="title">On Documentation</div>
-<p>The Erlang version of GraphQL allows a certain extension by the Apollo
-people. This extension allows you to use <a href="#annotations">Annotations</a> in GraphQL
-schemas to attach more information to particular objects of interest.
-We use this for documentation. You can annotate almost anything with
-<code>+description(text: "documentation")</code> which in turn attaches that
-documentation to an entity in the Graph.</p>
+<p>The Erlang version of GraphQL allows a certain extension by the
+<a href="https://github.com/apollographql">Apollo Community @ <strong>Github</strong></a>, who are
+building tools GraphQL in general. This extension allows you to use
+<a href="#annotations">Annotations</a> in GraphQL schemas to attach more information to
+particular objects of interest. We use this for documentation. You can
+annotate almost anything with <code>+description(text: "documentation")</code>
+which in turn attaches that documentation to an entity in the Graph.</p>
 </div>
 <div class="paragraph">
 <p>Multi-line comments are also possible by using a backtick (`) rather
@@ -2328,7 +2347,7 @@ respond with.</p>
 </div>
 <div class="paragraph">
 <p>Input and output objects are subject to different rules. In
-particular, there is no way to input a <code>null</code> value in an input. They
+particular, there is no way to input a <code>null</code> value in an input. The
 way a client inputs a <em>no value</em> input is by omission of the input
 parameter in question. This choice simplifies clients and servers.</p>
 </div>
@@ -2511,7 +2530,7 @@ type Starship implements Node, Transport {
 <div class="title">Abstract types</div>
 <p>Interfaces and Unions are so-called <em>abstract types</em> in the GraphQL
 specification. They never occur in concrete data, but is a type-level
-relationship only. Thus, when handling an interface or a unions, you
+relationship only. Thus, when handling an interface or a union, you
 just return concrete objects. In the section <a href="#type-resolution">Type Resolution</a> we
 will see how the server will handle abstract types.</p>
 </div>
@@ -2524,7 +2543,7 @@ will see how the server will handle abstract types.</p>
 <td class="content">
 If you have an object which naturally shares fields with other
 objects, consider creating an interface&#8212;&#8203;even in the case where you
-have no use for the interface. The Erlang GraphQL contains a schema
+have no use for the interface. Erlang GraphQL contains a schema
 validator which will validate your fields to be in order. It is fairly
 easy to mess up schema types in subtle ways, but if you write them
 down, the system can figure out when you make this error.
@@ -2601,8 +2620,8 @@ schema.</p>
 <div class="paragraph">
 <p>After the schema loads, we set up a <em>schema root</em> which is how to
 start out a <em>query</em> or a <em>mutation</em>. Finally, we validate the schema.
-This runs some correctness checks on the schema and fails of the
-sanity checks doesn&#8217;t pass. It forces you to define everything you
+This runs some correctness checks on the schema and fails if the
+sanity checks don&#8217;t pass. It forces you to define everything you
 use, and it also verifies that interfaces are correctly implemented.</p>
 </div>
 <div class="admonitionblock note">
@@ -2630,7 +2649,7 @@ root, but by having the root being part of the schema definition.
 Always run the schema validator once you&#8217;ve finished assembling
 your schema. Many errors are caught automatically by the validator,
 and it removes the hassle of debugging later. Also, it runs fairly
-quickly, so run it as part of your systems boot phase. This ensures
+quickly, so run it as part of your system&#8217;s boot phase. This ensures
 your system won&#8217;t boot if there is some kind of problem with your
 schema definition. If you have a boot-test as part of your testing
 framework or CI system, you should be able to use this as a &#8220;schema
@@ -2649,7 +2668,7 @@ respectively. By convention, these types are always called <code>Query</code> an
 Graph.</p>
 </div>
 <div class="paragraph">
-<p>The query root must be injected into the schema so the GraphQL systems
+<p>The query root must be injected into the schema so the GraphQL system
 knows where to start. This is done in the file <code>sw_core_app</code> in the
 function <code>setup_root</code>:</p>
 </div>
@@ -2743,7 +2762,7 @@ the <strong>Starship</strong></p>
 <div class="paragraph">
 <p>we need to know if the concrete node loaded indeed <em>was</em> a starship.
 The type resolver is responsible for figuring out what concrete type
-we have. Commonly, we map both the interface and union type resolver
+we have. Commonly, we map both the interface type and the union type
 to the same resolver.</p>
 </div>
 <div class="paragraph">
@@ -2930,7 +2949,7 @@ feature.</p>
 </dd>
 <dt class="hdlist1">output/2</dt>
 <dd>
-<p>Called whenever an scalar value needs to coerced from
+<p>Called whenever an scalar value needs to be coerced from
 <em>server</em> to <em>client</em>. The valid responses are <code>{ok, Val} | {error,
 Reason}</code>. Conversion makes sure that a client only sees coerced
 values. If an error is returned, the field is regarded as an error.
@@ -2952,7 +2971,7 @@ through.</p>
 </td>
 <td class="content">
 Built-in scalars such as Int, Float, String, Bool are handled by
-the system internally and does not currently undergo Scalar
+the system internally and do not currently undergo Scalar
 conversion. A special case exists for Int and Float. These are coerced
 between automatically if it is safe to do so.<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</sup>
 </td>
@@ -3084,6 +3103,8 @@ execute(#starship{}) -&gt; {ok, 'Starship'};
 execute(#transport{}) -&gt; {ok, 'Transport'};
 execute(#vehicle{}) -&gt; {ok, 'Vehicle'};
 execute(#faction{}) -&gt; {ok, 'Faction'};
+execute(#{ starship := _, transport := _ }) -&gt; {ok, 'Starship'};
+execute(#{ vehicle := _, transport := _ }) -&gt; {ok, 'Vehicle'};
 execute(_Otherwise) -&gt; {error, unknown_type}.</code></pre>
 </div>
 </div>
@@ -3132,7 +3153,7 @@ requesting the <strong>name</strong> of the Starship.</p>
 </div>
 <div class="paragraph">
 <div class="title">Derived Field Access</div>
-<p>Second, field resolution on objects are used to <em>derive</em> values from
+<p>Second, field resolution on objects is used to <em>derive</em> values from
 other values. Suppose a <strong>Starship</strong> had two fields internally
 <strong>cargoCapacity</strong> and <strong>cargoLoad</strong>. We might want to compute the load
 factor of the Starship as a value between 0.0 and 1.0. This amounts to
@@ -3151,7 +3172,7 @@ data is rarely going to be dominant in the grand scheme of things.</p>
 </div>
 <div class="paragraph">
 <div class="title">Data Fetching Field Access</div>
-<p>Finally, field resolution on objects are used to <em>fetch</em> objects from
+<p>Finally, field resolution on objects is used to <em>fetch</em> objects from
 a backend data store. Consider the field <code>node(id: ID!)</code> on the
 <code>Query</code> object in the schema:</p>
 </div>
@@ -3691,8 +3712,8 @@ starship as the object:</p>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">load('Starship', ID) -&gt;
     F = fun() -&gt;
-                [Transport] = mnesia:read('Transport', ID, read),
-                [Starship]  = mnesia:read('Starship', ID, read),
+                [Transport] = mnesia:read(transport, ID, read),
+                [Starship]  = mnesia:read(starship, ID, read),
                 #{ starship =&gt; Starship,
                    transport =&gt; Transport }
         end,
@@ -3992,7 +4013,7 @@ The choice you make is worse off if things are not consistent.
 <h4 id="_mutation_then_query">Mutation-then-query</h4>
 <div class="paragraph">
 <p>Note how the GraphQL system will handle a mutation: First field
-execution will <em>mutate</em> the data store and the we proceed by field
+execution will <em>mutate</em> the data store and then we proceed by field
 execution on the returned result. This means that after a mutation we
 continue with a <em>query</em>. The system runs mutation-then-query. This is
 useful for grabbing data out of objects which were changed by the
@@ -4203,12 +4224,12 @@ fragment PlanetFragment on Planet {
 <p>and look at how the system will execute such a query.</p>
 </div>
 <div class="paragraph">
-<p>First, query of the keyword <code>query</code> the system will begin by starting
-the <em>root</em> of the query on the <code>Query</code> object in the Graph. Since this
-is mapped by the schema into the module <code>sw_core_query</code>, we start by
-executing fields in that module. The current object points to what is
-the <em>initial object</em> of the query which is set by the developer. We
-ignore that object in our implementation.</p>
+<p>First, a cursor will be set in the <em>root</em> of the currently selected
+<code>Query</code> object in the Graph. Since this is mapped by the schema into
+the module <code>sw_core_query</code>, we start by visiting that module and
+execute fields there. The cursor will point to an <em>initial object</em> of
+the query, which is set by the developer. We will ignore this object
+in our implementation.</p>
 </div>
 <div class="paragraph">
 <p>Next, since the field <code>node</code> is requested, we execute the call</p>
@@ -4926,7 +4947,7 @@ be written.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query StarShipQuery {
+<pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query PlanetQuery {
     node(id: "UGxhbmV0OjM=") {
       ... on planet {
         id
@@ -4970,7 +4991,7 @@ about a particular query which doesn&#8217;t operate as expected.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_relay_modern">Relay Modern</h2>
+<h2 id="relay-modern">Relay Modern</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Facebook&#8217;s use of GraphQL adds a layer on top through the Relay Modern
@@ -4986,7 +5007,7 @@ one will achieve those standard pieces.</p>
 <h3 id="_node_interface">Node Interface</h3>
 <div class="paragraph">
 <p>Relay Modern defines an object identification specification together
-with a interface <strong>Node</strong> used to retrieve objects which are cached on
+with an interface <strong>Node</strong> used to retrieve objects which are cached on
 the client side. The specification
 <a href="https://facebook.github.io/relay/graphql/objectidentification.htm" class="bare">https://facebook.github.io/relay/graphql/objectidentification.htm</a>
 defines the details of this.</p>
@@ -5558,7 +5579,7 @@ certain behaviors in a GraphQL implementation.</p>
 <div class="sect2">
 <h3 id="null-propagation">Null Propagation</h3>
 <div class="paragraph">
-<p>In GraphQL, fields <em>nullable</em> by default. A generic field <code>f : T</code> can
+<p>In GraphQL, fields are <em>nullable</em> by default. A generic field <code>f : T</code> can
 either take on the value of <code>T</code> or the value <code>null</code> if the rendering
 of the field fails for some reason.</p>
 </div>
@@ -5924,6 +5945,17 @@ code responses from the system.</p>
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">June 22nd, 2017</dt>
+<dd>
+<p>Merged a set of issues found by @benbro where
+wording made certain sections harder to understand. See issues #21,
+and #23-26.</p>
+</dd>
+<dt class="hdlist1">June 5th, 2017</dt>
+<dd>
+<p>Merged a set of typo fixes to the documentation by
+@benbro.</p>
+</dd>
 <dt class="hdlist1">May 30th, 2017</dt>
 <dd>
 <p>Documented a more complex mutation example,
@@ -5985,7 +6017,7 @@ objects. Then demonstrate how this is used to coerce values.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-30 16:16:54 CEST
+Last updated 2017-06-22 15:12:43 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
