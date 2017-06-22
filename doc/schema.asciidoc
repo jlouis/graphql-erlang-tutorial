@@ -62,10 +62,12 @@ is the *Node* interface. This interface allows you to "`start from`"
 any node in the graph which has an _id_ field. That is, every node
 with identity can be a starting point for a query.
 
-The interface is most often used as a way to cache-refresh objects you
-have loaded a long time ago in order to make sure they have the right
-kinds of data. The interface specification follows the standard
-closely:
+The interface is most often used as a way to refresh objects in a
+client cache. If the client has a stale object in the cache, and the
+object has identity, then you can refresh a subset of the graph,
+setting out from that object.
+
+The interface specification follows the standard closely:
 
 [source,graphql]
 ----
