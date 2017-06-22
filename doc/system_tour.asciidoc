@@ -78,8 +78,16 @@ image::graphiql.png[GraphiQL]
 === First query
 
 The first query we will run requests a given *Planet* from the system.
-In accordance with the rules of {relay} GraphQL conventions, we
-will load this *Planet* via the _Object Identification_ conventions:
+This query follows a set of rules, the {relay} GraphQL conventions.
+These conventions are formed by Facebook as part of their Relay Modern
+system. It defines a common set of functionality on top of the GraphQL
+system which clients can rely on.
+
+In particular, our first query uses the rules of _Object
+Identification_ which is a way to load an object for which you already
+know its identity. A more complete exposition of the conventions are
+in the section <<relay-modern>>, but here we skip the introduction for
+the sake of brevity:
 
 [source,graphql]
 ----

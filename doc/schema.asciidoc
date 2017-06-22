@@ -56,9 +56,10 @@ include::{sw_core}/src/sw_core_id.erl[tags=idDecode]
 
 === The Node Interface
 
-The {relay} specification contains a number of standards for how
-to implement different parts of the GraphQL schema. One such standard
-is the *Node* interface. This interface allows you to "`start from`"
+The {relay} specification (see <<relay-modern>>) contains a standard
+for an _Object Identification_ interface. Our schema implements this
+standard in order to make integration simpler. The interface,
+sometimes called the *Node* interface, allows you to "`start from`"
 any node in the graph which has an _id_ field. That is, every node
 with identity can be a starting point for a query.
 
