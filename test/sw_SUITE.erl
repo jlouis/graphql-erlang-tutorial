@@ -28,10 +28,12 @@ end_per_testcase(_Case, _Config) ->
     ok.
 
 groups() ->
-    [{setup, [], [live]}].
+    [{setup, [], [live]},
+     {tour_queries, [], [first_query]}].
 
 all() -> [
-          {group, setup}
+          {group, setup},
+          {group, tour_queries}
          ].
 
 %% -- Mnesia initialization ----------------------
@@ -41,9 +43,40 @@ init_mnesia(Config) ->
     ok = sw_core_db:create_fixture(ram_copies, FixtureDir),
     ok.
 
-%% -- BASIC --------------------------------------
+%% -- SETUP --------------------------------------
 live(Config) ->
     Running = [element(1, Runners)
                || Runners <- proplists:get_value(running, application:info())],
     true = lists:member(sw_core, Running),
     ok.
+
+%% -- TOUR ---------------------------------------
+first_query(Config) ->
+    run_query(Config, "first").
+
+%% -- INTERNALS ----------------------------------
+run_query(Config, Name) ->
+    DataDir = ?config(data_dir, Config),
+    Query = filename:join(DataDir, Name ++ ".query"),
+    Result = filename:join(DataDir, Name ++ ".result"),
+
+    {ok, QueryDoc} = file:read_file(Query),
+    {ok, ExpectedJson} = file:read_file(Result),
+    Expected = canonicalize_json(ExpectedJson),
+
+    {ok, AST} = graphql:parse(QueryDoc),
+    Elaborated = graphql:elaborate(AST),
+    {ok, #{ fun_env := FunEnv, ast := AST2}} =
+        graphql:type_check(Elaborated),
+    Ctx = #{
+      params => #{},
+      operation_name => undefined
+     },
+    Response = graphql:execute(Ctx, AST2),
+    Expected = jsx:encode(Response),
+    ok.
+
+
+
+canonicalize_json(Input) ->
+    jsx:encode(jsx:decode(Input)).

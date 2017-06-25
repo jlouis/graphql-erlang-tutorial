@@ -1,0 +1,9 @@
+query PlanetQuery {
+  node(id:"UGxhbmV0OjE=") { # <1>
+    ... on Planet { # <2>
+      id # <3>
+      name
+      climate
+    }
+  }
+}

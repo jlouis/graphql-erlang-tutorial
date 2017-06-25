@@ -6,6 +6,7 @@ June 2017
 :source-highlighter: prettify
 :sw_core: ../apps/sw_core
 :sw_web: ../apps/sw_web
+:sw_test: ../test
 :project: Erlang GraphQL
 :relay: Relay Modern
 :shopgun: ShopGun

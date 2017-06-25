@@ -91,15 +91,7 @@ the sake of brevity:
 
 [source,graphql]
 ----
-query PlanetQuery {
-  node(id:"UGxhbmV0OjE=") { # <1>
-    ... on Planet { # <2>
-      id # <3>
-      name
-      climate
-    }
-  }
-}
+include::{sw_test}/sw_SUITE_data/first.query[]
 ----
 <1> The *ID* entered here is opaque to the client, and we assume it
     was obtained in an earlier query. We will show typical ways to
@@ -114,15 +106,7 @@ button, you should get the following response:
 
 [source,json]
 ----
-{
-  "data": {
-    "node": {
-      "climate": "arid",
-      "id": "UGxhbmV0OjE=",
-      "name": "Tatooine"
-    }
-  }
-}
+include::{sw_test}/sw_SUITE_data/first.result[]
 ----
 
 Note how the response reflects the structure of the query. This is a
