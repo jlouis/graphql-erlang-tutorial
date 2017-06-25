@@ -9,9 +9,9 @@ matrix:
     - os: linux
       otp_release: 19.3
     - os: linux
-      otp_release: 20.0-rc1
+      otp_release: 20.0
 
-script: "make compile documentation REBAR=./rebar3"
+script: "make compile documentation test REBAR=./rebar3"
 
 before_install:
   - gem install asciidoctor
