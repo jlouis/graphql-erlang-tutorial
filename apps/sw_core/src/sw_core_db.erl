@@ -4,7 +4,7 @@
 -export([load/2, nextval/1]).
 -export([wait_for_tables/0]).
 
--export([create_schema/0]).
+-export([create_schema/0, create_fixture/2]).
 
 %% tag::recordOf[]
 record_of('Film') -> film;
@@ -66,67 +66,72 @@ txn(F) ->
 create_schema() ->
     mnesia:create_schema([node()]),
     application:ensure_all_started(mnesia),
-    ok = create_tables(),
-    ok = populate_tables(),
+    ok = create_fixture(disc_copies, "fixtures"),
     mnesia:backup("FALLBACK.BUP"),
     mnesia:install_fallback("FALLBACK.BUP"),
     application:stop(mnesia).
+
+create_fixture(Type, BaseDir) ->
+    ok = create_tables(Type),
+    ok = populate_tables(BaseDir),
+    ok.
 %% end::createSchema[]
+
 %% tag::createTables[]
-create_tables() ->
+create_tables(Type) ->
     {atomic, ok} =
         mnesia:create_table(
           starship,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, starship)}]),
     {atomic, ok} =
         mnesia:create_table(
           species,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, species)}]),
 %% end::createTables[]
     {atomic, ok} =
         mnesia:create_table(
           film,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, film)}]),
     {atomic, ok} =
         mnesia:create_table(
           person,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, person)}]),
     {atomic, ok} =
         mnesia:create_table(
           planet,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, planet)}]),
     {atomic, ok} =
         mnesia:create_table(
           transport,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, transport)}]),
     {atomic, ok} =
         mnesia:create_table(
           vehicle,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, vehicle)}]),
     {atomic, ok} =
         mnesia:create_table(
           faction,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, faction)}]),
     {atomic, ok} =
         mnesia:create_table(
           sequences,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, sequences)}]),
     ok.
@@ -137,14 +142,21 @@ populate(File, Fun) ->
     Terms = jsx:decode(Data, [return_maps]),
     Fun(Terms).
 
-populate_tables() ->
-    populate("fixtures/transport.json", fun populate_transports/1),
-    populate("fixtures/starships.json", fun populate_starships/1),
-    populate("fixtures/species.json", fun populate_species/1),
-    populate("fixtures/films.json", fun populate_films/1),
-    populate("fixtures/people.json", fun populate_people/1),
-    populate("fixtures/planets.json", fun populate_planets/1),
-    populate("fixtures/vehicles.json", fun populate_vehicles/1),
+populate_tables(BaseDir) ->
+    populate(filename:join(BaseDir, "transport.json"),
+             fun populate_transports/1),
+    populate(filename:join(BaseDir, "starships.json"),
+             fun populate_starships/1),
+    populate(filename:join(BaseDir, "species.json"),
+             fun populate_species/1),
+    populate(filename:join(BaseDir, "films.json"),
+             fun populate_films/1),
+    populate(filename:join(BaseDir, "people.json"),
+             fun populate_people/1),
+    populate(filename:join(BaseDir, "planets.json"),
+             fun populate_planets/1),
+    populate(filename:join(BaseDir, "vehicles.json"),
+             fun populate_vehicles/1),
     setup_sequences(),
     ok.
 %% end::populatingTables[]
