@@ -29,7 +29,7 @@ end_per_testcase(_Case, _Config) ->
 
 groups() ->
     [{setup, [], [live]},
-     {tour_queries, [], [first_query]}].
+     {tour_queries, [], [system_tour_queries]}].
 
 all() -> [
           {group, setup},
@@ -51,8 +51,10 @@ live(Config) ->
     ok.
 
 %% -- TOUR ---------------------------------------
-first_query(Config) ->
-    run_query(Config, "first").
+system_tour_queries(Config) ->
+    ok = run_query(Config, "first"),
+    ok = run_query(Config, "advanced"),
+    ok.
 
 %% -- INTERNALS ----------------------------------
 run_query(Config, Name) ->

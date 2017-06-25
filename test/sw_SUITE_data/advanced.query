@@ -1,0 +1,47 @@
+query Q {
+  node(id:"UGxhbmV0OjE=") {
+    ... on Planet {
+      id
+      name
+      climate
+      filmConnection(first: 2) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...Films
+          }
+          cursor
+        }
+      }
+      residentConnection(first: 3) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+        }
+        edges {
+          node {
+            ...Residents
+          }
+          cursor
+        }
+      }
+    }
+  }
+}
+
+fragment Films on Film {
+  id
+  title
+  director
+}
+
+fragment Residents on Person {
+  id
+  name
+  gender
+}

@@ -1,0 +1,67 @@
+{
+  "data": {
+    "node": {
+      "climate": "arid",
+      "filmConnection": {
+        "edges": [
+          {
+            "cursor": "MQ==",
+            "node": {
+              "director": "George Lucas",
+              "id": "RmlsbTox",
+              "title": "A New Hope"
+            }
+          },
+          {
+            "cursor": "Mg==",
+            "node": {
+              "director": "Richard Marquand",
+              "id": "RmlsbToz",
+              "title": "Return of the Jedi"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "totalCount": 5
+      },
+      "id": "UGxhbmV0OjE=",
+      "name": "Tatooine",
+      "residentConnection": {
+        "edges": [
+          {
+            "cursor": "MQ==",
+            "node": {
+              "gender": "n/a",
+              "id": "UGVyc29uOjg=",
+              "name": "R5-D4"
+            }
+          },
+          {
+            "cursor": "Mg==",
+            "node": {
+              "gender": "male",
+              "id": "UGVyc29uOjEx",
+              "name": "Anakin Skywalker"
+            }
+          },
+          {
+            "cursor": "Mw==",
+            "node": {
+              "gender": "male",
+              "id": "UGVyc29uOjE=",
+              "name": "Luke Skywalker"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "totalCount": 10
+      }
+    }
+  }
+}
