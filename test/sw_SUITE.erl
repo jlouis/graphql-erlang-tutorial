@@ -55,6 +55,7 @@ system_tour_queries(Config) ->
     ok = run_query(Config, "first"),
     ok = run_query(Config, "advanced"),
     ok = run_query(Config, "mutation", <<"IntroduceFaction">>),
+    ok = run_query(Config, "faction"),
     ok.
 
 %% -- INTERNALS ----------------------------------

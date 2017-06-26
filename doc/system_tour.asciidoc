@@ -184,14 +184,7 @@ system:
 
 [source,graphql]
 ----
-query FactionQuery {
-  node(id: "RmFjdGlvbjoxMDAy") {
-     ... on Faction {
-       id
-       name
-     }
-  }
-}
+include::{sw_test}/sw_SUITE_data/faction.query[]
 ----
 
 The system also persisted the newly created faction in its database so

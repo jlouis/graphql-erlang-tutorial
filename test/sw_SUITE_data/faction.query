@@ -1,0 +1,8 @@
+query FactionQuery {
+  node(id: "RmFjdGlvbjoxMDAx") {
+     ... on Faction {
+       id
+       name
+     }
+  }
+}
