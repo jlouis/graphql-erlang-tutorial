@@ -1,0 +1,12 @@
+mutation IntroduceFaction($input: IntroduceFactionInput!) {
+  introduceFaction(input: $input) {
+    clientMutationId
+    faction {
+      id
+      name
+      ships {
+        totalCount
+      }
+    }
+  }
+}

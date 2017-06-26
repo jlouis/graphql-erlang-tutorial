@@ -54,13 +54,18 @@ live(Config) ->
 system_tour_queries(Config) ->
     ok = run_query(Config, "first"),
     ok = run_query(Config, "advanced"),
+    ok = run_query(Config, "mutation", <<"IntroduceFaction">>),
     ok.
 
 %% -- INTERNALS ----------------------------------
 run_query(Config, Name) ->
+    run_query(Config, Name, undefined).
+
+run_query(Config, Name, OpName) ->
     DataDir = ?config(data_dir, Config),
     Query = filename:join(DataDir, Name ++ ".query"),
     Result = filename:join(DataDir, Name ++ ".result"),
+    Vars = input(Config, Name),
 
     {ok, QueryDoc} = file:read_file(Query),
     {ok, ExpectedJson} = file:read_file(Result),
@@ -70,15 +75,24 @@ run_query(Config, Name) ->
     Elaborated = graphql:elaborate(AST),
     {ok, #{ fun_env := FunEnv, ast := AST2}} =
         graphql:type_check(Elaborated),
+    Coerced = graphql:type_check_params(FunEnv, OpName, Vars),
     Ctx = #{
-      params => #{},
-      operation_name => undefined
+      params => Coerced,
+      operation_name => OpName
      },
     Response = graphql:execute(Ctx, AST2),
     Expected = jsx:encode(Response),
     ok.
 
-
+input(Config, Name) -> 
+    DataDir = ?config(data_dir, Config),
+    case file:read_file(
+           filename:join(DataDir, Name ++ ".input")) of
+        {error, enoent} ->
+            #{};
+        {ok, InputData} ->
+            jsx:decode(InputData, [return_maps])
+    end.
 
 canonicalize_json(Input) ->
     jsx:encode(jsx:decode(Input)).

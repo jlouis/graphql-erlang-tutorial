@@ -149,18 +149,7 @@ us amend that by introducing the rebels:
 
 [source,graphql]
 ----
-mutation IntroduceFaction($input: IntroduceFactionInput!) {
-  introduceFaction(input: $input) {
-    clientMutationId
-    faction {
-      id
-      name
-      ships {
-        totalCount
-      }
-    }
-  }
-}
+include::{sw_test}/sw_SUITE_data/mutation.query[]
 ----
 
 This query uses the GraphQL feature of input variables. In the UI, you
@@ -171,12 +160,7 @@ variables for the query:
 
 [source,json]
 ----
-{
-  "input": {
-    "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", # <1>
-    "name": "Rebels"
-  }
-}
+include::{sw_test}/sw_SUITE_data/mutation.input[]
 ----
 <1> This is chosen arbitrarily by the client and can be any string.
 Here we use an UUID.
@@ -186,20 +170,7 @@ creation of a new *Faction* and return its id, name and starships:
 
 [source,json]
 ----
-{
-  "data": {
-    "introduceFaction": {
-      "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", # <1>
-      "faction": {
-        "id": "RmFjdGlvbjoxMDAy", # <2>
-        "name": "Rebels",
-        "ships": {
-          "totalCount": 0 # <3>
-        }
-      }
-    }
-  }
-}
+include::{sw_test}/sw_SUITE_data/mutation.result[]
 ----
 <1> The server reflects back the unique client-generated Id for
 correlation purposes.

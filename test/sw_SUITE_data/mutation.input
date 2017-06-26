@@ -1,0 +1,6 @@
+{
+  "input": {
+    "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", // <1>
+    "name": "Rebels"
+  }
+}
