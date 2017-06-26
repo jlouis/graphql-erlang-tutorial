@@ -1261,7 +1261,7 @@ creation of a new <strong>Faction</strong> and return its id, name and starships
     "introduceFaction": {
       "clientMutationId": "D9A5939A-DF75-4C78-9B32-04C1C64F9D9C", <i class="conum" data-value="1"></i><b>(1)</b>
       "faction": {
-        "id": "RmFjdGlvbjoxMDAy", <i class="conum" data-value="2"></i><b>(2)</b>
+        "id": "RmFjdGlvbjoxMDAx", <i class="conum" data-value="2"></i><b>(2)</b>
         "name": "Rebels",
         "ships": {
           "totalCount": 0 <i class="conum" data-value="3"></i><b>(3)</b>
@@ -1298,7 +1298,7 @@ system:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-graphql" data-lang="graphql">query FactionQuery {
-  node(id: "RmFjdGlvbjoxMDAy") {
+  node(id: "RmFjdGlvbjoxMDAx") {
      ... on Faction {
        id
        name
@@ -1346,11 +1346,10 @@ looks like:</p>
       length: 20.0,
       crew: "1",
       name: "B-Wing",
-      faction: "RmFjdGlvbjoxMDAy", <i class="conum" data-value="2"></i><b>(2)</b>
+      faction: "RmFjdGlvbjoxMDAx", <i class="conum" data-value="2"></i><b>(2)</b>
       starshipClass: "fighter"}) {
     starship {
       id
-      created
       name
     }
     faction {
@@ -1400,7 +1399,7 @@ as part of a mutation.</p>
   "data": {
     "introduceStarship": {
       "faction": {
-        "id": "RmFjdGlvbjoxMDAy",
+        "id": "RmFjdGlvbjoxMDAx",
         "name": "Rebels",
         "ships": {
           "edges": [
@@ -1415,7 +1414,6 @@ as part of a mutation.</p>
         }
       },
       "starship": {
-        "created": "2017-05-30T13:52:19Z",
         "id": "U3RhcnNoaXA6MTAwMQ==",
         "name": "B-Wing"
       }
@@ -1741,11 +1739,15 @@ Caution when using this command as it could potentially delete files if used in 
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">create_schema() -&gt;
     mnesia:create_schema([node()]),
     application:ensure_all_started(mnesia),
-    ok = create_tables(),
-    ok = populate_tables(),
+    ok = create_fixture(disc_copies, "fixtures"),
     mnesia:backup("FALLBACK.BUP"),
     mnesia:install_fallback("FALLBACK.BUP"),
-    application:stop(mnesia).</code></pre>
+    application:stop(mnesia).
+
+create_fixture(Type, BaseDir) -&gt;
+    ok = create_tables(Type),
+    ok = populate_tables(BaseDir),
+    ok.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1755,17 +1757,17 @@ large number of tables, so we are just going to show two here:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">create_tables() -&gt;
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">create_tables(Type) -&gt;
     {atomic, ok} =
         mnesia:create_table(
           starship,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, starship)}]),
     {atomic, ok} =
         mnesia:create_table(
           species,
-          [{disc_copies, [node()]},
+          [{Type, [node()]},
            {type, set},
            {attributes, record_info(fields, species)}]),</code></pre>
 </div>
@@ -1878,14 +1880,21 @@ data into the Mnesia database:</p>
     Terms = jsx:decode(Data, [return_maps]),
     Fun(Terms).
 
-populate_tables() -&gt;
-    populate("fixtures/transport.json", fun populate_transports/1),
-    populate("fixtures/starships.json", fun populate_starships/1),
-    populate("fixtures/species.json", fun populate_species/1),
-    populate("fixtures/films.json", fun populate_films/1),
-    populate("fixtures/people.json", fun populate_people/1),
-    populate("fixtures/planets.json", fun populate_planets/1),
-    populate("fixtures/vehicles.json", fun populate_vehicles/1),
+populate_tables(BaseDir) -&gt;
+    populate(filename:join(BaseDir, "transport.json"),
+             fun populate_transports/1),
+    populate(filename:join(BaseDir, "starships.json"),
+             fun populate_starships/1),
+    populate(filename:join(BaseDir, "species.json"),
+             fun populate_species/1),
+    populate(filename:join(BaseDir, "films.json"),
+             fun populate_films/1),
+    populate(filename:join(BaseDir, "people.json"),
+             fun populate_people/1),
+    populate(filename:join(BaseDir, "planets.json"),
+             fun populate_planets/1),
+    populate(filename:join(BaseDir, "vehicles.json"),
+             fun populate_vehicles/1),
     setup_sequences(),
     ok.</code></pre>
 </div>
@@ -6017,7 +6026,7 @@ objects. Then demonstrate how this is used to coerce values.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-22 15:15:59 CEST
+Last updated 2017-06-26 14:53:14 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
