@@ -1,0 +1,27 @@
+mutation IntroduceBWing {
+  introduceStarship(input:
+    { costInCredits: 5.0, # <1>
+      length: 20.0, 
+      crew: "1", 
+      name: "B-Wing",
+      faction: "RmFjdGlvbjoxMDAx", # <2>
+      starshipClass: "fighter"}) {
+    starship {
+      id
+      name
+    }
+    faction {
+      id
+      name
+      ships {
+        totalCount
+        
+        edges {
+          node {
+            id name
+          }
+        }
+      }
+    }
+  }
+}

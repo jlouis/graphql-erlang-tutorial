@@ -1,0 +1,25 @@
+{
+  "data": {
+    "introduceStarship": {
+      "faction": {
+        "id": "RmFjdGlvbjoxMDAx",
+        "name": "Rebels",
+        "ships": {
+          "edges": [
+            {
+              "node": {
+                "id": "U3RhcnNoaXA6MTAwMQ==",
+                "name": "B-Wing"
+              }
+            }
+          ],
+          "totalCount": 1
+        }
+      },
+      "starship": {
+        "id": "U3RhcnNoaXA6MTAwMQ==",
+        "name": "B-Wing"
+      }
+    }
+  }
+}

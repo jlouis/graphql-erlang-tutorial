@@ -207,34 +207,7 @@ looks like:
 
 [source,graphql]
 ----
-mutation IntroduceBWing {
-  introduceStarship(input:
-    { costInCredits: 5.0, # <1>
-      length: 20.0, 
-      crew: "1", 
-      name: "B-Wing",
-      faction: "RmFjdGlvbjoxMDAy", # <2>
-      starshipClass: "fighter"}) {
-    starship {
-      id
-      created
-      name
-    }
-    faction {
-      id
-      name
-      ships {
-        totalCount
-        
-        edges {
-          node {
-            id name
-          }
-        }
-      }
-    }
-  }
-}
+include::{sw_test}/sw_SUITE_data/bwing.query[]
 ----
 <1> The values here are not for a "`real`" B-wing fighter, but are
     just made up somewhat arbitrarily.
@@ -251,32 +224,7 @@ The result of the query is:
 
 [source,json]
 ----
-{
-  "data": {
-    "introduceStarship": {
-      "faction": {
-        "id": "RmFjdGlvbjoxMDAy",
-        "name": "Rebels",
-        "ships": {
-          "edges": [
-            {
-              "node": {
-                "id": "U3RhcnNoaXA6MTAwMQ==",
-                "name": "B-Wing"
-              }
-            }
-          ],
-          "totalCount": 1
-        }
-      },
-      "starship": {
-        "created": "2017-05-30T13:52:19Z",
-        "id": "U3RhcnNoaXA6MTAwMQ==",
-        "name": "B-Wing"
-      }
-    }
-  }
-}
+include::{sw_test}/sw_SUITE_data/bwing.result[]
 ----
 
 Note how the newly formed starship is now part of the Rebel factions
