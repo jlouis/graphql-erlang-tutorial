@@ -55,8 +55,14 @@ load(Type, ID) ->
 %% @end
 txn(F) ->
     case mnesia:transaction(F) of
-        {atomic, Res} -> {ok, Res};
-        {aborted, Reason} -> {error, Reason}
+        {atomic, Res} ->
+            {ok, Res};
+
+        {aborted, {{badmatch,[]}, _}} ->
+            {error, not_found};
+
+        {aborted, Reason} ->
+            {error, Reason}
     end.
 %% end::load[]
 
@@ -321,7 +327,7 @@ json_to_film(
        characters = Characters,
        release_date = datetime(ReleaseDate)
       }.
-  
+
 json_to_species(
   #{ <<"pk">> := ID,
      <<"fields">> := #{
