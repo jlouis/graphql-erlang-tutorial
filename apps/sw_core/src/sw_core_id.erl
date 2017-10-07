@@ -2,6 +2,7 @@
 
 -export([encode/1, decode/1]).
 
+-spec encode({atom(), integer()}) -> binary().
 %% tag::idEncode[]
 encode({Tag, ID}) ->
     BinTag = atom_to_binary(Tag, utf8),
@@ -9,6 +10,9 @@ encode({Tag, ID}) ->
     base64:encode(<<BinTag/binary, ":", IDStr/binary>>).
 %% end::idEncode[]
 
+-spec decode(binary()) -> {error, Reason} | {ok, {atom(), integer()}}
+  when
+    Reason :: term().
 %% tag::idDecode[]
 decode(Input) ->
     try

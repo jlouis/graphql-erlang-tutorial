@@ -18,7 +18,7 @@
 
 %% tag::transportRecord[]
 -record(transport,
-        {id :: binary(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          consumables :: binary(),
          name :: binary(),
@@ -36,7 +36,7 @@
 %% end::transportRecord[]
 
 -record(film,
-        {id :: binary() | integer(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          created :: calendar:datetime(),
          starships :: [integer()],
@@ -52,7 +52,7 @@
          characters :: [integer()] }).
          
 -record(species,
-        {id :: binary() | integer(),
+        {id :: integer(),
          edited :: binary(),
          created :: binary(),
          classification :: binary(),
@@ -69,7 +69,7 @@
 }).
 
 -record(person,
-        {id :: binary(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          name :: binary(),
          created :: calendar:datetime(),
@@ -78,14 +78,14 @@
          hair_color :: binary(),
          height :: integer(),
          eye_color :: binary(),
-         mass :: integer(),
+         mass :: float() | nan,
          homeworld :: integer(),
          birth_year :: binary()
 }).
 
 %% tag::planetRecord[]
 -record(planet,
-        {id :: binary(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          climate :: binary(),
          surface_water :: integer(),
@@ -101,7 +101,7 @@
 %% end::planetRecord[]
 
 -record(vehicle,
-        {id :: binary(),
+        {id :: integer(),
          vehicle_class :: binary(),
          pilots :: [integer()]}).
 

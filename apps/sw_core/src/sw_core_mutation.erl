@@ -23,6 +23,8 @@ execute_mutation(Ctx, <<"introduceFaction">>, Input) ->
 execute_mutation(Ctx, <<"introduceStarship">>, Input) ->
     {ok, Faction, Starship} = sw_core_starship:introduce(Ctx, Input),
     {ok, #{ <<"faction">> => Faction,
-            <<"starship">> => Starship }}.
+            <<"starship">> => Starship }};
+execute_mutation(_Ctx, _Other, _) ->
+    {error, invalid_mutation}.
 %% end::executeMutation[]
 
