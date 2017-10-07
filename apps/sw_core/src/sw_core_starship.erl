@@ -18,8 +18,11 @@ execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
         <<"length">> -> {ok, Transport#transport.length};
         <<"crew">> -> {ok, Transport#transport.crew};
         <<"passengers">> ->
-            Passengers = Transport#transport.passengers,
-            {ok, Passengers};
+            Result = case Transport#transport.passengers of
+                         undefined -> null;
+                         P -> P
+                     end,
+            {ok, Result};
         <<"manufacturers">> -> {ok, [{ok, M} || M <- Transport#transport.manufacturers]};
         <<"maxAtmospheringSpeed">> ->
             {ok, Transport#transport.max_atmosphering_speed};
@@ -30,7 +33,11 @@ execute(_Ctx, #{ starship := #starship { id = StarshipId } = Starship,
         <<"cargoCapacity">> ->
             Capacity = Transport#transport.cargo_capacity,
             {ok, floatify(Capacity)};
-        <<"consumables">> -> {ok, Transport#transport.consumables};
+        <<"consumables">> -> {ok,
+                              case Transport#transport.consumables of
+                                  undefined -> null;
+                                  V -> V
+                              end};
         <<"created">> -> {ok, Transport#transport.created};
         <<"edited">> ->  {ok, Transport#transport.edited};
 %% end::starshipExecute[]
@@ -59,7 +66,6 @@ introduce(_Ctx, #{ <<"name">> := Name,
                    <<"costInCredits">> := Cost,
                    <<"length">> := Length,
                    <<"crew">> := Crew,
-
                    <<"faction">> := FactionInput }) ->
     ID = sw_core_db:nextval(transport), % <1>
     Transport = #transport { id = ID,
@@ -70,8 +76,15 @@ introduce(_Ctx, #{ <<"name">> := Name,
                              model = Model,
                              cost = Cost,
                              length = Length,
+                             passengers = undefined,
+                             consumables = undefined,
+                             max_atmosphering_speed = 0,
+                             cargo_capacity = nan,
                              manufacturers = Manufacturers },
     Starship = #starship { id = ID,
+                           pilots = [],
+                           mglt = 0,
+                           hyperdrive_rating = 0.0,
                            starship_class = Class }, % <2>
     {ok, {'Faction', FactionID}} =
         sw_core_id:decode(FactionInput), % <3>

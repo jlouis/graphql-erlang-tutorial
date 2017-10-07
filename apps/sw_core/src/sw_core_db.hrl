@@ -12,7 +12,7 @@
          pilots :: [integer()],
          mglt :: integer(),
          starship_class :: binary(),
-         hyperdrive_rating :: binary()
+         hyperdrive_rating :: float()
 }).
 %% end::starshipRecord[]
 
@@ -20,11 +20,11 @@
 -record(transport,
         {id :: integer(),
          edited :: calendar:datetime(),
-         consumables :: binary(),
+         consumables :: binary() | undefined,
          name :: binary(),
          created :: calendar:datetime(),
-         cargo_capacity :: float(),
-         passengers :: binary(),
+         cargo_capacity :: float() | nan,
+         passengers :: binary() | undefined,
          crew :: binary(),
          length :: float(),
          model :: binary(),
