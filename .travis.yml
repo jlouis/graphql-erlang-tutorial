@@ -11,10 +11,14 @@ matrix:
     - os: linux
       otp_release: 20.0
 
-script: "make compile documentation test REBAR=./rebar3"
+script: "make compile documentation test dialyzer REBAR=./rebar3"
 
 before_install:
   - gem install asciidoctor
+
+cache:
+    directories:
+        - $HOME/.cache/rebar3
 
 install:
   - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3

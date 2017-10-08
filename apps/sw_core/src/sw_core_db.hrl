@@ -12,19 +12,19 @@
          pilots :: [integer()],
          mglt :: integer(),
          starship_class :: binary(),
-         hyperdrive_rating :: binary()
+         hyperdrive_rating :: float()
 }).
 %% end::starshipRecord[]
 
 %% tag::transportRecord[]
 -record(transport,
-        {id :: binary(),
+        {id :: integer(),
          edited :: calendar:datetime(),
-         consumables :: binary(),
+         consumables :: binary() | undefined,
          name :: binary(),
          created :: calendar:datetime(),
-         cargo_capacity :: float(),
-         passengers :: binary(),
+         cargo_capacity :: float() | nan,
+         passengers :: binary() | undefined,
          crew :: binary(),
          length :: float(),
          model :: binary(),
@@ -36,14 +36,14 @@
 %% end::transportRecord[]
 
 -record(film,
-        {id :: binary() | integer(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          created :: calendar:datetime(),
          starships :: [integer()],
          species :: [integer()],
          vehicles :: [integer()],
          planets :: [integer()],
-         producer :: binary(),
+         producers :: [binary()],
          title :: binary(),
          episode_id :: integer(),
          director :: binary(),
@@ -52,7 +52,7 @@
          characters :: [integer()] }).
          
 -record(species,
-        {id :: binary() | integer(),
+        {id :: integer(),
          edited :: binary(),
          created :: binary(),
          classification :: binary(),
@@ -69,7 +69,7 @@
 }).
 
 -record(person,
-        {id :: binary(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          name :: binary(),
          created :: calendar:datetime(),
@@ -78,14 +78,14 @@
          hair_color :: binary(),
          height :: integer(),
          eye_color :: binary(),
-         mass :: integer(),
+         mass :: float() | nan,
          homeworld :: integer(),
          birth_year :: binary()
 }).
 
 %% tag::planetRecord[]
 -record(planet,
-        {id :: binary(),
+        {id :: integer(),
          edited :: calendar:datetime(),
          climate :: binary(),
          surface_water :: integer(),
@@ -93,15 +93,15 @@
          diameter :: integer(),
          rotation_period :: integer(),
          created :: calendar:datetime(),
-         terrain :: binary(),
+         terrains :: [binary()],
          gravity :: binary(),
-         orbital_period :: integer(),
-         population :: integer()
+         orbital_period :: integer() | nan,
+         population :: integer() | nan
 }).
 %% end::planetRecord[]
 
 -record(vehicle,
-        {id :: binary(),
+        {id :: integer(),
          vehicle_class :: binary(),
          pilots :: [integer()]}).
 
