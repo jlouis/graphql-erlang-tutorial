@@ -10,11 +10,11 @@
  {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
  {<<"graphql">>,
   {git,"https://github.com/shopgun/graphql-erlang.git",
-       {ref,"7d5da59f4520197f6021534e54652bb9be4c93e7"}},
+       {ref,"c3841f15061a97e08b7fce1e5f5bc4ffe2dfcbf9"}},
   0},
  {<<"iso8601">>,
   {git,"https://github.com/erlsci/iso8601.git",
-       {ref,"1a315d432125b65a4878a47a51e56de046db02c4"}},
+       {ref,"95a57491c97b166b02982320c5ed3e870db48152"}},
   0},
  {<<"jsx">>,
   {git,"https://github.com/talentdeficit/jsx.git",
@@ -30,7 +30,7 @@
   1},
  {<<"recon">>,
   {git,"https://github.com/ferd/recon.git",
-       {ref,"e3e2db564a4a176f0a733161b39bf0f0bd4ed3a8"}},
+       {ref,"a270acdb0d8d270887db0647c0affbbcee197d42"}},
   0}]}.
 [
 {pkg_hash,[
