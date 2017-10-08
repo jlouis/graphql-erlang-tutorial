@@ -11,7 +11,7 @@ execute(_Ctx, #film{} = Film, Field, Args) ->
         <<"id">> -> {ok, sw_core_id:encode({'Film', Film#film.id})};
         <<"edited">> -> {ok, Film#film.edited};
         <<"created">> -> {ok, Film#film.created};
-        <<"producers">> -> {ok, [{ok, P} || P <- Film#film.producer]};
+        <<"producers">> -> {ok, [{ok, P} || P <- Film#film.producers]};
         <<"title">> -> {ok, Film#film.title};
         <<"episodeID">> -> {ok, Film#film.episode_id};
         <<"director">> -> {ok, Film#film.director};

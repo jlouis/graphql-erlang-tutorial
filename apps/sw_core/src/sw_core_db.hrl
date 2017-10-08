@@ -43,7 +43,7 @@
          species :: [integer()],
          vehicles :: [integer()],
          planets :: [integer()],
-         producer :: binary(),
+         producers :: [binary()],
          title :: binary(),
          episode_id :: integer(),
          director :: binary(),
@@ -93,10 +93,10 @@
          diameter :: integer(),
          rotation_period :: integer(),
          created :: calendar:datetime(),
-         terrain :: binary(),
+         terrains :: [binary()],
          gravity :: binary(),
-         orbital_period :: integer(),
-         population :: integer()
+         orbital_period :: integer() | nan,
+         population :: integer() | nan
 }).
 %% end::planetRecord[]
 

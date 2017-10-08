@@ -35,7 +35,7 @@ execute(_Ctx, #planet { id = PlanetId } = Planet, Field, Args) ->
 %% end::residentConnection[]
         <<"created">> -> {ok, Planet#planet.created};
         <<"terrains">> ->
-            Terrains = Planet#planet.terrain,
+            Terrains = Planet#planet.terrains,
             {ok, [{ok, T} || T <- Terrains]};
         <<"gravity">> -> {ok, Planet#planet.gravity};
         <<"orbitalPeriod">> -> {ok, integer(Planet#planet.orbital_period)};
