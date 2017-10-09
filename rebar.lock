@@ -10,7 +10,7 @@
  {<<"goldrush">>,{pkg,<<"goldrush">>,<<"0.1.9">>},1},
  {<<"graphql">>,
   {git,"https://github.com/shopgun/graphql-erlang.git",
-       {ref,"c3841f15061a97e08b7fce1e5f5bc4ffe2dfcbf9"}},
+       {ref,"ceda9b2638a95a91d44c54d7ad85155005eacd63"}},
   0},
  {<<"iso8601">>,
   {git,"https://github.com/erlsci/iso8601.git",
