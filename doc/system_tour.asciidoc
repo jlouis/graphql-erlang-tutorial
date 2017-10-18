@@ -71,7 +71,7 @@ Once the Erlang emulator is running our `sw` release, we can point a
 browser to http://localhost:{port-number}/ and you should be greeted
 with the following screen:
 
-[#img-graphiql]
+[#img-graphiql-system-tour]
 .The initial greeting screen for the GraphQL system
 image::graphiql.png[GraphiQL]
 
