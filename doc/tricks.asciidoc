@@ -167,3 +167,49 @@ TBD
 
 TBD
 
+[[lazy-evaluation]]
+=== Lazy Evalution
+
+If you have data where computation is circular, you will have to make
+sure you don't build an infinite loop in the data. This system has
+support for lazy evaluation, but you will have to write it yourself
+and handle it in your side. GraphQL provides the facilities, but not
+the solution here.
+
+When you return an object to GraphQL, you can return any data. Further
+recursion into the query will then call execution functions on the
+underlying data. If you return an object such as
+
+[source, erlang]
+----
+{ok, #{ <<"fieldName">> => {'$lazy', fun() -> Expr end}, ...}}
+----
+
+you delay the computation of `Expr` because it is wrapped in a
+function. Now, when you actually hit the field, in another execute
+function, you can handle the lazy node by evaluating it when the field
+is hit:
+
+[source, erlang]
+----
+execute(Ctx, #{ <<"fieldName">> := Field }, <<"fieldName">>, Args) ->
+    {'$lazy', Thunk} = Field,
+    Thunk();
+    ...
+----
+
+This ensures you only force/unroll the computation if the field is
+actually invoked, and you obtain lazy evaluation over the Graph.
+
+.Uses
+
+The method is useful in the case where your data is naturally cyclic,
+but where any query has a limited depth. By delaying computation, you
+will only force the computation the necessary amount of times, rather
+than eagerly entering an infinite loop.
+
+Another common use case is when some parts of your computation is
+known when you build the initial object, but the computation of the
+content is expensive. By delaying the computation itself inside a
+thunk, you only compute that part if it turns out to be necessary.
+
