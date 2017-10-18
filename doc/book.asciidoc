@@ -1,6 +1,6 @@
 = {project} Tutorial
 Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https://github.com/gausby[@gausby]>; ShopGun <https://github.com/shopgun[@shopgun]>
-June 2017
+Oct 2017
 :toc: left
 :icons: font
 :source-highlighter: prettify
