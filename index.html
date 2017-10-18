@@ -543,6 +543,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#middleware-stacks">Middleware stacks</a></li>
 <li><a href="#_data_loader">Data Loader</a></li>
 <li><a href="#_fragments">Fragments</a></li>
+<li><a href="#lazy-evaluation">Lazy Evalution</a></li>
 </ul>
 </li>
 <li><a href="#_terminology">Appendix A: Terminology</a>
@@ -986,7 +987,7 @@ ask it to close gracefully one application at a time by entering
 browser to <a href="http://localhost:17290/" class="bare">http://localhost:17290/</a> and you should be greeted
 with the following screen:</p>
 </div>
-<div id="img-graphiql" class="imageblock">
+<div id="img-graphiql-system-tour" class="imageblock">
 <div class="content">
 <img src="./images/graphiql.png" alt="GraphiQL">
 </div>
@@ -5217,7 +5218,17 @@ to the original form</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang"></code></pre>
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">edges_to_return(First, null, Window) -&gt;
+    Sz = length(Window),
+    case Sz - First of
+        K when K =&lt; 0 -&gt; Window;
+        K when K &gt; 0 -&gt;
+            {Res, _} = lists:split(First, Window),
+            Res
+    end;
+edges_to_return(null, Last, Window) -&gt;
+    lists:reverse(
+      edges_to_return(Last, null, lists:reverse(Window))).</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5591,6 +5602,57 @@ of <a href="#authentication">Authentication</a> and <a href="#authorization">Aut
 <h3 id="_fragments">Fragments</h3>
 <div class="paragraph">
 <p>TBD</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="lazy-evaluation">Lazy Evalution</h3>
+<div class="paragraph">
+<p>If you have data where computation is circular, you will have to make
+sure you don&#8217;t build an infinite loop in the data. This system has
+support for lazy evaluation, but you will have to write it yourself
+and handle it in your side. GraphQL provides the facilities, but not
+the solution here.</p>
+</div>
+<div class="paragraph">
+<p>When you return an object to GraphQL, you can return any data. Further
+recursion into the query will then call execution functions on the
+underlying data. If you return an object such as</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">{ok, #{ &lt;&lt;"fieldName"&gt;&gt; =&gt; {'$lazy', fun() -&gt; Expr end}, ...}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>you delay the computation of <code>Expr</code> because it is wrapped in a
+function. Now, when you actually hit the field, in another execute
+function, you can handle the lazy node by evaluating it when the field
+is hit:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">execute(Ctx, #{ &lt;&lt;"fieldName"&gt;&gt; := Field }, &lt;&lt;"fieldName"&gt;&gt;, Args) -&gt;
+    {'$lazy', Thunk} = Field,
+    Thunk();
+    ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This ensures you only force/unroll the computation if the field is
+actually invoked, and you obtain lazy evaluation over the Graph.</p>
+</div>
+<div class="paragraph">
+<div class="title">Uses</div>
+<p>The method is useful in the case where your data is naturally cyclic,
+but where any query has a limited depth. By delaying computation, you
+will only force the computation the necessary amount of times, rather
+than eagerly entering an infinite loop.</p>
+</div>
+<div class="paragraph">
+<p>Another common use case is when some parts of your computation is
+known when you build the initial object, but the computation of the
+content is expensive. By delaying the computation itself inside a
+thunk, you only compute that part if it turns out to be necessary.</p>
 </div>
 </div>
 </div>
@@ -5972,6 +6034,12 @@ code responses from the system.</p>
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">Oct 18, 2017</dt>
+<dd>
+<p>Document a trick: How one implements lazy evaluation in
+a GraphQL schema in the engine. Make sure that all code passes the
+dialyzer and enable dialyzer runs in Travis CI.</p>
+</dd>
 <dt class="hdlist1">June 22nd, 2017</dt>
 <dd>
 <p>Merged a set of issues found by @benbro where
@@ -6044,7 +6112,7 @@ objects. Then demonstrate how this is used to coerce values.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-10-08 15:01:29 CEST
+Last updated 2017-10-18 19:04:54 CEST
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
