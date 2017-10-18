@@ -59,7 +59,7 @@ format([{Elem, Pos}|Xs]) ->
            <<"cursor">> => pack_cursor(Pos)},
     [{ok, X} | format(Xs)].
 
-%% tag::edgesToReturn[]    
+%% tag::edgesToReturn[]
 edges_to_return(First, null, Window) ->
     Sz = length(Window),
     case Sz - First of
