@@ -67,7 +67,8 @@ include::code.asciidoc[Code Overview]
 == Changelog
 
 Oct 18, 2017:: Document a trick: How one implements lazy evaluation in
-  a GraphQL schema in the engine.
+  a GraphQL schema in the engine. Make sure that all code passes the
+  dialyzer and enable dialyzer runs in Travis CI.
 
 June 22nd, 2017:: Merged a set of issues found by @benbro where
   wording made certain sections harder to understand. See issues #21,
