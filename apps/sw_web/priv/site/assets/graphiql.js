@@ -15,6 +15,10 @@ var _react = (typeof window !== "undefined" ? window['React'] : typeof global !=
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _graphql = require('graphql');
 
 var _FieldDoc = require('./DocExplorer/FieldDoc');
@@ -249,10 +253,10 @@ var DocExplorer = exports.DocExplorer = function (_React$Component) {
 }(_react2.default.Component);
 
 DocExplorer.propTypes = {
-  schema: _react.PropTypes.instanceOf(_graphql.GraphQLSchema)
+  schema: _propTypes2.default.instanceOf(_graphql.GraphQLSchema)
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./DocExplorer/FieldDoc":3,"./DocExplorer/SchemaDoc":5,"./DocExplorer/SearchBox":6,"./DocExplorer/SearchResults":7,"./DocExplorer/TypeDoc":8,"graphql":78}],2:[function(require,module,exports){
+},{"./DocExplorer/FieldDoc":4,"./DocExplorer/SchemaDoc":6,"./DocExplorer/SearchBox":7,"./DocExplorer/SearchResults":8,"./DocExplorer/TypeDoc":9,"graphql":94,"prop-types":174}],2:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -265,13 +269,27 @@ var _react = (typeof window !== "undefined" ? window['React'] : typeof global !=
 
 var _react2 = _interopRequireDefault(_react);
 
-var _graphql = require('graphql');
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _TypeLink = require('./TypeLink');
 
 var _TypeLink2 = _interopRequireDefault(_TypeLink);
 
+var _DefaultValue = require('./DefaultValue');
+
+var _DefaultValue2 = _interopRequireDefault(_DefaultValue);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
 function Argument(_ref) {
   var arg = _ref.arg,
@@ -288,17 +306,56 @@ function Argument(_ref) {
     ),
     ': ',
     _react2.default.createElement(_TypeLink2.default, { type: arg.type, onClick: onClickType }),
-    arg.defaultValue !== undefined && showDefaultValue !== false && _react2.default.createElement(
+    showDefaultValue !== false && _react2.default.createElement(_DefaultValue2.default, { field: arg })
+  );
+}
+
+Argument.propTypes = {
+  arg: _propTypes2.default.object.isRequired,
+  onClickType: _propTypes2.default.func.isRequired,
+  showDefaultValue: _propTypes2.default.bool
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./DefaultValue":3,"./TypeLink":10,"prop-types":174}],3:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = DefaultValue;
+
+var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _graphql = require('graphql');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function DefaultValue(_ref) {
+  var field = _ref.field;
+  var type = field.type,
+      defaultValue = field.defaultValue;
+
+  if (defaultValue !== undefined) {
+    return _react2.default.createElement(
       'span',
       null,
       ' = ',
       _react2.default.createElement(
         'span',
         { className: 'arg-default-value' },
-        (0, _graphql.print)((0, _graphql.astFromValue)(arg.defaultValue, arg.type))
+        (0, _graphql.print)((0, _graphql.astFromValue)(defaultValue, type))
       )
-    )
-  );
+    );
+  }
+
+  return null;
 } /**
    *  Copyright (c) Facebook, Inc.
    *  All rights reserved.
@@ -307,13 +364,11 @@ function Argument(_ref) {
    *  LICENSE file in the root directory of this source tree.
    */
 
-Argument.propTypes = {
-  arg: _react.PropTypes.object.isRequired,
-  onClickType: _react.PropTypes.func.isRequired,
-  showDefaultValue: _react.PropTypes.bool
+DefaultValue.propTypes = {
+  field: _propTypes2.default.object.isRequired
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./TypeLink":9,"graphql":78}],3:[function(require,module,exports){
+},{"graphql":94,"prop-types":174}],4:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -326,6 +381,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _Argument = require('./Argument');
 
@@ -432,12 +491,12 @@ var FieldDoc = function (_React$Component) {
 }(_react2.default.Component);
 
 FieldDoc.propTypes = {
-  field: _react.PropTypes.object,
-  onClickType: _react.PropTypes.func
+  field: _propTypes2.default.object,
+  onClickType: _propTypes2.default.func
 };
 exports.default = FieldDoc;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Argument":2,"./MarkdownContent":4,"./TypeLink":9}],4:[function(require,module,exports){
+},{"./Argument":2,"./MarkdownContent":5,"./TypeLink":10,"prop-types":174}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -450,6 +509,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _marked = require('marked');
 
@@ -503,12 +566,12 @@ var MarkdownContent = function (_React$Component) {
 }(_react2.default.Component);
 
 MarkdownContent.propTypes = {
-  markdown: _react.PropTypes.string,
-  className: _react.PropTypes.string
+  markdown: _propTypes2.default.string,
+  className: _propTypes2.default.string
 };
 exports.default = MarkdownContent;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"marked":149}],5:[function(require,module,exports){
+},{"marked":169,"prop-types":174}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -521,6 +584,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _TypeLink = require('./TypeLink');
 
@@ -627,12 +694,12 @@ var SchemaDoc = function (_React$Component) {
 }(_react2.default.Component);
 
 SchemaDoc.propTypes = {
-  schema: _react.PropTypes.object,
-  onClickType: _react.PropTypes.func
+  schema: _propTypes2.default.object,
+  onClickType: _propTypes2.default.func
 };
 exports.default = SchemaDoc;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./MarkdownContent":4,"./TypeLink":9}],6:[function(require,module,exports){
+},{"./MarkdownContent":5,"./TypeLink":10,"prop-types":174}],7:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -645,6 +712,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _debounce = require('../../utility/debounce');
 
@@ -713,13 +784,13 @@ var SearchBox = function (_React$Component) {
 }(_react2.default.Component);
 
 SearchBox.propTypes = {
-  value: _react.PropTypes.string,
-  placeholder: _react.PropTypes.string,
-  onSearch: _react.PropTypes.func
+  value: _propTypes2.default.string,
+  placeholder: _propTypes2.default.string,
+  onSearch: _propTypes2.default.func
 };
 exports.default = SearchBox;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../../utility/debounce":25}],7:[function(require,module,exports){
+},{"../../utility/debounce":26,"prop-types":174}],8:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -732,6 +803,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _Argument = require('./Argument');
 
@@ -839,7 +914,8 @@ var SearchResults = function (_React$Component) {
                 withinType !== type && [_react2.default.createElement(_TypeLink2.default, { key: 'type', type: type, onClick: onClickType }), '.'],
                 _react2.default.createElement(
                   'a',
-                  { className: 'field-name',
+                  {
+                    className: 'field-name',
                     onClick: function onClick(event) {
                       return onClickField(field, type, event);
                     } },
@@ -929,11 +1005,11 @@ var SearchResults = function (_React$Component) {
 }(_react2.default.Component);
 
 SearchResults.propTypes = {
-  schema: _react.PropTypes.object,
-  withinType: _react.PropTypes.object,
-  searchValue: _react.PropTypes.string,
-  onClickType: _react.PropTypes.func,
-  onClickField: _react.PropTypes.func
+  schema: _propTypes2.default.object,
+  withinType: _propTypes2.default.object,
+  searchValue: _propTypes2.default.string,
+  onClickType: _propTypes2.default.func,
+  onClickField: _propTypes2.default.func
 };
 exports.default = SearchResults;
 
@@ -949,7 +1025,7 @@ function isMatch(sourceText, searchValue) {
   }
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Argument":2,"./TypeLink":9}],8:[function(require,module,exports){
+},{"./Argument":2,"./TypeLink":10,"prop-types":174}],9:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -962,6 +1038,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _graphql = require('graphql');
 
@@ -976,6 +1056,10 @@ var _MarkdownContent2 = _interopRequireDefault(_MarkdownContent);
 var _TypeLink = require('./TypeLink');
 
 var _TypeLink2 = _interopRequireDefault(_TypeLink);
+
+var _DefaultValue = require('./DefaultValue');
+
+var _DefaultValue2 = _interopRequireDefault(_DefaultValue);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1096,7 +1180,9 @@ var TypeDoc = function (_React$Component) {
             ),
             !this.state.showDeprecated ? _react2.default.createElement(
               'button',
-              { className: 'show-btn', onClick: this.handleShowDeprecated },
+              {
+                className: 'show-btn',
+                onClick: this.handleShowDeprecated },
               'Show deprecated fields...'
             ) : deprecatedFields.map(function (field) {
               return _react2.default.createElement(Field, {
@@ -1144,7 +1230,9 @@ var TypeDoc = function (_React$Component) {
             ),
             !this.state.showDeprecated ? _react2.default.createElement(
               'button',
-              { className: 'show-btn', onClick: this.handleShowDeprecated },
+              {
+                className: 'show-btn',
+                onClick: this.handleShowDeprecated },
               'Show deprecated values...'
             ) : deprecatedValues.map(function (value) {
               return _react2.default.createElement(EnumValue, { key: value.name, value: value });
@@ -1174,10 +1262,10 @@ var TypeDoc = function (_React$Component) {
 }(_react2.default.Component);
 
 TypeDoc.propTypes = {
-  schema: _react.PropTypes.instanceOf(_graphql.GraphQLSchema),
-  type: _react.PropTypes.object,
-  onClickType: _react.PropTypes.func,
-  onClickField: _react.PropTypes.func
+  schema: _propTypes2.default.instanceOf(_graphql.GraphQLSchema),
+  type: _propTypes2.default.object,
+  onClickType: _propTypes2.default.func,
+  onClickField: _propTypes2.default.func
 };
 exports.default = TypeDoc;
 
@@ -1204,15 +1292,12 @@ function Field(_ref) {
       'span',
       { key: 'args' },
       field.args.map(function (arg) {
-        return _react2.default.createElement(_Argument2.default, {
-          key: arg.name,
-          arg: arg,
-          onClickType: onClickType
-        });
+        return _react2.default.createElement(_Argument2.default, { key: arg.name, arg: arg, onClickType: onClickType });
       })
     ), ')'],
     ': ',
     _react2.default.createElement(_TypeLink2.default, { type: field.type, onClick: onClickType }),
+    _react2.default.createElement(_DefaultValue2.default, { field: field }),
     field.description && _react2.default.createElement(
       'p',
       { className: 'field-short-description' },
@@ -1226,10 +1311,10 @@ function Field(_ref) {
 }
 
 Field.propTypes = {
-  type: _react.PropTypes.object,
-  field: _react.PropTypes.object,
-  onClickType: _react.PropTypes.func,
-  onClickField: _react.PropTypes.func
+  type: _propTypes2.default.object,
+  field: _propTypes2.default.object,
+  onClickType: _propTypes2.default.func,
+  onClickField: _propTypes2.default.func
 };
 
 function EnumValue(_ref2) {
@@ -1255,10 +1340,10 @@ function EnumValue(_ref2) {
 }
 
 EnumValue.propTypes = {
-  value: _react.PropTypes.object
+  value: _propTypes2.default.object
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./Argument":2,"./MarkdownContent":4,"./TypeLink":9,"graphql":78}],9:[function(require,module,exports){
+},{"./Argument":2,"./DefaultValue":3,"./MarkdownContent":5,"./TypeLink":10,"graphql":94,"prop-types":174}],10:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1271,6 +1356,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _graphql = require('graphql');
 
@@ -1313,8 +1402,8 @@ var TypeLink = function (_React$Component) {
 }(_react2.default.Component);
 
 TypeLink.propTypes = {
-  type: _react.PropTypes.object,
-  onClick: _react.PropTypes.func
+  type: _propTypes2.default.object,
+  onClick: _propTypes2.default.func
 };
 exports.default = TypeLink;
 
@@ -1346,7 +1435,7 @@ function renderType(type, _onClick) {
   );
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"graphql":78}],10:[function(require,module,exports){
+},{"graphql":94,"prop-types":174}],11:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1360,6 +1449,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1451,7 +1544,7 @@ var ExecuteButton = exports.ExecuteButton = function (_React$Component) {
               'li',
               {
                 key: operation.name ? operation.name.value : '*',
-                className: operation === highlight && 'selected',
+                className: operation === highlight && 'selected' || null,
                 onMouseOver: function onMouseOver() {
                   return _this2.setState({ highlight: operation });
                 },
@@ -1509,13 +1602,13 @@ var ExecuteButton = exports.ExecuteButton = function (_React$Component) {
 }(_react2.default.Component);
 
 ExecuteButton.propTypes = {
-  onRun: _react.PropTypes.func,
-  onStop: _react.PropTypes.func,
-  isRunning: _react.PropTypes.bool,
-  operations: _react.PropTypes.array
+  onRun: _propTypes2.default.func,
+  onStop: _propTypes2.default.func,
+  isRunning: _propTypes2.default.bool,
+  operations: _propTypes2.default.array
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{"prop-types":174}],12:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1533,6 +1626,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
 
@@ -1604,12 +1701,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 *  LICENSE file in the root directory of this source tree.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
+var DEFAULT_DOC_EXPLORER_WIDTH = 350;
+
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
  *
  * @see https://github.com/graphql/graphiql#usage
  */
+
 var GraphiQL = exports.GraphiQL = function (_React$Component) {
   _inherits(GraphiQL, _React$Component);
 
@@ -1652,7 +1752,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
       variableEditorHeight: Number(_this._storage.get('variableEditorHeight')) || 200,
       docExplorerOpen: _this._storage.get('docExplorerOpen') === 'true' || false,
       historyPaneOpen: _this._storage.get('historyPaneOpen') === 'true' || false,
-      docExplorerWidth: Number(_this._storage.get('docExplorerWidth')) || 350,
+      docExplorerWidth: Number(_this._storage.get('docExplorerWidth')) || DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null
     }, queryFacts);
@@ -1779,7 +1879,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
         null,
         _react2.default.createElement(_ToolbarButton.ToolbarButton, {
           onClick: this.handlePrettifyQuery,
-          title: 'Prettify Query',
+          title: 'Prettify Query (Shift-Ctrl-P)',
           label: 'Prettify'
         }),
         _react2.default.createElement(_ToolbarButton.ToolbarButton, {
@@ -1827,7 +1927,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
               operationName: this.state.operationName,
               query: this.state.query,
               variables: this.state.variables,
-              onSelectQuery: this.replaceQuery.bind(this),
+              onSelectQuery: this.handleSelectHistoryQuery,
               storage: this._storage,
               queryID: this._editorQueryID },
             _react2.default.createElement(
@@ -1870,6 +1970,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
                 _this3.editorBarComponent = n;
               },
               className: 'editorBar',
+              onDoubleClick: this.handleResetResize,
               onMouseDown: this.handleResizeStart },
             _react2.default.createElement(
               'div',
@@ -1883,6 +1984,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
                 onEdit: this.handleEditQuery,
                 onHintInformationRender: this.handleHintInformationRender,
                 onClickReference: this.handleClickReference,
+                onPrettifyQuery: this.handlePrettifyQuery,
                 onRunQuery: this.handleEditorRunQuery,
                 editorTheme: this.props.editorTheme
               }),
@@ -1905,6 +2007,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
                   variableToType: this.state.variableToType,
                   onEdit: this.handleEditVariables,
                   onHintInformationRender: this.handleHintInformationRender,
+                  onPrettifyQuery: this.handlePrettifyQuery,
                   onRunQuery: this.handleEditorRunQuery,
                   editorTheme: this.props.editorTheme
                 })
@@ -1923,7 +2026,8 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
                   _this3.resultComponent = c;
                 },
                 value: this.state.response,
-                editorTheme: this.props.editorTheme
+                editorTheme: this.props.editorTheme,
+                ResultsTooltip: this.props.ResultsTooltip
               }),
               footer
             )
@@ -1934,6 +2038,7 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
           { className: docExplorerWrapClasses, style: docWrapStyle },
           _react2.default.createElement('div', {
             className: 'docExplorerResizer',
+            onDoubleClick: this.handleDocsResetResize,
             onMouseDown: this.handleDocsResizeStart
           }),
           _react2.default.createElement(
@@ -2040,15 +2145,6 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
       }
 
       return result;
-    }
-  }, {
-    key: 'replaceQuery',
-    value: function replaceQuery(query, variables, operationName) {
-      this.setState({
-        query: query,
-        variables: variables,
-        operationName: operationName
-      });
     }
 
     // Private methods
@@ -2228,25 +2324,26 @@ var GraphiQL = exports.GraphiQL = function (_React$Component) {
 
 
 GraphiQL.propTypes = {
-  fetcher: _react.PropTypes.func.isRequired,
-  schema: _react.PropTypes.instanceOf(_graphql.GraphQLSchema),
-  query: _react.PropTypes.string,
-  variables: _react.PropTypes.string,
-  operationName: _react.PropTypes.string,
-  response: _react.PropTypes.string,
-  storage: _react.PropTypes.shape({
-    getItem: _react.PropTypes.func,
-    setItem: _react.PropTypes.func,
-    removeItem: _react.PropTypes.func
+  fetcher: _propTypes2.default.func.isRequired,
+  schema: _propTypes2.default.instanceOf(_graphql.GraphQLSchema),
+  query: _propTypes2.default.string,
+  variables: _propTypes2.default.string,
+  operationName: _propTypes2.default.string,
+  response: _propTypes2.default.string,
+  storage: _propTypes2.default.shape({
+    getItem: _propTypes2.default.func,
+    setItem: _propTypes2.default.func,
+    removeItem: _propTypes2.default.func
   }),
-  defaultQuery: _react.PropTypes.string,
-  onEditQuery: _react.PropTypes.func,
-  onEditVariables: _react.PropTypes.func,
-  onEditOperationName: _react.PropTypes.func,
-  onToggleDocs: _react.PropTypes.func,
-  getDefaultFieldNames: _react.PropTypes.func,
-  editorTheme: _react.PropTypes.string,
-  onToggleHistory: _react.PropTypes.func
+  defaultQuery: _propTypes2.default.string,
+  onEditQuery: _propTypes2.default.func,
+  onEditVariables: _propTypes2.default.func,
+  onEditOperationName: _propTypes2.default.func,
+  onToggleDocs: _propTypes2.default.func,
+  getDefaultFieldNames: _propTypes2.default.func,
+  editorTheme: _propTypes2.default.string,
+  onToggleHistory: _propTypes2.default.func,
+  ResultsTooltip: _propTypes2.default.any
 };
 
 var _initialiseProps = function _initialiseProps() {
@@ -2273,10 +2370,7 @@ var _initialiseProps = function _initialiseProps() {
     // operation name, then report that it changed.
     if (selectedOperationName && selectedOperationName !== operationName) {
       operationName = selectedOperationName;
-      var onEditOperationName = _this6.props.onEditOperationName;
-      if (onEditOperationName) {
-        onEditOperationName(operationName);
-      }
+      _this6.handleEditOperationName(operationName);
     }
 
     try {
@@ -2356,6 +2450,13 @@ var _initialiseProps = function _initialiseProps() {
     }
   };
 
+  this.handleEditOperationName = function (operationName) {
+    var onEditOperationName = _this6.props.onEditOperationName;
+    if (onEditOperationName) {
+      onEditOperationName(operationName);
+    }
+  };
+
   this.handleHintInformationRender = function (elem) {
     elem.addEventListener('click', _this6._onClickHintInformation);
 
@@ -2399,6 +2500,12 @@ var _initialiseProps = function _initialiseProps() {
     _this6.setState({ historyPaneOpen: !_this6.state.historyPaneOpen });
   };
 
+  this.handleSelectHistoryQuery = function (query, variables, operationName) {
+    _this6.handleEditQuery(query);
+    _this6.handleEditVariables(variables);
+    _this6.handleEditOperationName(operationName);
+  };
+
   this.handleResizeStart = function (downEvent) {
     if (!_this6._didClickDragBar(downEvent)) {
       return;
@@ -2438,6 +2545,10 @@ var _initialiseProps = function _initialiseProps() {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  this.handleResetResize = function () {
+    _this6.setState({ editorFlex: 1 });
   };
 
   this.handleDocsResizeStart = function (downEvent) {
@@ -2488,6 +2599,12 @@ var _initialiseProps = function _initialiseProps() {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  this.handleDocsResetResize = function () {
+    _this6.setState({
+      docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH
+    });
   };
 
   this.handleVariableResizeStart = function (downEvent) {
@@ -2574,6 +2691,11 @@ GraphiQL.Toolbar = function GraphiQLToolbar(props) {
   );
 };
 
+// Export main windows/panes to be used separately if desired.
+GraphiQL.QueryEditor = _QueryEditor.QueryEditor;
+GraphiQL.VariableEditor = _VariableEditor.VariableEditor;
+GraphiQL.ResultViewer = _ResultViewer.ResultViewer;
+
 // Add a button to the Toolbar.
 GraphiQL.Button = _ToolbarButton.ToolbarButton;
 GraphiQL.ToolbarButton = _ToolbarButton.ToolbarButton; // Don't break existing API.
@@ -2598,7 +2720,7 @@ GraphiQL.Footer = function GraphiQLFooter(props) {
   );
 };
 
-var defaultQuery = '# Welcome to GraphiQL\n#\n# GraphiQL is an in-browser tool for writing, validating, and\n# testing GraphQL queries.\n#\n# Type queries into this side of the screen, and you will see intelligent\n# typeaheads aware of the current GraphQL type schema and live syntax and\n# validation errors highlighted within the text.\n#\n# GraphQL queries typically start with a "{" character. Lines that starts\n# with a # are ignored.\n#\n# An example GraphQL query might look like:\n#\n#     {\n#       field(arg: "value") {\n#         subField\n#       }\n#     }\n#\n# Keyboard shortcuts:\n#\n#       Run Query:  Ctrl-Enter (or press the play button above)\n#\n#   Auto Complete:  Ctrl-Space (or just start typing)\n#\n\n';
+var defaultQuery = '# Welcome to GraphiQL\n#\n# GraphiQL is an in-browser tool for writing, validating, and\n# testing GraphQL queries.\n#\n# Type queries into this side of the screen, and you will see intelligent\n# typeaheads aware of the current GraphQL type schema and live syntax and\n# validation errors highlighted within the text.\n#\n# GraphQL queries typically start with a "{" character. Lines that starts\n# with a # are ignored.\n#\n# An example GraphQL query might look like:\n#\n#     {\n#       field(arg: "value") {\n#         subField\n#       }\n#     }\n#\n# Keyboard shortcuts:\n#\n#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)\n#\n#       Run Query:  Ctrl-Enter (or press the play button above)\n#\n#   Auto Complete:  Ctrl-Space (or just start typing)\n#\n\n';
 
 // Duck-type promise detection.
 function isPromise(value) {
@@ -2625,7 +2747,7 @@ function isObservable(value) {
   return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && typeof value.subscribe === 'function';
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utility/CodeMirrorSizer":22,"../utility/StorageAPI":24,"../utility/debounce":25,"../utility/elementPosition":26,"../utility/fillLeafs":27,"../utility/find":28,"../utility/getQueryFacts":29,"../utility/getSelectedOperationName":30,"../utility/introspectionQueries":31,"./DocExplorer":1,"./ExecuteButton":10,"./QueryEditor":13,"./QueryHistory":14,"./ResultViewer":15,"./ToolbarButton":16,"./ToolbarGroup":17,"./ToolbarMenu":18,"./ToolbarSelect":19,"./VariableEditor":20,"graphql":78}],12:[function(require,module,exports){
+},{"../utility/CodeMirrorSizer":23,"../utility/StorageAPI":25,"../utility/debounce":26,"../utility/elementPosition":27,"../utility/fillLeafs":28,"../utility/find":29,"../utility/getQueryFacts":30,"../utility/getSelectedOperationName":31,"../utility/introspectionQueries":32,"./DocExplorer":1,"./ExecuteButton":11,"./QueryEditor":14,"./QueryHistory":15,"./ResultViewer":16,"./ToolbarButton":17,"./ToolbarGroup":18,"./ToolbarMenu":19,"./ToolbarSelect":20,"./VariableEditor":21,"graphql":94,"prop-types":174}],13:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2633,48 +2755,117 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var HistoryQuery = function HistoryQuery(_ref) {
-  var query = _ref.query,
-      variables = _ref.variables,
-      operationName = _ref.operationName,
-      onSelect = _ref.onSelect;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  var onClick = function onClick() {
-    onSelect(query, variables, operationName);
-  };
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-  var displayName = void 0;
-  if (operationName) {
-    displayName = operationName;
-  } else {
-    displayName = query.split('\n').filter(function (line) {
-      return line.indexOf('#') !== 0;
-    }).join('');
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *  Copyright (c) Facebook, Inc.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *  All rights reserved.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *  This source code is licensed under the license found in the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                *  LICENSE file in the root directory of this source tree.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
+
+var HistoryQuery = function (_React$Component) {
+  _inherits(HistoryQuery, _React$Component);
+
+  function HistoryQuery(props) {
+    _classCallCheck(this, HistoryQuery);
+
+    var _this = _possibleConstructorReturn(this, (HistoryQuery.__proto__ || Object.getPrototypeOf(HistoryQuery)).call(this, props));
+
+    var starVisibility = _this.props.favorite ? 'visible' : 'hidden';
+    _this.state = { starVisibility: starVisibility };
+    return _this;
   }
 
-  return _react2.default.createElement(
-    'p',
-    { onClick: onClick },
-    displayName
-  );
-};
+  _createClass(HistoryQuery, [{
+    key: 'render',
+    value: function render() {
+      if (this.props.favorite && this.state.starVisibility === 'hidden') {
+        this.setState({ starVisibility: 'visible' });
+      }
+      var starStyles = {
+        float: 'right',
+        visibility: this.state.starVisibility
+      };
+      var displayName = this.props.operationName || this.props.query.split('\n').filter(function (line) {
+        return line.indexOf('#') !== 0;
+      }).join('');
+      var starIcon = this.props.favorite ? '\u2605' : '\u2606';
+      return _react2.default.createElement(
+        'p',
+        {
+          onClick: this.handleClick.bind(this),
+          onMouseEnter: this.handleMouseEnter.bind(this),
+          onMouseLeave: this.handleMouseLeave.bind(this) },
+        _react2.default.createElement(
+          'span',
+          null,
+          displayName
+        ),
+        _react2.default.createElement(
+          'span',
+          { onClick: this.handleStarClick.bind(this), style: starStyles },
+          starIcon
+        )
+      );
+    }
+  }, {
+    key: 'handleMouseEnter',
+    value: function handleMouseEnter() {
+      if (!this.props.favorite) {
+        this.setState({ starVisibility: 'visible' });
+      }
+    }
+  }, {
+    key: 'handleMouseLeave',
+    value: function handleMouseLeave() {
+      if (!this.props.favorite) {
+        this.setState({ starVisibility: 'hidden' });
+      }
+    }
+  }, {
+    key: 'handleClick',
+    value: function handleClick() {
+      this.props.onSelect(this.props.query, this.props.variables, this.props.operationName);
+    }
+  }, {
+    key: 'handleStarClick',
+    value: function handleStarClick(e) {
+      e.stopPropagation();
+      this.props.handleToggleFavorite(this.props.query, this.props.variables, this.props.operationName, this.props.favorite);
+    }
+  }]);
+
+  return HistoryQuery;
+}(_react2.default.Component);
 
 HistoryQuery.propTypes = {
-  query: _react.PropTypes.string,
-  variables: _react.PropTypes.string,
-  operationName: _react.PropTypes.string,
-  onSelect: _react.PropTypes.func
+  favorite: _propTypes2.default.bool,
+  favoriteSize: _propTypes2.default.number,
+  handleToggleFavorite: _propTypes2.default.func,
+  operationName: _propTypes2.default.string,
+  onSelect: _propTypes2.default.func,
+  query: _propTypes2.default.string,
+  variables: _propTypes2.default.string
 };
-
 exports.default = HistoryQuery;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],13:[function(require,module,exports){
+},{"prop-types":174}],14:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2689,11 +2880,17 @@ var _react = (typeof window !== "undefined" ? window['React'] : typeof global !=
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _graphql = require('graphql');
 
 var _marked = require('marked');
 
 var _marked2 = _interopRequireDefault(_marked);
+
+var _normalizeWhitespace = require('../utility/normalizeWhitespace');
 
 var _onHasCompletion = require('../utility/onHasCompletion');
 
@@ -2725,6 +2922,7 @@ var AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
  *   - schema: A GraphQLSchema instance enabling editor linting and hinting.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
+ *   - readOnly: Turns the editor to read-only mode.
  *
  */
 
@@ -2776,6 +2974,10 @@ var QueryEditor = exports.QueryEditor = function (_React$Component) {
       require('codemirror/addon/edit/closebrackets');
       require('codemirror/addon/fold/foldgutter');
       require('codemirror/addon/fold/brace-fold');
+      require('codemirror/addon/search/search');
+      require('codemirror/addon/search/searchcursor');
+      require('codemirror/addon/search/jump-to-line');
+      require('codemirror/addon/dialog/dialog');
       require('codemirror/addon/lint/lint');
       require('codemirror/keymap/sublime');
       require('codemirror-graphql/hint');
@@ -2794,6 +2996,7 @@ var QueryEditor = exports.QueryEditor = function (_React$Component) {
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
+        readOnly: this.props.readOnly ? 'nocursor' : false,
         foldGutter: {
           minFoldSize: 4
         },
@@ -2846,6 +3049,16 @@ var QueryEditor = exports.QueryEditor = function (_React$Component) {
             }
           },
 
+          'Shift-Ctrl-P': function ShiftCtrlP() {
+            if (_this2.props.onPrettifyQuery) {
+              _this2.props.onPrettifyQuery();
+            }
+          },
+
+          // Persistent search box in Query Editor
+          'Cmd-F': 'findPersistent',
+          'Ctrl-F': 'findPersistent',
+
           // Editor improvements
           'Ctrl-Left': 'goSubwordLeft',
           'Ctrl-Right': 'goSubwordRight',
@@ -2857,6 +3070,7 @@ var QueryEditor = exports.QueryEditor = function (_React$Component) {
       this.editor.on('change', this._onEdit);
       this.editor.on('keyup', this._onKeyUp);
       this.editor.on('hasCompletion', this._onHasCompletion);
+      this.editor.on('beforeChange', this._onBeforeChange);
     }
   }, {
     key: 'componentDidUpdate',
@@ -2927,22 +3141,33 @@ var QueryEditor = exports.QueryEditor = function (_React$Component) {
      * about the type and description for the selected context.
      */
 
+  }, {
+    key: '_onBeforeChange',
+    value: function _onBeforeChange(instance, change) {
+      // The update function is only present on non-redo, non-undo events.
+      if (change.origin === 'paste') {
+        var text = change.text.map(_normalizeWhitespace.normalizeWhitespace);
+        change.update(change.from, change.to, text);
+      }
+    }
   }]);
 
   return QueryEditor;
 }(_react2.default.Component);
 
 QueryEditor.propTypes = {
-  schema: _react.PropTypes.instanceOf(_graphql.GraphQLSchema),
-  value: _react.PropTypes.string,
-  onEdit: _react.PropTypes.func,
-  onHintInformationRender: _react.PropTypes.func,
-  onClickReference: _react.PropTypes.func,
-  onRunQuery: _react.PropTypes.func,
-  editorTheme: _react.PropTypes.string
+  schema: _propTypes2.default.instanceOf(_graphql.GraphQLSchema),
+  value: _propTypes2.default.string,
+  onEdit: _propTypes2.default.func,
+  readOnly: _propTypes2.default.bool,
+  onHintInformationRender: _propTypes2.default.func,
+  onClickReference: _propTypes2.default.func,
+  onPrettifyQuery: _propTypes2.default.func,
+  onRunQuery: _propTypes2.default.func,
+  editorTheme: _propTypes2.default.string
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utility/onHasCompletion":32,"codemirror":68,"codemirror-graphql/hint":33,"codemirror-graphql/info":34,"codemirror-graphql/jump":35,"codemirror-graphql/lint":36,"codemirror-graphql/mode":37,"codemirror/addon/comment/comment":56,"codemirror/addon/edit/closebrackets":58,"codemirror/addon/edit/matchbrackets":59,"codemirror/addon/fold/brace-fold":60,"codemirror/addon/fold/foldgutter":62,"codemirror/addon/hint/show-hint":63,"codemirror/addon/lint/lint":64,"codemirror/keymap/sublime":67,"graphql":78,"marked":149}],14:[function(require,module,exports){
+},{"../utility/normalizeWhitespace":33,"../utility/onHasCompletion":34,"codemirror":65,"codemirror-graphql/hint":36,"codemirror-graphql/info":37,"codemirror-graphql/jump":38,"codemirror-graphql/lint":39,"codemirror-graphql/mode":40,"codemirror/addon/comment/comment":52,"codemirror/addon/dialog/dialog":53,"codemirror/addon/edit/closebrackets":54,"codemirror/addon/edit/matchbrackets":55,"codemirror/addon/fold/brace-fold":56,"codemirror/addon/fold/foldgutter":58,"codemirror/addon/hint/show-hint":59,"codemirror/addon/lint/lint":60,"codemirror/addon/search/jump-to-line":61,"codemirror/addon/search/search":62,"codemirror/addon/search/searchcursor":63,"codemirror/keymap/sublime":64,"graphql":94,"marked":169,"prop-types":174}],15:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -2961,9 +3186,13 @@ var _react = (typeof window !== "undefined" ? window['React'] : typeof global !=
 
 var _react2 = _interopRequireDefault(_react);
 
-var _HistoryStore = require('../utility/HistoryStore');
+var _propTypes = require('prop-types');
 
-var _HistoryStore2 = _interopRequireDefault(_HistoryStore);
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _QueryStore = require('../utility/QueryStore');
+
+var _QueryStore2 = _interopRequireDefault(_QueryStore);
 
 var _HistoryQuery = require('./HistoryQuery');
 
@@ -3010,27 +3239,35 @@ var QueryHistory = exports.QueryHistory = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (QueryHistory.__proto__ || Object.getPrototypeOf(QueryHistory)).call(this, props));
 
-    _this.store = new _HistoryStore2.default('queries', props.storage);
-    _this.state = {
-      queries: _this.store.fetchAll()
-    };
+    _initialiseProps.call(_this);
+
+    _this.historyStore = new _QueryStore2.default('queries', props.storage);
+    _this.favoriteStore = new _QueryStore2.default('favorites', props.storage);
+    var historyQueries = _this.historyStore.fetchAll();
+    var favoriteQueries = _this.favoriteStore.fetchAll();
+    var queries = historyQueries.concat(favoriteQueries);
+    _this.state = { queries: queries };
     return _this;
   }
 
   _createClass(QueryHistory, [{
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
-      if (shouldSaveQuery(nextProps, this.props, this.store.fetchRecent())) {
-        this.store.push({
+      if (shouldSaveQuery(nextProps, this.props, this.historyStore.fetchRecent())) {
+        var item = {
           query: nextProps.query,
-          variables: nextProps.variables || '',
-          operationName: nextProps.operationName || ''
-        });
-        if (this.store.length > MAX_HISTORY_LENGTH) {
-          this.store.shift();
+          variables: nextProps.variables,
+          operationName: nextProps.operationName
+        };
+        this.historyStore.push(item);
+        if (this.historyStore.length > MAX_HISTORY_LENGTH) {
+          this.historyStore.shift();
         }
+        var historyQueries = this.historyStore.items;
+        var favoriteQueries = this.favoriteStore.items;
+        var queries = historyQueries.concat(favoriteQueries);
         this.setState({
-          queries: this.store.items
+          queries: queries
         });
       }
     }
@@ -3041,7 +3278,11 @@ var QueryHistory = exports.QueryHistory = function (_React$Component) {
 
       var queries = this.state.queries.slice().reverse();
       var queryNodes = queries.map(function (query, i) {
-        return _react2.default.createElement(_HistoryQuery2.default, _extends({ key: i }, query, { onSelect: _this2.props.onSelectQuery }));
+        return _react2.default.createElement(_HistoryQuery2.default, _extends({
+          handleToggleFavorite: _this2.toggleFavorite,
+          key: i,
+          onSelect: _this2.props.onSelectQuery
+        }, query));
       });
       return _react2.default.createElement(
         'div',
@@ -3073,15 +3314,38 @@ var QueryHistory = exports.QueryHistory = function (_React$Component) {
 }(_react2.default.Component);
 
 QueryHistory.propTypes = {
-  query: _react.PropTypes.string,
-  variables: _react.PropTypes.string,
-  operationName: _react.PropTypes.string,
-  queryID: _react.PropTypes.number,
-  onSelectQuery: _react.PropTypes.func,
-  storage: _react.PropTypes.object
+  query: _propTypes2.default.string,
+  variables: _propTypes2.default.string,
+  operationName: _propTypes2.default.string,
+  queryID: _propTypes2.default.number,
+  onSelectQuery: _propTypes2.default.func,
+  storage: _propTypes2.default.object
+};
+
+var _initialiseProps = function _initialiseProps() {
+  var _this3 = this;
+
+  this.toggleFavorite = function (query, variables, operationName, favorite) {
+    var item = {
+      query: query,
+      variables: variables,
+      operationName: operationName
+    };
+    if (!_this3.favoriteStore.contains(item)) {
+      item.favorite = true;
+      _this3.favoriteStore.push(item);
+    } else if (favorite) {
+      item.favorite = false;
+      _this3.favoriteStore.delete(item);
+    }
+    var historyQueries = _this3.historyStore.items;
+    var favoriteQueries = _this3.favoriteStore.items;
+    var queries = historyQueries.concat(favoriteQueries);
+    _this3.setState({ queries: queries });
+  };
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utility/HistoryStore":23,"./HistoryQuery":12,"graphql":78}],15:[function(require,module,exports){
+},{"../utility/QueryStore":24,"./HistoryQuery":13,"graphql":94,"prop-types":174}],16:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3095,6 +3359,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3126,12 +3398,14 @@ var ResultViewer = exports.ResultViewer = function (_React$Component) {
   function ResultViewer() {
     _classCallCheck(this, ResultViewer);
 
-    return _possibleConstructorReturn(this, (ResultViewer.__proto__ || Object.getPrototypeOf(ResultViewer)).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ResultViewer.__proto__ || Object.getPrototypeOf(ResultViewer)).call(this));
   }
 
   _createClass(ResultViewer, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       // Lazily require to ensure requiring GraphiQL outside of a Browser context
       // does not produce an error.
       var CodeMirror = require('codemirror');
@@ -3139,8 +3413,20 @@ var ResultViewer = exports.ResultViewer = function (_React$Component) {
       require('codemirror/addon/fold/brace-fold');
       require('codemirror/addon/dialog/dialog');
       require('codemirror/addon/search/search');
+      require('codemirror/addon/search/searchcursor');
+      require('codemirror/addon/search/jump-to-line');
       require('codemirror/keymap/sublime');
       require('codemirror-graphql/results/mode');
+
+      if (this.props.ResultsTooltip) {
+        require('codemirror-graphql/utils/info-addon');
+        var tooltipDiv = document.createElement('div');
+        CodeMirror.registerHelper('info', 'graphql-results', function (token, options, cm, pos) {
+          var Tooltip = _this2.props.ResultsTooltip;
+          _reactDom2.default.render(_react2.default.createElement(Tooltip, { pos: pos }), tooltipDiv);
+          return tooltipDiv;
+        });
+      }
 
       this.viewer = CodeMirror(this._node, {
         lineWrapping: true,
@@ -3153,7 +3439,12 @@ var ResultViewer = exports.ResultViewer = function (_React$Component) {
           minFoldSize: 4
         },
         gutters: ['CodeMirror-foldgutter'],
+        info: Boolean(this.props.ResultsTooltip),
         extraKeys: {
+          // Persistent search box in Query Editor
+          'Cmd-F': 'findPersistent',
+          'Ctrl-F': 'findPersistent',
+
           // Editor improvements
           'Ctrl-Left': 'goSubwordLeft',
           'Ctrl-Right': 'goSubwordRight',
@@ -3180,12 +3471,12 @@ var ResultViewer = exports.ResultViewer = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return _react2.default.createElement('div', {
         className: 'result-window',
         ref: function ref(node) {
-          _this2._node = node;
+          _this3._node = node;
         }
       });
     }
@@ -3216,11 +3507,12 @@ var ResultViewer = exports.ResultViewer = function (_React$Component) {
 }(_react2.default.Component);
 
 ResultViewer.propTypes = {
-  value: _react.PropTypes.string,
-  editorTheme: _react.PropTypes.string
+  value: _propTypes2.default.string,
+  editorTheme: _propTypes2.default.string,
+  ResultsTooltip: _propTypes2.default.any
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"codemirror":68,"codemirror-graphql/results/mode":38,"codemirror/addon/dialog/dialog":57,"codemirror/addon/fold/brace-fold":60,"codemirror/addon/fold/foldgutter":62,"codemirror/addon/search/search":65,"codemirror/keymap/sublime":67}],16:[function(require,module,exports){
+},{"codemirror":65,"codemirror-graphql/results/mode":41,"codemirror-graphql/utils/info-addon":46,"codemirror/addon/dialog/dialog":53,"codemirror/addon/fold/brace-fold":56,"codemirror/addon/fold/foldgutter":58,"codemirror/addon/search/jump-to-line":61,"codemirror/addon/search/search":62,"codemirror/addon/search/searchcursor":63,"codemirror/keymap/sublime":64,"prop-types":174}],17:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3234,6 +3526,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3297,9 +3593,9 @@ var ToolbarButton = exports.ToolbarButton = function (_React$Component) {
 }(_react2.default.Component);
 
 ToolbarButton.propTypes = {
-  onClick: _react.PropTypes.func,
-  title: _react.PropTypes.string,
-  label: _react.PropTypes.string
+  onClick: _propTypes2.default.func,
+  title: _propTypes2.default.string,
+  label: _propTypes2.default.string
 };
 
 
@@ -3307,7 +3603,7 @@ function preventDefault(e) {
   e.preventDefault();
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],17:[function(require,module,exports){
+},{"prop-types":174}],18:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -3343,9 +3639,9 @@ function ToolbarGroup(_ref) {
    *  LICENSE file in the root directory of this source tree.
    */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -3359,6 +3655,10 @@ exports.ToolbarMenuItem = ToolbarMenuItem;
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3398,20 +3698,20 @@ var ToolbarMenu = exports.ToolbarMenu = function (_React$Component) {
   }
 
   _createClass(ToolbarMenu, [{
-    key: "componentWillUnmount",
+    key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this._release();
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var _this2 = this;
 
       var visible = this.state.visible;
       return _react2.default.createElement(
-        "a",
+        'a',
         {
-          className: "toolbar-menu toolbar-button",
+          className: 'toolbar-menu toolbar-button',
           onClick: this.handleOpen.bind(this),
           onMouseDown: preventDefault,
           ref: function ref(node) {
@@ -3420,19 +3720,19 @@ var ToolbarMenu = exports.ToolbarMenu = function (_React$Component) {
           title: this.props.title },
         this.props.label,
         _react2.default.createElement(
-          "svg",
-          { width: "14", height: "8" },
-          _react2.default.createElement("path", { fill: "#666", d: "M 5 1.5 L 14 1.5 L 9.5 7 z" })
+          'svg',
+          { width: '14', height: '8' },
+          _react2.default.createElement('path', { fill: '#666', d: 'M 5 1.5 L 14 1.5 L 9.5 7 z' })
         ),
         _react2.default.createElement(
-          "ul",
+          'ul',
           { className: 'toolbar-menu-items' + (visible ? ' open' : '') },
           this.props.children
         )
       );
     }
   }, {
-    key: "_subscribe",
+    key: '_subscribe',
     value: function _subscribe() {
       if (!this._listener) {
         this._listener = this.handleClick.bind(this);
@@ -3440,7 +3740,7 @@ var ToolbarMenu = exports.ToolbarMenu = function (_React$Component) {
       }
     }
   }, {
-    key: "_release",
+    key: '_release',
     value: function _release() {
       if (this._listener) {
         document.removeEventListener('click', this._listener);
@@ -3448,7 +3748,7 @@ var ToolbarMenu = exports.ToolbarMenu = function (_React$Component) {
       }
     }
   }, {
-    key: "handleClick",
+    key: 'handleClick',
     value: function handleClick(e) {
       if (this._node !== e.target) {
         preventDefault(e);
@@ -3462,8 +3762,8 @@ var ToolbarMenu = exports.ToolbarMenu = function (_React$Component) {
 }(_react2.default.Component);
 
 ToolbarMenu.propTypes = {
-  title: _react.PropTypes.string,
-  label: _react.PropTypes.string
+  title: _propTypes2.default.string,
+  label: _propTypes2.default.string
 };
 function ToolbarMenuItem(_ref) {
   var onSelect = _ref.onSelect,
@@ -3471,7 +3771,7 @@ function ToolbarMenuItem(_ref) {
       label = _ref.label;
 
   return _react2.default.createElement(
-    "li",
+    'li',
     {
       onMouseOver: function onMouseOver(e) {
         e.target.className = 'hover';
@@ -3487,18 +3787,18 @@ function ToolbarMenuItem(_ref) {
 }
 
 ToolbarMenuItem.propTypes = {
-  onSelect: _react.PropTypes.func,
-  title: _react.PropTypes.string,
-  label: _react.PropTypes.string
+  onSelect: _propTypes2.default.func,
+  title: _propTypes2.default.string,
+  label: _propTypes2.default.string
 };
 
 function preventDefault(e) {
   e.preventDefault();
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],19:[function(require,module,exports){
+},{"prop-types":174}],20:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -3514,6 +3814,10 @@ exports.ToolbarSelectOption = ToolbarSelectOption;
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3555,12 +3859,12 @@ var ToolbarSelect = exports.ToolbarSelect = function (_React$Component) {
   }
 
   _createClass(ToolbarSelect, [{
-    key: "componentWillUnmount",
+    key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this._release();
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var _this2 = this;
 
@@ -3574,9 +3878,9 @@ var ToolbarSelect = exports.ToolbarSelect = function (_React$Component) {
         return _react2.default.createElement(ToolbarSelectOption, _extends({}, child.props, { onSelect: onChildSelect }));
       });
       return _react2.default.createElement(
-        "a",
+        'a',
         {
-          className: "toolbar-select toolbar-button",
+          className: 'toolbar-select toolbar-button',
           onClick: this.handleOpen.bind(this),
           onMouseDown: preventDefault,
           ref: function ref(node) {
@@ -3585,20 +3889,20 @@ var ToolbarSelect = exports.ToolbarSelect = function (_React$Component) {
           title: this.props.title },
         selectedChild.props.label,
         _react2.default.createElement(
-          "svg",
-          { width: "13", height: "10" },
-          _react2.default.createElement("path", { fill: "#666", d: "M 5 5 L 13 5 L 9 1 z" }),
-          _react2.default.createElement("path", { fill: "#666", d: "M 5 6 L 13 6 L 9 10 z" })
+          'svg',
+          { width: '13', height: '10' },
+          _react2.default.createElement('path', { fill: '#666', d: 'M 5 5 L 13 5 L 9 1 z' }),
+          _react2.default.createElement('path', { fill: '#666', d: 'M 5 6 L 13 6 L 9 10 z' })
         ),
         _react2.default.createElement(
-          "ul",
+          'ul',
           { className: 'toolbar-select-options' + (visible ? ' open' : '') },
           optionChildren
         )
       );
     }
   }, {
-    key: "_subscribe",
+    key: '_subscribe',
     value: function _subscribe() {
       if (!this._listener) {
         this._listener = this.handleClick.bind(this);
@@ -3606,7 +3910,7 @@ var ToolbarSelect = exports.ToolbarSelect = function (_React$Component) {
       }
     }
   }, {
-    key: "_release",
+    key: '_release',
     value: function _release() {
       if (this._listener) {
         document.removeEventListener('click', this._listener);
@@ -3614,7 +3918,7 @@ var ToolbarSelect = exports.ToolbarSelect = function (_React$Component) {
       }
     }
   }, {
-    key: "handleClick",
+    key: 'handleClick',
     value: function handleClick(e) {
       if (this._node !== e.target) {
         preventDefault(e);
@@ -3628,9 +3932,9 @@ var ToolbarSelect = exports.ToolbarSelect = function (_React$Component) {
 }(_react2.default.Component);
 
 ToolbarSelect.propTypes = {
-  title: _react.PropTypes.string,
-  label: _react.PropTypes.string,
-  onSelect: _react.PropTypes.func
+  title: _propTypes2.default.string,
+  label: _propTypes2.default.string,
+  onSelect: _propTypes2.default.func
 };
 function ToolbarSelectOption(_ref) {
   var onSelect = _ref.onSelect,
@@ -3638,7 +3942,7 @@ function ToolbarSelectOption(_ref) {
       selected = _ref.selected;
 
   return _react2.default.createElement(
-    "li",
+    'li',
     {
       onMouseOver: function onMouseOver(e) {
         e.target.className = 'hover';
@@ -3650,26 +3954,25 @@ function ToolbarSelectOption(_ref) {
       onMouseUp: onSelect },
     label,
     selected && _react2.default.createElement(
-      "svg",
-      { width: "13", height: "13" },
-      _react2.default.createElement("polygon", { points: "4.851,10.462 0,5.611 2.314,3.297 4.851,5.835 10.686,0 13,2.314 4.851,10.462"
-      })
+      'svg',
+      { width: '13', height: '13' },
+      _react2.default.createElement('polygon', { points: '4.851,10.462 0,5.611 2.314,3.297 4.851,5.835 10.686,0 13,2.314 4.851,10.462' })
     )
   );
 }
 
 ToolbarSelectOption.propTypes = {
-  onSelect: _react.PropTypes.func,
-  selected: _react.PropTypes.bool,
-  label: _react.PropTypes.string,
-  value: _react.PropTypes.any
+  onSelect: _propTypes2.default.func,
+  selected: _propTypes2.default.bool,
+  label: _propTypes2.default.string,
+  value: _propTypes2.default.any
 };
 
 function preventDefault(e) {
   e.preventDefault();
 }
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],20:[function(require,module,exports){
+},{"prop-types":174}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -3683,6 +3986,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _onHasCompletion = require('../utility/onHasCompletion');
 
@@ -3712,6 +4019,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *   - variableToType: A mapping of variable name to GraphQLType.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
+ *   - readOnly: Turns the editor to read-only mode.
  *
  */
 var VariableEditor = exports.VariableEditor = function (_React$Component) {
@@ -3767,6 +4075,9 @@ var VariableEditor = exports.VariableEditor = function (_React$Component) {
       require('codemirror/addon/fold/brace-fold');
       require('codemirror/addon/fold/foldgutter');
       require('codemirror/addon/lint/lint');
+      require('codemirror/addon/search/searchcursor');
+      require('codemirror/addon/search/jump-to-line');
+      require('codemirror/addon/dialog/dialog');
       require('codemirror/keymap/sublime');
       require('codemirror-graphql/variables/hint');
       require('codemirror-graphql/variables/lint');
@@ -3782,6 +4093,7 @@ var VariableEditor = exports.VariableEditor = function (_React$Component) {
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
+        readOnly: this.props.readOnly ? 'nocursor' : false,
         foldGutter: {
           minFoldSize: 4
         },
@@ -3816,6 +4128,16 @@ var VariableEditor = exports.VariableEditor = function (_React$Component) {
               _this2.props.onRunQuery();
             }
           },
+
+          'Shift-Ctrl-P': function ShiftCtrlP() {
+            if (_this2.props.onPrettifyQuery) {
+              _this2.props.onPrettifyQuery();
+            }
+          },
+
+          // Persistent search box in Query Editor
+          'Cmd-F': 'findPersistent',
+          'Ctrl-F': 'findPersistent',
 
           // Editor improvements
           'Ctrl-Left': 'goSubwordLeft',
@@ -3896,15 +4218,17 @@ var VariableEditor = exports.VariableEditor = function (_React$Component) {
 }(_react2.default.Component);
 
 VariableEditor.propTypes = {
-  variableToType: _react.PropTypes.object,
-  value: _react.PropTypes.string,
-  onEdit: _react.PropTypes.func,
-  onHintInformationRender: _react.PropTypes.func,
-  onRunQuery: _react.PropTypes.func,
-  editorTheme: _react.PropTypes.string
+  variableToType: _propTypes2.default.object,
+  value: _propTypes2.default.string,
+  onEdit: _propTypes2.default.func,
+  readOnly: _propTypes2.default.bool,
+  onHintInformationRender: _propTypes2.default.func,
+  onPrettifyQuery: _propTypes2.default.func,
+  onRunQuery: _propTypes2.default.func,
+  editorTheme: _propTypes2.default.string
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utility/onHasCompletion":32,"codemirror":68,"codemirror-graphql/variables/hint":53,"codemirror-graphql/variables/lint":54,"codemirror-graphql/variables/mode":55,"codemirror/addon/edit/closebrackets":58,"codemirror/addon/edit/matchbrackets":59,"codemirror/addon/fold/brace-fold":60,"codemirror/addon/fold/foldgutter":62,"codemirror/addon/hint/show-hint":63,"codemirror/addon/lint/lint":64,"codemirror/keymap/sublime":67}],21:[function(require,module,exports){
+},{"../utility/onHasCompletion":34,"codemirror":65,"codemirror-graphql/variables/hint":49,"codemirror-graphql/variables/lint":50,"codemirror-graphql/variables/mode":51,"codemirror/addon/dialog/dialog":53,"codemirror/addon/edit/closebrackets":54,"codemirror/addon/edit/matchbrackets":55,"codemirror/addon/fold/brace-fold":56,"codemirror/addon/fold/foldgutter":58,"codemirror/addon/hint/show-hint":59,"codemirror/addon/lint/lint":60,"codemirror/addon/search/jump-to-line":61,"codemirror/addon/search/searchcursor":63,"codemirror/keymap/sublime":64,"prop-types":174}],22:[function(require,module,exports){
 'use strict';
 
 /**
@@ -3917,7 +4241,7 @@ VariableEditor.propTypes = {
 
 // The primary React component to use.
 module.exports = require('./components/GraphiQL').GraphiQL;
-},{"./components/GraphiQL":11}],22:[function(require,module,exports){
+},{"./components/GraphiQL":12}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3966,7 +4290,7 @@ var CodeMirrorSizer = function () {
 }();
 
 exports.default = CodeMirrorSizer;
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3979,16 +4303,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var HistoryStore = function () {
-  function HistoryStore(key, storage) {
-    _classCallCheck(this, HistoryStore);
+var QueryStore = function () {
+  function QueryStore(key, storage) {
+    _classCallCheck(this, QueryStore);
 
     this.key = key;
     this.storage = storage;
     this.items = this.fetchAll();
   }
 
-  _createClass(HistoryStore, [{
+  _createClass(QueryStore, [{
+    key: "contains",
+    value: function contains(item) {
+      return this.items.some(function (x) {
+        return x.query === item.query && x.variables === item.variables && x.operationName === item.operationName;
+      });
+    }
+  }, {
+    key: "delete",
+    value: function _delete(item) {
+      var index = this.items.findIndex(function (x) {
+        return x.query === item.query && x.variables === item.variables && x.operationName === item.operationName;
+      });
+      if (index !== -1) {
+        this.items.splice(index, 1);
+        this.save();
+      }
+    }
+  }, {
     key: "fetchRecent",
     value: function fetchRecent() {
       return this.items[this.items.length - 1];
@@ -4017,8 +4359,7 @@ var HistoryStore = function () {
   }, {
     key: "save",
     value: function save() {
-      var payload = JSON.stringify(_defineProperty({}, this.key, this.items));
-      this.storage.set(this.key, payload);
+      this.storage.set(this.key, JSON.stringify(_defineProperty({}, this.key, this.items)));
     }
   }, {
     key: "length",
@@ -4027,11 +4368,11 @@ var HistoryStore = function () {
     }
   }]);
 
-  return HistoryStore;
+  return QueryStore;
 }();
 
-exports.default = HistoryStore;
-},{}],24:[function(require,module,exports){
+exports.default = QueryStore;
+},{}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4041,6 +4382,14 @@ Object.defineProperty(exports, "__esModule", {
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
 var StorageAPI = function () {
   function StorageAPI(storage) {
@@ -4066,10 +4415,14 @@ var StorageAPI = function () {
     key: 'set',
     value: function set(name, value) {
       if (this.storage) {
+        var key = 'graphiql:' + name;
         if (value) {
-          this.storage.setItem('graphiql:' + name, value);
+          if (isStorageAvailable(this.storage, key, value)) {
+            this.storage.setItem(key, value);
+          }
         } else {
-          this.storage.removeItem('graphiql:' + name);
+          // Clean up by removing the item if there's no value to set
+          this.storage.removeItem(key);
         }
       }
     }
@@ -4079,7 +4432,28 @@ var StorageAPI = function () {
 }();
 
 exports.default = StorageAPI;
-},{}],25:[function(require,module,exports){
+
+
+function isStorageAvailable(storage, key, value) {
+  try {
+    storage.setItem(key, value);
+    return true;
+  } catch (e) {
+    return e instanceof DOMException && (
+    // everything except Firefox
+    e.code === 22 ||
+    // Firefox
+    e.code === 1014 ||
+    // test name field too, because code might not be present
+    // everything except Firefox
+    e.name === 'QuotaExceededError' ||
+    // Firefox
+    e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+    // acknowledge QuotaExceededError only if there's something already stored
+    storage.length !== 0;
+  }
+}
+},{}],26:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4111,7 +4485,7 @@ function debounce(duration, fn) {
     }, duration);
   };
 }
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4150,7 +4524,7 @@ function getTop(initialElem) {
   }
   return pt;
 }
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4332,7 +4706,7 @@ function getIndentation(str, index) {
   }
   return str.substring(indentStart, indentEnd);
 }
-},{"graphql":78}],28:[function(require,module,exports){
+},{"graphql":94}],29:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4356,7 +4730,7 @@ function find(list, predicate) {
     }
   }
 }
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4429,7 +4803,7 @@ function collectVariables(schema, documentAST) {
   });
   return variableToType;
 }
-},{"graphql":78}],30:[function(require,module,exports){
+},{"graphql":94}],31:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4476,7 +4850,7 @@ function getSelectedOperationName(prevOperations, prevSelectedOperationName, ope
   // Use the first operation.
   return names[0];
 }
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4497,7 +4871,33 @@ Object.defineProperty(exports, 'introspectionQuery', {
 // query which includes the `subscriptionType` field as the stock introspection
 // query does. This backup query removes that field.
 var introspectionQuerySansSubscriptions = exports.introspectionQuerySansSubscriptions = '\n  query IntrospectionQuery {\n    __schema {\n      queryType { name }\n      mutationType { name }\n      types {\n        ...FullType\n      }\n      directives {\n        name\n        description\n        locations\n        args {\n          ...InputValue\n        }\n      }\n    }\n  }\n\n  fragment FullType on __Type {\n    kind\n    name\n    description\n    fields(includeDeprecated: true) {\n      name\n      description\n      args {\n        ...InputValue\n      }\n      type {\n        ...TypeRef\n      }\n      isDeprecated\n      deprecationReason\n    }\n    inputFields {\n      ...InputValue\n    }\n    interfaces {\n      ...TypeRef\n    }\n    enumValues(includeDeprecated: true) {\n      name\n      description\n      isDeprecated\n      deprecationReason\n    }\n    possibleTypes {\n      ...TypeRef\n    }\n  }\n\n  fragment InputValue on __InputValue {\n    name\n    description\n    type { ...TypeRef }\n    defaultValue\n  }\n\n  fragment TypeRef on __Type {\n    kind\n    name\n    ofType {\n      kind\n      name\n      ofType {\n        kind\n        name\n        ofType {\n          kind\n          name\n          ofType {\n            kind\n            name\n            ofType {\n              kind\n              name\n              ofType {\n                kind\n                name\n                ofType {\n                  kind\n                  name\n                }\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n';
-},{"graphql":78}],32:[function(require,module,exports){
+},{"graphql":94}],33:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.normalizeWhitespace = normalizeWhitespace;
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
+// Unicode whitespace characters that break the interface.
+var invalidCharacters = exports.invalidCharacters = Array.from({ length: 11 }, function (x, i) {
+  // \u2000 -> \u200a
+  return String.fromCharCode(0x2000 + i);
+}).concat(['\u2028', '\u2029', '\u202F']);
+
+var sanitizeRegex = new RegExp('[' + invalidCharacters.join('|') + ']', 'g');
+
+function normalizeWhitespace(line) {
+  return line.replace(sanitizeRegex, ' ');
+}
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4592,16 +4992,508 @@ function renderType(type) {
   }
   return '<a class="typeName">' + type.name + '</a>';
 }
-},{"codemirror":68,"graphql":78,"marked":149}],33:[function(require,module,exports){
+},{"codemirror":65,"graphql":94,"marked":169}],35:[function(require,module,exports){
+(function (global){
+'use strict';
+
+// compare and isBuffer taken from https://github.com/feross/buffer/blob/680e9e5e488f22aac27599a57dc844a6315928dd/index.js
+// original notice:
+
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+function compare(a, b) {
+  if (a === b) {
+    return 0;
+  }
+
+  var x = a.length;
+  var y = b.length;
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i];
+      y = b[i];
+      break;
+    }
+  }
+
+  if (x < y) {
+    return -1;
+  }
+  if (y < x) {
+    return 1;
+  }
+  return 0;
+}
+function isBuffer(b) {
+  if (global.Buffer && typeof global.Buffer.isBuffer === 'function') {
+    return global.Buffer.isBuffer(b);
+  }
+  return !!(b != null && b._isBuffer);
+}
+
+// based on node assert, original notice:
+
+// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
+//
+// THIS IS NOT TESTED NOR LIKELY TO WORK OUTSIDE V8!
+//
+// Originally from narwhal.js (http://narwhaljs.org)
+// Copyright (c) 2009 Thomas Robinson <280north.com>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the 'Software'), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+// ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+// WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var util = require('util/');
+var hasOwn = Object.prototype.hasOwnProperty;
+var pSlice = Array.prototype.slice;
+var functionsHaveNames = (function () {
+  return function foo() {}.name === 'foo';
+}());
+function pToString (obj) {
+  return Object.prototype.toString.call(obj);
+}
+function isView(arrbuf) {
+  if (isBuffer(arrbuf)) {
+    return false;
+  }
+  if (typeof global.ArrayBuffer !== 'function') {
+    return false;
+  }
+  if (typeof ArrayBuffer.isView === 'function') {
+    return ArrayBuffer.isView(arrbuf);
+  }
+  if (!arrbuf) {
+    return false;
+  }
+  if (arrbuf instanceof DataView) {
+    return true;
+  }
+  if (arrbuf.buffer && arrbuf.buffer instanceof ArrayBuffer) {
+    return true;
+  }
+  return false;
+}
+// 1. The assert module provides functions that throw
+// AssertionError's when particular conditions are not met. The
+// assert module must conform to the following interface.
+
+var assert = module.exports = ok;
+
+// 2. The AssertionError is defined in assert.
+// new assert.AssertionError({ message: message,
+//                             actual: actual,
+//                             expected: expected })
+
+var regex = /\s*function\s+([^\(\s]*)\s*/;
+// based on https://github.com/ljharb/function.prototype.name/blob/adeeeec8bfcc6068b187d7d9fb3d5bb1d3a30899/implementation.js
+function getName(func) {
+  if (!util.isFunction(func)) {
+    return;
+  }
+  if (functionsHaveNames) {
+    return func.name;
+  }
+  var str = func.toString();
+  var match = str.match(regex);
+  return match && match[1];
+}
+assert.AssertionError = function AssertionError(options) {
+  this.name = 'AssertionError';
+  this.actual = options.actual;
+  this.expected = options.expected;
+  this.operator = options.operator;
+  if (options.message) {
+    this.message = options.message;
+    this.generatedMessage = false;
+  } else {
+    this.message = getMessage(this);
+    this.generatedMessage = true;
+  }
+  var stackStartFunction = options.stackStartFunction || fail;
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, stackStartFunction);
+  } else {
+    // non v8 browsers so we can have a stacktrace
+    var err = new Error();
+    if (err.stack) {
+      var out = err.stack;
+
+      // try to strip useless frames
+      var fn_name = getName(stackStartFunction);
+      var idx = out.indexOf('\n' + fn_name);
+      if (idx >= 0) {
+        // once we have located the function frame
+        // we need to strip out everything before it (and its line)
+        var next_line = out.indexOf('\n', idx + 1);
+        out = out.substring(next_line + 1);
+      }
+
+      this.stack = out;
+    }
+  }
+};
+
+// assert.AssertionError instanceof Error
+util.inherits(assert.AssertionError, Error);
+
+function truncate(s, n) {
+  if (typeof s === 'string') {
+    return s.length < n ? s : s.slice(0, n);
+  } else {
+    return s;
+  }
+}
+function inspect(something) {
+  if (functionsHaveNames || !util.isFunction(something)) {
+    return util.inspect(something);
+  }
+  var rawname = getName(something);
+  var name = rawname ? ': ' + rawname : '';
+  return '[Function' +  name + ']';
+}
+function getMessage(self) {
+  return truncate(inspect(self.actual), 128) + ' ' +
+         self.operator + ' ' +
+         truncate(inspect(self.expected), 128);
+}
+
+// At present only the three keys mentioned above are used and
+// understood by the spec. Implementations or sub modules can pass
+// other keys to the AssertionError's constructor - they will be
+// ignored.
+
+// 3. All of the following functions must throw an AssertionError
+// when a corresponding condition is not met, with a message that
+// may be undefined if not provided.  All assertion methods provide
+// both the actual and expected values to the assertion error for
+// display purposes.
+
+function fail(actual, expected, message, operator, stackStartFunction) {
+  throw new assert.AssertionError({
+    message: message,
+    actual: actual,
+    expected: expected,
+    operator: operator,
+    stackStartFunction: stackStartFunction
+  });
+}
+
+// EXTENSION! allows for well behaved errors defined elsewhere.
+assert.fail = fail;
+
+// 4. Pure assertion tests whether a value is truthy, as determined
+// by !!guard.
+// assert.ok(guard, message_opt);
+// This statement is equivalent to assert.equal(true, !!guard,
+// message_opt);. To test strictly for the value true, use
+// assert.strictEqual(true, guard, message_opt);.
+
+function ok(value, message) {
+  if (!value) fail(value, true, message, '==', assert.ok);
+}
+assert.ok = ok;
+
+// 5. The equality assertion tests shallow, coercive equality with
+// ==.
+// assert.equal(actual, expected, message_opt);
+
+assert.equal = function equal(actual, expected, message) {
+  if (actual != expected) fail(actual, expected, message, '==', assert.equal);
+};
+
+// 6. The non-equality assertion tests for whether two objects are not equal
+// with != assert.notEqual(actual, expected, message_opt);
+
+assert.notEqual = function notEqual(actual, expected, message) {
+  if (actual == expected) {
+    fail(actual, expected, message, '!=', assert.notEqual);
+  }
+};
+
+// 7. The equivalence assertion tests a deep equality relation.
+// assert.deepEqual(actual, expected, message_opt);
+
+assert.deepEqual = function deepEqual(actual, expected, message) {
+  if (!_deepEqual(actual, expected, false)) {
+    fail(actual, expected, message, 'deepEqual', assert.deepEqual);
+  }
+};
+
+assert.deepStrictEqual = function deepStrictEqual(actual, expected, message) {
+  if (!_deepEqual(actual, expected, true)) {
+    fail(actual, expected, message, 'deepStrictEqual', assert.deepStrictEqual);
+  }
+};
+
+function _deepEqual(actual, expected, strict, memos) {
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+  } else if (isBuffer(actual) && isBuffer(expected)) {
+    return compare(actual, expected) === 0;
+
+  // 7.2. If the expected value is a Date object, the actual value is
+  // equivalent if it is also a Date object that refers to the same time.
+  } else if (util.isDate(actual) && util.isDate(expected)) {
+    return actual.getTime() === expected.getTime();
+
+  // 7.3 If the expected value is a RegExp object, the actual value is
+  // equivalent if it is also a RegExp object with the same source and
+  // properties (`global`, `multiline`, `lastIndex`, `ignoreCase`).
+  } else if (util.isRegExp(actual) && util.isRegExp(expected)) {
+    return actual.source === expected.source &&
+           actual.global === expected.global &&
+           actual.multiline === expected.multiline &&
+           actual.lastIndex === expected.lastIndex &&
+           actual.ignoreCase === expected.ignoreCase;
+
+  // 7.4. Other pairs that do not both pass typeof value == 'object',
+  // equivalence is determined by ==.
+  } else if ((actual === null || typeof actual !== 'object') &&
+             (expected === null || typeof expected !== 'object')) {
+    return strict ? actual === expected : actual == expected;
+
+  // If both values are instances of typed arrays, wrap their underlying
+  // ArrayBuffers in a Buffer each to increase performance
+  // This optimization requires the arrays to have the same type as checked by
+  // Object.prototype.toString (aka pToString). Never perform binary
+  // comparisons for Float*Arrays, though, since e.g. +0 === -0 but their
+  // bit patterns are not identical.
+  } else if (isView(actual) && isView(expected) &&
+             pToString(actual) === pToString(expected) &&
+             !(actual instanceof Float32Array ||
+               actual instanceof Float64Array)) {
+    return compare(new Uint8Array(actual.buffer),
+                   new Uint8Array(expected.buffer)) === 0;
+
+  // 7.5 For all other Object pairs, including Array objects, equivalence is
+  // determined by having the same number of owned properties (as verified
+  // with Object.prototype.hasOwnProperty.call), the same set of keys
+  // (although not necessarily the same order), equivalent values for every
+  // corresponding key, and an identical 'prototype' property. Note: this
+  // accounts for both named and indexed properties on Arrays.
+  } else if (isBuffer(actual) !== isBuffer(expected)) {
+    return false;
+  } else {
+    memos = memos || {actual: [], expected: []};
+
+    var actualIndex = memos.actual.indexOf(actual);
+    if (actualIndex !== -1) {
+      if (actualIndex === memos.expected.indexOf(expected)) {
+        return true;
+      }
+    }
+
+    memos.actual.push(actual);
+    memos.expected.push(expected);
+
+    return objEquiv(actual, expected, strict, memos);
+  }
+}
+
+function isArguments(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+}
+
+function objEquiv(a, b, strict, actualVisitedObjects) {
+  if (a === null || a === undefined || b === null || b === undefined)
+    return false;
+  // if one is a primitive, the other must be same
+  if (util.isPrimitive(a) || util.isPrimitive(b))
+    return a === b;
+  if (strict && Object.getPrototypeOf(a) !== Object.getPrototypeOf(b))
+    return false;
+  var aIsArgs = isArguments(a);
+  var bIsArgs = isArguments(b);
+  if ((aIsArgs && !bIsArgs) || (!aIsArgs && bIsArgs))
+    return false;
+  if (aIsArgs) {
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return _deepEqual(a, b, strict);
+  }
+  var ka = objectKeys(a);
+  var kb = objectKeys(b);
+  var key, i;
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length !== kb.length)
+    return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] !== kb[i])
+      return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!_deepEqual(a[key], b[key], strict, actualVisitedObjects))
+      return false;
+  }
+  return true;
+}
+
+// 8. The non-equivalence assertion tests for any deep inequality.
+// assert.notDeepEqual(actual, expected, message_opt);
+
+assert.notDeepEqual = function notDeepEqual(actual, expected, message) {
+  if (_deepEqual(actual, expected, false)) {
+    fail(actual, expected, message, 'notDeepEqual', assert.notDeepEqual);
+  }
+};
+
+assert.notDeepStrictEqual = notDeepStrictEqual;
+function notDeepStrictEqual(actual, expected, message) {
+  if (_deepEqual(actual, expected, true)) {
+    fail(actual, expected, message, 'notDeepStrictEqual', notDeepStrictEqual);
+  }
+}
+
+
+// 9. The strict equality assertion tests strict equality, as determined by ===.
+// assert.strictEqual(actual, expected, message_opt);
+
+assert.strictEqual = function strictEqual(actual, expected, message) {
+  if (actual !== expected) {
+    fail(actual, expected, message, '===', assert.strictEqual);
+  }
+};
+
+// 10. The strict non-equality assertion tests for strict inequality, as
+// determined by !==.  assert.notStrictEqual(actual, expected, message_opt);
+
+assert.notStrictEqual = function notStrictEqual(actual, expected, message) {
+  if (actual === expected) {
+    fail(actual, expected, message, '!==', assert.notStrictEqual);
+  }
+};
+
+function expectedException(actual, expected) {
+  if (!actual || !expected) {
+    return false;
+  }
+
+  if (Object.prototype.toString.call(expected) == '[object RegExp]') {
+    return expected.test(actual);
+  }
+
+  try {
+    if (actual instanceof expected) {
+      return true;
+    }
+  } catch (e) {
+    // Ignore.  The instanceof check doesn't work for arrow functions.
+  }
+
+  if (Error.isPrototypeOf(expected)) {
+    return false;
+  }
+
+  return expected.call({}, actual) === true;
+}
+
+function _tryBlock(block) {
+  var error;
+  try {
+    block();
+  } catch (e) {
+    error = e;
+  }
+  return error;
+}
+
+function _throws(shouldThrow, block, expected, message) {
+  var actual;
+
+  if (typeof block !== 'function') {
+    throw new TypeError('"block" argument must be a function');
+  }
+
+  if (typeof expected === 'string') {
+    message = expected;
+    expected = null;
+  }
+
+  actual = _tryBlock(block);
+
+  message = (expected && expected.name ? ' (' + expected.name + ').' : '.') +
+            (message ? ' ' + message : '.');
+
+  if (shouldThrow && !actual) {
+    fail(actual, expected, 'Missing expected exception' + message);
+  }
+
+  var userProvidedMessage = typeof message === 'string';
+  var isUnwantedException = !shouldThrow && util.isError(actual);
+  var isUnexpectedException = !shouldThrow && actual && !expected;
+
+  if ((isUnwantedException &&
+      userProvidedMessage &&
+      expectedException(actual, expected)) ||
+      isUnexpectedException) {
+    fail(actual, expected, 'Got unwanted exception' + message);
+  }
+
+  if ((shouldThrow && actual && expected &&
+      !expectedException(actual, expected)) || (!shouldThrow && actual)) {
+    throw actual;
+  }
+}
+
+// 11. Expected to throw an error:
+// assert.throws(block, Error_opt, message_opt);
+
+assert.throws = function(block, /*optional*/error, /*optional*/message) {
+  _throws(true, block, error, message);
+};
+
+// EXTENSION! This is annoying to write outside this module.
+assert.doesNotThrow = function(block, /*optional*/error, /*optional*/message) {
+  _throws(false, block, error, message);
+};
+
+assert.ifError = function(err) { if (err) throw err; };
+
+var objectKeys = Object.keys || function (obj) {
+  var keys = [];
+  for (var key in obj) {
+    if (hasOwn.call(obj, key)) keys.push(key);
+  }
+  return keys;
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"util/":178}],36:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
 
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
-var _getHintsAtPosition = require('./utils/getHintsAtPosition');
-
-var _getHintsAtPosition2 = _interopRequireDefault(_getHintsAtPosition);
+var _graphqlLanguageServiceInterface = require('graphql-language-service-interface');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4639,7 +5531,37 @@ _codemirror2.default.registerHelper('hint', 'graphql', function (editor, options
 
   var cur = editor.getCursor();
   var token = editor.getTokenAt(cur);
-  var results = (0, _getHintsAtPosition2.default)(schema, editor.getValue(), cur, token);
+  var rawResults = (0, _graphqlLanguageServiceInterface.getAutocompleteSuggestions)(schema, editor.getValue(), cur, token);
+  /**
+   * GraphQL language service responds to the autocompletion request with
+   * a different format:
+   * type CompletionItem = {
+   *   label: string,
+   *   kind?: number,
+   *   detail?: string,
+   *   documentation?: string,
+   *   // GraphQL Deprecation information
+   *   isDeprecated?: ?string,
+   *   deprecationReason?: ?string,
+   * };
+   *
+   * Switch to codemirror-compliant format before returning results.
+   */
+  var tokenStart = token.type !== null && /"|\w/.test(token.string[0]) ? token.start : token.end;
+  var results = {
+    list: rawResults.map(function (item) {
+      return {
+        text: item.label,
+        type: schema.getType(item.detail),
+        description: item.documentation,
+        isDeprecated: item.isDeprecated,
+        deprecationReason: item.deprecationReason
+      };
+    }),
+    from: { line: cur.line, column: tokenStart },
+    to: { line: cur.line, column: token.end }
+  };
+
   if (results && results.list && results.list.length > 0) {
     results.from = _codemirror2.default.Pos(results.from.line, results.from.column);
     results.to = _codemirror2.default.Pos(results.to.line, results.to.column);
@@ -4648,7 +5570,7 @@ _codemirror2.default.registerHelper('hint', 'graphql', function (editor, options
 
   return results;
 });
-},{"./utils/getHintsAtPosition":44,"codemirror":68}],34:[function(require,module,exports){
+},{"codemirror":65,"graphql-language-service-interface":75}],37:[function(require,module,exports){
 'use strict';
 
 var _graphql = require('graphql');
@@ -4824,26 +5746,24 @@ function renderDeprecation(into, options, def) {
 
 function text(into, content, className, options, ref) {
   if (className) {
-    (function () {
-      var onClick = options.onClick;
-      var node = document.createElement(onClick ? 'a' : 'span');
-      if (onClick) {
-        // Providing a href forces proper a tag behavior, though we don't actually
-        // want clicking the node to navigate anywhere.
-        node.href = 'javascript:void 0'; // eslint-disable-line no-script-url
-        node.addEventListener('click', function (e) {
-          onClick(ref, e);
-        });
-      }
-      node.className = className;
-      node.appendChild(document.createTextNode(content));
-      into.appendChild(node);
-    })();
+    var onClick = options.onClick;
+    var node = document.createElement(onClick ? 'a' : 'span');
+    if (onClick) {
+      // Providing a href forces proper a tag behavior, though we don't actually
+      // want clicking the node to navigate anywhere.
+      node.href = 'javascript:void 0'; // eslint-disable-line no-script-url
+      node.addEventListener('click', function (e) {
+        onClick(ref, e);
+      });
+    }
+    node.className = className;
+    node.appendChild(document.createTextNode(content));
+    into.appendChild(node);
   } else {
     into.appendChild(document.createTextNode(content));
   }
 }
-},{"./utils/SchemaReference":42,"./utils/getTypeInfo":45,"./utils/info-addon":47,"codemirror":68,"graphql":78}],35:[function(require,module,exports){
+},{"./utils/SchemaReference":42,"./utils/getTypeInfo":44,"./utils/info-addon":46,"codemirror":65,"graphql":94}],38:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
@@ -4907,29 +5827,17 @@ _codemirror2.default.registerHelper('jump', 'graphql', function (token, options)
     return (0, _SchemaReference.getTypeReference)(typeInfo);
   }
 });
-},{"./utils/SchemaReference":42,"./utils/getTypeInfo":45,"./utils/jump-addon":49,"codemirror":68}],36:[function(require,module,exports){
+},{"./utils/SchemaReference":42,"./utils/getTypeInfo":44,"./utils/jump-addon":48,"codemirror":65}],39:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
 
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
-var _graphql = require('graphql');
+var _graphqlLanguageServiceInterface = require('graphql-language-service-interface');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Registers a "lint" helper for CodeMirror.
- *
- * Using CodeMirror's "lint" addon: https://codemirror.net/demo/lint.html
- * Given the text within an editor, this helper will take that text and return
- * a list of linter issues, derived from GraphQL's parse and validate steps.
- *
- * Options:
- *
- *   - schema: GraphQLSchema provides the linter with positionally relevant info
- *
- */
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -4939,66 +5847,51 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-_codemirror2.default.registerHelper('lint', 'graphql', function (text, options, editor) {
+var SEVERITY = ['error', 'warning', 'information', 'hint'];
+var TYPE = {
+  'GraphQL: Validation': 'validation',
+  'GraphQL: Deprecation': 'deprecation',
+  'GraphQL: Syntax': 'syntax'
+};
+
+/**
+ * Registers a "lint" helper for CodeMirror.
+ *
+ * Using CodeMirror's "lint" addon: https://codemirror.net/demo/lint.html
+ * Given the text within an editor, this helper will take that text and return
+ * a list of linter issues, derived from GraphQL's parse and validate steps.
+ * Also, this uses `graphql-language-service-parser` to power the diagnostics
+ * service.
+ *
+ * Options:
+ *
+ *   - schema: GraphQLSchema provides the linter with positionally relevant info
+ *
+ */
+_codemirror2.default.registerHelper('lint', 'graphql', function (text, options) {
   var schema = options.schema;
-  if (!schema) {
-    return [];
-  }
+  var rawResults = (0, _graphqlLanguageServiceInterface.getDiagnostics)(text, schema);
 
-  try {
-    var ast = (0, _graphql.parse)(text);
-    var validationErrorAnnotations = mapCat((0, _graphql.validate)(schema, ast), function (error) {
-      return annotations(editor, error, 'error', 'validation');
-    });
-    // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
-    // support older versions of graphql-js.
-    var deprecationWarningAnnotations = !_graphql.findDeprecatedUsages ? [] : mapCat((0, _graphql.findDeprecatedUsages)(schema, ast), function (error) {
-      return annotations(editor, error, 'warning', 'deprecation');
-    });
-    return validationErrorAnnotations.concat(deprecationWarningAnnotations);
-  } catch (error) {
-    var location = error.locations[0];
-    var pos = _codemirror2.default.Pos(location.line - 1, location.column);
-    var token = editor.getTokenAt(pos);
-    return [{
-      message: error.message,
-      severity: 'error',
-      type: 'syntax',
-      from: _codemirror2.default.Pos(location.line - 1, token.start),
-      to: _codemirror2.default.Pos(location.line - 1, token.end)
-    }];
-  }
-});
-
-function annotations(editor, error, severity, type) {
-  return error.nodes.map(function (node) {
-    var highlightNode = node.kind !== 'Variable' && node.name ? node.name : node.variable ? node.variable : node;
+  var results = rawResults.map(function (error) {
     return {
       message: error.message,
-      severity: severity,
-      type: type,
-      from: editor.posFromIndex(highlightNode.loc.start),
-      to: editor.posFromIndex(highlightNode.loc.end)
+      severity: SEVERITY[error.severity - 1],
+      type: TYPE[error.source],
+      from: _codemirror2.default.Pos(error.range.start.line, error.range.start.character),
+      to: _codemirror2.default.Pos(error.range.end.line, error.range.end.character)
     };
   });
-}
 
-// General utility for map-cating (aka flat-mapping).
-function mapCat(array, mapper) {
-  return Array.prototype.concat.apply([], array.map(mapper));
-}
-},{"codemirror":68,"graphql":78}],37:[function(require,module,exports){
+  return results;
+});
+},{"codemirror":65,"graphql-language-service-interface":75}],40:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
 
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
-var _onlineParser = require('./utils/onlineParser');
-
-var _onlineParser2 = _interopRequireDefault(_onlineParser);
-
-var _Rules = require('./utils/Rules');
+var _graphqlLanguageServiceParser = require('graphql-language-service-parser');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5022,13 +5915,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * levels of the syntax tree and results in a structured `state` linked-list
  * which contains the relevant information to produce valuable typeaheads.
  */
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 _codemirror2.default.defineMode('graphql', function (config) {
-  var parser = (0, _onlineParser2.default)({
+  var parser = (0, _graphqlLanguageServiceParser.onlineParser)({
     eatWhitespace: function eatWhitespace(stream) {
-      return stream.eatWhile(_Rules.isIgnored);
+      return stream.eatWhile(_graphqlLanguageServiceParser.isIgnored);
     },
-    LexRules: _Rules.LexRules,
-    ParseRules: _Rules.ParseRules,
+    lexRules: _graphqlLanguageServiceParser.LexRules,
+    parseRules: _graphqlLanguageServiceParser.ParseRules,
     editorConfig: { tabSize: config.tabSize }
   });
 
@@ -5045,14 +5947,7 @@ _codemirror2.default.defineMode('graphql', function (config) {
       explode: '()[]{}'
     }
   };
-}); /**
-     *  Copyright (c) 2015, Facebook, Inc.
-     *  All rights reserved.
-     *
-     *  This source code is licensed under the BSD-style license found in the
-     *  LICENSE file in the root directory of this source tree. An additional grant
-     *  of patent rights can be found in the PATENTS file in the same directory.
-     */
+});
 
 function indent(state, textAfter) {
   var levels = state.levels;
@@ -5061,18 +5956,14 @@ function indent(state, textAfter) {
   var level = !levels || levels.length === 0 ? state.indentLevel : levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
   return level * this.config.indentUnit;
 }
-},{"./utils/Rules":41,"./utils/onlineParser":51,"codemirror":68}],38:[function(require,module,exports){
+},{"codemirror":65,"graphql-language-service-parser":79}],41:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
 
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
-var _onlineParser = require('../utils/onlineParser');
-
-var _onlineParser2 = _interopRequireDefault(_onlineParser);
-
-var _RuleHelpers = require('../utils/RuleHelpers');
+var _graphqlLanguageServiceParser = require('graphql-language-service-parser');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5080,13 +5971,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * This mode defines JSON, but provides a data-laden parser state to enable
  * better code intelligence.
  */
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 _codemirror2.default.defineMode('graphql-results', function (config) {
-  var parser = (0, _onlineParser2.default)({
+  var parser = (0, _graphqlLanguageServiceParser.onlineParser)({
     eatWhitespace: function eatWhitespace(stream) {
       return stream.eatSpace();
     },
-    LexRules: LexRules,
-    ParseRules: ParseRules,
+    lexRules: LexRules,
+    parseRules: ParseRules,
     editorConfig: { tabSize: config.tabSize }
   });
 
@@ -5102,14 +6002,7 @@ _codemirror2.default.defineMode('graphql-results', function (config) {
       explode: '[]{}'
     }
   };
-}); /**
-     *  Copyright (c) 2015, Facebook, Inc.
-     *  All rights reserved.
-     *
-     *  This source code is licensed under the BSD-style license found in the
-     *  LICENSE file in the root directory of this source tree. An additional grant
-     *  of patent rights can be found in the PATENTS file in the same directory.
-     */
+});
 
 function indent(state, textAfter) {
   var levels = state.levels;
@@ -5140,8 +6033,8 @@ var LexRules = {
  * The parser rules for JSON.
  */
 var ParseRules = {
-  Document: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('Entry', (0, _RuleHelpers.p)(',')), (0, _RuleHelpers.p)('}')],
-  Entry: [(0, _RuleHelpers.t)('String', 'def'), (0, _RuleHelpers.p)(':'), 'Value'],
+  Document: [(0, _graphqlLanguageServiceParser.p)('{'), (0, _graphqlLanguageServiceParser.list)('Entry', (0, _graphqlLanguageServiceParser.p)(',')), (0, _graphqlLanguageServiceParser.p)('}')],
+  Entry: [(0, _graphqlLanguageServiceParser.t)('String', 'def'), (0, _graphqlLanguageServiceParser.p)(':'), 'Value'],
   Value: function Value(token) {
     switch (token.kind) {
       case 'Number':
@@ -5158,7 +6051,8 @@ var ParseRules = {
         return null;
       case 'Keyword':
         switch (token.value) {
-          case 'true':case 'false':
+          case 'true':
+          case 'false':
             return 'BooleanValue';
           case 'null':
             return 'NullValue';
@@ -5167,461 +6061,15 @@ var ParseRules = {
     }
   },
 
-  NumberValue: [(0, _RuleHelpers.t)('Number', 'number')],
-  StringValue: [(0, _RuleHelpers.t)('String', 'string')],
-  BooleanValue: [(0, _RuleHelpers.t)('Keyword', 'builtin')],
-  NullValue: [(0, _RuleHelpers.t)('Keyword', 'keyword')],
-  ListValue: [(0, _RuleHelpers.p)('['), (0, _RuleHelpers.list)('Value', (0, _RuleHelpers.p)(',')), (0, _RuleHelpers.p)(']')],
-  ObjectValue: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('ObjectField', (0, _RuleHelpers.p)(',')), (0, _RuleHelpers.p)('}')],
-  ObjectField: [(0, _RuleHelpers.t)('String', 'property'), (0, _RuleHelpers.p)(':'), 'Value']
+  NumberValue: [(0, _graphqlLanguageServiceParser.t)('Number', 'number')],
+  StringValue: [(0, _graphqlLanguageServiceParser.t)('String', 'string')],
+  BooleanValue: [(0, _graphqlLanguageServiceParser.t)('Keyword', 'builtin')],
+  NullValue: [(0, _graphqlLanguageServiceParser.t)('Keyword', 'keyword')],
+  ListValue: [(0, _graphqlLanguageServiceParser.p)('['), (0, _graphqlLanguageServiceParser.list)('Value', (0, _graphqlLanguageServiceParser.p)(',')), (0, _graphqlLanguageServiceParser.p)(']')],
+  ObjectValue: [(0, _graphqlLanguageServiceParser.p)('{'), (0, _graphqlLanguageServiceParser.list)('ObjectField', (0, _graphqlLanguageServiceParser.p)(',')), (0, _graphqlLanguageServiceParser.p)('}')],
+  ObjectField: [(0, _graphqlLanguageServiceParser.t)('String', 'property'), (0, _graphqlLanguageServiceParser.p)(':'), 'Value']
 };
-},{"../utils/RuleHelpers":40,"../utils/onlineParser":51,"codemirror":68}],39:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-/**
- * CharacterStream implements a stream of character tokens given a source text.
- * The API design follows that of CodeMirror.StringStream.
- *
- * Required:
- *
- *      sourceText: (string), A raw GraphQL source text. Works best if a line
- *        is supplied.
- *
- */
-
-var CharacterStream = function () {
-  function CharacterStream(sourceText) {
-    _classCallCheck(this, CharacterStream);
-
-    this._start = 0;
-    this._pos = 0;
-    this._sourceText = sourceText;
-  }
-
-  CharacterStream.prototype.getStartOfToken = function getStartOfToken() {
-    return this._start;
-  };
-
-  CharacterStream.prototype.getCurrentPosition = function getCurrentPosition() {
-    return this._pos;
-  };
-
-  CharacterStream.prototype._testNextCharacter = function _testNextCharacter(pattern) {
-    var character = this._sourceText.charAt(this._pos);
-    return typeof pattern === 'string' ? character === pattern : pattern.test ? pattern.test(character) : pattern(character);
-  };
-
-  CharacterStream.prototype.eol = function eol() {
-    return this._sourceText.length === this._pos;
-  };
-
-  CharacterStream.prototype.sol = function sol() {
-    return this._pos === 0;
-  };
-
-  CharacterStream.prototype.peek = function peek() {
-    return this._sourceText.charAt(this._pos) ? this._sourceText.charAt(this._pos) : null;
-  };
-
-  CharacterStream.prototype.next = function next() {
-    var char = this._sourceText.charAt(this._pos);
-    this._pos++;
-    return char;
-  };
-
-  CharacterStream.prototype.eat = function eat(pattern) {
-    var isMatched = this._testNextCharacter(pattern);
-    if (isMatched) {
-      this._start = this._pos;
-      this._pos++;
-      return this._sourceText.charAt(this._pos - 1);
-    }
-    return undefined;
-  };
-
-  CharacterStream.prototype.eatWhile = function eatWhile(match) {
-    var isMatched = this._testNextCharacter(match);
-    var didEat = false;
-
-    // If a match, treat the total upcoming matches as one token
-    if (isMatched) {
-      didEat = isMatched;
-      this._start = this._pos;
-    }
-
-    while (isMatched) {
-      this._pos++;
-      isMatched = this._testNextCharacter(match);
-      didEat = true;
-    }
-
-    return didEat;
-  };
-
-  CharacterStream.prototype.eatSpace = function eatSpace() {
-    return this.eatWhile(/[\s\u00a0]/);
-  };
-
-  CharacterStream.prototype.skipToEnd = function skipToEnd() {
-    this._pos = this._sourceText.length;
-  };
-
-  CharacterStream.prototype.skipTo = function skipTo(position) {
-    this._pos = position;
-  };
-
-  CharacterStream.prototype.match = function match(pattern) {
-    var consume = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-    var caseFold = arguments[2];
-
-    var token = null;
-    var match = null;
-
-    switch (typeof pattern) {
-      case 'string':
-        var regex = new RegExp(pattern, caseFold ? 'i' : '');
-        match = regex.test(this._sourceText.substr(this._pos, pattern.length));
-        token = pattern;
-        break;
-      case 'object': // RegExp
-      case 'function':
-        match = this._sourceText.slice(this._pos).match(pattern);
-        token = match && match[0];
-        break;
-    }
-
-    if (match && (typeof pattern === 'string' || match.index === 0)) {
-      if (consume) {
-        this._start = this._pos;
-        this._pos += token.length;
-      }
-      return match;
-    }
-
-    // No match available.
-    return false;
-  };
-
-  CharacterStream.prototype.backUp = function backUp(num) {
-    this._pos -= num;
-  };
-
-  CharacterStream.prototype.column = function column() {
-    return this._pos;
-  };
-
-  CharacterStream.prototype.indentation = function indentation() {
-    var match = this._sourceText.match(/\s*/);
-    var indent = 0;
-    if (match && match.index === 0) {
-      var whitespaces = match[0];
-      var pos = 0;
-      while (whitespaces.length > pos) {
-        if (whitespaces.charCodeAt(pos) === 9) {
-          indent += 2;
-        } else {
-          indent++;
-        }
-        pos++;
-      }
-    }
-
-    return indent;
-  };
-
-  CharacterStream.prototype.current = function current() {
-    return this._sourceText.slice(this._start, this._pos);
-  };
-
-  return CharacterStream;
-}();
-
-exports.default = CharacterStream;
-},{}],40:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.opt = opt;
-exports.list = list;
-exports.butNot = butNot;
-exports.t = t;
-exports.p = p;
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-// These functions help build matching rules for ParseRules.
-
-// An optional rule.
-function opt(ofRule) {
-  return { ofRule: ofRule };
-}
-
-// A list of another rule.
-function list(ofRule, separator) {
-  return { ofRule: ofRule, isList: true, separator: separator };
-}
-
-// An constraint described as `but not` in the GraphQL spec.
-function butNot(rule, exclusions) {
-  var ruleMatch = rule.match;
-  rule.match = function (token) {
-    return ruleMatch(token) && exclusions.every(function (exclusion) {
-      return !exclusion.match(token);
-    });
-  };
-  return rule;
-}
-
-// Token of a kind
-function t(kind, style) {
-  return { style: style, match: function match(token) {
-      return token.kind === kind;
-    } };
-}
-
-// Punctuator
-function p(value, style) {
-  return {
-    style: style || 'punctuation',
-    match: function match(token) {
-      return token.kind === 'Punctuation' && token.value === value;
-    }
-  };
-}
-},{}],41:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ParseRules = exports.LexRules = exports.isIgnored = undefined;
-
-var _RuleHelpers = require('../utils/RuleHelpers');
-
-/**
- * Whitespace tokens defined in GraphQL spec.
- */
-var isIgnored = exports.isIgnored = function isIgnored(ch) {
-  return ch === ' ' || ch === '\t' || ch === ',' || ch === '\n' || ch === '\r' || ch === '\uFEFF';
-};
-
-/**
- * The lexer rules. These are exactly as described by the spec.
- */
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-var LexRules = exports.LexRules = {
-  // The Name token.
-  Name: /^[_A-Za-z][_0-9A-Za-z]*/,
-
-  // All Punctuation used in GraphQL
-  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|]|\{|\||\})/,
-
-  // Combines the IntValue and FloatValue tokens.
-  Number: /^-?(?:0|(?:[1-9][0-9]*))(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?/,
-
-  // Note the closing quote is made optional as an IDE experience improvment.
-  String: /^"(?:[^"\\]|\\(?:"|\/|\\|b|f|n|r|t|u[0-9a-fA-F]{4}))*"?/,
-
-  // Comments consume entire lines.
-  Comment: /^#.*/
-};
-
-/**
- * The parser rules. These are very close to, but not exactly the same as the
- * spec. Minor deviations allow for a simpler implementation. The resulting
- * parser can parse everything the spec declares possible.
- */
-var ParseRules = exports.ParseRules = {
-  Document: [(0, _RuleHelpers.list)('Definition')],
-  Definition: function Definition(token) {
-    switch (token.value) {
-      case '{':
-        return 'ShortQuery';
-      case 'query':
-        return 'Query';
-      case 'mutation':
-        return 'Mutation';
-      case 'subscription':
-        return 'Subscription';
-      case 'fragment':
-        return 'FragmentDefinition';
-      case 'schema':
-        return 'SchemaDef';
-      case 'scalar':
-        return 'ScalarDef';
-      case 'type':
-        return 'ObjectTypeDef';
-      case 'interface':
-        return 'InterfaceDef';
-      case 'union':
-        return 'UnionDef';
-      case 'enum':
-        return 'EnumDef';
-      case 'input':
-        return 'InputDef';
-      case 'extend':
-        return 'ExtendDef';
-      case 'directive':
-        return 'DirectiveDef';
-    }
-  },
-
-  // Note: instead of "Operation", these rules have been separated out.
-  ShortQuery: ['SelectionSet'],
-  Query: [word('query'), (0, _RuleHelpers.opt)(name('def')), (0, _RuleHelpers.opt)('VariableDefinitions'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
-  Mutation: [word('mutation'), (0, _RuleHelpers.opt)(name('def')), (0, _RuleHelpers.opt)('VariableDefinitions'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
-  Subscription: [word('subscription'), (0, _RuleHelpers.opt)(name('def')), (0, _RuleHelpers.opt)('VariableDefinitions'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
-  VariableDefinitions: [(0, _RuleHelpers.p)('('), (0, _RuleHelpers.list)('VariableDefinition'), (0, _RuleHelpers.p)(')')],
-  VariableDefinition: ['Variable', (0, _RuleHelpers.p)(':'), 'Type', (0, _RuleHelpers.opt)('DefaultValue')],
-  Variable: [(0, _RuleHelpers.p)('$', 'variable'), name('variable')],
-  DefaultValue: [(0, _RuleHelpers.p)('='), 'Value'],
-  SelectionSet: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('Selection'), (0, _RuleHelpers.p)('}')],
-  Selection: function Selection(token, stream) {
-    return token.value === '...' ? stream.match(/[\s\u00a0,]*(on\b|@|{)/, false) ? 'InlineFragment' : 'FragmentSpread' : stream.match(/[\s\u00a0,]*:/, false) ? 'AliasedField' : 'Field';
-  },
-
-  // Note: this minor deviation of "AliasedField" simplifies the lookahead.
-  AliasedField: [name('property'), (0, _RuleHelpers.p)(':'), name('qualifier'), (0, _RuleHelpers.opt)('Arguments'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.opt)('SelectionSet')],
-  Field: [name('property'), (0, _RuleHelpers.opt)('Arguments'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.opt)('SelectionSet')],
-  Arguments: [(0, _RuleHelpers.p)('('), (0, _RuleHelpers.list)('Argument'), (0, _RuleHelpers.p)(')')],
-  Argument: [name('attribute'), (0, _RuleHelpers.p)(':'), 'Value'],
-  FragmentSpread: [(0, _RuleHelpers.p)('...'), name('def'), (0, _RuleHelpers.list)('Directive')],
-  InlineFragment: [(0, _RuleHelpers.p)('...'), (0, _RuleHelpers.opt)('TypeCondition'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
-  FragmentDefinition: [word('fragment'), (0, _RuleHelpers.opt)((0, _RuleHelpers.butNot)(name('def'), [word('on')])), 'TypeCondition', (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
-  TypeCondition: [word('on'), 'NamedType'],
-  // Variables could be parsed in cases where only Const is expected by spec.
-  Value: function Value(token) {
-    switch (token.kind) {
-      case 'Number':
-        return 'NumberValue';
-      case 'String':
-        return 'StringValue';
-      case 'Punctuation':
-        switch (token.value) {
-          case '[':
-            return 'ListValue';
-          case '{':
-            return 'ObjectValue';
-          case '$':
-            return 'Variable';
-        }
-        return null;
-      case 'Name':
-        switch (token.value) {
-          case 'true':case 'false':
-            return 'BooleanValue';
-        }
-        if (token.value === 'null') {
-          return 'NullValue';
-        }
-        return 'EnumValue';
-    }
-  },
-
-  NumberValue: [(0, _RuleHelpers.t)('Number', 'number')],
-  StringValue: [(0, _RuleHelpers.t)('String', 'string')],
-  BooleanValue: [(0, _RuleHelpers.t)('Name', 'builtin')],
-  NullValue: [(0, _RuleHelpers.t)('Name', 'keyword')],
-  EnumValue: [name('string-2')],
-  ListValue: [(0, _RuleHelpers.p)('['), (0, _RuleHelpers.list)('Value'), (0, _RuleHelpers.p)(']')],
-  ObjectValue: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('ObjectField'), (0, _RuleHelpers.p)('}')],
-  ObjectField: [name('attribute'), (0, _RuleHelpers.p)(':'), 'Value'],
-  Type: function Type(token) {
-    return token.value === '[' ? 'ListType' : 'NonNullType';
-  },
-
-  // NonNullType has been merged into ListType to simplify.
-  ListType: [(0, _RuleHelpers.p)('['), 'Type', (0, _RuleHelpers.p)(']'), (0, _RuleHelpers.opt)((0, _RuleHelpers.p)('!'))],
-  NonNullType: ['NamedType', (0, _RuleHelpers.opt)((0, _RuleHelpers.p)('!'))],
-  NamedType: [type('atom')],
-  Directive: [(0, _RuleHelpers.p)('@', 'meta'), name('meta'), (0, _RuleHelpers.opt)('Arguments')],
-  // GraphQL schema language
-  SchemaDef: [word('schema'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('OperationTypeDef'), (0, _RuleHelpers.p)('}')],
-  OperationTypeDef: [name('keyword'), (0, _RuleHelpers.p)(':'), name('atom')],
-  ScalarDef: [word('scalar'), name('atom'), (0, _RuleHelpers.list)('Directive')],
-  ObjectTypeDef: [word('type'), name('atom'), (0, _RuleHelpers.opt)('Implements'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('FieldDef'), (0, _RuleHelpers.p)('}')],
-  Implements: [word('implements'), (0, _RuleHelpers.list)('NamedType')],
-  FieldDef: [name('property'), (0, _RuleHelpers.opt)('ArgumentsDef'), (0, _RuleHelpers.p)(':'), 'Type', (0, _RuleHelpers.list)('Directive')],
-  ArgumentsDef: [(0, _RuleHelpers.p)('('), (0, _RuleHelpers.list)('InputValueDef'), (0, _RuleHelpers.p)(')')],
-  InputValueDef: [name('attribute'), (0, _RuleHelpers.p)(':'), 'Type', (0, _RuleHelpers.opt)('DefaultValue'), (0, _RuleHelpers.list)('Directive')],
-  InterfaceDef: [word('interface'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('FieldDef'), (0, _RuleHelpers.p)('}')],
-  UnionDef: [word('union'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('='), (0, _RuleHelpers.list)('UnionMember', (0, _RuleHelpers.p)('|'))],
-  UnionMember: ['NamedType'],
-  EnumDef: [word('enum'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('EnumValueDef'), (0, _RuleHelpers.p)('}')],
-  EnumValueDef: [name('string-2'), (0, _RuleHelpers.list)('Directive')],
-  InputDef: [word('input'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('InputValueDef'), (0, _RuleHelpers.p)('}')],
-  ExtendDef: [word('extend'), 'ObjectTypeDef'],
-  DirectiveDef: [word('directive'), (0, _RuleHelpers.p)('@', 'meta'), name('meta'), (0, _RuleHelpers.opt)('ArgumentsDef'), word('on'), (0, _RuleHelpers.list)('DirectiveLocation', (0, _RuleHelpers.p)('|'))],
-  DirectiveLocation: [name('string-2')]
-};
-
-// A keyword Token.
-function word(value) {
-  return {
-    style: 'keyword',
-    match: function match(token) {
-      return token.kind === 'Name' && token.value === value;
-    }
-  };
-}
-
-// A Name Token which will decorate the state with a `name`.
-function name(style) {
-  return {
-    style: style,
-    match: function match(token) {
-      return token.kind === 'Name';
-    },
-    update: function update(state, token) {
-      state.name = token.value;
-    }
-  };
-}
-
-// A Name Token which will decorate the previous state with a `type`.
-function type(style) {
-  return {
-    style: style,
-    match: function match(token) {
-      return token.kind === 'Name';
-    },
-    update: function update(state, token) {
-      state.name = token.value;
-      state.prevState.prevState.type = token.value;
-    }
-  };
-}
-},{"../utils/RuleHelpers":40}],42:[function(require,module,exports){
+},{"codemirror":65,"graphql-language-service-parser":79}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5696,7 +6144,7 @@ function getTypeReference(typeInfo, type) {
 function isMetaField(fieldDef) {
   return fieldDef.name.slice(0, 2) === '__';
 }
-},{"graphql":78}],43:[function(require,module,exports){
+},{"graphql":94}],43:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5725,323 +6173,6 @@ function forEachState(stack, fn) {
   }
 }
 },{}],44:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = getHintsAtPosition;
-
-var _graphql = require('graphql');
-
-var _introspection = require('graphql/type/introspection');
-
-var _forEachState = require('./forEachState');
-
-var _forEachState2 = _interopRequireDefault(_forEachState);
-
-var _getTypeInfo = require('./getTypeInfo');
-
-var _getTypeInfo2 = _interopRequireDefault(_getTypeInfo);
-
-var _hintList = require('./hintList');
-
-var _hintList2 = _interopRequireDefault(_hintList);
-
-var _objectValues = require('./objectValues');
-
-var _objectValues2 = _interopRequireDefault(_objectValues);
-
-var _runParser = require('./runParser');
-
-var _runParser2 = _interopRequireDefault(_runParser);
-
-var _Rules = require('./Rules');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- * Given GraphQLSchema, sourceText, and context of the current position within
- * the source text, provide a list of typeahead entries.
- *
- * Options:
- *   - schema: GraphQLSchema
- *   - sourceText: string. A raw source text used to get fragmentDefinitions
- *                 in a source.
- *   - cursor: { line: Number, column: Number }. A current cursor position.
- *   - token: ContextToken. Includes a context for the current cursor position.
- *     Includes the token string/style (type), the start/end position, and the
- *     state at the end of the token.
- *
- */
-
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-function getHintsAtPosition(schema, sourceText, cursor, token) {
-  // Get the current state, however if the current state is an invalid token,
-  // then use the previous state to determine which hints to generate.
-  var state = token.state.kind === 'Invalid' ? token.state.prevState : token.state;
-
-  var kind = state.kind;
-  var step = state.step;
-  var typeInfo = (0, _getTypeInfo2.default)(schema, state);
-
-  // Definition kinds
-  if (kind === 'Document') {
-    return (0, _hintList2.default)(cursor, token, [{ text: 'query' }, { text: 'mutation' }, { text: 'subscription' }, { text: 'fragment' }, { text: '{' }]);
-  }
-
-  // Field names
-  if (kind === 'SelectionSet' || kind === 'Field' || kind === 'AliasedField') {
-    if (typeInfo.parentType) {
-      var fields = typeInfo.parentType.getFields ? (0, _objectValues2.default)(typeInfo.parentType.getFields()) : [];
-      if ((0, _graphql.isAbstractType)(typeInfo.parentType)) {
-        fields.push(_introspection.TypeNameMetaFieldDef);
-      }
-      if (typeInfo.parentType === schema.getQueryType()) {
-        fields.push(_introspection.SchemaMetaFieldDef, _introspection.TypeMetaFieldDef);
-      }
-      return (0, _hintList2.default)(cursor, token, fields.map(function (field) {
-        return {
-          text: field.name,
-          type: field.type,
-          description: field.description,
-          isDeprecated: field.isDeprecated,
-          deprecationReason: field.deprecationReason
-        };
-      }));
-    }
-  }
-
-  // Argument names
-  if (kind === 'Arguments' || kind === 'Argument' && step === 0) {
-    var argDefs = typeInfo.argDefs;
-    if (argDefs) {
-      return (0, _hintList2.default)(cursor, token, argDefs.map(function (argDef) {
-        return {
-          text: argDef.name,
-          type: argDef.type,
-          description: argDef.description
-        };
-      }));
-    }
-  }
-
-  // Input Object fields
-  if (kind === 'ObjectValue' || kind === 'ObjectField' && step === 0) {
-    if (typeInfo.objectFieldDefs) {
-      var objectFields = (0, _objectValues2.default)(typeInfo.objectFieldDefs);
-      return (0, _hintList2.default)(cursor, token, objectFields.map(function (field) {
-        return {
-          text: field.name,
-          type: field.type,
-          description: field.description
-        };
-      }));
-    }
-  }
-
-  // Input values: Enum and Boolean
-  if (kind === 'EnumValue' || kind === 'ListValue' && step === 1 || kind === 'ObjectField' && step === 2 || kind === 'Argument' && step === 2) {
-    var _ret = function () {
-      var namedInputType = (0, _graphql.getNamedType)(typeInfo.inputType);
-      if (namedInputType instanceof _graphql.GraphQLEnumType) {
-        var valueMap = namedInputType.getValues();
-        var values = (0, _objectValues2.default)(valueMap);
-        return {
-          v: (0, _hintList2.default)(cursor, token, values.map(function (value) {
-            return {
-              text: value.name,
-              type: namedInputType,
-              description: value.description,
-              isDeprecated: value.isDeprecated,
-              deprecationReason: value.deprecationReason
-            };
-          }))
-        };
-      } else if (namedInputType === _graphql.GraphQLBoolean) {
-        return {
-          v: (0, _hintList2.default)(cursor, token, [{ text: 'true', type: _graphql.GraphQLBoolean, description: 'Not false.' }, { text: 'false', type: _graphql.GraphQLBoolean, description: 'Not true.' }])
-        };
-      }
-    }();
-
-    if (typeof _ret === "object") return _ret.v;
-  }
-
-  // Fragment type conditions
-  if (kind === 'TypeCondition' && step === 1 || kind === 'NamedType' && state.prevState.kind === 'TypeCondition') {
-    var possibleTypes = void 0;
-    if (typeInfo.parentType) {
-      if ((0, _graphql.isAbstractType)(typeInfo.parentType)) {
-        (function () {
-          // Collect both the possible Object types as well as the interfaces
-          // they implement.
-          var possibleObjTypes = schema.getPossibleTypes(typeInfo.parentType);
-          var possibleIfaceMap = Object.create(null);
-          possibleObjTypes.forEach(function (type) {
-            type.getInterfaces().forEach(function (iface) {
-              possibleIfaceMap[iface.name] = iface;
-            });
-          });
-          possibleTypes = possibleObjTypes.concat((0, _objectValues2.default)(possibleIfaceMap));
-        })();
-      } else {
-        // The parent type is a non-abstract Object type, so the only possible
-        // type that can be used is that same type.
-        possibleTypes = [typeInfo.parentType];
-      }
-    } else {
-      var typeMap = schema.getTypeMap();
-      possibleTypes = (0, _objectValues2.default)(typeMap).filter(_graphql.isCompositeType);
-    }
-    return (0, _hintList2.default)(cursor, token, possibleTypes.map(function (type) {
-      return {
-        text: type.name,
-        description: type.description
-      };
-    }));
-  }
-
-  // Fragment spread names
-  if (kind === 'FragmentSpread' && step === 1) {
-    var _ret3 = function () {
-      var typeMap = schema.getTypeMap();
-      var defState = getDefinitionState(token.state);
-      var fragments = getFragmentDefinitions(sourceText);
-
-      // Filter down to only the fragments which may exist here.
-      var relevantFrags = fragments.filter(function (frag) {
-        return (
-          // Only include fragments with known types.
-          typeMap[frag.typeCondition.name.value] &&
-          // Only include fragments which are not cyclic.
-          !(defState && defState.kind === 'FragmentDefinition' && defState.name === frag.name.value) &&
-          // Only include fragments which could possibly be spread here.
-          (0, _graphql.doTypesOverlap)(schema, typeInfo.parentType, typeMap[frag.typeCondition.name.value])
-        );
-      });
-
-      return {
-        v: (0, _hintList2.default)(cursor, token, relevantFrags.map(function (frag) {
-          return {
-            text: frag.name.value,
-            type: typeMap[frag.typeCondition.name.value],
-            description: 'fragment ' + frag.name.value + ' on ' + frag.typeCondition.name.value
-          };
-        }))
-      };
-    }();
-
-    if (typeof _ret3 === "object") return _ret3.v;
-  }
-
-  // Variable definition types
-  if (kind === 'VariableDefinition' && step === 2 || kind === 'ListType' && step === 1 || kind === 'NamedType' && (state.prevState.kind === 'VariableDefinition' || state.prevState.kind === 'ListType')) {
-    var inputTypeMap = schema.getTypeMap();
-    var inputTypes = (0, _objectValues2.default)(inputTypeMap).filter(_graphql.isInputType);
-    return (0, _hintList2.default)(cursor, token, inputTypes.map(function (type) {
-      return {
-        text: type.name,
-        description: type.description
-      };
-    }));
-  }
-
-  // Directive names
-  if (kind === 'Directive') {
-    var directives = schema.getDirectives().filter(function (directive) {
-      return canUseDirective(state.prevState.kind, directive);
-    });
-    return (0, _hintList2.default)(cursor, token, directives.map(function (directive) {
-      return {
-        text: directive.name,
-        description: directive.description
-      };
-    }));
-  }
-}
-
-function canUseDirective(kind, directive) {
-  var locations = directive.locations;
-  switch (kind) {
-    case 'Query':
-      return locations.indexOf('QUERY') !== -1;
-    case 'Mutation':
-      return locations.indexOf('MUTATION') !== -1;
-    case 'Subscription':
-      return locations.indexOf('SUBSCRIPTION') !== -1;
-    case 'Field':
-    case 'AliasedField':
-      return locations.indexOf('FIELD') !== -1;
-    case 'FragmentDefinition':
-      return locations.indexOf('FRAGMENT_DEFINITION') !== -1;
-    case 'FragmentSpread':
-      return locations.indexOf('FRAGMENT_SPREAD') !== -1;
-    case 'InlineFragment':
-      return locations.indexOf('INLINE_FRAGMENT') !== -1;
-  }
-  return false;
-}
-
-// Finds all fragment definition ASTs in a source.
-function getFragmentDefinitions(sourceText) {
-  var fragmentDefs = [];
-  (0, _runParser2.default)(sourceText, {
-    eatWhitespace: function eatWhitespace(stream) {
-      return stream.eatWhile(_Rules.isIgnored);
-    },
-    LexRules: _Rules.LexRules,
-    ParseRules: _Rules.ParseRules
-  }, function (stream, state) {
-    if (state.kind === 'FragmentDefinition' && state.name && state.type) {
-      fragmentDefs.push({
-        kind: 'FragmentDefinition',
-        name: {
-          kind: 'Name',
-          value: state.name
-        },
-        typeCondition: {
-          kind: 'NamedType',
-          name: {
-            kind: 'Name',
-            value: state.type
-          }
-        }
-      });
-    }
-  });
-
-  return fragmentDefs;
-}
-
-// Utility for returning the state representing the Definition this token state
-// is within, if any.
-function getDefinitionState(tokenState) {
-  var definitionState = void 0;
-
-  (0, _forEachState2.default)(tokenState, function (state) {
-    switch (state.kind) {
-      case 'Query':
-      case 'ShortQuery':
-      case 'Mutation':
-      case 'Subscription':
-      case 'FragmentDefinition':
-        definitionState = state;
-        break;
-    }
-  });
-
-  return definitionState;
-}
-},{"./Rules":41,"./forEachState":43,"./getTypeInfo":45,"./hintList":46,"./objectValues":50,"./runParser":52,"graphql":78,"graphql/type/introspection":98}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6181,7 +6312,7 @@ function find(array, predicate) {
     }
   }
 }
-},{"./forEachState":43,"graphql":78,"graphql/type/introspection":98}],46:[function(require,module,exports){
+},{"./forEachState":43,"graphql":94,"graphql/type/introspection":117}],45:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6311,7 +6442,7 @@ function lexicalDistance(a, b) {
 
   return d[aLength][bLength];
 }
-},{}],47:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
@@ -6470,7 +6601,7 @@ function showPopup(cm, box, info) {
   _codemirror2.default.on(popup, 'mouseout', onMouseOut);
   _codemirror2.default.on(cm.getWrapperElement(), 'mouseout', onMouseOut);
 }
-},{"codemirror":68}],48:[function(require,module,exports){
+},{"codemirror":65}],47:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6647,8 +6778,16 @@ function lex() {
       return readString();
     // -, 0-9
     case 45:
-    case 48:case 49:case 50:case 51:case 52:
-    case 53:case 54:case 55:case 56:case 57:
+    case 48:
+    case 49:
+    case 50:
+    case 51:
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
       kind = 'Number';
       return readNumber();
     // f
@@ -6656,7 +6795,8 @@ function lex() {
       if (string.slice(start, start + 5) !== 'false') {
         break;
       }
-      end += 4;ch();
+      end += 4;
+      ch();
 
       kind = 'Boolean';
       return;
@@ -6665,7 +6805,8 @@ function lex() {
       if (string.slice(start, start + 4) !== 'null') {
         break;
       }
-      end += 3;ch();
+      end += 3;
+      ch();
 
       kind = 'Null';
       return;
@@ -6674,7 +6815,8 @@ function lex() {
       if (string.slice(start, start + 4) !== 'true') {
         break;
       }
-      end += 3;ch();
+      end += 3;
+      ch();
 
       kind = 'Boolean';
       return;
@@ -6777,7 +6919,7 @@ function readDigits() {
     ch();
   } while (code >= 48 && code <= 57); // 0 - 9
 }
-},{}],49:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
@@ -6927,341 +7069,7 @@ function disableJumpMode(cm) {
 
   marker.clear();
 }
-},{"codemirror":68}],50:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = objectValues;
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-function objectValues(object) {
-  var keys = Object.keys(object);
-  var len = keys.length;
-  var values = new Array(len);
-  for (var i = 0; i < len; ++i) {
-    values[i] = object[keys[i]];
-  }
-  return values;
-}
-},{}],51:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = onlineParser;
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-/**
- * Builds an online immutable parser, designed to be used as part of a syntax
- * highlighting and code intelligence tools.
- *
- * Options:
- *
- *     eatWhitespace: (
- *       stream: Stream | CodeMirror.StringStream | CharacterStream
- *     ) => boolean
- *       Use CodeMirror API.
- *
- *     LexRules: { [name: string]: RegExp }, Includes `Punctuation`, `Comment`.
- *
- *     ParseRules: { [name: string]: Array<Rule> }, Includes `Document`.
- *
- *     editorConfig: { [name: string]: mixed }, Provides an editor-specific
- *       configurations set.
- *
- */
-
-function onlineParser(options) {
-  return {
-    startState: function startState() {
-      var initialState = { level: 0 };
-      pushRule(options.ParseRules, initialState, 'Document');
-      return initialState;
-    },
-    token: function token(stream, state) {
-      return getToken(stream, state, options);
-    }
-  };
-}
-
-function getToken(stream, state, options) {
-  var LexRules = options.LexRules,
-      ParseRules = options.ParseRules,
-      eatWhitespace = options.eatWhitespace,
-      editorConfig = options.editorConfig;
-
-  // Restore state after an empty-rule.
-
-  if (state.rule && state.rule.length === 0) {
-    popRule(state);
-  } else if (state.needsAdvance) {
-    state.needsAdvance = false;
-    advanceRule(state, true);
-  }
-
-  // Remember initial indentation
-  if (stream.sol()) {
-    var tabSize = editorConfig && editorConfig.tabSize || 2;
-    state.indentLevel = Math.floor(stream.indentation() / tabSize);
-  }
-
-  // Consume spaces and ignored characters
-  if (eatWhitespace(stream)) {
-    return 'ws';
-  }
-
-  // Get a matched token from the stream, using lex
-  var token = lex(LexRules, stream);
-
-  // If there's no matching token, skip ahead.
-  if (!token) {
-    stream.match(/\S+/);
-    pushRule(SpecialParseRules, state, 'Invalid');
-    return 'invalidchar';
-  }
-
-  // If the next token is a Comment, insert a Comment parsing rule.
-  if (token.kind === 'Comment') {
-    pushRule(SpecialParseRules, state, 'Comment');
-    return 'comment';
-  }
-
-  // Save state before continuing.
-  var backupState = assign({}, state);
-
-  // Handle changes in expected indentation level
-  if (token.kind === 'Punctuation') {
-    if (/^[{([]/.test(token.value)) {
-      // Push on the stack of levels one level deeper than the current level.
-      state.levels = (state.levels || []).concat(state.indentLevel + 1);
-    } else if (/^[})\]]/.test(token.value)) {
-      // Pop from the stack of levels.
-      // If the top of the stack is lower than the current level, lower the
-      // current level to match.
-      var levels = state.levels = (state.levels || []).slice(0, -1);
-      if (levels.length > 0 && levels[levels.length - 1] < state.indentLevel) {
-        state.indentLevel = levels[levels.length - 1];
-      }
-    }
-  }
-
-  while (state.rule) {
-    // If this is a forking rule, determine what rule to use based on
-    // the current token, otherwise expect based on the current step.
-    var expected = typeof state.rule === 'function' ? state.step === 0 ? state.rule(token, stream) : null : state.rule[state.step];
-
-    // Seperator between list elements if necessary.
-    if (state.needsSeperator) {
-      expected = expected && expected.separator;
-    }
-
-    if (expected) {
-      // Un-wrap optional/list ParseRules.
-      if (expected.ofRule) {
-        expected = expected.ofRule;
-      }
-
-      // A string represents a Rule
-      if (typeof expected === 'string') {
-        pushRule(ParseRules, state, expected);
-        continue;
-      }
-
-      // Otherwise, match a Terminal.
-      if (expected.match && expected.match(token)) {
-        if (expected.update) {
-          expected.update(state, token);
-        }
-
-        // If this token was a punctuator, advance the parse rule, otherwise
-        // mark the state to be advanced before the next token. This ensures
-        // that tokens which can be appended to keep the appropriate state.
-        if (token.kind === 'Punctuation') {
-          advanceRule(state, true);
-        } else {
-          state.needsAdvance = true;
-        }
-
-        return expected.style;
-      }
-    }
-
-    unsuccessful(state);
-  }
-
-  // The parser does not know how to interpret this token, do not affect state.
-  assign(state, backupState);
-  pushRule(SpecialParseRules, state, 'Invalid');
-  return 'invalidchar';
-}
-
-// A special rule set for parsing comment tokens.
-var SpecialParseRules = {
-  Invalid: [],
-  Comment: []
-};
-
-function assign(to, from) {
-  var keys = Object.keys(from);
-  for (var i = 0; i < keys.length; i++) {
-    to[keys[i]] = from[keys[i]];
-  }
-  return to;
-}
-
-// Push a new rule onto the state.
-function pushRule(ParseRules, state, ruleKind) {
-  if (!ParseRules[ruleKind]) {
-    throw new TypeError('Unknown rule: ' + ruleKind);
-  }
-  state.prevState = assign({}, state);
-  state.kind = ruleKind;
-  state.name = null;
-  state.type = null;
-  state.rule = ParseRules[ruleKind];
-  state.step = 0;
-  state.needsSeperator = false;
-}
-
-// Pop the current rule from the state.
-function popRule(state) {
-  state.kind = state.prevState.kind;
-  state.name = state.prevState.name;
-  state.type = state.prevState.type;
-  state.rule = state.prevState.rule;
-  state.step = state.prevState.step;
-  state.needsSeperator = state.prevState.needsSeperator;
-  state.prevState = state.prevState.prevState;
-}
-
-// Advance the step of the current rule.
-function advanceRule(state, successful) {
-  // If this is advancing successfully and the current state is a list, give
-  // it an opportunity to repeat itself.
-  if (isList(state)) {
-    var separator = state.rule[state.step].separator;
-    if (separator) {
-      state.needsSeperator = !state.needsSeperator;
-      // If the separator was optional, then give it an opportunity to repeat.
-      if (!state.needsSeperator && separator.ofRule) {
-        return;
-      }
-    }
-    // If this was a successful list parse, then allow it to repeat itself.
-    if (successful) {
-      return;
-    }
-  }
-
-  // Advance the step in the rule. If the rule is completed, pop
-  // the rule and advance the parent rule as well (recursively).
-  state.needsSeperator = false;
-  state.step++;
-  // While the current rule is completed.
-  while (state.rule && !(Array.isArray(state.rule) && state.step < state.rule.length)) {
-    popRule(state);
-
-    if (state.rule) {
-      // Do not advance a List step so it has the opportunity to repeat itself.
-      if (isList(state)) {
-        if (state.rule[state.step].separator) {
-          state.needsSeperator = !state.needsSeperator;
-        }
-      } else {
-        state.needsSeperator = false;
-        state.step++;
-      }
-    }
-  }
-}
-
-function isList(state) {
-  return Array.isArray(state.rule) && state.rule[state.step].isList;
-}
-
-// Unwind the state after an unsuccessful match.
-function unsuccessful(state) {
-  // Fall back to the parent rule until you get to an optional or list rule or
-  // until the entire stack of rules is empty.
-  while (state.rule && !(Array.isArray(state.rule) && state.rule[state.step].ofRule)) {
-    popRule(state);
-  }
-
-  // If there is still a rule, it must be an optional or list rule.
-  // Consider this rule a success so that we may move past it.
-  if (state.rule) {
-    advanceRule(state, false);
-  }
-}
-
-// Given a stream, returns a { kind, value } pair, or null.
-function lex(LexRules, stream) {
-  var kinds = Object.keys(LexRules);
-  for (var i = 0; i < kinds.length; i++) {
-    var match = stream.match(LexRules[kinds[i]]);
-    if (match) {
-      return { kind: kinds[i], value: match[0] };
-    }
-  }
-}
-},{}],52:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = runParser;
-
-var _CharacterStream = require('./CharacterStream');
-
-var _CharacterStream2 = _interopRequireDefault(_CharacterStream);
-
-var _onlineParser = require('./onlineParser');
-
-var _onlineParser2 = _interopRequireDefault(_onlineParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
-function runParser(sourceText, parserOptions, callbackFn) {
-  var parser = (0, _onlineParser2.default)(parserOptions);
-  var state = parser.startState();
-  var lines = sourceText.split('\n');
-
-  lines.forEach(function (line) {
-    var stream = new _CharacterStream2.default(line);
-    while (!stream.eol()) {
-      var style = parser.token(stream, state);
-      callbackFn(stream, state, style);
-    }
-  });
-}
-},{"./CharacterStream":39,"./onlineParser":51}],53:[function(require,module,exports){
+},{"codemirror":65}],49:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
@@ -7368,40 +7176,24 @@ function getVariablesHint(cur, token, options) {
 
   // Input values.
   if (kind === 'StringValue' || kind === 'NumberValue' || kind === 'BooleanValue' || kind === 'NullValue' || kind === 'ListValue' && step === 1 || kind === 'ObjectField' && step === 2 || kind === 'Variable' && step === 2) {
-    var _ret = function () {
-      var namedInputType = (0, _graphql.getNamedType)(typeInfo.type);
-      if (namedInputType instanceof _graphql.GraphQLInputObjectType) {
+    var namedInputType = (0, _graphql.getNamedType)(typeInfo.type);
+    if (namedInputType instanceof _graphql.GraphQLInputObjectType) {
+      return (0, _hintList2.default)(cur, token, [{ text: '{' }]);
+    } else if (namedInputType instanceof _graphql.GraphQLEnumType) {
+      var valueMap = namedInputType.getValues();
+      var values = Object.keys(valueMap).map(function (name) {
+        return valueMap[name];
+      });
+      return (0, _hintList2.default)(cur, token, values.map(function (value) {
         return {
-          v: (0, _hintList2.default)(cur, token, [{ text: '{' }])
+          text: '"' + value.name + '"',
+          type: namedInputType,
+          description: value.description
         };
-      } else if (namedInputType instanceof _graphql.GraphQLEnumType) {
-        var _ret2 = function () {
-          var valueMap = namedInputType.getValues();
-          var values = Object.keys(valueMap).map(function (name) {
-            return valueMap[name];
-          });
-          return {
-            v: {
-              v: (0, _hintList2.default)(cur, token, values.map(function (value) {
-                return {
-                  text: '"' + value.name + '"',
-                  type: namedInputType,
-                  description: value.description
-                };
-              }))
-            }
-          };
-        }();
-
-        if (typeof _ret2 === "object") return _ret2.v;
-      } else if (namedInputType === _graphql.GraphQLBoolean) {
-        return {
-          v: (0, _hintList2.default)(cur, token, [{ text: 'true', type: _graphql.GraphQLBoolean, description: 'Not false.' }, { text: 'false', type: _graphql.GraphQLBoolean, description: 'Not true.' }])
-        };
-      }
-    }();
-
-    if (typeof _ret === "object") return _ret.v;
+      }));
+    } else if (namedInputType === _graphql.GraphQLBoolean) {
+      return (0, _hintList2.default)(cur, token, [{ text: 'true', type: _graphql.GraphQLBoolean, description: 'Not false.' }, { text: 'false', type: _graphql.GraphQLBoolean, description: 'Not true.' }]);
+    }
   }
 }
 
@@ -7430,7 +7222,7 @@ function getTypeInfo(variableToType, tokenState) {
 
   return info;
 }
-},{"../utils/forEachState":43,"../utils/hintList":46,"codemirror":68,"graphql":78}],54:[function(require,module,exports){
+},{"../utils/forEachState":43,"../utils/hintList":45,"codemirror":65,"graphql":94}],50:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
@@ -7533,61 +7325,45 @@ function validateValue(type, valueAST) {
 
   // Validate lists of values, accepting a non-list as a list of one.
   if (type instanceof _graphql.GraphQLList) {
-    var _ret = function () {
-      var itemType = type.ofType;
-      if (valueAST.kind === 'Array') {
-        return {
-          v: mapCat(valueAST.values, function (item) {
-            return validateValue(itemType, item);
-          })
-        };
-      }
-      return {
-        v: validateValue(itemType, valueAST)
-      };
-    }();
-
-    if (typeof _ret === "object") return _ret.v;
+    var itemType = type.ofType;
+    if (valueAST.kind === 'Array') {
+      return mapCat(valueAST.values, function (item) {
+        return validateValue(itemType, item);
+      });
+    }
+    return validateValue(itemType, valueAST);
   }
 
   // Validate input objects.
   if (type instanceof _graphql.GraphQLInputObjectType) {
-    var _ret2 = function () {
-      if (valueAST.kind !== 'Object') {
-        return {
-          v: [[valueAST, 'Type "' + type + '" must be an Object.']]
-        };
+    if (valueAST.kind !== 'Object') {
+      return [[valueAST, 'Type "' + type + '" must be an Object.']];
+    }
+
+    // Validate each field in the input object.
+    var providedFields = Object.create(null);
+    var fieldErrors = mapCat(valueAST.members, function (member) {
+      var fieldName = member.key.value;
+      providedFields[fieldName] = true;
+      var inputField = type.getFields()[fieldName];
+      if (!inputField) {
+        return [[member.key, 'Type "' + type + '" does not have a field "' + fieldName + '".']];
       }
+      var fieldType = inputField ? inputField.type : undefined;
+      return validateValue(fieldType, member.value);
+    });
 
-      // Validate each field in the input object.
-      var providedFields = Object.create(null);
-      var fieldErrors = mapCat(valueAST.members, function (member) {
-        var fieldName = member.key.value;
-        providedFields[fieldName] = true;
-        var inputField = type.getFields()[fieldName];
-        if (!inputField) {
-          return [[member.key, 'Type "' + type + '" does not have a field "' + fieldName + '".']];
+    // Look for missing non-nullable fields.
+    Object.keys(type.getFields()).forEach(function (fieldName) {
+      if (!providedFields[fieldName]) {
+        var fieldType = type.getFields()[fieldName].type;
+        if (fieldType instanceof _graphql.GraphQLNonNull) {
+          fieldErrors.push([valueAST, 'Object of type "' + type + '" is missing required field "' + fieldName + '".']);
         }
-        var fieldType = inputField ? inputField.type : undefined;
-        return validateValue(fieldType, member.value);
-      });
+      }
+    });
 
-      // Look for missing non-nullable fields.
-      Object.keys(type.getFields()).forEach(function (fieldName) {
-        if (!providedFields[fieldName]) {
-          var fieldType = type.getFields()[fieldName].type;
-          if (fieldType instanceof _graphql.GraphQLNonNull) {
-            fieldErrors.push([valueAST, 'Object of type "' + type + '" is missing required field "' + fieldName + '".']);
-          }
-        }
-      });
-
-      return {
-        v: fieldErrors
-      };
-    }();
-
-    if (typeof _ret2 === "object") return _ret2.v;
+    return fieldErrors;
   }
 
   // Validate common scalars.
@@ -7624,18 +7400,14 @@ function isNullish(value) {
 function mapCat(array, mapper) {
   return Array.prototype.concat.apply([], array.map(mapper));
 }
-},{"../utils/jsonParse":48,"codemirror":68,"graphql":78}],55:[function(require,module,exports){
+},{"../utils/jsonParse":47,"codemirror":65,"graphql":94}],51:[function(require,module,exports){
 'use strict';
 
 var _codemirror = require('codemirror');
 
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
-var _onlineParser = require('../utils/onlineParser');
-
-var _onlineParser2 = _interopRequireDefault(_onlineParser);
-
-var _RuleHelpers = require('../utils/RuleHelpers');
+var _graphqlLanguageServiceParser = require('graphql-language-service-parser');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7643,13 +7415,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * This mode defines JSON, but provides a data-laden parser state to enable
  * better code intelligence.
  */
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 _codemirror2.default.defineMode('graphql-variables', function (config) {
-  var parser = (0, _onlineParser2.default)({
+  var parser = (0, _graphqlLanguageServiceParser.onlineParser)({
     eatWhitespace: function eatWhitespace(stream) {
       return stream.eatSpace();
     },
-    LexRules: LexRules,
-    ParseRules: ParseRules,
+    lexRules: LexRules,
+    parseRules: ParseRules,
     editorConfig: { tabSize: config.tabSize }
   });
 
@@ -7665,14 +7446,7 @@ _codemirror2.default.defineMode('graphql-variables', function (config) {
       explode: '[]{}'
     }
   };
-}); /**
-     *  Copyright (c) 2015, Facebook, Inc.
-     *  All rights reserved.
-     *
-     *  This source code is licensed under the BSD-style license found in the
-     *  LICENSE file in the root directory of this source tree. An additional grant
-     *  of patent rights can be found in the PATENTS file in the same directory.
-     */
+});
 
 function indent(state, textAfter) {
   var levels = state.levels;
@@ -7703,8 +7477,8 @@ var LexRules = {
  * The parser rules for JSON.
  */
 var ParseRules = {
-  Document: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('Variable', (0, _RuleHelpers.opt)((0, _RuleHelpers.p)(','))), (0, _RuleHelpers.p)('}')],
-  Variable: [namedKey('variable'), (0, _RuleHelpers.p)(':'), 'Value'],
+  Document: [(0, _graphqlLanguageServiceParser.p)('{'), (0, _graphqlLanguageServiceParser.list)('Variable', (0, _graphqlLanguageServiceParser.opt)((0, _graphqlLanguageServiceParser.p)(','))), (0, _graphqlLanguageServiceParser.p)('}')],
+  Variable: [namedKey('variable'), (0, _graphqlLanguageServiceParser.p)(':'), 'Value'],
   Value: function Value(token) {
     switch (token.kind) {
       case 'Number':
@@ -7721,7 +7495,8 @@ var ParseRules = {
         return null;
       case 'Keyword':
         switch (token.value) {
-          case 'true':case 'false':
+          case 'true':
+          case 'false':
             return 'BooleanValue';
           case 'null':
             return 'NullValue';
@@ -7730,13 +7505,13 @@ var ParseRules = {
     }
   },
 
-  NumberValue: [(0, _RuleHelpers.t)('Number', 'number')],
-  StringValue: [(0, _RuleHelpers.t)('String', 'string')],
-  BooleanValue: [(0, _RuleHelpers.t)('Keyword', 'builtin')],
-  NullValue: [(0, _RuleHelpers.t)('Keyword', 'keyword')],
-  ListValue: [(0, _RuleHelpers.p)('['), (0, _RuleHelpers.list)('Value', (0, _RuleHelpers.opt)((0, _RuleHelpers.p)(','))), (0, _RuleHelpers.p)(']')],
-  ObjectValue: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('ObjectField', (0, _RuleHelpers.opt)((0, _RuleHelpers.p)(','))), (0, _RuleHelpers.p)('}')],
-  ObjectField: [namedKey('attribute'), (0, _RuleHelpers.p)(':'), 'Value']
+  NumberValue: [(0, _graphqlLanguageServiceParser.t)('Number', 'number')],
+  StringValue: [(0, _graphqlLanguageServiceParser.t)('String', 'string')],
+  BooleanValue: [(0, _graphqlLanguageServiceParser.t)('Keyword', 'builtin')],
+  NullValue: [(0, _graphqlLanguageServiceParser.t)('Keyword', 'keyword')],
+  ListValue: [(0, _graphqlLanguageServiceParser.p)('['), (0, _graphqlLanguageServiceParser.list)('Value', (0, _graphqlLanguageServiceParser.opt)((0, _graphqlLanguageServiceParser.p)(','))), (0, _graphqlLanguageServiceParser.p)(']')],
+  ObjectValue: [(0, _graphqlLanguageServiceParser.p)('{'), (0, _graphqlLanguageServiceParser.list)('ObjectField', (0, _graphqlLanguageServiceParser.opt)((0, _graphqlLanguageServiceParser.p)(','))), (0, _graphqlLanguageServiceParser.p)('}')],
+  ObjectField: [namedKey('attribute'), (0, _graphqlLanguageServiceParser.p)(':'), 'Value']
 };
 
 // A namedKey Token which will decorate the state with a `name`
@@ -7751,7 +7526,7 @@ function namedKey(style) {
     }
   };
 }
-},{"../utils/RuleHelpers":40,"../utils/onlineParser":51,"codemirror":68}],56:[function(require,module,exports){
+},{"codemirror":65,"graphql-language-service-parser":79}],52:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -7966,7 +7741,7 @@ function namedKey(style) {
   });
 });
 
-},{"../../lib/codemirror":68}],57:[function(require,module,exports){
+},{"../../lib/codemirror":65}],53:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -8125,7 +7900,7 @@ function namedKey(style) {
   });
 });
 
-},{"../../lib/codemirror":68}],58:[function(require,module,exports){
+},{"../../lib/codemirror":65}],54:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -8151,6 +7926,7 @@ function namedKey(style) {
       cm.state.closeBrackets = null;
     }
     if (val) {
+      ensureBound(getOption(val, "pairs"))
       cm.state.closeBrackets = val;
       cm.addKeyMap(keyMap);
     }
@@ -8162,10 +7938,14 @@ function namedKey(style) {
     return defaults[name];
   }
 
-  var bind = defaults.pairs + "`";
   var keyMap = {Backspace: handleBackspace, Enter: handleEnter};
-  for (var i = 0; i < bind.length; i++)
-    keyMap["'" + bind.charAt(i) + "'"] = handler(bind.charAt(i));
+  function ensureBound(chars) {
+    for (var i = 0; i < chars.length; i++) {
+      var ch = chars.charAt(i), key = "'" + ch + "'"
+      if (!keyMap[key]) keyMap[key] = handler(ch)
+    }
+  }
+  ensureBound(defaults.pairs + "`")
 
   function handler(ch) {
     return function(cm) { return handleChar(cm, ch); };
@@ -8207,7 +7987,8 @@ function namedKey(style) {
       if (!around || explode.indexOf(around) % 2 != 0) return CodeMirror.Pass;
     }
     cm.operation(function() {
-      cm.replaceSelection("\n\n", null);
+      var linesep = cm.lineSeparator() || "\n";
+      cm.replaceSelection(linesep + linesep, null);
       cm.execCommand("goCharLeft");
       ranges = cm.listSelections();
       for (var i = 0; i < ranges.length; i++) {
@@ -8329,7 +8110,7 @@ function namedKey(style) {
   }
 });
 
-},{"../../lib/codemirror":68}],59:[function(require,module,exports){
+},{"../../lib/codemirror":65}],55:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -8348,12 +8129,21 @@ function namedKey(style) {
 
   var matching = {"(": ")>", ")": "(<", "[": "]>", "]": "[<", "{": "}>", "}": "{<"};
 
-  function findMatchingBracket(cm, where, strict, config) {
+  function findMatchingBracket(cm, where, config) {
     var line = cm.getLineHandle(where.line), pos = where.ch - 1;
-    var match = (pos >= 0 && matching[line.text.charAt(pos)]) || matching[line.text.charAt(++pos)];
+    var afterCursor = config && config.afterCursor
+    if (afterCursor == null)
+      afterCursor = /(^| )cm-fat-cursor($| )/.test(cm.getWrapperElement().className)
+
+    // A cursor is defined as between two characters, but in in vim command mode
+    // (i.e. not insert mode), the cursor is visually represented as a
+    // highlighted box on top of the 2nd character. Otherwise, we allow matches
+    // from before or after the cursor.
+    var match = (!afterCursor && pos >= 0 && matching[line.text.charAt(pos)]) ||
+        matching[line.text.charAt(++pos)];
     if (!match) return null;
     var dir = match.charAt(1) == ">" ? 1 : -1;
-    if (strict && (dir > 0) != (pos == where.ch)) return null;
+    if (config && config.strict && (dir > 0) != (pos == where.ch)) return null;
     var style = cm.getTokenTypeAt(Pos(where.line, pos + 1));
 
     var found = scanForBracket(cm, Pos(where.line, pos + (dir > 0 ? 1 : 0)), dir, style || null, config);
@@ -8401,7 +8191,7 @@ function namedKey(style) {
     var maxHighlightLen = cm.state.matchBrackets.maxHighlightLineLength || 1000;
     var marks = [], ranges = cm.listSelections();
     for (var i = 0; i < ranges.length; i++) {
-      var match = ranges[i].empty() && findMatchingBracket(cm, ranges[i].head, false, config);
+      var match = ranges[i].empty() && findMatchingBracket(cm, ranges[i].head, config);
       if (match && cm.getLine(match.from.line).length <= maxHighlightLen) {
         var style = match.match ? "CodeMirror-matchingbracket" : "CodeMirror-nonmatchingbracket";
         marks.push(cm.markText(match.from, Pos(match.from.line, match.from.ch + 1), {className: style}));
@@ -8445,15 +8235,24 @@ function namedKey(style) {
   });
 
   CodeMirror.defineExtension("matchBrackets", function() {matchBrackets(this, true);});
-  CodeMirror.defineExtension("findMatchingBracket", function(pos, strict, config){
-    return findMatchingBracket(this, pos, strict, config);
+  CodeMirror.defineExtension("findMatchingBracket", function(pos, config, oldConfig){
+    // Backwards-compatibility kludge
+    if (oldConfig || typeof config == "boolean") {
+      if (!oldConfig) {
+        config = config ? {strict: true} : null
+      } else {
+        oldConfig.strict = config
+        config = oldConfig
+      }
+    }
+    return findMatchingBracket(this, pos, config)
   });
   CodeMirror.defineExtension("scanForBracket", function(pos, dir, style, config){
     return scanForBracket(this, pos, dir, style, config);
   });
 });
 
-},{"../../lib/codemirror":68}],60:[function(require,module,exports){
+},{"../../lib/codemirror":65}],56:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -8560,7 +8359,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
 
 });
 
-},{"../../lib/codemirror":68}],61:[function(require,module,exports){
+},{"../../lib/codemirror":65}],57:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -8628,6 +8427,8 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
       widget = document.createElement("span");
       widget.appendChild(text);
       widget.className = "CodeMirror-foldmarker";
+    } else if (widget) {
+      widget = widget.cloneNode(true)
     }
     return widget;
   }
@@ -8712,7 +8513,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   });
 });
 
-},{"../../lib/codemirror":68}],62:[function(require,module,exports){
+},{"../../lib/codemirror":65}],58:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -8860,7 +8661,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   }
 });
 
-},{"../../lib/codemirror":68,"./foldcode":61}],63:[function(require,module,exports){
+},{"../../lib/codemirror":65,"./foldcode":57}],59:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -9165,7 +8966,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
       setTimeout(function(){cm.focus();}, 20);
     });
 
-    CodeMirror.signal(data, "select", completions[0], hints.firstChild);
+    CodeMirror.signal(data, "select", completions[this.selectedHint], hints.childNodes[this.selectedHint]);
     return true;
   }
 
@@ -9300,7 +9101,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   CodeMirror.defineOption("hintOptions", null);
 });
 
-},{"../../lib/codemirror":68}],64:[function(require,module,exports){
+},{"../../lib/codemirror":65}],60:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -9415,7 +9216,11 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     if (!severity) severity = "error";
     var tip = document.createElement("div");
     tip.className = "CodeMirror-lint-message-" + severity;
-    tip.appendChild(document.createTextNode(ann.message));
+    if (typeof ann.messageHTML != 'undefined') {
+        tip.innerHTML = ann.messageHTML;
+    } else {
+        tip.appendChild(document.createTextNode(ann.message));
+    }
     return tip;
   }
 
@@ -9437,13 +9242,18 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
 
   function startLinting(cm) {
     var state = cm.state.lint, options = state.options;
-    var passOptions = options.options || options; // Support deprecated passing of `options` property in options
+    /*
+     * Passing rules in `options` property prevents JSHint (and other linters) from complaining
+     * about unrecognized rules like `onUpdateLinting`, `delay`, `lintOnChange`, etc.
+     */
+    var passOptions = options.options || options;
     var getAnnotations = options.getAnnotations || cm.getHelper(CodeMirror.Pos(0, 0), "lint");
     if (!getAnnotations) return;
     if (options.async || getAnnotations.async) {
       lintAsync(cm, getAnnotations, passOptions)
     } else {
       var annotations = getAnnotations(cm.getValue(), passOptions, cm);
+      if (!annotations) return;
       if (annotations.then) annotations.then(function(issues) {
         updateLinting(cm, issues);
       });
@@ -9545,7 +9355,58 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   });
 });
 
-},{"../../lib/codemirror":68}],65:[function(require,module,exports){
+},{"../../lib/codemirror":65}],61:[function(require,module,exports){
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+// Defines jumpToLine command. Uses dialog.js if present.
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"), require("../dialog/dialog"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror", "../dialog/dialog"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  "use strict";
+
+  function dialog(cm, text, shortText, deflt, f) {
+    if (cm.openDialog) cm.openDialog(text, f, {value: deflt, selectValueOnOpen: true});
+    else f(prompt(shortText, deflt));
+  }
+
+  var jumpDialog =
+      'Jump to line: <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">(Use line:column or scroll% syntax)</span>';
+
+  function interpretLine(cm, string) {
+    var num = Number(string)
+    if (/^[-+]/.test(string)) return cm.getCursor().line + num
+    else return num - 1
+  }
+
+  CodeMirror.commands.jumpToLine = function(cm) {
+    var cur = cm.getCursor();
+    dialog(cm, jumpDialog, "Jump to line:", (cur.line + 1) + ":" + cur.ch, function(posStr) {
+      if (!posStr) return;
+
+      var match;
+      if (match = /^\s*([\+\-]?\d+)\s*\:\s*(\d+)\s*$/.exec(posStr)) {
+        cm.setCursor(interpretLine(cm, match[1]), Number(match[2]))
+      } else if (match = /^\s*([\+\-]?\d+(\.\d+)?)\%\s*/.exec(posStr)) {
+        var line = Math.round(cm.lineCount() * Number(match[1]) / 100);
+        if (/^[-+]/.test(match[1])) line = cur.line + line + 1;
+        cm.setCursor(line - 1, cur.ch);
+      } else if (match = /^\s*\:?\s*([\+\-]?\d+)\s*/.exec(posStr)) {
+        cm.setCursor(interpretLine(cm, match[1]), cur.ch);
+      }
+    });
+  };
+
+  CodeMirror.keyMap["default"]["Alt-G"] = "jumpToLine";
+});
+
+},{"../../lib/codemirror":65,"../dialog/dialog":53}],62:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -9602,7 +9463,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
 
   function getSearchCursor(cm, query, pos) {
     // Heuristic: if the query string is all lowercase, do a case insensitive search.
-    return cm.getSearchCursor(query, pos, queryCaseInsensitive(query));
+    return cm.getSearchCursor(query, pos, {caseFold: queryCaseInsensitive(query), multiline: true});
   }
 
   function persistentDialog(cm, text, deflt, onEnter, onKeyDown) {
@@ -9647,7 +9508,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   }
 
   var queryDialog =
-    'Search: <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">(Use /re/ syntax for regexp search)</span>';
+    '<span class="CodeMirror-search-label">Search:</span> <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">(Use /re/ syntax for regexp search)</span>';
 
   function startSearch(cm, state, query) {
     state.queryText = query;
@@ -9665,6 +9526,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     var state = getSearchState(cm);
     if (state.query) return findNext(cm, rev);
     var q = cm.getSelection() || state.lastQuery;
+    if (q instanceof RegExp && q.source == "x^") q = null
     if (persistent && cm.openDialog) {
       var hiding = null
       var searchNext = function(query, event) {
@@ -9685,8 +9547,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
       };
       persistentDialog(cm, queryDialog, q, searchNext, function(event, query) {
         var keyName = CodeMirror.keyName(event)
-        var cmd = CodeMirror.keyMap[cm.getOption("keyMap")][keyName]
-        if (!cmd) cmd = cm.getOption('extraKeys')[keyName]
+        var extra = cm.getOption('extraKeys'), cmd = (extra && extra[keyName]) || CodeMirror.keyMap[cm.getOption("keyMap")][keyName]
         if (cmd == "findNext" || cmd == "findPrev" ||
           cmd == "findPersistentNext" || cmd == "findPersistentPrev") {
           CodeMirror.e_stop(event);
@@ -9736,8 +9597,8 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
 
   var replaceQueryDialog =
     ' <input type="text" style="width: 10em" class="CodeMirror-search-field"/> <span style="color: #888" class="CodeMirror-search-hint">(Use /re/ syntax for regexp search)</span>';
-  var replacementQueryDialog = 'With: <input type="text" style="width: 10em" class="CodeMirror-search-field"/>';
-  var doReplaceConfirm = "Replace? <button>Yes</button> <button>No</button> <button>All</button> <button>Stop</button>";
+  var replacementQueryDialog = '<span class="CodeMirror-search-label">With:</span> <input type="text" style="width: 10em" class="CodeMirror-search-field"/>';
+  var doReplaceConfirm = '<span class="CodeMirror-search-label">Replace?</span> <button>Yes</button> <button>No</button> <button>All</button> <button>Stop</button>';
 
   function replaceAll(cm, query, text) {
     cm.operation(function() {
@@ -9753,7 +9614,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   function replace(cm, all) {
     if (cm.getOption("readOnly")) return;
     var query = cm.getSelection() || getSearchState(cm).lastQuery;
-    var dialogText = all ? "Replace all:" : "Replace:"
+    var dialogText = '<span class="CodeMirror-search-label">' + (all ? 'Replace all:' : 'Replace:') + '</span>';
     dialog(cm, dialogText + replaceQueryDialog, dialogText, query, function(query) {
       if (!query) return;
       query = parseQuery(query);
@@ -9799,198 +9660,298 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
   CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};
 });
 
-},{"../../lib/codemirror":68,"../dialog/dialog":57,"./searchcursor":66}],66:[function(require,module,exports){
+},{"../../lib/codemirror":65,"../dialog/dialog":53,"./searchcursor":63}],63:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
+    mod(require("../../lib/codemirror"))
   else if (typeof define == "function" && define.amd) // AMD
-    define(["../../lib/codemirror"], mod);
+    define(["../../lib/codemirror"], mod)
   else // Plain browser env
-    mod(CodeMirror);
+    mod(CodeMirror)
 })(function(CodeMirror) {
-  "use strict";
-  var Pos = CodeMirror.Pos;
+  "use strict"
+  var Pos = CodeMirror.Pos
 
-  function SearchCursor(doc, query, pos, caseFold) {
-    this.atOccurrence = false; this.doc = doc;
-    if (caseFold == null && typeof query == "string") caseFold = false;
+  function regexpFlags(regexp) {
+    var flags = regexp.flags
+    return flags != null ? flags : (regexp.ignoreCase ? "i" : "")
+      + (regexp.global ? "g" : "")
+      + (regexp.multiline ? "m" : "")
+  }
 
-    pos = pos ? doc.clipPos(pos) : Pos(0, 0);
-    this.pos = {from: pos, to: pos};
+  function ensureGlobal(regexp) {
+    return regexp.global ? regexp : new RegExp(regexp.source, regexpFlags(regexp) + "g")
+  }
 
-    // The matches method is filled in based on the type of query.
-    // It takes a position and a direction, and returns an object
-    // describing the next occurrence of the query, or null if no
-    // more matches were found.
-    if (typeof query != "string") { // Regexp match
-      if (!query.global) query = new RegExp(query.source, query.ignoreCase ? "ig" : "g");
-      this.matches = function(reverse, pos) {
-        if (reverse) {
-          query.lastIndex = 0;
-          var line = doc.getLine(pos.line).slice(0, pos.ch), cutOff = 0, match, start;
-          for (;;) {
-            query.lastIndex = cutOff;
-            var newMatch = query.exec(line);
-            if (!newMatch) break;
-            match = newMatch;
-            start = match.index;
-            cutOff = match.index + (match[0].length || 1);
-            if (cutOff == line.length) break;
-          }
-          var matchLen = (match && match[0].length) || 0;
-          if (!matchLen) {
-            if (start == 0 && line.length == 0) {match = undefined;}
-            else if (start != doc.getLine(pos.line).length) {
-              matchLen++;
-            }
-          }
-        } else {
-          query.lastIndex = pos.ch;
-          var line = doc.getLine(pos.line), match = query.exec(line);
-          var matchLen = (match && match[0].length) || 0;
-          var start = match && match.index;
-          if (start + matchLen != line.length && !matchLen) matchLen = 1;
-        }
-        if (match && matchLen)
-          return {from: Pos(pos.line, start),
-                  to: Pos(pos.line, start + matchLen),
-                  match: match};
-      };
-    } else { // String query
-      var origQuery = query;
-      if (caseFold) query = query.toLowerCase();
-      var fold = caseFold ? function(str){return str.toLowerCase();} : function(str){return str;};
-      var target = query.split("\n");
-      // Different methods for single-line and multi-line queries
-      if (target.length == 1) {
-        if (!query.length) {
-          // Empty string would match anything and never progress, so
-          // we define it to match nothing instead.
-          this.matches = function() {};
-        } else {
-          this.matches = function(reverse, pos) {
-            if (reverse) {
-              var orig = doc.getLine(pos.line).slice(0, pos.ch), line = fold(orig);
-              var match = line.lastIndexOf(query);
-              if (match > -1) {
-                match = adjustPos(orig, line, match);
-                return {from: Pos(pos.line, match), to: Pos(pos.line, match + origQuery.length)};
-              }
-             } else {
-               var orig = doc.getLine(pos.line).slice(pos.ch), line = fold(orig);
-               var match = line.indexOf(query);
-               if (match > -1) {
-                 match = adjustPos(orig, line, match) + pos.ch;
-                 return {from: Pos(pos.line, match), to: Pos(pos.line, match + origQuery.length)};
-               }
-            }
-          };
-        }
-      } else {
-        var origTarget = origQuery.split("\n");
-        this.matches = function(reverse, pos) {
-          var last = target.length - 1;
-          if (reverse) {
-            if (pos.line - (target.length - 1) < doc.firstLine()) return;
-            if (fold(doc.getLine(pos.line).slice(0, origTarget[last].length)) != target[target.length - 1]) return;
-            var to = Pos(pos.line, origTarget[last].length);
-            for (var ln = pos.line - 1, i = last - 1; i >= 1; --i, --ln)
-              if (target[i] != fold(doc.getLine(ln))) return;
-            var line = doc.getLine(ln), cut = line.length - origTarget[0].length;
-            if (fold(line.slice(cut)) != target[0]) return;
-            return {from: Pos(ln, cut), to: to};
-          } else {
-            if (pos.line + (target.length - 1) > doc.lastLine()) return;
-            var line = doc.getLine(pos.line), cut = line.length - origTarget[0].length;
-            if (fold(line.slice(cut)) != target[0]) return;
-            var from = Pos(pos.line, cut);
-            for (var ln = pos.line + 1, i = 1; i < last; ++i, ++ln)
-              if (target[i] != fold(doc.getLine(ln))) return;
-            if (fold(doc.getLine(ln).slice(0, origTarget[last].length)) != target[last]) return;
-            return {from: from, to: Pos(ln, origTarget[last].length)};
-          }
-        };
+  function maybeMultiline(regexp) {
+    return /\\s|\\n|\n|\\W|\\D|\[\^/.test(regexp.source)
+  }
+
+  function searchRegexpForward(doc, regexp, start) {
+    regexp = ensureGlobal(regexp)
+    for (var line = start.line, ch = start.ch, last = doc.lastLine(); line <= last; line++, ch = 0) {
+      regexp.lastIndex = ch
+      var string = doc.getLine(line), match = regexp.exec(string)
+      if (match)
+        return {from: Pos(line, match.index),
+                to: Pos(line, match.index + match[0].length),
+                match: match}
+    }
+  }
+
+  function searchRegexpForwardMultiline(doc, regexp, start) {
+    if (!maybeMultiline(regexp)) return searchRegexpForward(doc, regexp, start)
+
+    regexp = ensureGlobal(regexp)
+    var string, chunk = 1
+    for (var line = start.line, last = doc.lastLine(); line <= last;) {
+      // This grows the search buffer in exponentially-sized chunks
+      // between matches, so that nearby matches are fast and don't
+      // require concatenating the whole document (in case we're
+      // searching for something that has tons of matches), but at the
+      // same time, the amount of retries is limited.
+      for (var i = 0; i < chunk; i++) {
+        var curLine = doc.getLine(line++)
+        string = string == null ? curLine : string + "\n" + curLine
       }
+      chunk = chunk * 2
+      regexp.lastIndex = start.ch
+      var match = regexp.exec(string)
+      if (match) {
+        var before = string.slice(0, match.index).split("\n"), inside = match[0].split("\n")
+        var startLine = start.line + before.length - 1, startCh = before[before.length - 1].length
+        return {from: Pos(startLine, startCh),
+                to: Pos(startLine + inside.length - 1,
+                        inside.length == 1 ? startCh + inside[0].length : inside[inside.length - 1].length),
+                match: match}
+      }
+    }
+  }
+
+  function lastMatchIn(string, regexp) {
+    var cutOff = 0, match
+    for (;;) {
+      regexp.lastIndex = cutOff
+      var newMatch = regexp.exec(string)
+      if (!newMatch) return match
+      match = newMatch
+      cutOff = match.index + (match[0].length || 1)
+      if (cutOff == string.length) return match
+    }
+  }
+
+  function searchRegexpBackward(doc, regexp, start) {
+    regexp = ensureGlobal(regexp)
+    for (var line = start.line, ch = start.ch, first = doc.firstLine(); line >= first; line--, ch = -1) {
+      var string = doc.getLine(line)
+      if (ch > -1) string = string.slice(0, ch)
+      var match = lastMatchIn(string, regexp)
+      if (match)
+        return {from: Pos(line, match.index),
+                to: Pos(line, match.index + match[0].length),
+                match: match}
+    }
+  }
+
+  function searchRegexpBackwardMultiline(doc, regexp, start) {
+    regexp = ensureGlobal(regexp)
+    var string, chunk = 1
+    for (var line = start.line, first = doc.firstLine(); line >= first;) {
+      for (var i = 0; i < chunk; i++) {
+        var curLine = doc.getLine(line--)
+        string = string == null ? curLine.slice(0, start.ch) : curLine + "\n" + string
+      }
+      chunk *= 2
+
+      var match = lastMatchIn(string, regexp)
+      if (match) {
+        var before = string.slice(0, match.index).split("\n"), inside = match[0].split("\n")
+        var startLine = line + before.length, startCh = before[before.length - 1].length
+        return {from: Pos(startLine, startCh),
+                to: Pos(startLine + inside.length - 1,
+                        inside.length == 1 ? startCh + inside[0].length : inside[inside.length - 1].length),
+                match: match}
+      }
+    }
+  }
+
+  var doFold, noFold
+  if (String.prototype.normalize) {
+    doFold = function(str) { return str.normalize("NFD").toLowerCase() }
+    noFold = function(str) { return str.normalize("NFD") }
+  } else {
+    doFold = function(str) { return str.toLowerCase() }
+    noFold = function(str) { return str }
+  }
+
+  // Maps a position in a case-folded line back to a position in the original line
+  // (compensating for codepoints increasing in number during folding)
+  function adjustPos(orig, folded, pos, foldFunc) {
+    if (orig.length == folded.length) return pos
+    for (var min = 0, max = pos + Math.max(0, orig.length - folded.length);;) {
+      if (min == max) return min
+      var mid = (min + max) >> 1
+      var len = foldFunc(orig.slice(0, mid)).length
+      if (len == pos) return mid
+      else if (len > pos) max = mid
+      else min = mid + 1
+    }
+  }
+
+  function searchStringForward(doc, query, start, caseFold) {
+    // Empty string would match anything and never progress, so we
+    // define it to match nothing instead.
+    if (!query.length) return null
+    var fold = caseFold ? doFold : noFold
+    var lines = fold(query).split(/\r|\n\r?/)
+
+    search: for (var line = start.line, ch = start.ch, last = doc.lastLine() + 1 - lines.length; line <= last; line++, ch = 0) {
+      var orig = doc.getLine(line).slice(ch), string = fold(orig)
+      if (lines.length == 1) {
+        var found = string.indexOf(lines[0])
+        if (found == -1) continue search
+        var start = adjustPos(orig, string, found, fold) + ch
+        return {from: Pos(line, adjustPos(orig, string, found, fold) + ch),
+                to: Pos(line, adjustPos(orig, string, found + lines[0].length, fold) + ch)}
+      } else {
+        var cutFrom = string.length - lines[0].length
+        if (string.slice(cutFrom) != lines[0]) continue search
+        for (var i = 1; i < lines.length - 1; i++)
+          if (fold(doc.getLine(line + i)) != lines[i]) continue search
+        var end = doc.getLine(line + lines.length - 1), endString = fold(end), lastLine = lines[lines.length - 1]
+        if (end.slice(0, lastLine.length) != lastLine) continue search
+        return {from: Pos(line, adjustPos(orig, string, cutFrom, fold) + ch),
+                to: Pos(line + lines.length - 1, adjustPos(end, endString, lastLine.length, fold))}
+      }
+    }
+  }
+
+  function searchStringBackward(doc, query, start, caseFold) {
+    if (!query.length) return null
+    var fold = caseFold ? doFold : noFold
+    var lines = fold(query).split(/\r|\n\r?/)
+
+    search: for (var line = start.line, ch = start.ch, first = doc.firstLine() - 1 + lines.length; line >= first; line--, ch = -1) {
+      var orig = doc.getLine(line)
+      if (ch > -1) orig = orig.slice(0, ch)
+      var string = fold(orig)
+      if (lines.length == 1) {
+        var found = string.lastIndexOf(lines[0])
+        if (found == -1) continue search
+        return {from: Pos(line, adjustPos(orig, string, found, fold)),
+                to: Pos(line, adjustPos(orig, string, found + lines[0].length, fold))}
+      } else {
+        var lastLine = lines[lines.length - 1]
+        if (string.slice(0, lastLine.length) != lastLine) continue search
+        for (var i = 1, start = line - lines.length + 1; i < lines.length - 1; i++)
+          if (fold(doc.getLine(start + i)) != lines[i]) continue search
+        var top = doc.getLine(line + 1 - lines.length), topString = fold(top)
+        if (topString.slice(topString.length - lines[0].length) != lines[0]) continue search
+        return {from: Pos(line + 1 - lines.length, adjustPos(top, topString, top.length - lines[0].length, fold)),
+                to: Pos(line, adjustPos(orig, string, lastLine.length, fold))}
+      }
+    }
+  }
+
+  function SearchCursor(doc, query, pos, options) {
+    this.atOccurrence = false
+    this.doc = doc
+    pos = pos ? doc.clipPos(pos) : Pos(0, 0)
+    this.pos = {from: pos, to: pos}
+
+    var caseFold
+    if (typeof options == "object") {
+      caseFold = options.caseFold
+    } else { // Backwards compat for when caseFold was the 4th argument
+      caseFold = options
+      options = null
+    }
+
+    if (typeof query == "string") {
+      if (caseFold == null) caseFold = false
+      this.matches = function(reverse, pos) {
+        return (reverse ? searchStringBackward : searchStringForward)(doc, query, pos, caseFold)
+      }
+    } else {
+      query = ensureGlobal(query)
+      if (!options || options.multiline !== false)
+        this.matches = function(reverse, pos) {
+          return (reverse ? searchRegexpBackwardMultiline : searchRegexpForwardMultiline)(doc, query, pos)
+        }
+      else
+        this.matches = function(reverse, pos) {
+          return (reverse ? searchRegexpBackward : searchRegexpForward)(doc, query, pos)
+        }
     }
   }
 
   SearchCursor.prototype = {
-    findNext: function() {return this.find(false);},
-    findPrevious: function() {return this.find(true);},
+    findNext: function() {return this.find(false)},
+    findPrevious: function() {return this.find(true)},
 
     find: function(reverse) {
-      var self = this, pos = this.doc.clipPos(reverse ? this.pos.from : this.pos.to);
-      function savePosAndFail(line) {
-        var pos = Pos(line, 0);
-        self.pos = {from: pos, to: pos};
-        self.atOccurrence = false;
-        return false;
+      var result = this.matches(reverse, this.doc.clipPos(reverse ? this.pos.from : this.pos.to))
+
+      // Implements weird auto-growing behavior on null-matches for
+      // backwards-compatiblity with the vim code (unfortunately)
+      while (result && CodeMirror.cmpPos(result.from, result.to) == 0) {
+        if (reverse) {
+          if (result.from.ch) result.from = Pos(result.from.line, result.from.ch - 1)
+          else if (result.from.line == this.doc.firstLine()) result = null
+          else result = this.matches(reverse, this.doc.clipPos(Pos(result.from.line - 1)))
+        } else {
+          if (result.to.ch < this.doc.getLine(result.to.line).length) result.to = Pos(result.to.line, result.to.ch + 1)
+          else if (result.to.line == this.doc.lastLine()) result = null
+          else result = this.matches(reverse, Pos(result.to.line + 1, 0))
+        }
       }
 
-      for (;;) {
-        if (this.pos = this.matches(reverse, pos)) {
-          this.atOccurrence = true;
-          return this.pos.match || true;
-        }
-        if (reverse) {
-          if (!pos.line) return savePosAndFail(0);
-          pos = Pos(pos.line-1, this.doc.getLine(pos.line-1).length);
-        }
-        else {
-          var maxLine = this.doc.lineCount();
-          if (pos.line == maxLine - 1) return savePosAndFail(maxLine);
-          pos = Pos(pos.line + 1, 0);
-        }
+      if (result) {
+        this.pos = result
+        this.atOccurrence = true
+        return this.pos.match || true
+      } else {
+        var end = Pos(reverse ? this.doc.firstLine() : this.doc.lastLine() + 1, 0)
+        this.pos = {from: end, to: end}
+        return this.atOccurrence = false
       }
     },
 
-    from: function() {if (this.atOccurrence) return this.pos.from;},
-    to: function() {if (this.atOccurrence) return this.pos.to;},
+    from: function() {if (this.atOccurrence) return this.pos.from},
+    to: function() {if (this.atOccurrence) return this.pos.to},
 
     replace: function(newText, origin) {
-      if (!this.atOccurrence) return;
-      var lines = CodeMirror.splitLines(newText);
-      this.doc.replaceRange(lines, this.pos.from, this.pos.to, origin);
+      if (!this.atOccurrence) return
+      var lines = CodeMirror.splitLines(newText)
+      this.doc.replaceRange(lines, this.pos.from, this.pos.to, origin)
       this.pos.to = Pos(this.pos.from.line + lines.length - 1,
-                        lines[lines.length - 1].length + (lines.length == 1 ? this.pos.from.ch : 0));
-    }
-  };
-
-  // Maps a position in a case-folded line back to a position in the original line
-  // (compensating for codepoints increasing in number during folding)
-  function adjustPos(orig, folded, pos) {
-    if (orig.length == folded.length) return pos;
-    for (var pos1 = Math.min(pos, orig.length);;) {
-      var len1 = orig.slice(0, pos1).toLowerCase().length;
-      if (len1 < pos) ++pos1;
-      else if (len1 > pos) --pos1;
-      else return pos1;
+                        lines[lines.length - 1].length + (lines.length == 1 ? this.pos.from.ch : 0))
     }
   }
 
   CodeMirror.defineExtension("getSearchCursor", function(query, pos, caseFold) {
-    return new SearchCursor(this.doc, query, pos, caseFold);
-  });
+    return new SearchCursor(this.doc, query, pos, caseFold)
+  })
   CodeMirror.defineDocExtension("getSearchCursor", function(query, pos, caseFold) {
-    return new SearchCursor(this, query, pos, caseFold);
-  });
+    return new SearchCursor(this, query, pos, caseFold)
+  })
 
   CodeMirror.defineExtension("selectMatches", function(query, caseFold) {
-    var ranges = [];
-    var cur = this.getSearchCursor(query, this.getCursor("from"), caseFold);
+    var ranges = []
+    var cur = this.getSearchCursor(query, this.getCursor("from"), caseFold)
     while (cur.findNext()) {
-      if (CodeMirror.cmpPos(cur.to(), this.getCursor("to")) > 0) break;
-      ranges.push({anchor: cur.from(), head: cur.to()});
+      if (CodeMirror.cmpPos(cur.to(), this.getCursor("to")) > 0) break
+      ranges.push({anchor: cur.from(), head: cur.to()})
     }
     if (ranges.length)
-      this.setSelections(ranges, 0);
-  });
+      this.setSelections(ranges, 0)
+  })
 });
 
-},{"../../lib/codemirror":68}],67:[function(require,module,exports){
+},{"../../lib/codemirror":65}],64:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -10007,11 +9968,8 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
 })(function(CodeMirror) {
   "use strict";
 
-  var map = CodeMirror.keyMap.sublime = {fallthrough: "default"};
   var cmds = CodeMirror.commands;
   var Pos = CodeMirror.Pos;
-  var mac = CodeMirror.keyMap["default"] == CodeMirror.keyMap.macDefault;
-  var ctrl = mac ? "Cmd-" : "Ctrl-";
 
   // This is not exactly Sublime's algorithm. I couldn't make heads or tails of that.
   function findPosSubword(doc, start, dir) {
@@ -10045,16 +10003,10 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   }
 
-  var goSubwordCombo = mac ? "Ctrl-" : "Alt-";
+  cmds.goSubwordLeft = function(cm) { moveSubword(cm, -1); };
+  cmds.goSubwordRight = function(cm) { moveSubword(cm, 1); };
 
-  cmds[map[goSubwordCombo + "Left"] = "goSubwordLeft"] = function(cm) { moveSubword(cm, -1); };
-  cmds[map[goSubwordCombo + "Right"] = "goSubwordRight"] = function(cm) { moveSubword(cm, 1); };
-
-  if (mac) map["Cmd-Left"] = "goLineStartSmart";
-
-  var scrollLineCombo = mac ? "Ctrl-Alt-" : "Ctrl-";
-
-  cmds[map[scrollLineCombo + "Up"] = "scrollLineUp"] = function(cm) {
+  cmds.scrollLineUp = function(cm) {
     var info = cm.getScrollInfo();
     if (!cm.somethingSelected()) {
       var visibleBottomLine = cm.lineAtHeight(info.top + info.clientHeight, "local");
@@ -10063,7 +10015,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     }
     cm.scrollTo(null, info.top - cm.defaultTextHeight());
   };
-  cmds[map[scrollLineCombo + "Down"] = "scrollLineDown"] = function(cm) {
+  cmds.scrollLineDown = function(cm) {
     var info = cm.getScrollInfo();
     if (!cm.somethingSelected()) {
       var visibleTopLine = cm.lineAtHeight(info.top, "local")+1;
@@ -10073,7 +10025,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     cm.scrollTo(null, info.top + cm.defaultTextHeight());
   };
 
-  cmds[map["Shift-" + ctrl + "L"] = "splitSelectionByLine"] = function(cm) {
+  cmds.splitSelectionByLine = function(cm) {
     var ranges = cm.listSelections(), lineRanges = [];
     for (var i = 0; i < ranges.length; i++) {
       var from = ranges[i].from(), to = ranges[i].to();
@@ -10085,14 +10037,12 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     cm.setSelections(lineRanges, 0);
   };
 
-  map["Shift-Tab"] = "indentLess";
-
-  cmds[map["Esc"] = "singleSelectionTop"] = function(cm) {
+  cmds.singleSelectionTop = function(cm) {
     var range = cm.listSelections()[0];
     cm.setSelection(range.anchor, range.head, {scroll: false});
   };
 
-  cmds[map[ctrl + "L"] = "selectLine"] = function(cm) {
+  cmds.selectLine = function(cm) {
     var ranges = cm.listSelections(), extended = [];
     for (var i = 0; i < ranges.length; i++) {
       var range = ranges[i];
@@ -10101,8 +10051,6 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     }
     cm.setSelections(extended);
   };
-
-  map["Shift-Ctrl-K"] = "deleteLine";
 
   function insertLine(cm, above) {
     if (cm.isReadOnly()) return CodeMirror.Pass
@@ -10122,9 +10070,9 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     cm.execCommand("indentAuto");
   }
 
-  cmds[map[ctrl + "Enter"] = "insertLineAfter"] = function(cm) { return insertLine(cm, false); };
+  cmds.insertLineAfter = function(cm) { return insertLine(cm, false); };
 
-  cmds[map["Shift-" + ctrl + "Enter"] = "insertLineBefore"] = function(cm) { return insertLine(cm, true); };
+  cmds.insertLineBefore = function(cm) { return insertLine(cm, true); };
 
   function wordAt(cm, pos) {
     var start = pos.ch, end = start, line = cm.getLine(pos.line);
@@ -10133,7 +10081,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     return {from: Pos(pos.line, start), to: Pos(pos.line, end), word: line.slice(start, end)};
   }
 
-  cmds[map[ctrl + "D"] = "selectNextOccurrence"] = function(cm) {
+  cmds.selectNextOccurrence = function(cm) {
     var from = cm.getCursor("from"), to = cm.getCursor("to");
     var fullWord = cm.state.sublimeFindFullWord == cm.doc.sel;
     if (CodeMirror.cmpPos(from, to) == 0) {
@@ -10157,6 +10105,21 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     if (fullWord)
       cm.state.sublimeFindFullWord = cm.doc.sel;
   };
+
+  function addCursorToSelection(cm, dir) {
+    var ranges = cm.listSelections(), newRanges = [];
+    for (var i = 0; i < ranges.length; i++) {
+      var range = ranges[i];
+      var newAnchor = cm.findPosV(range.anchor, dir, "line");
+      var newHead = cm.findPosV(range.head, dir, "line");
+      var newRange = {anchor: newAnchor, head: newHead};
+      newRanges.push(range);
+      newRanges.push(newRange);
+    }
+    cm.setSelections(newRanges);
+  }
+  cmds.addCursorToPrevLine = function(cm) { addCursorToSelection(cm, -1); };
+  cmds.addCursorToNextLine = function(cm) { addCursorToSelection(cm, 1); };
 
   function isSelectedRange(ranges, from, to) {
     for (var i = 0; i < ranges.length; i++)
@@ -10185,14 +10148,14 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     return true;
   }
 
-  cmds[map["Shift-" + ctrl + "Space"] = "selectScope"] = function(cm) {
+  cmds.selectScope = function(cm) {
     selectBetweenBrackets(cm) || cm.execCommand("selectAll");
   };
-  cmds[map["Shift-" + ctrl + "M"] = "selectBetweenBrackets"] = function(cm) {
+  cmds.selectBetweenBrackets = function(cm) {
     if (!selectBetweenBrackets(cm)) return CodeMirror.Pass;
   };
 
-  cmds[map[ctrl + "M"] = "goToBracket"] = function(cm) {
+  cmds.goToBracket = function(cm) {
     cm.extendSelectionsBy(function(range) {
       var next = cm.scanForBracket(range.head, 1);
       if (next && CodeMirror.cmpPos(next.pos, range.head) != 0) return next.pos;
@@ -10201,9 +10164,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  var swapLineCombo = mac ? "Cmd-Ctrl-" : "Shift-Ctrl-";
-
-  cmds[map[swapLineCombo + "Up"] = "swapLineUp"] = function(cm) {
+  cmds.swapLineUp = function(cm) {
     if (cm.isReadOnly()) return CodeMirror.Pass
     var ranges = cm.listSelections(), linesToMove = [], at = cm.firstLine() - 1, newSels = [];
     for (var i = 0; i < ranges.length; i++) {
@@ -10230,7 +10191,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  cmds[map[swapLineCombo + "Down"] = "swapLineDown"] = function(cm) {
+  cmds.swapLineDown = function(cm) {
     if (cm.isReadOnly()) return CodeMirror.Pass
     var ranges = cm.listSelections(), linesToMove = [], at = cm.lastLine() + 1;
     for (var i = ranges.length - 1; i >= 0; i--) {
@@ -10254,11 +10215,11 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  cmds[map[ctrl + "/"] = "toggleCommentIndented"] = function(cm) {
+  cmds.toggleCommentIndented = function(cm) {
     cm.toggleComment({ indent: true });
   }
 
-  cmds[map[ctrl + "J"] = "joinLines"] = function(cm) {
+  cmds.joinLines = function(cm) {
     var ranges = cm.listSelections(), joined = [];
     for (var i = 0; i < ranges.length; i++) {
       var range = ranges[i], from = range.from();
@@ -10286,7 +10247,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  cmds[map["Shift-" + ctrl + "D"] = "duplicateLine"] = function(cm) {
+  cmds.duplicateLine = function(cm) {
     cm.operation(function() {
       var rangeCount = cm.listSelections().length;
       for (var i = 0; i < rangeCount; i++) {
@@ -10300,7 +10261,6 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  if (!mac) map[ctrl + "T"] = "transposeChars";
 
   function sortLines(cm, caseSensitive) {
     if (cm.isReadOnly()) return CodeMirror.Pass
@@ -10338,10 +10298,10 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   }
 
-  cmds[map["F9"] = "sortLines"] = function(cm) { sortLines(cm, true); };
-  cmds[map[ctrl + "F9"] = "sortLinesInsensitive"] = function(cm) { sortLines(cm, false); };
+  cmds.sortLines = function(cm) { sortLines(cm, true); };
+  cmds.sortLinesInsensitive = function(cm) { sortLines(cm, false); };
 
-  cmds[map["F2"] = "nextBookmark"] = function(cm) {
+  cmds.nextBookmark = function(cm) {
     var marks = cm.state.sublimeBookmarks;
     if (marks) while (marks.length) {
       var current = marks.shift();
@@ -10353,7 +10313,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     }
   };
 
-  cmds[map["Shift-F2"] = "prevBookmark"] = function(cm) {
+  cmds.prevBookmark = function(cm) {
     var marks = cm.state.sublimeBookmarks;
     if (marks) while (marks.length) {
       marks.unshift(marks.pop());
@@ -10365,7 +10325,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     }
   };
 
-  cmds[map[ctrl + "F2"] = "toggleBookmark"] = function(cm) {
+  cmds.toggleBookmark = function(cm) {
     var ranges = cm.listSelections();
     var marks = cm.state.sublimeBookmarks || (cm.state.sublimeBookmarks = []);
     for (var i = 0; i < ranges.length; i++) {
@@ -10385,13 +10345,13 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     }
   };
 
-  cmds[map["Shift-" + ctrl + "F2"] = "clearBookmarks"] = function(cm) {
+  cmds.clearBookmarks = function(cm) {
     var marks = cm.state.sublimeBookmarks;
     if (marks) for (var i = 0; i < marks.length; i++) marks[i].clear();
     marks.length = 0;
   };
 
-  cmds[map["Alt-F2"] = "selectBookmarks"] = function(cm) {
+  cmds.selectBookmarks = function(cm) {
     var marks = cm.state.sublimeBookmarks, ranges = [];
     if (marks) for (var i = 0; i < marks.length; i++) {
       var found = marks[i].find();
@@ -10403,10 +10363,6 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     if (ranges.length)
       cm.setSelections(ranges, 0);
   };
-
-  map["Alt-Q"] = "wrapLines";
-
-  var cK = ctrl + "K ";
 
   function modifyWordOrSelection(cm, mod) {
     cm.operation(function() {
@@ -10427,9 +10383,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   }
 
-  map[cK + ctrl + "Backspace"] = "delLineLeft";
-
-  cmds[map["Backspace"] = "smartBackspace"] = function(cm) {
+  cmds.smartBackspace = function(cm) {
     if (cm.somethingSelected()) return CodeMirror.Pass;
 
     cm.operation(function() {
@@ -10457,7 +10411,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  cmds[map[cK + ctrl + "K"] = "delLineRight"] = function(cm) {
+  cmds.delLineRight = function(cm) {
     cm.operation(function() {
       var ranges = cm.listSelections();
       for (var i = ranges.length - 1; i >= 0; i--)
@@ -10466,22 +10420,22 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     });
   };
 
-  cmds[map[cK + ctrl + "U"] = "upcaseAtCursor"] = function(cm) {
+  cmds.upcaseAtCursor = function(cm) {
     modifyWordOrSelection(cm, function(str) { return str.toUpperCase(); });
   };
-  cmds[map[cK + ctrl + "L"] = "downcaseAtCursor"] = function(cm) {
+  cmds.downcaseAtCursor = function(cm) {
     modifyWordOrSelection(cm, function(str) { return str.toLowerCase(); });
   };
 
-  cmds[map[cK + ctrl + "Space"] = "setSublimeMark"] = function(cm) {
+  cmds.setSublimeMark = function(cm) {
     if (cm.state.sublimeMark) cm.state.sublimeMark.clear();
     cm.state.sublimeMark = cm.setBookmark(cm.getCursor());
   };
-  cmds[map[cK + ctrl + "A"] = "selectToSublimeMark"] = function(cm) {
+  cmds.selectToSublimeMark = function(cm) {
     var found = cm.state.sublimeMark && cm.state.sublimeMark.find();
     if (found) cm.setSelection(cm.getCursor(), found);
   };
-  cmds[map[cK + ctrl + "W"] = "deleteToSublimeMark"] = function(cm) {
+  cmds.deleteToSublimeMark = function(cm) {
     var found = cm.state.sublimeMark && cm.state.sublimeMark.find();
     if (found) {
       var from = cm.getCursor(), to = found;
@@ -10490,7 +10444,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
       cm.replaceRange("", from, to);
     }
   };
-  cmds[map[cK + ctrl + "X"] = "swapWithSublimeMark"] = function(cm) {
+  cmds.swapWithSublimeMark = function(cm) {
     var found = cm.state.sublimeMark && cm.state.sublimeMark.find();
     if (found) {
       cm.state.sublimeMark.clear();
@@ -10498,19 +10452,17 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
       cm.setCursor(found);
     }
   };
-  cmds[map[cK + ctrl + "Y"] = "sublimeYank"] = function(cm) {
+  cmds.sublimeYank = function(cm) {
     if (cm.state.sublimeKilled != null)
       cm.replaceSelection(cm.state.sublimeKilled, null, "paste");
   };
 
-  map[cK + ctrl + "G"] = "clearBookmarks";
-  cmds[map[cK + ctrl + "C"] = "showInCenter"] = function(cm) {
+  cmds.showInCenter = function(cm) {
     var pos = cm.cursorCoords(null, "local");
     cm.scrollTo(null, (pos.top + pos.bottom) / 2 - cm.getScrollInfo().clientHeight / 2);
   };
 
-  var selectLinesCombo = mac ? "Ctrl-Shift-" : "Ctrl-Alt-";
-  cmds[map[selectLinesCombo + "Up"] = "selectLinesUpward"] = function(cm) {
+  cmds.selectLinesUpward = function(cm) {
     cm.operation(function() {
       var ranges = cm.listSelections();
       for (var i = 0; i < ranges.length; i++) {
@@ -10520,7 +10472,7 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
       }
     });
   };
-  cmds[map[selectLinesCombo + "Down"] = "selectLinesDownward"] = function(cm) {
+  cmds.selectLinesDownward = function(cm) {
     cm.operation(function() {
       var ranges = cm.listSelections();
       for (var i = 0; i < ranges.length; i++) {
@@ -10559,9 +10511,9 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
         cm.setSelection(target.from, target.to);
     }
   };
-  cmds[map[ctrl + "F3"] = "findUnder"] = function(cm) { findAndGoTo(cm, true); };
-  cmds[map["Shift-" + ctrl + "F3"] = "findUnderPrevious"] = function(cm) { findAndGoTo(cm,false); };
-  cmds[map["Alt-F3"] = "findAllUnder"] = function(cm) {
+  cmds.findUnder = function(cm) { findAndGoTo(cm, true); };
+  cmds.findUnderPrevious = function(cm) { findAndGoTo(cm,false); };
+  cmds.findAllUnder = function(cm) {
     var target = getTarget(cm);
     if (!target) return;
     var cur = cm.getSearchCursor(target.query);
@@ -10575,20 +10527,137 @@ CodeMirror.registerHelper("fold", "include", function(cm, start) {
     cm.setSelections(matches, primaryIndex);
   };
 
-  map["Shift-" + ctrl + "["] = "fold";
-  map["Shift-" + ctrl + "]"] = "unfold";
-  map[cK + ctrl + "0"] = map[cK + ctrl + "J"] = "unfoldAll";
 
-  map[ctrl + "I"] = "findIncremental";
-  map["Shift-" + ctrl + "I"] = "findIncrementalReverse";
-  map[ctrl + "H"] = "replace";
-  map["F3"] = "findNext";
-  map["Shift-F3"] = "findPrev";
+  var keyMap = CodeMirror.keyMap;
+  keyMap.macSublime = {
+    "Cmd-Left": "goLineStartSmart",
+    "Shift-Tab": "indentLess",
+    "Shift-Ctrl-K": "deleteLine",
+    "Alt-Q": "wrapLines",
+    "Ctrl-Left": "goSubwordLeft",
+    "Ctrl-Right": "goSubwordRight",
+    "Ctrl-Alt-Up": "scrollLineUp",
+    "Ctrl-Alt-Down": "scrollLineDown",
+    "Cmd-L": "selectLine",
+    "Shift-Cmd-L": "splitSelectionByLine",
+    "Esc": "singleSelectionTop",
+    "Cmd-Enter": "insertLineAfter",
+    "Shift-Cmd-Enter": "insertLineBefore",
+    "Cmd-D": "selectNextOccurrence",
+    "Shift-Cmd-Up": "addCursorToPrevLine",
+    "Shift-Cmd-Down": "addCursorToNextLine",
+    "Shift-Cmd-Space": "selectScope",
+    "Shift-Cmd-M": "selectBetweenBrackets",
+    "Cmd-M": "goToBracket",
+    "Cmd-Ctrl-Up": "swapLineUp",
+    "Cmd-Ctrl-Down": "swapLineDown",
+    "Cmd-/": "toggleCommentIndented",
+    "Cmd-J": "joinLines",
+    "Shift-Cmd-D": "duplicateLine",
+    "F9": "sortLines",
+    "Cmd-F9": "sortLinesInsensitive",
+    "F2": "nextBookmark",
+    "Shift-F2": "prevBookmark",
+    "Cmd-F2": "toggleBookmark",
+    "Shift-Cmd-F2": "clearBookmarks",
+    "Alt-F2": "selectBookmarks",
+    "Backspace": "smartBackspace",
+    "Cmd-K Cmd-K": "delLineRight",
+    "Cmd-K Cmd-U": "upcaseAtCursor",
+    "Cmd-K Cmd-L": "downcaseAtCursor",
+    "Cmd-K Cmd-Space": "setSublimeMark",
+    "Cmd-K Cmd-A": "selectToSublimeMark",
+    "Cmd-K Cmd-W": "deleteToSublimeMark",
+    "Cmd-K Cmd-X": "swapWithSublimeMark",
+    "Cmd-K Cmd-Y": "sublimeYank",
+    "Cmd-K Cmd-C": "showInCenter",
+    "Cmd-K Cmd-G": "clearBookmarks",
+    "Cmd-K Cmd-Backspace": "delLineLeft",
+    "Cmd-K Cmd-0": "unfoldAll",
+    "Cmd-K Cmd-J": "unfoldAll",
+    "Ctrl-Shift-Up": "selectLinesUpward",
+    "Ctrl-Shift-Down": "selectLinesDownward",
+    "Cmd-F3": "findUnder",
+    "Shift-Cmd-F3": "findUnderPrevious",
+    "Alt-F3": "findAllUnder",
+    "Shift-Cmd-[": "fold",
+    "Shift-Cmd-]": "unfold",
+    "Cmd-I": "findIncremental",
+    "Shift-Cmd-I": "findIncrementalReverse",
+    "Cmd-H": "replace",
+    "F3": "findNext",
+    "Shift-F3": "findPrev",
+    "fallthrough": "macDefault"
+  };
+  CodeMirror.normalizeKeyMap(keyMap.macSublime);
 
-  CodeMirror.normalizeKeyMap(map);
+  keyMap.pcSublime = {
+    "Shift-Tab": "indentLess",
+    "Shift-Ctrl-K": "deleteLine",
+    "Alt-Q": "wrapLines",
+    "Ctrl-T": "transposeChars",
+    "Alt-Left": "goSubwordLeft",
+    "Alt-Right": "goSubwordRight",
+    "Ctrl-Up": "scrollLineUp",
+    "Ctrl-Down": "scrollLineDown",
+    "Ctrl-L": "selectLine",
+    "Shift-Ctrl-L": "splitSelectionByLine",
+    "Esc": "singleSelectionTop",
+    "Ctrl-Enter": "insertLineAfter",
+    "Shift-Ctrl-Enter": "insertLineBefore",
+    "Ctrl-D": "selectNextOccurrence",
+    "Alt-CtrlUp": "addCursorToPrevLine",
+    "Alt-CtrlDown": "addCursorToNextLine",
+    "Shift-Ctrl-Space": "selectScope",
+    "Shift-Ctrl-M": "selectBetweenBrackets",
+    "Ctrl-M": "goToBracket",
+    "Shift-Ctrl-Up": "swapLineUp",
+    "Shift-Ctrl-Down": "swapLineDown",
+    "Ctrl-/": "toggleCommentIndented",
+    "Ctrl-J": "joinLines",
+    "Shift-Ctrl-D": "duplicateLine",
+    "F9": "sortLines",
+    "Ctrl-F9": "sortLinesInsensitive",
+    "F2": "nextBookmark",
+    "Shift-F2": "prevBookmark",
+    "Ctrl-F2": "toggleBookmark",
+    "Shift-Ctrl-F2": "clearBookmarks",
+    "Alt-F2": "selectBookmarks",
+    "Backspace": "smartBackspace",
+    "Ctrl-K Ctrl-K": "delLineRight",
+    "Ctrl-K Ctrl-U": "upcaseAtCursor",
+    "Ctrl-K Ctrl-L": "downcaseAtCursor",
+    "Ctrl-K Ctrl-Space": "setSublimeMark",
+    "Ctrl-K Ctrl-A": "selectToSublimeMark",
+    "Ctrl-K Ctrl-W": "deleteToSublimeMark",
+    "Ctrl-K Ctrl-X": "swapWithSublimeMark",
+    "Ctrl-K Ctrl-Y": "sublimeYank",
+    "Ctrl-K Ctrl-C": "showInCenter",
+    "Ctrl-K Ctrl-G": "clearBookmarks",
+    "Ctrl-K Ctrl-Backspace": "delLineLeft",
+    "Ctrl-K Ctrl-0": "unfoldAll",
+    "Ctrl-K Ctrl-J": "unfoldAll",
+    "Ctrl-Alt-Up": "selectLinesUpward",
+    "Ctrl-Alt-Down": "selectLinesDownward",
+    "Ctrl-F3": "findUnder",
+    "Shift-Ctrl-F3": "findUnderPrevious",
+    "Alt-F3": "findAllUnder",
+    "Shift-Ctrl-[": "fold",
+    "Shift-Ctrl-]": "unfold",
+    "Ctrl-I": "findIncremental",
+    "Shift-Ctrl-I": "findIncrementalReverse",
+    "Ctrl-H": "replace",
+    "F3": "findNext",
+    "Shift-F3": "findPrev",
+    "fallthrough": "pcDefault"
+  };
+  CodeMirror.normalizeKeyMap(keyMap.pcSublime);
+
+  var mac = keyMap.default == keyMap.macDefault;
+  keyMap.sublime = mac ? keyMap.macSublime : keyMap.pcSublime;
 });
 
-},{"../addon/edit/matchbrackets":59,"../addon/search/searchcursor":66,"../lib/codemirror":68}],68:[function(require,module,exports){
+},{"../addon/edit/matchbrackets":55,"../addon/search/searchcursor":63,"../lib/codemirror":65}],65:[function(require,module,exports){
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -10870,13 +10939,18 @@ function skipExtendingChars(str, pos, dir) {
 }
 
 // Returns the value from the range [`from`; `to`] that satisfies
-// `pred` and is closest to `from`. Assumes that at least `to` satisfies `pred`.
+// `pred` and is closest to `from`. Assumes that at least `to`
+// satisfies `pred`. Supports `from` being greater than `to`.
 function findFirst(pred, from, to) {
+  // At any point we are certain `to` satisfies `pred`, don't know
+  // whether `from` does.
+  var dir = from > to ? -1 : 1;
   for (;;) {
-    if (Math.abs(from - to) <= 1) { return pred(from) ? from : to }
-    var mid = Math.floor((from + to) / 2);
+    if (from == to) { return from }
+    var midF = (from + to) / 2, mid = dir < 0 ? Math.ceil(midF) : Math.floor(midF);
+    if (mid == from) { return pred(mid) ? from : to }
     if (pred(mid)) { to = mid; }
-    else { from = mid; }
+    else { from = mid + dir; }
   }
 }
 
@@ -11488,12 +11562,12 @@ function findMaxLine(cm) {
 // BIDI HELPERS
 
 function iterateBidiSections(order, from, to, f) {
-  if (!order) { return f(from, to, "ltr") }
+  if (!order) { return f(from, to, "ltr", 0) }
   var found = false;
   for (var i = 0; i < order.length; ++i) {
     var part = order[i];
     if (part.from < to && part.to > from || from == to && part.to == from) {
-      f(Math.max(part.from, from), Math.min(part.to, to), part.level == 1 ? "rtl" : "ltr");
+      f(Math.max(part.from, from), Math.min(part.to, to), part.level == 1 ? "rtl" : "ltr", i);
       found = true;
     }
   }
@@ -11674,13 +11748,15 @@ var bidiOrdering = (function() {
         if (pos < i$7) { order.splice(at, 0, new BidiSpan(1, pos, i$7)); }
       }
     }
-    if (order[0].level == 1 && (m = str.match(/^\s+/))) {
-      order[0].from = m[0].length;
-      order.unshift(new BidiSpan(0, 0, m[0].length));
-    }
-    if (lst(order).level == 1 && (m = str.match(/\s+$/))) {
-      lst(order).to -= m[0].length;
-      order.push(new BidiSpan(0, len - m[0].length, len));
+    if (direction == "ltr") {
+      if (order[0].level == 1 && (m = str.match(/^\s+/))) {
+        order[0].from = m[0].length;
+        order.unshift(new BidiSpan(0, 0, m[0].length));
+      }
+      if (lst(order).level == 1 && (m = str.match(/\s+$/))) {
+        lst(order).to -= m[0].length;
+        order.push(new BidiSpan(0, len - m[0].length, len));
+      }
     }
 
     return direction == "rtl" ? order.reverse() : order
@@ -11694,112 +11770,6 @@ function getOrder(line, direction) {
   var order = line.order;
   if (order == null) { order = line.order = bidiOrdering(line.text, direction); }
   return order
-}
-
-function moveCharLogically(line, ch, dir) {
-  var target = skipExtendingChars(line.text, ch + dir, dir);
-  return target < 0 || target > line.text.length ? null : target
-}
-
-function moveLogically(line, start, dir) {
-  var ch = moveCharLogically(line, start.ch, dir);
-  return ch == null ? null : new Pos(start.line, ch, dir < 0 ? "after" : "before")
-}
-
-function endOfLine(visually, cm, lineObj, lineNo, dir) {
-  if (visually) {
-    var order = getOrder(lineObj, cm.doc.direction);
-    if (order) {
-      var part = dir < 0 ? lst(order) : order[0];
-      var moveInStorageOrder = (dir < 0) == (part.level == 1);
-      var sticky = moveInStorageOrder ? "after" : "before";
-      var ch;
-      // With a wrapped rtl chunk (possibly spanning multiple bidi parts),
-      // it could be that the last bidi part is not on the last visual line,
-      // since visual lines contain content order-consecutive chunks.
-      // Thus, in rtl, we are looking for the first (content-order) character
-      // in the rtl chunk that is on the last line (that is, the same line
-      // as the last (content-order) character).
-      if (part.level > 0) {
-        var prep = prepareMeasureForLine(cm, lineObj);
-        ch = dir < 0 ? lineObj.text.length - 1 : 0;
-        var targetTop = measureCharPrepared(cm, prep, ch).top;
-        ch = findFirst(function (ch) { return measureCharPrepared(cm, prep, ch).top == targetTop; }, (dir < 0) == (part.level == 1) ? part.from : part.to - 1, ch);
-        if (sticky == "before") { ch = moveCharLogically(lineObj, ch, 1, true); }
-      } else { ch = dir < 0 ? part.to : part.from; }
-      return new Pos(lineNo, ch, sticky)
-    }
-  }
-  return new Pos(lineNo, dir < 0 ? lineObj.text.length : 0, dir < 0 ? "before" : "after")
-}
-
-function moveVisually(cm, line, start, dir) {
-  var bidi = getOrder(line, cm.doc.direction);
-  if (!bidi) { return moveLogically(line, start, dir) }
-  if (start.ch >= line.text.length) {
-    start.ch = line.text.length;
-    start.sticky = "before";
-  } else if (start.ch <= 0) {
-    start.ch = 0;
-    start.sticky = "after";
-  }
-  var partPos = getBidiPartAt(bidi, start.ch, start.sticky), part = bidi[partPos];
-  if (cm.doc.direction == "ltr" && part.level % 2 == 0 && (dir > 0 ? part.to > start.ch : part.from < start.ch)) {
-    // Case 1: We move within an ltr part in an ltr editor. Even with wrapped lines,
-    // nothing interesting happens.
-    return moveLogically(line, start, dir)
-  }
-
-  var mv = function (pos, dir) { return moveCharLogically(line, pos instanceof Pos ? pos.ch : pos, dir); };
-  var prep;
-  var getWrappedLineExtent = function (ch) {
-    if (!cm.options.lineWrapping) { return {begin: 0, end: line.text.length} }
-    prep = prep || prepareMeasureForLine(cm, line);
-    return wrappedLineExtentChar(cm, line, prep, ch)
-  };
-  var wrappedLineExtent = getWrappedLineExtent(start.sticky == "before" ? mv(start, -1) : start.ch);
-
-  if (cm.doc.direction == "rtl" || part.level == 1) {
-    var moveInStorageOrder = (part.level == 1) == (dir < 0);
-    var ch = mv(start, moveInStorageOrder ? 1 : -1);
-    if (ch != null && (!moveInStorageOrder ? ch >= part.from && ch >= wrappedLineExtent.begin : ch <= part.to && ch <= wrappedLineExtent.end)) {
-      // Case 2: We move within an rtl part or in an rtl editor on the same visual line
-      var sticky = moveInStorageOrder ? "before" : "after";
-      return new Pos(start.line, ch, sticky)
-    }
-  }
-
-  // Case 3: Could not move within this bidi part in this visual line, so leave
-  // the current bidi part
-
-  var searchInVisualLine = function (partPos, dir, wrappedLineExtent) {
-    var getRes = function (ch, moveInStorageOrder) { return moveInStorageOrder
-      ? new Pos(start.line, mv(ch, 1), "before")
-      : new Pos(start.line, ch, "after"); };
-
-    for (; partPos >= 0 && partPos < bidi.length; partPos += dir) {
-      var part = bidi[partPos];
-      var moveInStorageOrder = (dir > 0) == (part.level != 1);
-      var ch = moveInStorageOrder ? wrappedLineExtent.begin : mv(wrappedLineExtent.end, -1);
-      if (part.from <= ch && ch < part.to) { return getRes(ch, moveInStorageOrder) }
-      ch = moveInStorageOrder ? part.from : mv(part.to, -1);
-      if (wrappedLineExtent.begin <= ch && ch < wrappedLineExtent.end) { return getRes(ch, moveInStorageOrder) }
-    }
-  };
-
-  // Case 3a: Look for other bidi parts on the same visual line
-  var res = searchInVisualLine(partPos + dir, dir, wrappedLineExtent);
-  if (res) { return res }
-
-  // Case 3b: Look for other bidi parts on the next visual line
-  var nextCh = dir > 0 ? wrappedLineExtent.end : mv(wrappedLineExtent.begin, -1);
-  if (nextCh != null && !(dir > 0 && nextCh == line.text.length)) {
-    res = searchInVisualLine(dir > 0 ? 0 : bidi.length - 1, dir, getWrappedLineExtent(nextCh));
-    if (res) { return res }
-  }
-
-  // Case 4: Nowhere to move
-  return null
 }
 
 // EVENT HANDLING
@@ -12086,12 +12056,13 @@ function startState(mode, a1, a2) {
 // Fed to the mode parsers, provides helper functions to make
 // parsers more succinct.
 
-var StringStream = function(string, tabSize) {
+var StringStream = function(string, tabSize, lineOracle) {
   this.pos = this.start = 0;
   this.string = string;
   this.tabSize = tabSize || 8;
   this.lastColumnPos = this.lastColumnValue = 0;
   this.lineStart = 0;
+  this.lineOracle = lineOracle;
 };
 
 StringStream.prototype.eol = function () {return this.pos >= this.string.length};
@@ -12158,23 +12129,83 @@ StringStream.prototype.hideFirstChars = function (n, inner) {
   try { return inner() }
   finally { this.lineStart -= n; }
 };
+StringStream.prototype.lookAhead = function (n) {
+  var oracle = this.lineOracle;
+  return oracle && oracle.lookAhead(n)
+};
+StringStream.prototype.baseToken = function () {
+  var oracle = this.lineOracle;
+  return oracle && oracle.baseToken(this.pos)
+};
+
+var SavedContext = function(state, lookAhead) {
+  this.state = state;
+  this.lookAhead = lookAhead;
+};
+
+var Context = function(doc, state, line, lookAhead) {
+  this.state = state;
+  this.doc = doc;
+  this.line = line;
+  this.maxLookAhead = lookAhead || 0;
+  this.baseTokens = null;
+  this.baseTokenPos = 1;
+};
+
+Context.prototype.lookAhead = function (n) {
+  var line = this.doc.getLine(this.line + n);
+  if (line != null && n > this.maxLookAhead) { this.maxLookAhead = n; }
+  return line
+};
+
+Context.prototype.baseToken = function (n) {
+    var this$1 = this;
+
+  if (!this.baseTokens) { return null }
+  while (this.baseTokens[this.baseTokenPos] <= n)
+    { this$1.baseTokenPos += 2; }
+  var type = this.baseTokens[this.baseTokenPos + 1];
+  return {type: type && type.replace(/( |^)overlay .*/, ""),
+          size: this.baseTokens[this.baseTokenPos] - n}
+};
+
+Context.prototype.nextLine = function () {
+  this.line++;
+  if (this.maxLookAhead > 0) { this.maxLookAhead--; }
+};
+
+Context.fromSaved = function (doc, saved, line) {
+  if (saved instanceof SavedContext)
+    { return new Context(doc, copyState(doc.mode, saved.state), line, saved.lookAhead) }
+  else
+    { return new Context(doc, copyState(doc.mode, saved), line) }
+};
+
+Context.prototype.save = function (copy) {
+  var state = copy !== false ? copyState(this.doc.mode, this.state) : this.state;
+  return this.maxLookAhead > 0 ? new SavedContext(state, this.maxLookAhead) : state
+};
+
 
 // Compute a style array (an array starting with a mode generation
 // -- for invalidation -- followed by pairs of end positions and
 // style strings), which is used to highlight the tokens on the
 // line.
-function highlightLine(cm, line, state, forceToEnd) {
+function highlightLine(cm, line, context, forceToEnd) {
   // A styles array always starts with a number identifying the
   // mode/overlays that it is based on (for easy invalidation).
   var st = [cm.state.modeGen], lineClasses = {};
   // Compute the base array of styles
-  runMode(cm, line.text, cm.doc.mode, state, function (end, style) { return st.push(end, style); },
-    lineClasses, forceToEnd);
+  runMode(cm, line.text, cm.doc.mode, context, function (end, style) { return st.push(end, style); },
+          lineClasses, forceToEnd);
+  var state = context.state;
 
   // Run overlays, adjust style array.
   var loop = function ( o ) {
+    context.baseTokens = st;
     var overlay = cm.state.overlays[o], i = 1, at = 0;
-    runMode(cm, line.text, overlay.mode, true, function (end, style) {
+    context.state = true;
+    runMode(cm, line.text, overlay.mode, context, function (end, style) {
       var start = i;
       // Ensure there's a token end at the current position, and that i points at it
       while (at < end) {
@@ -12195,6 +12226,9 @@ function highlightLine(cm, line, state, forceToEnd) {
         }
       }
     }, lineClasses);
+    context.state = state;
+    context.baseTokens = null;
+    context.baseTokenPos = 1;
   };
 
   for (var o = 0; o < cm.state.overlays.length; ++o) loop( o );
@@ -12204,43 +12238,47 @@ function highlightLine(cm, line, state, forceToEnd) {
 
 function getLineStyles(cm, line, updateFrontier) {
   if (!line.styles || line.styles[0] != cm.state.modeGen) {
-    var state = getStateBefore(cm, lineNo(line));
-    var result = highlightLine(cm, line, line.text.length > cm.options.maxHighlightLength ? copyState(cm.doc.mode, state) : state);
-    line.stateAfter = state;
+    var context = getContextBefore(cm, lineNo(line));
+    var resetState = line.text.length > cm.options.maxHighlightLength && copyState(cm.doc.mode, context.state);
+    var result = highlightLine(cm, line, context);
+    if (resetState) { context.state = resetState; }
+    line.stateAfter = context.save(!resetState);
     line.styles = result.styles;
     if (result.classes) { line.styleClasses = result.classes; }
     else if (line.styleClasses) { line.styleClasses = null; }
-    if (updateFrontier === cm.doc.frontier) { cm.doc.frontier++; }
+    if (updateFrontier === cm.doc.highlightFrontier)
+      { cm.doc.modeFrontier = Math.max(cm.doc.modeFrontier, ++cm.doc.highlightFrontier); }
   }
   return line.styles
 }
 
-function getStateBefore(cm, n, precise) {
+function getContextBefore(cm, n, precise) {
   var doc = cm.doc, display = cm.display;
-  if (!doc.mode.startState) { return true }
-  var pos = findStartLine(cm, n, precise), state = pos > doc.first && getLine(doc, pos-1).stateAfter;
-  if (!state) { state = startState(doc.mode); }
-  else { state = copyState(doc.mode, state); }
-  doc.iter(pos, n, function (line) {
-    processLine(cm, line.text, state);
-    var save = pos == n - 1 || pos % 5 == 0 || pos >= display.viewFrom && pos < display.viewTo;
-    line.stateAfter = save ? copyState(doc.mode, state) : null;
-    ++pos;
+  if (!doc.mode.startState) { return new Context(doc, true, n) }
+  var start = findStartLine(cm, n, precise);
+  var saved = start > doc.first && getLine(doc, start - 1).stateAfter;
+  var context = saved ? Context.fromSaved(doc, saved, start) : new Context(doc, startState(doc.mode), start);
+
+  doc.iter(start, n, function (line) {
+    processLine(cm, line.text, context);
+    var pos = context.line;
+    line.stateAfter = pos == n - 1 || pos % 5 == 0 || pos >= display.viewFrom && pos < display.viewTo ? context.save() : null;
+    context.nextLine();
   });
-  if (precise) { doc.frontier = pos; }
-  return state
+  if (precise) { doc.modeFrontier = context.line; }
+  return context
 }
 
 // Lightweight form of highlight -- proceed over this line and
 // update state, but don't save a style array. Used for lines that
 // aren't currently visible.
-function processLine(cm, text, state, startAt) {
+function processLine(cm, text, context, startAt) {
   var mode = cm.doc.mode;
-  var stream = new StringStream(text, cm.options.tabSize);
+  var stream = new StringStream(text, cm.options.tabSize, context);
   stream.start = stream.pos = startAt || 0;
-  if (text == "") { callBlankLine(mode, state); }
+  if (text == "") { callBlankLine(mode, context.state); }
   while (!stream.eol()) {
-    readToken(mode, stream, state);
+    readToken(mode, stream, context.state);
     stream.start = stream.pos;
   }
 }
@@ -12261,26 +12299,26 @@ function readToken(mode, stream, state, inner) {
   throw new Error("Mode " + mode.name + " failed to advance stream.")
 }
 
+var Token = function(stream, type, state) {
+  this.start = stream.start; this.end = stream.pos;
+  this.string = stream.current();
+  this.type = type || null;
+  this.state = state;
+};
+
 // Utility for getTokenAt and getLineTokens
 function takeToken(cm, pos, precise, asArray) {
-  var getObj = function (copy) { return ({
-    start: stream.start, end: stream.pos,
-    string: stream.current(),
-    type: style || null,
-    state: copy ? copyState(doc.mode, state) : state
-  }); };
-
   var doc = cm.doc, mode = doc.mode, style;
   pos = clipPos(doc, pos);
-  var line = getLine(doc, pos.line), state = getStateBefore(cm, pos.line, precise);
-  var stream = new StringStream(line.text, cm.options.tabSize), tokens;
+  var line = getLine(doc, pos.line), context = getContextBefore(cm, pos.line, precise);
+  var stream = new StringStream(line.text, cm.options.tabSize, context), tokens;
   if (asArray) { tokens = []; }
   while ((asArray || stream.pos < pos.ch) && !stream.eol()) {
     stream.start = stream.pos;
-    style = readToken(mode, stream, state);
-    if (asArray) { tokens.push(getObj(true)); }
+    style = readToken(mode, stream, context.state);
+    if (asArray) { tokens.push(new Token(stream, style, copyState(doc.mode, context.state))); }
   }
-  return asArray ? tokens : getObj()
+  return asArray ? tokens : new Token(stream, style, context.state)
 }
 
 function extractLineClasses(type, output) {
@@ -12298,21 +12336,21 @@ function extractLineClasses(type, output) {
 }
 
 // Run the given mode's parser over a line, calling f for each token.
-function runMode(cm, text, mode, state, f, lineClasses, forceToEnd) {
+function runMode(cm, text, mode, context, f, lineClasses, forceToEnd) {
   var flattenSpans = mode.flattenSpans;
   if (flattenSpans == null) { flattenSpans = cm.options.flattenSpans; }
   var curStart = 0, curStyle = null;
-  var stream = new StringStream(text, cm.options.tabSize), style;
+  var stream = new StringStream(text, cm.options.tabSize, context), style;
   var inner = cm.options.addModeClass && [null];
-  if (text == "") { extractLineClasses(callBlankLine(mode, state), lineClasses); }
+  if (text == "") { extractLineClasses(callBlankLine(mode, context.state), lineClasses); }
   while (!stream.eol()) {
     if (stream.pos > cm.options.maxHighlightLength) {
       flattenSpans = false;
-      if (forceToEnd) { processLine(cm, text, state, stream.pos); }
+      if (forceToEnd) { processLine(cm, text, context, stream.pos); }
       stream.pos = text.length;
       style = null;
     } else {
-      style = extractLineClasses(readToken(mode, stream, state, inner), lineClasses);
+      style = extractLineClasses(readToken(mode, stream, context.state, inner), lineClasses);
     }
     if (inner) {
       var mName = inner[0].name;
@@ -12347,8 +12385,9 @@ function findStartLine(cm, n, precise) {
   var lim = precise ? -1 : n - (cm.doc.mode.innerMode ? 1000 : 100);
   for (var search = n; search > lim; --search) {
     if (search <= doc.first) { return doc.first }
-    var line = getLine(doc, search - 1);
-    if (line.stateAfter && (!precise || search <= doc.frontier)) { return search }
+    var line = getLine(doc, search - 1), after = line.stateAfter;
+    if (after && (!precise || search + (after instanceof SavedContext ? after.lookAhead : 0) <= doc.modeFrontier))
+      { return search }
     var indented = countColumn(line.text, null, cm.options.tabSize);
     if (minline == null || minindent > indented) {
       minline = search - 1;
@@ -12356,6 +12395,23 @@ function findStartLine(cm, n, precise) {
     }
   }
   return minline
+}
+
+function retreatFrontier(doc, n) {
+  doc.modeFrontier = Math.min(doc.modeFrontier, n);
+  if (doc.highlightFrontier < n - 10) { return }
+  var start = doc.first;
+  for (var line = n - 1; line > start; line--) {
+    var saved = getLine(doc, line).stateAfter;
+    // change is on 3
+    // state on line 1 looked ahead 2 -- so saw 3
+    // test 1 + 2 < 3 should cover this
+    if (saved && (!(saved instanceof SavedContext) || line + saved.lookAhead < n)) {
+      start = line + 1;
+      break
+    }
+  }
+  doc.highlightFrontier = Math.min(doc.highlightFrontier, start);
 }
 
 // LINE DATA STRUCTURE
@@ -13234,18 +13290,34 @@ function clearCaches(cm) {
   cm.display.lineNumChars = null;
 }
 
-function pageScrollX() { return window.pageXOffset || (document.documentElement || document.body).scrollLeft }
-function pageScrollY() { return window.pageYOffset || (document.documentElement || document.body).scrollTop }
+function pageScrollX() {
+  // Work around https://bugs.chromium.org/p/chromium/issues/detail?id=489206
+  // which causes page_Offset and bounding client rects to use
+  // different reference viewports and invalidate our calculations.
+  if (chrome && android) { return -(document.body.getBoundingClientRect().left - parseInt(getComputedStyle(document.body).marginLeft)) }
+  return window.pageXOffset || (document.documentElement || document.body).scrollLeft
+}
+function pageScrollY() {
+  if (chrome && android) { return -(document.body.getBoundingClientRect().top - parseInt(getComputedStyle(document.body).marginTop)) }
+  return window.pageYOffset || (document.documentElement || document.body).scrollTop
+}
+
+function widgetTopHeight(lineObj) {
+  var height = 0;
+  if (lineObj.widgets) { for (var i = 0; i < lineObj.widgets.length; ++i) { if (lineObj.widgets[i].above)
+    { height += widgetHeight(lineObj.widgets[i]); } } }
+  return height
+}
 
 // Converts a {top, bottom, left, right} box from line-local
 // coordinates into another coordinate system. Context may be one of
 // "line", "div" (display.lineDiv), "local"./null (editor), "window",
 // or "page".
 function intoCoordSystem(cm, lineObj, rect, context, includeWidgets) {
-  if (!includeWidgets && lineObj.widgets) { for (var i = 0; i < lineObj.widgets.length; ++i) { if (lineObj.widgets[i].above) {
-    var size = widgetHeight(lineObj.widgets[i]);
-    rect.top += size; rect.bottom += size;
-  } } }
+  if (!includeWidgets) {
+    var height = widgetTopHeight(lineObj);
+    rect.top += height; rect.bottom += height;
+  }
   if (context == "line") { return rect }
   if (!context) { context = "local"; }
   var yOff = heightAtLine(lineObj);
@@ -13320,7 +13392,7 @@ function cursorCoords(cm, pos, context, lineObj, preparedMeasure, varHeight) {
   if (!order) { return get(sticky == "before" ? ch - 1 : ch, sticky == "before") }
 
   function getBidi(ch, partPos, invert) {
-    var part = order[partPos], right = (part.level % 2) != 0;
+    var part = order[partPos], right = part.level == 1;
     return get(invert ? ch - 1 : ch, right != invert)
   }
   var partPos = getBidiPartAt(order, ch, sticky);
@@ -13378,67 +13450,147 @@ function coordsChar(cm, x, y) {
 }
 
 function wrappedLineExtent(cm, lineObj, preparedMeasure, y) {
-  var measure = function (ch) { return intoCoordSystem(cm, lineObj, measureCharPrepared(cm, preparedMeasure, ch), "line"); };
+  y -= widgetTopHeight(lineObj);
   var end = lineObj.text.length;
-  var begin = findFirst(function (ch) { return measure(ch - 1).bottom <= y; }, end, 0);
-  end = findFirst(function (ch) { return measure(ch).top > y; }, begin, end);
+  var begin = findFirst(function (ch) { return measureCharPrepared(cm, preparedMeasure, ch - 1).bottom <= y; }, end, 0);
+  end = findFirst(function (ch) { return measureCharPrepared(cm, preparedMeasure, ch).top > y; }, begin, end);
   return {begin: begin, end: end}
 }
 
 function wrappedLineExtentChar(cm, lineObj, preparedMeasure, target) {
+  if (!preparedMeasure) { preparedMeasure = prepareMeasureForLine(cm, lineObj); }
   var targetTop = intoCoordSystem(cm, lineObj, measureCharPrepared(cm, preparedMeasure, target), "line").top;
   return wrappedLineExtent(cm, lineObj, preparedMeasure, targetTop)
 }
 
+// Returns true if the given side of a box is after the given
+// coordinates, in top-to-bottom, left-to-right order.
+function boxIsAfter(box, x, y, left) {
+  return box.bottom <= y ? false : box.top > y ? true : (left ? box.left : box.right) > x
+}
+
 function coordsCharInner(cm, lineObj, lineNo$$1, x, y) {
+  // Move y into line-local coordinate space
   y -= heightAtLine(lineObj);
-  var begin = 0, end = lineObj.text.length;
   var preparedMeasure = prepareMeasureForLine(cm, lineObj);
-  var pos;
+  // When directly calling `measureCharPrepared`, we have to adjust
+  // for the widgets at this line.
+  var widgetHeight$$1 = widgetTopHeight(lineObj);
+  var begin = 0, end = lineObj.text.length, ltr = true;
+
   var order = getOrder(lineObj, cm.doc.direction);
+  // If the line isn't plain left-to-right text, first figure out
+  // which bidi section the coordinates fall into.
   if (order) {
-    if (cm.options.lineWrapping) {
-      var assign;
-      ((assign = wrappedLineExtent(cm, lineObj, preparedMeasure, y), begin = assign.begin, end = assign.end, assign));
-    }
-    pos = new Pos(lineNo$$1, begin);
-    var beginLeft = cursorCoords(cm, pos, "line", lineObj, preparedMeasure).left;
-    var dir = beginLeft < x ? 1 : -1;
-    var prevDiff, diff = beginLeft - x, prevPos;
-    do {
-      prevDiff = diff;
-      prevPos = pos;
-      pos = moveVisually(cm, lineObj, pos, dir);
-      if (pos == null || pos.ch < begin || end <= (pos.sticky == "before" ? pos.ch - 1 : pos.ch)) {
-        pos = prevPos;
-        break
-      }
-      diff = cursorCoords(cm, pos, "line", lineObj, preparedMeasure).left - x;
-    } while ((dir < 0) != (diff < 0) && (Math.abs(diff) <= Math.abs(prevDiff)))
-    if (Math.abs(diff) > Math.abs(prevDiff)) {
-      if ((diff < 0) == (prevDiff < 0)) { throw new Error("Broke out of infinite loop in coordsCharInner") }
-      pos = prevPos;
-    }
-  } else {
-    var ch = findFirst(function (ch) {
-      var box = intoCoordSystem(cm, lineObj, measureCharPrepared(cm, preparedMeasure, ch), "line");
-      if (box.top > y) {
-        // For the cursor stickiness
-        end = Math.min(ch, end);
-        return true
-      }
-      else if (box.bottom <= y) { return false }
-      else if (box.left > x) { return true }
-      else if (box.right < x) { return false }
-      else { return (x - box.left < box.right - x) }
-    }, begin, end);
-    ch = skipExtendingChars(lineObj.text, ch, 1);
-    pos = new Pos(lineNo$$1, ch, ch == end ? "before" : "after");
+    var part = (cm.options.lineWrapping ? coordsBidiPartWrapped : coordsBidiPart)
+                 (cm, lineObj, lineNo$$1, preparedMeasure, order, x, y);
+    ltr = part.level != 1;
+    // The awkward -1 offsets are needed because findFirst (called
+    // on these below) will treat its first bound as inclusive,
+    // second as exclusive, but we want to actually address the
+    // characters in the part's range
+    begin = ltr ? part.from : part.to - 1;
+    end = ltr ? part.to : part.from - 1;
   }
-  var coords = cursorCoords(cm, pos, "line", lineObj, preparedMeasure);
-  if (y < coords.top || coords.bottom < y) { pos.outside = true; }
-  pos.xRel = x < coords.left ? -1 : (x > coords.right ? 1 : 0);
-  return pos
+
+  // A binary search to find the first character whose bounding box
+  // starts after the coordinates. If we run across any whose box wrap
+  // the coordinates, store that.
+  var chAround = null, boxAround = null;
+  var ch = findFirst(function (ch) {
+    var box = measureCharPrepared(cm, preparedMeasure, ch);
+    box.top += widgetHeight$$1; box.bottom += widgetHeight$$1;
+    if (!boxIsAfter(box, x, y, false)) { return false }
+    if (box.top <= y && box.left <= x) {
+      chAround = ch;
+      boxAround = box;
+    }
+    return true
+  }, begin, end);
+
+  var baseX, sticky, outside = false;
+  // If a box around the coordinates was found, use that
+  if (boxAround) {
+    // Distinguish coordinates nearer to the left or right side of the box
+    var atLeft = x - boxAround.left < boxAround.right - x, atStart = atLeft == ltr;
+    ch = chAround + (atStart ? 0 : 1);
+    sticky = atStart ? "after" : "before";
+    baseX = atLeft ? boxAround.left : boxAround.right;
+  } else {
+    // (Adjust for extended bound, if necessary.)
+    if (!ltr && (ch == end || ch == begin)) { ch++; }
+    // To determine which side to associate with, get the box to the
+    // left of the character and compare it's vertical position to the
+    // coordinates
+    sticky = ch == 0 ? "after" : ch == lineObj.text.length ? "before" :
+      (measureCharPrepared(cm, preparedMeasure, ch - (ltr ? 1 : 0)).bottom + widgetHeight$$1 <= y) == ltr ?
+      "after" : "before";
+    // Now get accurate coordinates for this place, in order to get a
+    // base X position
+    var coords = cursorCoords(cm, Pos(lineNo$$1, ch, sticky), "line", lineObj, preparedMeasure);
+    baseX = coords.left;
+    outside = y < coords.top || y >= coords.bottom;
+  }
+
+  ch = skipExtendingChars(lineObj.text, ch, 1);
+  return PosWithInfo(lineNo$$1, ch, sticky, outside, x - baseX)
+}
+
+function coordsBidiPart(cm, lineObj, lineNo$$1, preparedMeasure, order, x, y) {
+  // Bidi parts are sorted left-to-right, and in a non-line-wrapping
+  // situation, we can take this ordering to correspond to the visual
+  // ordering. This finds the first part whose end is after the given
+  // coordinates.
+  var index = findFirst(function (i) {
+    var part = order[i], ltr = part.level != 1;
+    return boxIsAfter(cursorCoords(cm, Pos(lineNo$$1, ltr ? part.to : part.from, ltr ? "before" : "after"),
+                                   "line", lineObj, preparedMeasure), x, y, true)
+  }, 0, order.length - 1);
+  var part = order[index];
+  // If this isn't the first part, the part's start is also after
+  // the coordinates, and the coordinates aren't on the same line as
+  // that start, move one part back.
+  if (index > 0) {
+    var ltr = part.level != 1;
+    var start = cursorCoords(cm, Pos(lineNo$$1, ltr ? part.from : part.to, ltr ? "after" : "before"),
+                             "line", lineObj, preparedMeasure);
+    if (boxIsAfter(start, x, y, true) && start.top > y)
+      { part = order[index - 1]; }
+  }
+  return part
+}
+
+function coordsBidiPartWrapped(cm, lineObj, _lineNo, preparedMeasure, order, x, y) {
+  // In a wrapped line, rtl text on wrapping boundaries can do things
+  // that don't correspond to the ordering in our `order` array at
+  // all, so a binary search doesn't work, and we want to return a
+  // part that only spans one line so that the binary search in
+  // coordsCharInner is safe. As such, we first find the extent of the
+  // wrapped line, and then do a flat search in which we discard any
+  // spans that aren't on the line.
+  var ref = wrappedLineExtent(cm, lineObj, preparedMeasure, y);
+  var begin = ref.begin;
+  var end = ref.end;
+  if (/\s/.test(lineObj.text.charAt(end - 1))) { end--; }
+  var part = null, closestDist = null;
+  for (var i = 0; i < order.length; i++) {
+    var p = order[i];
+    if (p.from >= end || p.to <= begin) { continue }
+    var ltr = p.level != 1;
+    var endX = measureCharPrepared(cm, preparedMeasure, ltr ? Math.min(end, p.to) - 1 : Math.max(begin, p.from)).right;
+    // Weigh against spans ending before this, so that they are only
+    // picked if nothing ends after
+    var dist = endX < x ? x - endX + 1e9 : endX - x;
+    if (!part || closestDist > dist) {
+      part = p;
+      closestDist = dist;
+    }
+  }
+  if (!part) { part = order[order.length - 1]; }
+  // Clip the part to the wrapped line.
+  if (part.from < begin) { part = {from: begin, to: part.to, level: part.level}; }
+  if (part.to > end) { part = {from: part.from, to: end, level: part.level}; }
+  return part
 }
 
 var measureText;
@@ -13564,12 +13716,14 @@ function updateSelection(cm) {
 }
 
 function prepareSelection(cm, primary) {
+  if ( primary === void 0 ) primary = true;
+
   var doc = cm.doc, result = {};
   var curFragment = result.cursors = document.createDocumentFragment();
   var selFragment = result.selection = document.createDocumentFragment();
 
   for (var i = 0; i < doc.sel.ranges.length; i++) {
-    if (primary === false && i == doc.sel.primIndex) { continue }
+    if (!primary && i == doc.sel.primIndex) { continue }
     var range$$1 = doc.sel.ranges[i];
     if (range$$1.from().line >= cm.display.viewTo || range$$1.to().line < cm.display.viewFrom) { continue }
     var collapsed = range$$1.empty();
@@ -13600,12 +13754,15 @@ function drawSelectionCursor(cm, head, output) {
   }
 }
 
+function cmpCoords(a, b) { return a.top - b.top || a.left - b.left }
+
 // Draws the given range as a highlighted selection
 function drawSelectionRange(cm, range$$1, output) {
   var display = cm.display, doc = cm.doc;
   var fragment = document.createDocumentFragment();
   var padding = paddingH(cm.display), leftSide = padding.left;
   var rightSide = Math.max(display.sizerWidth, displayWidth(cm) - display.sizer.offsetLeft) - padding.right;
+  var docLTR = doc.direction == "ltr";
 
   function add(left, top, width, bottom) {
     if (top < 0) { top = 0; }
@@ -13622,30 +13779,49 @@ function drawSelectionRange(cm, range$$1, output) {
       return charCoords(cm, Pos(line, ch), "div", lineObj, bias)
     }
 
-    iterateBidiSections(getOrder(lineObj, doc.direction), fromArg || 0, toArg == null ? lineLen : toArg, function (from, to, dir) {
-      var leftPos = coords(from, "left"), rightPos, left, right;
-      if (from == to) {
-        rightPos = leftPos;
-        left = right = leftPos.left;
-      } else {
-        rightPos = coords(to - 1, "right");
-        if (dir == "rtl") { var tmp = leftPos; leftPos = rightPos; rightPos = tmp; }
-        left = leftPos.left;
-        right = rightPos.right;
+    function wrapX(pos, dir, side) {
+      var extent = wrappedLineExtentChar(cm, lineObj, null, pos);
+      var prop = (dir == "ltr") == (side == "after") ? "left" : "right";
+      var ch = side == "after" ? extent.begin : extent.end - (/\s/.test(lineObj.text.charAt(extent.end - 1)) ? 2 : 1);
+      return coords(ch, prop)[prop]
+    }
+
+    var order = getOrder(lineObj, doc.direction);
+    iterateBidiSections(order, fromArg || 0, toArg == null ? lineLen : toArg, function (from, to, dir, i) {
+      var ltr = dir == "ltr";
+      var fromPos = coords(from, ltr ? "left" : "right");
+      var toPos = coords(to - 1, ltr ? "right" : "left");
+
+      var openStart = fromArg == null && from == 0, openEnd = toArg == null && to == lineLen;
+      var first = i == 0, last = !order || i == order.length - 1;
+      if (toPos.top - fromPos.top <= 3) { // Single line
+        var openLeft = (docLTR ? openStart : openEnd) && first;
+        var openRight = (docLTR ? openEnd : openStart) && last;
+        var left = openLeft ? leftSide : (ltr ? fromPos : toPos).left;
+        var right = openRight ? rightSide : (ltr ? toPos : fromPos).right;
+        add(left, fromPos.top, right - left, fromPos.bottom);
+      } else { // Multiple lines
+        var topLeft, topRight, botLeft, botRight;
+        if (ltr) {
+          topLeft = docLTR && openStart && first ? leftSide : fromPos.left;
+          topRight = docLTR ? rightSide : wrapX(from, dir, "before");
+          botLeft = docLTR ? leftSide : wrapX(to, dir, "after");
+          botRight = docLTR && openEnd && last ? rightSide : toPos.right;
+        } else {
+          topLeft = !docLTR ? leftSide : wrapX(from, dir, "before");
+          topRight = !docLTR && openStart && first ? rightSide : fromPos.right;
+          botLeft = !docLTR && openEnd && last ? leftSide : toPos.left;
+          botRight = !docLTR ? rightSide : wrapX(to, dir, "after");
+        }
+        add(topLeft, fromPos.top, topRight - topLeft, fromPos.bottom);
+        if (fromPos.bottom < toPos.top) { add(leftSide, fromPos.bottom, null, toPos.top); }
+        add(botLeft, toPos.top, botRight - botLeft, toPos.bottom);
       }
-      if (fromArg == null && from == 0) { left = leftSide; }
-      if (rightPos.top - leftPos.top > 3) { // Different lines, draw top part
-        add(left, leftPos.top, null, leftPos.bottom);
-        left = leftSide;
-        if (leftPos.bottom < rightPos.top) { add(left, leftPos.bottom, null, rightPos.top); }
-      }
-      if (toArg == null && to == lineLen) { right = rightSide; }
-      if (!start || leftPos.top < start.top || leftPos.top == start.top && leftPos.left < start.left)
-        { start = leftPos; }
-      if (!end || rightPos.bottom > end.bottom || rightPos.bottom == end.bottom && rightPos.right > end.right)
-        { end = rightPos; }
-      if (left < leftSide + 1) { left = leftSide; }
-      add(left, rightPos.top, right - left, rightPos.bottom);
+
+      if (!start || cmpCoords(fromPos, start) < 0) { start = fromPos; }
+      if (cmpCoords(toPos, start) < 0) { start = toPos; }
+      if (!end || cmpCoords(fromPos, end) < 0) { end = fromPos; }
+      if (cmpCoords(toPos, end) < 0) { end = toPos; }
     });
     return {start: start, end: end}
   }
@@ -13730,6 +13906,64 @@ function onBlur(cm, e) {
   setTimeout(function () { if (!cm.state.focused) { cm.display.shift = false; } }, 150);
 }
 
+// Read the actual heights of the rendered lines, and update their
+// stored heights to match.
+function updateHeightsInViewport(cm) {
+  var display = cm.display;
+  var prevBottom = display.lineDiv.offsetTop;
+  for (var i = 0; i < display.view.length; i++) {
+    var cur = display.view[i], height = (void 0);
+    if (cur.hidden) { continue }
+    if (ie && ie_version < 8) {
+      var bot = cur.node.offsetTop + cur.node.offsetHeight;
+      height = bot - prevBottom;
+      prevBottom = bot;
+    } else {
+      var box = cur.node.getBoundingClientRect();
+      height = box.bottom - box.top;
+    }
+    var diff = cur.line.height - height;
+    if (height < 2) { height = textHeight(display); }
+    if (diff > .005 || diff < -.005) {
+      updateLineHeight(cur.line, height);
+      updateWidgetHeight(cur.line);
+      if (cur.rest) { for (var j = 0; j < cur.rest.length; j++)
+        { updateWidgetHeight(cur.rest[j]); } }
+    }
+  }
+}
+
+// Read and store the height of line widgets associated with the
+// given line.
+function updateWidgetHeight(line) {
+  if (line.widgets) { for (var i = 0; i < line.widgets.length; ++i)
+    { line.widgets[i].height = line.widgets[i].node.parentNode.offsetHeight; } }
+}
+
+// Compute the lines that are visible in a given viewport (defaults
+// the the current scroll position). viewport may contain top,
+// height, and ensure (see op.scrollToPos) properties.
+function visibleLines(display, doc, viewport) {
+  var top = viewport && viewport.top != null ? Math.max(0, viewport.top) : display.scroller.scrollTop;
+  top = Math.floor(top - paddingTop(display));
+  var bottom = viewport && viewport.bottom != null ? viewport.bottom : top + display.wrapper.clientHeight;
+
+  var from = lineAtHeight(doc, top), to = lineAtHeight(doc, bottom);
+  // Ensure is a {from: {line, ch}, to: {line, ch}} object, and
+  // forces those lines into the viewport (if possible).
+  if (viewport && viewport.ensure) {
+    var ensureFrom = viewport.ensure.from.line, ensureTo = viewport.ensure.to.line;
+    if (ensureFrom < from) {
+      from = ensureFrom;
+      to = lineAtHeight(doc, heightAtLine(getLine(doc, ensureFrom)) + display.wrapper.clientHeight);
+    } else if (Math.min(ensureTo, doc.lastLine()) >= to) {
+      from = lineAtHeight(doc, heightAtLine(getLine(doc, ensureTo)) - display.wrapper.clientHeight);
+      to = ensureTo;
+    }
+  }
+  return {from: from, to: Math.max(to, from + 1)}
+}
+
 // Re-align line numbers and gutter marks to compensate for
 // horizontal scrolling.
 function alignHorizontally(cm) {
@@ -13773,195 +14007,176 @@ function maybeUpdateLineNumberWidth(cm) {
   return false
 }
 
-// Read the actual heights of the rendered lines, and update their
-// stored heights to match.
-function updateHeightsInViewport(cm) {
-  var display = cm.display;
-  var prevBottom = display.lineDiv.offsetTop;
-  for (var i = 0; i < display.view.length; i++) {
-    var cur = display.view[i], height = (void 0);
-    if (cur.hidden) { continue }
-    if (ie && ie_version < 8) {
-      var bot = cur.node.offsetTop + cur.node.offsetHeight;
-      height = bot - prevBottom;
-      prevBottom = bot;
-    } else {
-      var box = cur.node.getBoundingClientRect();
-      height = box.bottom - box.top;
-    }
-    var diff = cur.line.height - height;
-    if (height < 2) { height = textHeight(display); }
-    if (diff > .001 || diff < -.001) {
-      updateLineHeight(cur.line, height);
-      updateWidgetHeight(cur.line);
-      if (cur.rest) { for (var j = 0; j < cur.rest.length; j++)
-        { updateWidgetHeight(cur.rest[j]); } }
-    }
+// SCROLLING THINGS INTO VIEW
+
+// If an editor sits on the top or bottom of the window, partially
+// scrolled out of view, this ensures that the cursor is visible.
+function maybeScrollWindow(cm, rect) {
+  if (signalDOMEvent(cm, "scrollCursorIntoView")) { return }
+
+  var display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null;
+  if (rect.top + box.top < 0) { doScroll = true; }
+  else if (rect.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) { doScroll = false; }
+  if (doScroll != null && !phantom) {
+    var scrollNode = elt("div", "\u200b", null, ("position: absolute;\n                         top: " + (rect.top - display.viewOffset - paddingTop(cm.display)) + "px;\n                         height: " + (rect.bottom - rect.top + scrollGap(cm) + display.barHeight) + "px;\n                         left: " + (rect.left) + "px; width: " + (Math.max(2, rect.right - rect.left)) + "px;"));
+    cm.display.lineSpace.appendChild(scrollNode);
+    scrollNode.scrollIntoView(doScroll);
+    cm.display.lineSpace.removeChild(scrollNode);
   }
 }
 
-// Read and store the height of line widgets associated with the
-// given line.
-function updateWidgetHeight(line) {
-  if (line.widgets) { for (var i = 0; i < line.widgets.length; ++i)
-    { line.widgets[i].height = line.widgets[i].node.parentNode.offsetHeight; } }
+// Scroll a given position into view (immediately), verifying that
+// it actually became visible (as line heights are accurately
+// measured, the position of something may 'drift' during drawing).
+function scrollPosIntoView(cm, pos, end, margin) {
+  if (margin == null) { margin = 0; }
+  var rect;
+  if (!cm.options.lineWrapping && pos == end) {
+    // Set pos and end to the cursor positions around the character pos sticks to
+    // If pos.sticky == "before", that is around pos.ch - 1, otherwise around pos.ch
+    // If pos == Pos(_, 0, "before"), pos and end are unchanged
+    pos = pos.ch ? Pos(pos.line, pos.sticky == "before" ? pos.ch - 1 : pos.ch, "after") : pos;
+    end = pos.sticky == "before" ? Pos(pos.line, pos.ch + 1, "before") : pos;
+  }
+  for (var limit = 0; limit < 5; limit++) {
+    var changed = false;
+    var coords = cursorCoords(cm, pos);
+    var endCoords = !end || end == pos ? coords : cursorCoords(cm, end);
+    rect = {left: Math.min(coords.left, endCoords.left),
+            top: Math.min(coords.top, endCoords.top) - margin,
+            right: Math.max(coords.left, endCoords.left),
+            bottom: Math.max(coords.bottom, endCoords.bottom) + margin};
+    var scrollPos = calculateScrollPos(cm, rect);
+    var startTop = cm.doc.scrollTop, startLeft = cm.doc.scrollLeft;
+    if (scrollPos.scrollTop != null) {
+      updateScrollTop(cm, scrollPos.scrollTop);
+      if (Math.abs(cm.doc.scrollTop - startTop) > 1) { changed = true; }
+    }
+    if (scrollPos.scrollLeft != null) {
+      setScrollLeft(cm, scrollPos.scrollLeft);
+      if (Math.abs(cm.doc.scrollLeft - startLeft) > 1) { changed = true; }
+    }
+    if (!changed) { break }
+  }
+  return rect
 }
 
-// Compute the lines that are visible in a given viewport (defaults
-// the the current scroll position). viewport may contain top,
-// height, and ensure (see op.scrollToPos) properties.
-function visibleLines(display, doc, viewport) {
-  var top = viewport && viewport.top != null ? Math.max(0, viewport.top) : display.scroller.scrollTop;
-  top = Math.floor(top - paddingTop(display));
-  var bottom = viewport && viewport.bottom != null ? viewport.bottom : top + display.wrapper.clientHeight;
+// Scroll a given set of coordinates into view (immediately).
+function scrollIntoView(cm, rect) {
+  var scrollPos = calculateScrollPos(cm, rect);
+  if (scrollPos.scrollTop != null) { updateScrollTop(cm, scrollPos.scrollTop); }
+  if (scrollPos.scrollLeft != null) { setScrollLeft(cm, scrollPos.scrollLeft); }
+}
 
-  var from = lineAtHeight(doc, top), to = lineAtHeight(doc, bottom);
-  // Ensure is a {from: {line, ch}, to: {line, ch}} object, and
-  // forces those lines into the viewport (if possible).
-  if (viewport && viewport.ensure) {
-    var ensureFrom = viewport.ensure.from.line, ensureTo = viewport.ensure.to.line;
-    if (ensureFrom < from) {
-      from = ensureFrom;
-      to = lineAtHeight(doc, heightAtLine(getLine(doc, ensureFrom)) + display.wrapper.clientHeight);
-    } else if (Math.min(ensureTo, doc.lastLine()) >= to) {
-      from = lineAtHeight(doc, heightAtLine(getLine(doc, ensureTo)) - display.wrapper.clientHeight);
-      to = ensureTo;
-    }
+// Calculate a new scroll position needed to scroll the given
+// rectangle into view. Returns an object with scrollTop and
+// scrollLeft properties. When these are undefined, the
+// vertical/horizontal position does not need to be adjusted.
+function calculateScrollPos(cm, rect) {
+  var display = cm.display, snapMargin = textHeight(cm.display);
+  if (rect.top < 0) { rect.top = 0; }
+  var screentop = cm.curOp && cm.curOp.scrollTop != null ? cm.curOp.scrollTop : display.scroller.scrollTop;
+  var screen = displayHeight(cm), result = {};
+  if (rect.bottom - rect.top > screen) { rect.bottom = rect.top + screen; }
+  var docBottom = cm.doc.height + paddingVert(display);
+  var atTop = rect.top < snapMargin, atBottom = rect.bottom > docBottom - snapMargin;
+  if (rect.top < screentop) {
+    result.scrollTop = atTop ? 0 : rect.top;
+  } else if (rect.bottom > screentop + screen) {
+    var newTop = Math.min(rect.top, (atBottom ? docBottom : rect.bottom) - screen);
+    if (newTop != screentop) { result.scrollTop = newTop; }
   }
-  return {from: from, to: Math.max(to, from + 1)}
+
+  var screenleft = cm.curOp && cm.curOp.scrollLeft != null ? cm.curOp.scrollLeft : display.scroller.scrollLeft;
+  var screenw = displayWidth(cm) - (cm.options.fixedGutter ? display.gutters.offsetWidth : 0);
+  var tooWide = rect.right - rect.left > screenw;
+  if (tooWide) { rect.right = rect.left + screenw; }
+  if (rect.left < 10)
+    { result.scrollLeft = 0; }
+  else if (rect.left < screenleft)
+    { result.scrollLeft = Math.max(0, rect.left - (tooWide ? 0 : 10)); }
+  else if (rect.right > screenw + screenleft - 3)
+    { result.scrollLeft = rect.right + (tooWide ? 0 : 10) - screenw; }
+  return result
+}
+
+// Store a relative adjustment to the scroll position in the current
+// operation (to be applied when the operation finishes).
+function addToScrollTop(cm, top) {
+  if (top == null) { return }
+  resolveScrollToPos(cm);
+  cm.curOp.scrollTop = (cm.curOp.scrollTop == null ? cm.doc.scrollTop : cm.curOp.scrollTop) + top;
+}
+
+// Make sure that at the end of the operation the current cursor is
+// shown.
+function ensureCursorVisible(cm) {
+  resolveScrollToPos(cm);
+  var cur = cm.getCursor();
+  cm.curOp.scrollToPos = {from: cur, to: cur, margin: cm.options.cursorScrollMargin};
+}
+
+function scrollToCoords(cm, x, y) {
+  if (x != null || y != null) { resolveScrollToPos(cm); }
+  if (x != null) { cm.curOp.scrollLeft = x; }
+  if (y != null) { cm.curOp.scrollTop = y; }
+}
+
+function scrollToRange(cm, range$$1) {
+  resolveScrollToPos(cm);
+  cm.curOp.scrollToPos = range$$1;
+}
+
+// When an operation has its scrollToPos property set, and another
+// scroll action is applied before the end of the operation, this
+// 'simulates' scrolling that position into view in a cheap way, so
+// that the effect of intermediate scroll commands is not ignored.
+function resolveScrollToPos(cm) {
+  var range$$1 = cm.curOp.scrollToPos;
+  if (range$$1) {
+    cm.curOp.scrollToPos = null;
+    var from = estimateCoords(cm, range$$1.from), to = estimateCoords(cm, range$$1.to);
+    scrollToCoordsRange(cm, from, to, range$$1.margin);
+  }
+}
+
+function scrollToCoordsRange(cm, from, to, margin) {
+  var sPos = calculateScrollPos(cm, {
+    left: Math.min(from.left, to.left),
+    top: Math.min(from.top, to.top) - margin,
+    right: Math.max(from.right, to.right),
+    bottom: Math.max(from.bottom, to.bottom) + margin
+  });
+  scrollToCoords(cm, sPos.scrollLeft, sPos.scrollTop);
 }
 
 // Sync the scrollable area and scrollbars, ensure the viewport
 // covers the visible area.
-function setScrollTop(cm, val) {
+function updateScrollTop(cm, val) {
   if (Math.abs(cm.doc.scrollTop - val) < 2) { return }
-  cm.doc.scrollTop = val;
   if (!gecko) { updateDisplaySimple(cm, {top: val}); }
-  if (cm.display.scroller.scrollTop != val) { cm.display.scroller.scrollTop = val; }
-  cm.display.scrollbars.setScrollTop(val);
+  setScrollTop(cm, val, true);
   if (gecko) { updateDisplaySimple(cm); }
   startWorker(cm, 100);
 }
+
+function setScrollTop(cm, val, forceScroll) {
+  val = Math.min(cm.display.scroller.scrollHeight - cm.display.scroller.clientHeight, val);
+  if (cm.display.scroller.scrollTop == val && !forceScroll) { return }
+  cm.doc.scrollTop = val;
+  cm.display.scrollbars.setScrollTop(val);
+  if (cm.display.scroller.scrollTop != val) { cm.display.scroller.scrollTop = val; }
+}
+
 // Sync scroller and scrollbar, ensure the gutter elements are
 // aligned.
-function setScrollLeft(cm, val, isScroller) {
-  if (isScroller ? val == cm.doc.scrollLeft : Math.abs(cm.doc.scrollLeft - val) < 2) { return }
+function setScrollLeft(cm, val, isScroller, forceScroll) {
   val = Math.min(val, cm.display.scroller.scrollWidth - cm.display.scroller.clientWidth);
+  if ((isScroller ? val == cm.doc.scrollLeft : Math.abs(cm.doc.scrollLeft - val) < 2) && !forceScroll) { return }
   cm.doc.scrollLeft = val;
   alignHorizontally(cm);
   if (cm.display.scroller.scrollLeft != val) { cm.display.scroller.scrollLeft = val; }
   cm.display.scrollbars.setScrollLeft(val);
-}
-
-// Since the delta values reported on mouse wheel events are
-// unstandardized between browsers and even browser versions, and
-// generally horribly unpredictable, this code starts by measuring
-// the scroll effect that the first few mouse wheel events have,
-// and, from that, detects the way it can convert deltas to pixel
-// offsets afterwards.
-//
-// The reason we want to know the amount a wheel event will scroll
-// is that it gives us a chance to update the display before the
-// actual scrolling happens, reducing flickering.
-
-var wheelSamples = 0;
-var wheelPixelsPerUnit = null;
-// Fill in a browser-detected starting value on browsers where we
-// know one. These don't have to be accurate -- the result of them
-// being wrong would just be a slight flicker on the first wheel
-// scroll (if it is large enough).
-if (ie) { wheelPixelsPerUnit = -.53; }
-else if (gecko) { wheelPixelsPerUnit = 15; }
-else if (chrome) { wheelPixelsPerUnit = -.7; }
-else if (safari) { wheelPixelsPerUnit = -1/3; }
-
-function wheelEventDelta(e) {
-  var dx = e.wheelDeltaX, dy = e.wheelDeltaY;
-  if (dx == null && e.detail && e.axis == e.HORIZONTAL_AXIS) { dx = e.detail; }
-  if (dy == null && e.detail && e.axis == e.VERTICAL_AXIS) { dy = e.detail; }
-  else if (dy == null) { dy = e.wheelDelta; }
-  return {x: dx, y: dy}
-}
-function wheelEventPixels(e) {
-  var delta = wheelEventDelta(e);
-  delta.x *= wheelPixelsPerUnit;
-  delta.y *= wheelPixelsPerUnit;
-  return delta
-}
-
-function onScrollWheel(cm, e) {
-  var delta = wheelEventDelta(e), dx = delta.x, dy = delta.y;
-
-  var display = cm.display, scroll = display.scroller;
-  // Quit if there's nothing to scroll here
-  var canScrollX = scroll.scrollWidth > scroll.clientWidth;
-  var canScrollY = scroll.scrollHeight > scroll.clientHeight;
-  if (!(dx && canScrollX || dy && canScrollY)) { return }
-
-  // Webkit browsers on OS X abort momentum scrolls when the target
-  // of the scroll event is removed from the scrollable element.
-  // This hack (see related code in patchDisplay) makes sure the
-  // element is kept around.
-  if (dy && mac && webkit) {
-    outer: for (var cur = e.target, view = display.view; cur != scroll; cur = cur.parentNode) {
-      for (var i = 0; i < view.length; i++) {
-        if (view[i].node == cur) {
-          cm.display.currentWheelTarget = cur;
-          break outer
-        }
-      }
-    }
-  }
-
-  // On some browsers, horizontal scrolling will cause redraws to
-  // happen before the gutter has been realigned, causing it to
-  // wriggle around in a most unseemly way. When we have an
-  // estimated pixels/delta value, we just handle horizontal
-  // scrolling entirely here. It'll be slightly off from native, but
-  // better than glitching out.
-  if (dx && !gecko && !presto && wheelPixelsPerUnit != null) {
-    if (dy && canScrollY)
-      { setScrollTop(cm, Math.max(0, Math.min(scroll.scrollTop + dy * wheelPixelsPerUnit, scroll.scrollHeight - scroll.clientHeight))); }
-    setScrollLeft(cm, Math.max(0, Math.min(scroll.scrollLeft + dx * wheelPixelsPerUnit, scroll.scrollWidth - scroll.clientWidth)));
-    // Only prevent default scrolling if vertical scrolling is
-    // actually possible. Otherwise, it causes vertical scroll
-    // jitter on OSX trackpads when deltaX is small and deltaY
-    // is large (issue #3579)
-    if (!dy || (dy && canScrollY))
-      { e_preventDefault(e); }
-    display.wheelStartX = null; // Abort measurement, if in progress
-    return
-  }
-
-  // 'Project' the visible viewport to cover the area that is being
-  // scrolled into view (if we know enough to estimate it).
-  if (dy && wheelPixelsPerUnit != null) {
-    var pixels = dy * wheelPixelsPerUnit;
-    var top = cm.doc.scrollTop, bot = top + display.wrapper.clientHeight;
-    if (pixels < 0) { top = Math.max(0, top + pixels - 50); }
-    else { bot = Math.min(cm.doc.height, bot + pixels + 50); }
-    updateDisplaySimple(cm, {top: top, bottom: bot});
-  }
-
-  if (wheelSamples < 20) {
-    if (display.wheelStartX == null) {
-      display.wheelStartX = scroll.scrollLeft; display.wheelStartY = scroll.scrollTop;
-      display.wheelDX = dx; display.wheelDY = dy;
-      setTimeout(function () {
-        if (display.wheelStartX == null) { return }
-        var movedX = scroll.scrollLeft - display.wheelStartX;
-        var movedY = scroll.scrollTop - display.wheelStartY;
-        var sample = (movedY && display.wheelDY && movedY / display.wheelDY) ||
-          (movedX && display.wheelDX && movedX / display.wheelDX);
-        display.wheelStartX = display.wheelStartY = null;
-        if (!sample) { return }
-        wheelPixelsPerUnit = (wheelPixelsPerUnit * wheelSamples + sample) / (wheelSamples + 1);
-        ++wheelSamples;
-      }, 200);
-    } else {
-      display.wheelDX += dx; display.wheelDY += dy;
-    }
-  }
 }
 
 // SCROLLBARS
@@ -14041,12 +14256,12 @@ NativeScrollbars.prototype.update = function (measure) {
 
 NativeScrollbars.prototype.setScrollLeft = function (pos) {
   if (this.horiz.scrollLeft != pos) { this.horiz.scrollLeft = pos; }
-  if (this.disableHoriz) { this.enableZeroWidthBar(this.horiz, this.disableHoriz); }
+  if (this.disableHoriz) { this.enableZeroWidthBar(this.horiz, this.disableHoriz, "horiz"); }
 };
 
 NativeScrollbars.prototype.setScrollTop = function (pos) {
   if (this.vert.scrollTop != pos) { this.vert.scrollTop = pos; }
-  if (this.disableVert) { this.enableZeroWidthBar(this.vert, this.disableVert); }
+  if (this.disableVert) { this.enableZeroWidthBar(this.vert, this.disableVert, "vert"); }
 };
 
 NativeScrollbars.prototype.zeroWidthHack = function () {
@@ -14057,17 +14272,18 @@ NativeScrollbars.prototype.zeroWidthHack = function () {
   this.disableVert = new Delayed;
 };
 
-NativeScrollbars.prototype.enableZeroWidthBar = function (bar, delay) {
+NativeScrollbars.prototype.enableZeroWidthBar = function (bar, delay, type) {
   bar.style.pointerEvents = "auto";
   function maybeDisable() {
     // To find out whether the scrollbar is still visible, we
     // check whether the element under the pixel in the bottom
-    // left corner of the scrollbar box is the scrollbar box
+    // right corner of the scrollbar box is the scrollbar box
     // itself (when the bar is still visible) or its filler child
     // (when the bar is hidden). If it is still visible, we keep
     // it enabled, if it's hidden, we disable pointer events.
     var box = bar.getBoundingClientRect();
-    var elt$$1 = document.elementFromPoint(box.left + 1, box.bottom - 1);
+    var elt$$1 = type == "vert" ? document.elementFromPoint(box.right - 1, (box.top + box.bottom) / 2)
+        : document.elementFromPoint((box.right + box.left) / 2, box.bottom - 1);
     if (elt$$1 != bar) { bar.style.pointerEvents = "none"; }
     else { delay.set(1000, maybeDisable); }
   }
@@ -14139,137 +14355,10 @@ function initScrollbars(cm) {
     node.setAttribute("cm-not-content", "true");
   }, function (pos, axis) {
     if (axis == "horizontal") { setScrollLeft(cm, pos); }
-    else { setScrollTop(cm, pos); }
+    else { updateScrollTop(cm, pos); }
   }, cm);
   if (cm.display.scrollbars.addClass)
     { addClass(cm.display.wrapper, cm.display.scrollbars.addClass); }
-}
-
-// SCROLLING THINGS INTO VIEW
-
-// If an editor sits on the top or bottom of the window, partially
-// scrolled out of view, this ensures that the cursor is visible.
-function maybeScrollWindow(cm, rect) {
-  if (signalDOMEvent(cm, "scrollCursorIntoView")) { return }
-
-  var display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null;
-  if (rect.top + box.top < 0) { doScroll = true; }
-  else if (rect.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) { doScroll = false; }
-  if (doScroll != null && !phantom) {
-    var scrollNode = elt("div", "\u200b", null, ("position: absolute;\n                         top: " + (rect.top - display.viewOffset - paddingTop(cm.display)) + "px;\n                         height: " + (rect.bottom - rect.top + scrollGap(cm) + display.barHeight) + "px;\n                         left: " + (rect.left) + "px; width: " + (Math.max(2, rect.right - rect.left)) + "px;"));
-    cm.display.lineSpace.appendChild(scrollNode);
-    scrollNode.scrollIntoView(doScroll);
-    cm.display.lineSpace.removeChild(scrollNode);
-  }
-}
-
-// Scroll a given position into view (immediately), verifying that
-// it actually became visible (as line heights are accurately
-// measured, the position of something may 'drift' during drawing).
-function scrollPosIntoView(cm, pos, end, margin) {
-  if (margin == null) { margin = 0; }
-  var rect;
-  for (var limit = 0; limit < 5; limit++) {
-    var changed = false;
-    var coords = cursorCoords(cm, pos);
-    var endCoords = !end || end == pos ? coords : cursorCoords(cm, end);
-    rect = {left: Math.min(coords.left, endCoords.left),
-            top: Math.min(coords.top, endCoords.top) - margin,
-            right: Math.max(coords.left, endCoords.left),
-            bottom: Math.max(coords.bottom, endCoords.bottom) + margin};
-    var scrollPos = calculateScrollPos(cm, rect);
-    var startTop = cm.doc.scrollTop, startLeft = cm.doc.scrollLeft;
-    if (scrollPos.scrollTop != null) {
-      setScrollTop(cm, scrollPos.scrollTop);
-      if (Math.abs(cm.doc.scrollTop - startTop) > 1) { changed = true; }
-    }
-    if (scrollPos.scrollLeft != null) {
-      setScrollLeft(cm, scrollPos.scrollLeft);
-      if (Math.abs(cm.doc.scrollLeft - startLeft) > 1) { changed = true; }
-    }
-    if (!changed) { break }
-  }
-  return rect
-}
-
-// Scroll a given set of coordinates into view (immediately).
-function scrollIntoView(cm, rect) {
-  var scrollPos = calculateScrollPos(cm, rect);
-  if (scrollPos.scrollTop != null) { setScrollTop(cm, scrollPos.scrollTop); }
-  if (scrollPos.scrollLeft != null) { setScrollLeft(cm, scrollPos.scrollLeft); }
-}
-
-// Calculate a new scroll position needed to scroll the given
-// rectangle into view. Returns an object with scrollTop and
-// scrollLeft properties. When these are undefined, the
-// vertical/horizontal position does not need to be adjusted.
-function calculateScrollPos(cm, rect) {
-  var display = cm.display, snapMargin = textHeight(cm.display);
-  if (rect.top < 0) { rect.top = 0; }
-  var screentop = cm.curOp && cm.curOp.scrollTop != null ? cm.curOp.scrollTop : display.scroller.scrollTop;
-  var screen = displayHeight(cm), result = {};
-  if (rect.bottom - rect.top > screen) { rect.bottom = rect.top + screen; }
-  var docBottom = cm.doc.height + paddingVert(display);
-  var atTop = rect.top < snapMargin, atBottom = rect.bottom > docBottom - snapMargin;
-  if (rect.top < screentop) {
-    result.scrollTop = atTop ? 0 : rect.top;
-  } else if (rect.bottom > screentop + screen) {
-    var newTop = Math.min(rect.top, (atBottom ? docBottom : rect.bottom) - screen);
-    if (newTop != screentop) { result.scrollTop = newTop; }
-  }
-
-  var screenleft = cm.curOp && cm.curOp.scrollLeft != null ? cm.curOp.scrollLeft : display.scroller.scrollLeft;
-  var screenw = displayWidth(cm) - (cm.options.fixedGutter ? display.gutters.offsetWidth : 0);
-  var tooWide = rect.right - rect.left > screenw;
-  if (tooWide) { rect.right = rect.left + screenw; }
-  if (rect.left < 10)
-    { result.scrollLeft = 0; }
-  else if (rect.left < screenleft)
-    { result.scrollLeft = Math.max(0, rect.left - (tooWide ? 0 : 10)); }
-  else if (rect.right > screenw + screenleft - 3)
-    { result.scrollLeft = rect.right + (tooWide ? 0 : 10) - screenw; }
-  return result
-}
-
-// Store a relative adjustment to the scroll position in the current
-// operation (to be applied when the operation finishes).
-function addToScrollPos(cm, left, top) {
-  if (left != null || top != null) { resolveScrollToPos(cm); }
-  if (left != null)
-    { cm.curOp.scrollLeft = (cm.curOp.scrollLeft == null ? cm.doc.scrollLeft : cm.curOp.scrollLeft) + left; }
-  if (top != null)
-    { cm.curOp.scrollTop = (cm.curOp.scrollTop == null ? cm.doc.scrollTop : cm.curOp.scrollTop) + top; }
-}
-
-// Make sure that at the end of the operation the current cursor is
-// shown.
-function ensureCursorVisible(cm) {
-  resolveScrollToPos(cm);
-  var cur = cm.getCursor(), from = cur, to = cur;
-  if (!cm.options.lineWrapping) {
-    from = cur.ch ? Pos(cur.line, cur.ch - 1) : cur;
-    to = Pos(cur.line, cur.ch + 1);
-  }
-  cm.curOp.scrollToPos = {from: from, to: to, margin: cm.options.cursorScrollMargin};
-}
-
-// When an operation has its scrollToPos property set, and another
-// scroll action is applied before the end of the operation, this
-// 'simulates' scrolling that position into view in a cheap way, so
-// that the effect of intermediate scroll commands is not ignored.
-function resolveScrollToPos(cm) {
-  var range$$1 = cm.curOp.scrollToPos;
-  if (range$$1) {
-    cm.curOp.scrollToPos = null;
-    var from = estimateCoords(cm, range$$1.from), to = estimateCoords(cm, range$$1.to);
-    var sPos = calculateScrollPos(cm, {
-      left: Math.min(from.left, to.left),
-      top: Math.min(from.top, to.top) - range$$1.margin,
-      right: Math.max(from.right, to.right),
-      bottom: Math.max(from.bottom, to.bottom) + range$$1.margin
-    });
-    cm.scrollTo(sPos.scrollLeft, sPos.scrollTop);
-  }
 }
 
 // Operations are used to wrap a series of changes to the editor
@@ -14362,7 +14451,7 @@ function endOperation_R2(op) {
   }
 
   if (op.updatedDisplay || op.selectionChanged)
-    { op.preparedSelection = display.input.prepareSelection(op.focus); }
+    { op.preparedSelection = display.input.prepareSelection(); }
 }
 
 function endOperation_W2(op) {
@@ -14375,7 +14464,7 @@ function endOperation_W2(op) {
     cm.display.maxLineChanged = false;
   }
 
-  var takeFocus = op.focus && op.focus == activeElt() && (!document.hasFocus || document.hasFocus());
+  var takeFocus = op.focus && op.focus == activeElt();
   if (op.preparedSelection)
     { cm.display.input.showSelection(op.preparedSelection, takeFocus); }
   if (op.updatedDisplay || op.startHeight != cm.doc.height)
@@ -14400,17 +14489,9 @@ function endOperation_finish(op) {
     { display.wheelStartX = display.wheelStartY = null; }
 
   // Propagate the scroll position to the actual DOM scroller
-  if (op.scrollTop != null && (display.scroller.scrollTop != op.scrollTop || op.forceScroll)) {
-    doc.scrollTop = Math.max(0, Math.min(display.scroller.scrollHeight - display.scroller.clientHeight, op.scrollTop));
-    display.scrollbars.setScrollTop(doc.scrollTop);
-    display.scroller.scrollTop = doc.scrollTop;
-  }
-  if (op.scrollLeft != null && (display.scroller.scrollLeft != op.scrollLeft || op.forceScroll)) {
-    doc.scrollLeft = Math.max(0, Math.min(display.scroller.scrollWidth - display.scroller.clientWidth, op.scrollLeft));
-    display.scrollbars.setScrollLeft(doc.scrollLeft);
-    display.scroller.scrollLeft = doc.scrollLeft;
-    alignHorizontally(cm);
-  }
+  if (op.scrollTop != null) { setScrollTop(cm, op.scrollTop, op.forceScroll); }
+
+  if (op.scrollLeft != null) { setScrollLeft(cm, op.scrollLeft, true, true); }
   // If we need to scroll a specific position into view, do so.
   if (op.scrollToPos) {
     var rect = scrollPosIntoView(cm, clipPos(doc, op.scrollToPos.from),
@@ -14623,22 +14704,23 @@ function countDirtyView(cm) {
 // HIGHLIGHT WORKER
 
 function startWorker(cm, time) {
-  if (cm.doc.mode.startState && cm.doc.frontier < cm.display.viewTo)
+  if (cm.doc.highlightFrontier < cm.display.viewTo)
     { cm.state.highlight.set(time, bind(highlightWorker, cm)); }
 }
 
 function highlightWorker(cm) {
   var doc = cm.doc;
-  if (doc.frontier < doc.first) { doc.frontier = doc.first; }
-  if (doc.frontier >= cm.display.viewTo) { return }
+  if (doc.highlightFrontier >= cm.display.viewTo) { return }
   var end = +new Date + cm.options.workTime;
-  var state = copyState(doc.mode, getStateBefore(cm, doc.frontier));
+  var context = getContextBefore(cm, doc.highlightFrontier);
   var changedLines = [];
 
-  doc.iter(doc.frontier, Math.min(doc.first + doc.size, cm.display.viewTo + 500), function (line) {
-    if (doc.frontier >= cm.display.viewFrom) { // Visible
-      var oldStyles = line.styles, tooLong = line.text.length > cm.options.maxHighlightLength;
-      var highlighted = highlightLine(cm, line, tooLong ? copyState(doc.mode, state) : state, true);
+  doc.iter(context.line, Math.min(doc.first + doc.size, cm.display.viewTo + 500), function (line) {
+    if (context.line >= cm.display.viewFrom) { // Visible
+      var oldStyles = line.styles;
+      var resetState = line.text.length > cm.options.maxHighlightLength ? copyState(doc.mode, context.state) : null;
+      var highlighted = highlightLine(cm, line, context, true);
+      if (resetState) { context.state = resetState; }
       line.styles = highlighted.styles;
       var oldCls = line.styleClasses, newCls = highlighted.classes;
       if (newCls) { line.styleClasses = newCls; }
@@ -14646,19 +14728,22 @@ function highlightWorker(cm) {
       var ischange = !oldStyles || oldStyles.length != line.styles.length ||
         oldCls != newCls && (!oldCls || !newCls || oldCls.bgClass != newCls.bgClass || oldCls.textClass != newCls.textClass);
       for (var i = 0; !ischange && i < oldStyles.length; ++i) { ischange = oldStyles[i] != line.styles[i]; }
-      if (ischange) { changedLines.push(doc.frontier); }
-      line.stateAfter = tooLong ? state : copyState(doc.mode, state);
+      if (ischange) { changedLines.push(context.line); }
+      line.stateAfter = context.save();
+      context.nextLine();
     } else {
       if (line.text.length <= cm.options.maxHighlightLength)
-        { processLine(cm, line.text, state); }
-      line.stateAfter = doc.frontier % 5 == 0 ? copyState(doc.mode, state) : null;
+        { processLine(cm, line.text, context); }
+      line.stateAfter = context.line % 5 == 0 ? context.save() : null;
+      context.nextLine();
     }
-    ++doc.frontier;
     if (+new Date > end) {
       startWorker(cm, cm.options.workDelay);
       return true
     }
   });
+  doc.highlightFrontier = context.line;
+  doc.modeFrontier = Math.max(doc.modeFrontier, context.line);
   if (changedLines.length) { runInOp(cm, function () {
     for (var i = 0; i < changedLines.length; i++)
       { regLineChange(cm, changedLines[i], "text"); }
@@ -14701,6 +14786,36 @@ function maybeClipScrollbars(cm) {
     display.sizer.style.marginBottom = -display.nativeBarWidth + "px";
     display.sizer.style.borderRightWidth = scrollGap(cm) + "px";
     display.scrollbarsClipped = true;
+  }
+}
+
+function selectionSnapshot(cm) {
+  if (cm.hasFocus()) { return null }
+  var active = activeElt();
+  if (!active || !contains(cm.display.lineDiv, active)) { return null }
+  var result = {activeElt: active};
+  if (window.getSelection) {
+    var sel = window.getSelection();
+    if (sel.anchorNode && sel.extend && contains(cm.display.lineDiv, sel.anchorNode)) {
+      result.anchorNode = sel.anchorNode;
+      result.anchorOffset = sel.anchorOffset;
+      result.focusNode = sel.focusNode;
+      result.focusOffset = sel.focusOffset;
+    }
+  }
+  return result
+}
+
+function restoreSelection(snapshot) {
+  if (!snapshot || !snapshot.activeElt || snapshot.activeElt == activeElt()) { return }
+  snapshot.activeElt.focus();
+  if (snapshot.anchorNode && contains(document.body, snapshot.anchorNode) && contains(document.body, snapshot.focusNode)) {
+    var sel = window.getSelection(), range$$1 = document.createRange();
+    range$$1.setEnd(snapshot.anchorNode, snapshot.anchorOffset);
+    range$$1.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(range$$1);
+    sel.extend(snapshot.focusNode, snapshot.focusOffset);
   }
 }
 
@@ -14753,14 +14868,14 @@ function updateDisplayIfNeeded(cm, update) {
 
   // For big changes, we hide the enclosing element during the
   // update, since that speeds up the operations on most browsers.
-  var focused = activeElt();
+  var selSnapshot = selectionSnapshot(cm);
   if (toUpdate > 4) { display.lineDiv.style.display = "none"; }
   patchDisplay(cm, display.updateLineNumbers, update.dims);
   if (toUpdate > 4) { display.lineDiv.style.display = ""; }
   display.renderedView = display.view;
   // There might have been a widget with a focused element that got
   // hidden or updated, if so re-focus it.
-  if (focused && activeElt() != focused && focused.offsetHeight) { focused.focus(); }
+  restoreSelection(selSnapshot);
 
   // Prevent selection and cursors from interfering with the scroll
   // width and height.
@@ -14799,6 +14914,7 @@ function postUpdateDisplay(cm, update) {
     updateSelection(cm);
     updateScrollbars(cm, barMeasure);
     setDocumentHeight(cm, barMeasure);
+    update.force = false;
   }
 
   update.signal(cm, "update", cm);
@@ -14905,6 +15021,117 @@ function setGuttersForLineNumbers(options) {
   } else if (found > -1 && !options.lineNumbers) {
     options.gutters = options.gutters.slice(0);
     options.gutters.splice(found, 1);
+  }
+}
+
+// Since the delta values reported on mouse wheel events are
+// unstandardized between browsers and even browser versions, and
+// generally horribly unpredictable, this code starts by measuring
+// the scroll effect that the first few mouse wheel events have,
+// and, from that, detects the way it can convert deltas to pixel
+// offsets afterwards.
+//
+// The reason we want to know the amount a wheel event will scroll
+// is that it gives us a chance to update the display before the
+// actual scrolling happens, reducing flickering.
+
+var wheelSamples = 0;
+var wheelPixelsPerUnit = null;
+// Fill in a browser-detected starting value on browsers where we
+// know one. These don't have to be accurate -- the result of them
+// being wrong would just be a slight flicker on the first wheel
+// scroll (if it is large enough).
+if (ie) { wheelPixelsPerUnit = -.53; }
+else if (gecko) { wheelPixelsPerUnit = 15; }
+else if (chrome) { wheelPixelsPerUnit = -.7; }
+else if (safari) { wheelPixelsPerUnit = -1/3; }
+
+function wheelEventDelta(e) {
+  var dx = e.wheelDeltaX, dy = e.wheelDeltaY;
+  if (dx == null && e.detail && e.axis == e.HORIZONTAL_AXIS) { dx = e.detail; }
+  if (dy == null && e.detail && e.axis == e.VERTICAL_AXIS) { dy = e.detail; }
+  else if (dy == null) { dy = e.wheelDelta; }
+  return {x: dx, y: dy}
+}
+function wheelEventPixels(e) {
+  var delta = wheelEventDelta(e);
+  delta.x *= wheelPixelsPerUnit;
+  delta.y *= wheelPixelsPerUnit;
+  return delta
+}
+
+function onScrollWheel(cm, e) {
+  var delta = wheelEventDelta(e), dx = delta.x, dy = delta.y;
+
+  var display = cm.display, scroll = display.scroller;
+  // Quit if there's nothing to scroll here
+  var canScrollX = scroll.scrollWidth > scroll.clientWidth;
+  var canScrollY = scroll.scrollHeight > scroll.clientHeight;
+  if (!(dx && canScrollX || dy && canScrollY)) { return }
+
+  // Webkit browsers on OS X abort momentum scrolls when the target
+  // of the scroll event is removed from the scrollable element.
+  // This hack (see related code in patchDisplay) makes sure the
+  // element is kept around.
+  if (dy && mac && webkit) {
+    outer: for (var cur = e.target, view = display.view; cur != scroll; cur = cur.parentNode) {
+      for (var i = 0; i < view.length; i++) {
+        if (view[i].node == cur) {
+          cm.display.currentWheelTarget = cur;
+          break outer
+        }
+      }
+    }
+  }
+
+  // On some browsers, horizontal scrolling will cause redraws to
+  // happen before the gutter has been realigned, causing it to
+  // wriggle around in a most unseemly way. When we have an
+  // estimated pixels/delta value, we just handle horizontal
+  // scrolling entirely here. It'll be slightly off from native, but
+  // better than glitching out.
+  if (dx && !gecko && !presto && wheelPixelsPerUnit != null) {
+    if (dy && canScrollY)
+      { updateScrollTop(cm, Math.max(0, scroll.scrollTop + dy * wheelPixelsPerUnit)); }
+    setScrollLeft(cm, Math.max(0, scroll.scrollLeft + dx * wheelPixelsPerUnit));
+    // Only prevent default scrolling if vertical scrolling is
+    // actually possible. Otherwise, it causes vertical scroll
+    // jitter on OSX trackpads when deltaX is small and deltaY
+    // is large (issue #3579)
+    if (!dy || (dy && canScrollY))
+      { e_preventDefault(e); }
+    display.wheelStartX = null; // Abort measurement, if in progress
+    return
+  }
+
+  // 'Project' the visible viewport to cover the area that is being
+  // scrolled into view (if we know enough to estimate it).
+  if (dy && wheelPixelsPerUnit != null) {
+    var pixels = dy * wheelPixelsPerUnit;
+    var top = cm.doc.scrollTop, bot = top + display.wrapper.clientHeight;
+    if (pixels < 0) { top = Math.max(0, top + pixels - 50); }
+    else { bot = Math.min(cm.doc.height, bot + pixels + 50); }
+    updateDisplaySimple(cm, {top: top, bottom: bot});
+  }
+
+  if (wheelSamples < 20) {
+    if (display.wheelStartX == null) {
+      display.wheelStartX = scroll.scrollLeft; display.wheelStartY = scroll.scrollTop;
+      display.wheelDX = dx; display.wheelDY = dy;
+      setTimeout(function () {
+        if (display.wheelStartX == null) { return }
+        var movedX = scroll.scrollLeft - display.wheelStartX;
+        var movedY = scroll.scrollTop - display.wheelStartY;
+        var sample = (movedY && display.wheelDY && movedY / display.wheelDY) ||
+          (movedX && display.wheelDX && movedX / display.wheelDX);
+        display.wheelStartX = display.wheelStartY = null;
+        if (!sample) { return }
+        wheelPixelsPerUnit = (wheelPixelsPerUnit * wheelSamples + sample) / (wheelSamples + 1);
+        ++wheelSamples;
+      }, 200);
+    } else {
+      display.wheelDX += dx; display.wheelDY += dy;
+    }
   }
 }
 
@@ -15061,7 +15288,7 @@ function resetModeState(cm) {
     if (line.stateAfter) { line.stateAfter = null; }
     if (line.styles) { line.styles = null; }
   });
-  cm.doc.frontier = cm.doc.first;
+  cm.doc.modeFrontier = cm.doc.highlightFrontier = cm.doc.first;
   startWorker(cm, 100);
   cm.state.modeGen++;
   if (cm.curOp) { regChange(cm); }
@@ -15395,8 +15622,8 @@ function copyHistoryArray(events, newGroup, instantiateSel) {
 // include a given position (and optionally a second position).
 // Otherwise, simply returns the range between the given positions.
 // Used for cursor motion and such.
-function extendRange(doc, range, head, other) {
-  if (doc.cm && doc.cm.display.shift || doc.extend) {
+function extendRange(range, head, other, extend) {
+  if (extend) {
     var anchor = range.anchor;
     if (other) {
       var posBefore = cmp(head, anchor) < 0;
@@ -15414,16 +15641,18 @@ function extendRange(doc, range, head, other) {
 }
 
 // Extend the primary selection range, discard the rest.
-function extendSelection(doc, head, other, options) {
-  setSelection(doc, new Selection([extendRange(doc, doc.sel.primary(), head, other)], 0), options);
+function extendSelection(doc, head, other, options, extend) {
+  if (extend == null) { extend = doc.cm && (doc.cm.display.shift || doc.extend); }
+  setSelection(doc, new Selection([extendRange(doc.sel.primary(), head, other, extend)], 0), options);
 }
 
 // Extend all selections (pos is an array of selections with length
 // equal the number of selections)
 function extendSelections(doc, heads, options) {
   var out = [];
+  var extend = doc.cm && (doc.cm.display.shift || doc.extend);
   for (var i = 0; i < doc.sel.ranges.length; i++)
-    { out[i] = extendRange(doc, doc.sel.ranges[i], heads[i], null); }
+    { out[i] = extendRange(doc.sel.ranges[i], heads[i], null, extend); }
   var newSel = normalizeSelection(out, doc.sel.primIndex);
   setSelection(doc, newSel, options);
 }
@@ -15504,7 +15733,7 @@ function setSelectionInner(doc, sel) {
 // Verify that the selection does not partially select any atomic
 // marked ranges.
 function reCheckSelection(doc) {
-  setSelectionInner(doc, skipAtomicInSelection(doc, doc.sel, null, false), sel_dontScroll);
+  setSelectionInner(doc, skipAtomicInSelection(doc, doc.sel, null, false));
 }
 
 // Return a selection that does not partially select any atomic
@@ -15629,7 +15858,7 @@ function makeChange(doc, change, ignoreReadOnly) {
   var split = sawReadOnlySpans && !ignoreReadOnly && removeReadOnlyRanges(doc, change.from, change.to);
   if (split) {
     for (var i = split.length - 1; i >= 0; --i)
-      { makeChangeInner(doc, {from: split[i].from, to: split[i].to, text: i ? [""] : change.text}); }
+      { makeChangeInner(doc, {from: split[i].from, to: split[i].to, text: i ? [""] : change.text, origin: change.origin}); }
   } else {
     makeChangeInner(doc, change);
   }
@@ -15807,8 +16036,7 @@ function makeChangeSingleDocInEditor(cm, change, spans) {
     if (recomputeMaxLength) { cm.curOp.updateMaxLine = true; }
   }
 
-  // Adjust frontier, schedule worker
-  doc.frontier = Math.min(doc.frontier, from.line);
+  retreatFrontier(doc, from.line);
   startWorker(cm, 400);
 
   var lendiff = change.text.length - (to.line - from.line) - 1;
@@ -15836,7 +16064,8 @@ function makeChangeSingleDocInEditor(cm, change, spans) {
 
 function replaceRange(doc, code, from, to, origin) {
   if (!to) { to = from; }
-  if (cmp(to, from) < 0) { var tmp = to; to = from; from = tmp; }
+  if (cmp(to, from) < 0) { var assign;
+    (assign = [to, from], from = assign[0], to = assign[1], assign); }
   if (typeof code == "string") { code = doc.splitLines(code); }
   makeChange(doc, {from: from, to: to, text: code, origin: origin});
 }
@@ -15918,7 +16147,7 @@ function changeLine(doc, handle, changeType, op) {
 //
 // See also http://marijnhaverbeke.nl/blog/codemirror-line-tree.html
 
-var LeafChunk = function(lines) {
+function LeafChunk(lines) {
   var this$1 = this;
 
   this.lines = lines;
@@ -15929,47 +16158,49 @@ var LeafChunk = function(lines) {
     height += lines[i].height;
   }
   this.height = height;
-};
+}
 
-LeafChunk.prototype.chunkSize = function () { return this.lines.length };
+LeafChunk.prototype = {
+  chunkSize: function chunkSize() { return this.lines.length },
 
-// Remove the n lines at offset 'at'.
-LeafChunk.prototype.removeInner = function (at, n) {
+  // Remove the n lines at offset 'at'.
+  removeInner: function removeInner(at, n) {
     var this$1 = this;
 
-  for (var i = at, e = at + n; i < e; ++i) {
-    var line = this$1.lines[i];
-    this$1.height -= line.height;
-    cleanUpLine(line);
-    signalLater(line, "delete");
+    for (var i = at, e = at + n; i < e; ++i) {
+      var line = this$1.lines[i];
+      this$1.height -= line.height;
+      cleanUpLine(line);
+      signalLater(line, "delete");
+    }
+    this.lines.splice(at, n);
+  },
+
+  // Helper used to collapse a small branch into a single leaf.
+  collapse: function collapse(lines) {
+    lines.push.apply(lines, this.lines);
+  },
+
+  // Insert the given array of lines at offset 'at', count them as
+  // having the given height.
+  insertInner: function insertInner(at, lines, height) {
+    var this$1 = this;
+
+    this.height += height;
+    this.lines = this.lines.slice(0, at).concat(lines).concat(this.lines.slice(at));
+    for (var i = 0; i < lines.length; ++i) { lines[i].parent = this$1; }
+  },
+
+  // Used to iterate over a part of the tree.
+  iterN: function iterN(at, n, op) {
+    var this$1 = this;
+
+    for (var e = at + n; at < e; ++at)
+      { if (op(this$1.lines[at])) { return true } }
   }
-  this.lines.splice(at, n);
 };
 
-// Helper used to collapse a small branch into a single leaf.
-LeafChunk.prototype.collapse = function (lines) {
-  lines.push.apply(lines, this.lines);
-};
-
-// Insert the given array of lines at offset 'at', count them as
-// having the given height.
-LeafChunk.prototype.insertInner = function (at, lines, height) {
-    var this$1 = this;
-
-  this.height += height;
-  this.lines = this.lines.slice(0, at).concat(lines).concat(this.lines.slice(at));
-  for (var i = 0; i < lines.length; ++i) { lines[i].parent = this$1; }
-};
-
-// Used to iterate over a part of the tree.
-LeafChunk.prototype.iterN = function (at, n, op) {
-    var this$1 = this;
-
-  for (var e = at + n; at < e; ++at)
-    { if (op(this$1.lines[at])) { return true } }
-};
-
-var BranchChunk = function(children) {
+function BranchChunk(children) {
   var this$1 = this;
 
   this.children = children;
@@ -15982,104 +16213,106 @@ var BranchChunk = function(children) {
   this.size = size;
   this.height = height;
   this.parent = null;
-};
+}
 
-BranchChunk.prototype.chunkSize = function () { return this.size };
+BranchChunk.prototype = {
+  chunkSize: function chunkSize() { return this.size },
 
-BranchChunk.prototype.removeInner = function (at, n) {
+  removeInner: function removeInner(at, n) {
     var this$1 = this;
 
-  this.size -= n;
-  for (var i = 0; i < this.children.length; ++i) {
-    var child = this$1.children[i], sz = child.chunkSize();
-    if (at < sz) {
-      var rm = Math.min(n, sz - at), oldHeight = child.height;
-      child.removeInner(at, rm);
-      this$1.height -= oldHeight - child.height;
-      if (sz == rm) { this$1.children.splice(i--, 1); child.parent = null; }
-      if ((n -= rm) == 0) { break }
-      at = 0;
-    } else { at -= sz; }
-  }
-  // If the result is smaller than 25 lines, ensure that it is a
-  // single leaf node.
-  if (this.size - n < 25 &&
-      (this.children.length > 1 || !(this.children[0] instanceof LeafChunk))) {
-    var lines = [];
-    this.collapse(lines);
-    this.children = [new LeafChunk(lines)];
-    this.children[0].parent = this;
-  }
-};
+    this.size -= n;
+    for (var i = 0; i < this.children.length; ++i) {
+      var child = this$1.children[i], sz = child.chunkSize();
+      if (at < sz) {
+        var rm = Math.min(n, sz - at), oldHeight = child.height;
+        child.removeInner(at, rm);
+        this$1.height -= oldHeight - child.height;
+        if (sz == rm) { this$1.children.splice(i--, 1); child.parent = null; }
+        if ((n -= rm) == 0) { break }
+        at = 0;
+      } else { at -= sz; }
+    }
+    // If the result is smaller than 25 lines, ensure that it is a
+    // single leaf node.
+    if (this.size - n < 25 &&
+        (this.children.length > 1 || !(this.children[0] instanceof LeafChunk))) {
+      var lines = [];
+      this.collapse(lines);
+      this.children = [new LeafChunk(lines)];
+      this.children[0].parent = this;
+    }
+  },
 
-BranchChunk.prototype.collapse = function (lines) {
+  collapse: function collapse(lines) {
     var this$1 = this;
 
-  for (var i = 0; i < this.children.length; ++i) { this$1.children[i].collapse(lines); }
-};
+    for (var i = 0; i < this.children.length; ++i) { this$1.children[i].collapse(lines); }
+  },
 
-BranchChunk.prototype.insertInner = function (at, lines, height) {
+  insertInner: function insertInner(at, lines, height) {
     var this$1 = this;
 
-  this.size += lines.length;
-  this.height += height;
-  for (var i = 0; i < this.children.length; ++i) {
-    var child = this$1.children[i], sz = child.chunkSize();
-    if (at <= sz) {
-      child.insertInner(at, lines, height);
-      if (child.lines && child.lines.length > 50) {
-        // To avoid memory thrashing when child.lines is huge (e.g. first view of a large file), it's never spliced.
-        // Instead, small slices are taken. They're taken in order because sequential memory accesses are fastest.
-        var remaining = child.lines.length % 25 + 25;
-        for (var pos = remaining; pos < child.lines.length;) {
-          var leaf = new LeafChunk(child.lines.slice(pos, pos += 25));
-          child.height -= leaf.height;
-          this$1.children.splice(++i, 0, leaf);
-          leaf.parent = this$1;
+    this.size += lines.length;
+    this.height += height;
+    for (var i = 0; i < this.children.length; ++i) {
+      var child = this$1.children[i], sz = child.chunkSize();
+      if (at <= sz) {
+        child.insertInner(at, lines, height);
+        if (child.lines && child.lines.length > 50) {
+          // To avoid memory thrashing when child.lines is huge (e.g. first view of a large file), it's never spliced.
+          // Instead, small slices are taken. They're taken in order because sequential memory accesses are fastest.
+          var remaining = child.lines.length % 25 + 25;
+          for (var pos = remaining; pos < child.lines.length;) {
+            var leaf = new LeafChunk(child.lines.slice(pos, pos += 25));
+            child.height -= leaf.height;
+            this$1.children.splice(++i, 0, leaf);
+            leaf.parent = this$1;
+          }
+          child.lines = child.lines.slice(0, remaining);
+          this$1.maybeSpill();
         }
-        child.lines = child.lines.slice(0, remaining);
-        this$1.maybeSpill();
+        break
       }
-      break
+      at -= sz;
     }
-    at -= sz;
-  }
-};
+  },
 
-// When a node has grown, check whether it should be split.
-BranchChunk.prototype.maybeSpill = function () {
-  if (this.children.length <= 10) { return }
-  var me = this;
-  do {
-    var spilled = me.children.splice(me.children.length - 5, 5);
-    var sibling = new BranchChunk(spilled);
-    if (!me.parent) { // Become the parent node
-      var copy = new BranchChunk(me.children);
-      copy.parent = me;
-      me.children = [copy, sibling];
-      me = copy;
-   } else {
-      me.size -= sibling.size;
-      me.height -= sibling.height;
-      var myIndex = indexOf(me.parent.children, me);
-      me.parent.children.splice(myIndex + 1, 0, sibling);
-    }
-    sibling.parent = me.parent;
-  } while (me.children.length > 10)
-  me.parent.maybeSpill();
-};
+  // When a node has grown, check whether it should be split.
+  maybeSpill: function maybeSpill() {
+    if (this.children.length <= 10) { return }
+    var me = this;
+    do {
+      var spilled = me.children.splice(me.children.length - 5, 5);
+      var sibling = new BranchChunk(spilled);
+      if (!me.parent) { // Become the parent node
+        var copy = new BranchChunk(me.children);
+        copy.parent = me;
+        me.children = [copy, sibling];
+        me = copy;
+     } else {
+        me.size -= sibling.size;
+        me.height -= sibling.height;
+        var myIndex = indexOf(me.parent.children, me);
+        me.parent.children.splice(myIndex + 1, 0, sibling);
+      }
+      sibling.parent = me.parent;
+    } while (me.children.length > 10)
+    me.parent.maybeSpill();
+  },
 
-BranchChunk.prototype.iterN = function (at, n, op) {
+  iterN: function iterN(at, n, op) {
     var this$1 = this;
 
-  for (var i = 0; i < this.children.length; ++i) {
-    var child = this$1.children[i], sz = child.chunkSize();
-    if (at < sz) {
-      var used = Math.min(n, sz - at);
-      if (child.iterN(at, used, op)) { return true }
-      if ((n -= used) == 0) { break }
-      at = 0;
-    } else { at -= sz; }
+    for (var i = 0; i < this.children.length; ++i) {
+      var child = this$1.children[i], sz = child.chunkSize();
+      if (at < sz) {
+        var used = Math.min(n, sz - at);
+        if (child.iterN(at, used, op)) { return true }
+        if ((n -= used) == 0) { break }
+        at = 0;
+      } else { at -= sz; }
+    }
   }
 };
 
@@ -16132,7 +16365,7 @@ eventMixin(LineWidget);
 
 function adjustScrollWhenAboveVisible(cm, line, diff) {
   if (heightAtLine(line) < ((cm.curOp && cm.curOp.scrollTop) || cm.doc.scrollTop))
-    { addToScrollPos(cm, null, diff); }
+    { addToScrollTop(cm, diff); }
 }
 
 function addLineWidget(doc, handle, node, options) {
@@ -16147,7 +16380,7 @@ function addLineWidget(doc, handle, node, options) {
     if (cm && !lineIsHidden(doc, line)) {
       var aboveVisible = heightAtLine(line) < doc.scrollTop;
       updateLineHeight(line, line.height + widgetHeight(widget));
-      if (aboveVisible) { addToScrollPos(cm, null, widget.height); }
+      if (aboveVisible) { addToScrollTop(cm, widget.height); }
       cm.curOp.forceUpdate = true;
     }
     return true
@@ -16449,7 +16682,7 @@ var Doc = function(text, mode, firstLine, lineSep, direction) {
   this.scrollTop = this.scrollLeft = 0;
   this.cantEdit = false;
   this.cleanGeneration = 1;
-  this.frontier = firstLine;
+  this.modeFrontier = this.highlightFrontier = firstLine;
   var start = Pos(firstLine, 0);
   this.sel = simpleSelection(start);
   this.history = new History(null);
@@ -16495,7 +16728,8 @@ Doc.prototype = createObj(BranchChunk.prototype, {
     var top = Pos(this.first, 0), last = this.first + this.size - 1;
     makeChange(this, {from: top, to: Pos(last, getLine(this, last).text.length),
                       text: this.splitLines(code), origin: "setValue", full: true}, true);
-    setSelection(this, simpleSelection(top));
+    if (this.cm) { scrollToCoords(this.cm, 0, 0); }
+    setSelection(this, simpleSelection(top), sel_dontScroll);
   }),
   replaceRange: function(code, from, to, origin) {
     from = clipPos(this, from);
@@ -16971,8 +17205,8 @@ function clearDragCursor(cm) {
 // garbage collected.
 
 function forEachCodeMirror(f) {
-  if (!document.body.getElementsByClassName) { return }
-  var byClass = document.body.getElementsByClassName("CodeMirror");
+  if (!document.getElementsByClassName) { return }
+  var byClass = document.getElementsByClassName("CodeMirror");
   for (var i = 0; i < byClass.length; i++) {
     var cm = byClass[i].CodeMirror;
     if (cm) { f(cm); }
@@ -17146,16 +17380,21 @@ function isModifierKey(value) {
   return name == "Ctrl" || name == "Alt" || name == "Shift" || name == "Mod"
 }
 
-// Look up the name of a key as indicated by an event object.
-function keyName(event, noShift) {
-  if (presto && event.keyCode == 34 && event["char"]) { return false }
-  var base = keyNames[event.keyCode], name = base;
-  if (name == null || event.altGraphKey) { return false }
+function addModifierNames(name, event, noShift) {
+  var base = name;
   if (event.altKey && base != "Alt") { name = "Alt-" + name; }
   if ((flipCtrlCmd ? event.metaKey : event.ctrlKey) && base != "Ctrl") { name = "Ctrl-" + name; }
   if ((flipCtrlCmd ? event.ctrlKey : event.metaKey) && base != "Cmd") { name = "Cmd-" + name; }
   if (!noShift && event.shiftKey && base != "Shift") { name = "Shift-" + name; }
   return name
+}
+
+// Look up the name of a key as indicated by an event object.
+function keyName(event, noShift) {
+  if (presto && event.keyCode == 34 && event["char"]) { return false }
+  var name = keyNames[event.keyCode];
+  if (name == null || event.altGraphKey) { return false }
+  return addModifierNames(name, event, noShift)
 }
 
 function getKeyMap(val) {
@@ -17185,6 +17424,112 @@ function deleteNearSelection(cm, compute) {
       { replaceRange(cm.doc, "", kill[i].from, kill[i].to, "+delete"); }
     ensureCursorVisible(cm);
   });
+}
+
+function moveCharLogically(line, ch, dir) {
+  var target = skipExtendingChars(line.text, ch + dir, dir);
+  return target < 0 || target > line.text.length ? null : target
+}
+
+function moveLogically(line, start, dir) {
+  var ch = moveCharLogically(line, start.ch, dir);
+  return ch == null ? null : new Pos(start.line, ch, dir < 0 ? "after" : "before")
+}
+
+function endOfLine(visually, cm, lineObj, lineNo, dir) {
+  if (visually) {
+    var order = getOrder(lineObj, cm.doc.direction);
+    if (order) {
+      var part = dir < 0 ? lst(order) : order[0];
+      var moveInStorageOrder = (dir < 0) == (part.level == 1);
+      var sticky = moveInStorageOrder ? "after" : "before";
+      var ch;
+      // With a wrapped rtl chunk (possibly spanning multiple bidi parts),
+      // it could be that the last bidi part is not on the last visual line,
+      // since visual lines contain content order-consecutive chunks.
+      // Thus, in rtl, we are looking for the first (content-order) character
+      // in the rtl chunk that is on the last line (that is, the same line
+      // as the last (content-order) character).
+      if (part.level > 0 || cm.doc.direction == "rtl") {
+        var prep = prepareMeasureForLine(cm, lineObj);
+        ch = dir < 0 ? lineObj.text.length - 1 : 0;
+        var targetTop = measureCharPrepared(cm, prep, ch).top;
+        ch = findFirst(function (ch) { return measureCharPrepared(cm, prep, ch).top == targetTop; }, (dir < 0) == (part.level == 1) ? part.from : part.to - 1, ch);
+        if (sticky == "before") { ch = moveCharLogically(lineObj, ch, 1); }
+      } else { ch = dir < 0 ? part.to : part.from; }
+      return new Pos(lineNo, ch, sticky)
+    }
+  }
+  return new Pos(lineNo, dir < 0 ? lineObj.text.length : 0, dir < 0 ? "before" : "after")
+}
+
+function moveVisually(cm, line, start, dir) {
+  var bidi = getOrder(line, cm.doc.direction);
+  if (!bidi) { return moveLogically(line, start, dir) }
+  if (start.ch >= line.text.length) {
+    start.ch = line.text.length;
+    start.sticky = "before";
+  } else if (start.ch <= 0) {
+    start.ch = 0;
+    start.sticky = "after";
+  }
+  var partPos = getBidiPartAt(bidi, start.ch, start.sticky), part = bidi[partPos];
+  if (cm.doc.direction == "ltr" && part.level % 2 == 0 && (dir > 0 ? part.to > start.ch : part.from < start.ch)) {
+    // Case 1: We move within an ltr part in an ltr editor. Even with wrapped lines,
+    // nothing interesting happens.
+    return moveLogically(line, start, dir)
+  }
+
+  var mv = function (pos, dir) { return moveCharLogically(line, pos instanceof Pos ? pos.ch : pos, dir); };
+  var prep;
+  var getWrappedLineExtent = function (ch) {
+    if (!cm.options.lineWrapping) { return {begin: 0, end: line.text.length} }
+    prep = prep || prepareMeasureForLine(cm, line);
+    return wrappedLineExtentChar(cm, line, prep, ch)
+  };
+  var wrappedLineExtent = getWrappedLineExtent(start.sticky == "before" ? mv(start, -1) : start.ch);
+
+  if (cm.doc.direction == "rtl" || part.level == 1) {
+    var moveInStorageOrder = (part.level == 1) == (dir < 0);
+    var ch = mv(start, moveInStorageOrder ? 1 : -1);
+    if (ch != null && (!moveInStorageOrder ? ch >= part.from && ch >= wrappedLineExtent.begin : ch <= part.to && ch <= wrappedLineExtent.end)) {
+      // Case 2: We move within an rtl part or in an rtl editor on the same visual line
+      var sticky = moveInStorageOrder ? "before" : "after";
+      return new Pos(start.line, ch, sticky)
+    }
+  }
+
+  // Case 3: Could not move within this bidi part in this visual line, so leave
+  // the current bidi part
+
+  var searchInVisualLine = function (partPos, dir, wrappedLineExtent) {
+    var getRes = function (ch, moveInStorageOrder) { return moveInStorageOrder
+      ? new Pos(start.line, mv(ch, 1), "before")
+      : new Pos(start.line, ch, "after"); };
+
+    for (; partPos >= 0 && partPos < bidi.length; partPos += dir) {
+      var part = bidi[partPos];
+      var moveInStorageOrder = (dir > 0) == (part.level != 1);
+      var ch = moveInStorageOrder ? wrappedLineExtent.begin : mv(wrappedLineExtent.end, -1);
+      if (part.from <= ch && ch < part.to) { return getRes(ch, moveInStorageOrder) }
+      ch = moveInStorageOrder ? part.from : mv(part.to, -1);
+      if (wrappedLineExtent.begin <= ch && ch < wrappedLineExtent.end) { return getRes(ch, moveInStorageOrder) }
+    }
+  };
+
+  // Case 3a: Look for other bidi parts on the same visual line
+  var res = searchInVisualLine(partPos + dir, dir, wrappedLineExtent);
+  if (res) { return res }
+
+  // Case 3b: Look for other bidi parts on the next visual line
+  var nextCh = dir > 0 ? wrappedLineExtent.end : mv(wrappedLineExtent.begin, -1);
+  if (nextCh != null && !(dir > 0 && nextCh == line.text.length)) {
+    res = searchInVisualLine(dir > 0 ? 0 : bidi.length - 1, dir, getWrappedLineExtent(nextCh));
+    if (res) { return res }
+  }
+
+  // Case 4: Nowhere to move
+  return null
 }
 
 // Commands are parameter-less actions that can be performed on an
@@ -17236,15 +17581,15 @@ var commands = {
     {origin: "+move", bias: -1}
   ); },
   goLineRight: function (cm) { return cm.extendSelectionsBy(function (range) {
-    var top = cm.charCoords(range.head, "div").top + 5;
+    var top = cm.cursorCoords(range.head, "div").top + 5;
     return cm.coordsChar({left: cm.display.lineDiv.offsetWidth + 100, top: top}, "div")
   }, sel_move); },
   goLineLeft: function (cm) { return cm.extendSelectionsBy(function (range) {
-    var top = cm.charCoords(range.head, "div").top + 5;
+    var top = cm.cursorCoords(range.head, "div").top + 5;
     return cm.coordsChar({left: 0, top: top}, "div")
   }, sel_move); },
   goLineLeftSmart: function (cm) { return cm.extendSelectionsBy(function (range) {
-    var top = cm.charCoords(range.head, "div").top + 5;
+    var top = cm.cursorCoords(range.head, "div").top + 5;
     var pos = cm.coordsChar({left: 0, top: top}, "div");
     if (pos.ch < cm.getLine(pos.line).search(/\S/)) { return lineStartSmart(cm, range.head) }
     return pos
@@ -17384,6 +17729,9 @@ function lookupKeyForEditor(cm, name, handle) {
     || lookupKey(name, cm.options.keyMap, handle, cm)
 }
 
+// Note that, despite the name, this function is also used to check
+// for bound mouse clicks.
+
 var stopSeq = new Delayed;
 function dispatchKey(cm, name, e, handle) {
   var seq = cm.state.keySeq;
@@ -17495,6 +17843,37 @@ function onKeyPress(e) {
   cm.display.input.onKeyPress(e);
 }
 
+var DOUBLECLICK_DELAY = 400;
+
+var PastClick = function(time, pos, button) {
+  this.time = time;
+  this.pos = pos;
+  this.button = button;
+};
+
+PastClick.prototype.compare = function (time, pos, button) {
+  return this.time + DOUBLECLICK_DELAY > time &&
+    cmp(pos, this.pos) == 0 && button == this.button
+};
+
+var lastClick;
+var lastDoubleClick;
+function clickRepeat(pos, button) {
+  var now = +new Date;
+  if (lastDoubleClick && lastDoubleClick.compare(now, pos, button)) {
+    lastClick = lastDoubleClick = null;
+    return "triple"
+  } else if (lastClick && lastClick.compare(now, pos, button)) {
+    lastDoubleClick = new PastClick(now, pos, button);
+    lastClick = null;
+    return "double"
+  } else {
+    lastClick = new PastClick(now, pos, button);
+    lastDoubleClick = null;
+    return "single"
+  }
+}
+
 // A mouse down can be a single click, double click, triple click,
 // start of selection drag, start of text drag, new cursor
 // (ctrl-click), rectangle drag (alt-drag), or xwin
@@ -17516,72 +17895,91 @@ function onMouseDown(e) {
     return
   }
   if (clickInGutter(cm, e)) { return }
-  var start = posFromMouse(cm, e);
+  var pos = posFromMouse(cm, e), button = e_button(e), repeat = pos ? clickRepeat(pos, button) : "single";
   window.focus();
 
-  switch (e_button(e)) {
-  case 1:
-    // #3261: make sure, that we're not starting a second selection
-    if (cm.state.selectingText)
-      { cm.state.selectingText(e); }
-    else if (start)
-      { leftButtonDown(cm, e, start); }
-    else if (e_target(e) == display.scroller)
-      { e_preventDefault(e); }
-    break
-  case 2:
-    if (webkit) { cm.state.lastMiddleDown = +new Date; }
-    if (start) { extendSelection(cm.doc, start); }
+  // #3261: make sure, that we're not starting a second selection
+  if (button == 1 && cm.state.selectingText)
+    { cm.state.selectingText(e); }
+
+  if (pos && handleMappedButton(cm, button, pos, repeat, e)) { return }
+
+  if (button == 1) {
+    if (pos) { leftButtonDown(cm, pos, repeat, e); }
+    else if (e_target(e) == display.scroller) { e_preventDefault(e); }
+  } else if (button == 2) {
+    if (pos) { extendSelection(cm.doc, pos); }
     setTimeout(function () { return display.input.focus(); }, 20);
-    e_preventDefault(e);
-    break
-  case 3:
+  } else if (button == 3) {
     if (captureRightClick) { onContextMenu(cm, e); }
     else { delayBlurEvent(cm); }
-    break
   }
 }
 
-var lastClick;
-var lastDoubleClick;
-function leftButtonDown(cm, e, start) {
+function handleMappedButton(cm, button, pos, repeat, event) {
+  var name = "Click";
+  if (repeat == "double") { name = "Double" + name; }
+  else if (repeat == "triple") { name = "Triple" + name; }
+  name = (button == 1 ? "Left" : button == 2 ? "Middle" : "Right") + name;
+
+  return dispatchKey(cm,  addModifierNames(name, event), event, function (bound) {
+    if (typeof bound == "string") { bound = commands[bound]; }
+    if (!bound) { return false }
+    var done = false;
+    try {
+      if (cm.isReadOnly()) { cm.state.suppressEdits = true; }
+      done = bound(cm, pos) != Pass;
+    } finally {
+      cm.state.suppressEdits = false;
+    }
+    return done
+  })
+}
+
+function configureMouse(cm, repeat, event) {
+  var option = cm.getOption("configureMouse");
+  var value = option ? option(cm, repeat, event) : {};
+  if (value.unit == null) {
+    var rect = chromeOS ? event.shiftKey && event.metaKey : event.altKey;
+    value.unit = rect ? "rectangle" : repeat == "single" ? "char" : repeat == "double" ? "word" : "line";
+  }
+  if (value.extend == null || cm.doc.extend) { value.extend = cm.doc.extend || event.shiftKey; }
+  if (value.addNew == null) { value.addNew = mac ? event.metaKey : event.ctrlKey; }
+  if (value.moveOnDrag == null) { value.moveOnDrag = !(mac ? event.altKey : event.ctrlKey); }
+  return value
+}
+
+function leftButtonDown(cm, pos, repeat, event) {
   if (ie) { setTimeout(bind(ensureFocus, cm), 0); }
   else { cm.curOp.focus = activeElt(); }
 
-  var now = +new Date, type;
-  if (lastDoubleClick && lastDoubleClick.time > now - 400 && cmp(lastDoubleClick.pos, start) == 0) {
-    type = "triple";
-  } else if (lastClick && lastClick.time > now - 400 && cmp(lastClick.pos, start) == 0) {
-    type = "double";
-    lastDoubleClick = {time: now, pos: start};
-  } else {
-    type = "single";
-    lastClick = {time: now, pos: start};
-  }
+  var behavior = configureMouse(cm, repeat, event);
 
-  var sel = cm.doc.sel, modifier = mac ? e.metaKey : e.ctrlKey, contained;
+  var sel = cm.doc.sel, contained;
   if (cm.options.dragDrop && dragAndDrop && !cm.isReadOnly() &&
-      type == "single" && (contained = sel.contains(start)) > -1 &&
-      (cmp((contained = sel.ranges[contained]).from(), start) < 0 || start.xRel > 0) &&
-      (cmp(contained.to(), start) > 0 || start.xRel < 0))
-    { leftButtonStartDrag(cm, e, start, modifier); }
+      repeat == "single" && (contained = sel.contains(pos)) > -1 &&
+      (cmp((contained = sel.ranges[contained]).from(), pos) < 0 || pos.xRel > 0) &&
+      (cmp(contained.to(), pos) > 0 || pos.xRel < 0))
+    { leftButtonStartDrag(cm, event, pos, behavior); }
   else
-    { leftButtonSelect(cm, e, start, type, modifier); }
+    { leftButtonSelect(cm, event, pos, behavior); }
 }
 
 // Start a text drag. When it ends, see if any dragging actually
 // happen, and treat as a click if it didn't.
-function leftButtonStartDrag(cm, e, start, modifier) {
-  var display = cm.display, startTime = +new Date;
-  var dragEnd = operation(cm, function (e2) {
+function leftButtonStartDrag(cm, event, pos, behavior) {
+  var display = cm.display, moved = false;
+  var dragEnd = operation(cm, function (e) {
     if (webkit) { display.scroller.draggable = false; }
     cm.state.draggingText = false;
     off(document, "mouseup", dragEnd);
+    off(document, "mousemove", mouseMove);
+    off(display.scroller, "dragstart", dragStart);
     off(display.scroller, "drop", dragEnd);
-    if (Math.abs(e.clientX - e2.clientX) + Math.abs(e.clientY - e2.clientY) < 10) {
-      e_preventDefault(e2);
-      if (!modifier && +new Date - 200 < startTime)
-        { extendSelection(cm.doc, start); }
+    if (!moved) {
+      e_preventDefault(e);
+      if (!behavior.addNew)
+        { extendSelection(cm.doc, pos, null, null, behavior.extend); }
       // Work around unexplainable focus problem in IE9 (#2127) and Chrome (#3081)
       if (webkit || ie && ie_version == 9)
         { setTimeout(function () {document.body.focus(); display.input.focus();}, 20); }
@@ -17589,23 +17987,40 @@ function leftButtonStartDrag(cm, e, start, modifier) {
         { display.input.focus(); }
     }
   });
+  var mouseMove = function(e2) {
+    moved = moved || Math.abs(event.clientX - e2.clientX) + Math.abs(event.clientY - e2.clientY) >= 10;
+  };
+  var dragStart = function () { return moved = true; };
   // Let the drag handler handle this.
   if (webkit) { display.scroller.draggable = true; }
   cm.state.draggingText = dragEnd;
-  dragEnd.copy = mac ? e.altKey : e.ctrlKey;
+  dragEnd.copy = !behavior.moveOnDrag;
   // IE's approach to draggable
   if (display.scroller.dragDrop) { display.scroller.dragDrop(); }
   on(document, "mouseup", dragEnd);
+  on(document, "mousemove", mouseMove);
+  on(display.scroller, "dragstart", dragStart);
   on(display.scroller, "drop", dragEnd);
+
+  delayBlurEvent(cm);
+  setTimeout(function () { return display.input.focus(); }, 20);
+}
+
+function rangeForUnit(cm, pos, unit) {
+  if (unit == "char") { return new Range(pos, pos) }
+  if (unit == "word") { return cm.findWordAt(pos) }
+  if (unit == "line") { return new Range(Pos(pos.line, 0), clipPos(cm.doc, Pos(pos.line + 1, 0))) }
+  var result = unit(cm, pos);
+  return new Range(result.from, result.to)
 }
 
 // Normal selection, as opposed to text dragging.
-function leftButtonSelect(cm, e, start, type, addNew) {
+function leftButtonSelect(cm, event, start, behavior) {
   var display = cm.display, doc = cm.doc;
-  e_preventDefault(e);
+  e_preventDefault(event);
 
   var ourRange, ourIndex, startSel = doc.sel, ranges = startSel.ranges;
-  if (addNew && !e.shiftKey) {
+  if (behavior.addNew && !behavior.extend) {
     ourIndex = doc.sel.contains(start);
     if (ourIndex > -1)
       { ourRange = ranges[ourIndex]; }
@@ -17616,28 +18031,19 @@ function leftButtonSelect(cm, e, start, type, addNew) {
     ourIndex = doc.sel.primIndex;
   }
 
-  if (chromeOS ? e.shiftKey && e.metaKey : e.altKey) {
-    type = "rect";
-    if (!addNew) { ourRange = new Range(start, start); }
-    start = posFromMouse(cm, e, true, true);
+  if (behavior.unit == "rectangle") {
+    if (!behavior.addNew) { ourRange = new Range(start, start); }
+    start = posFromMouse(cm, event, true, true);
     ourIndex = -1;
-  } else if (type == "double") {
-    var word = cm.findWordAt(start);
-    if (cm.display.shift || doc.extend)
-      { ourRange = extendRange(doc, ourRange, word.anchor, word.head); }
-    else
-      { ourRange = word; }
-  } else if (type == "triple") {
-    var line = new Range(Pos(start.line, 0), clipPos(doc, Pos(start.line + 1, 0)));
-    if (cm.display.shift || doc.extend)
-      { ourRange = extendRange(doc, ourRange, line.anchor, line.head); }
-    else
-      { ourRange = line; }
   } else {
-    ourRange = extendRange(doc, ourRange, start);
+    var range$$1 = rangeForUnit(cm, start, behavior.unit);
+    if (behavior.extend)
+      { ourRange = extendRange(ourRange, range$$1.anchor, range$$1.head, behavior.extend); }
+    else
+      { ourRange = range$$1; }
   }
 
-  if (!addNew) {
+  if (!behavior.addNew) {
     ourIndex = 0;
     setSelection(doc, new Selection([ourRange], 0), sel_mouse);
     startSel = doc.sel;
@@ -17645,7 +18051,7 @@ function leftButtonSelect(cm, e, start, type, addNew) {
     ourIndex = ranges.length;
     setSelection(doc, normalizeSelection(ranges.concat([ourRange]), ourIndex),
                  {scroll: false, origin: "*mouse"});
-  } else if (ranges.length > 1 && ranges[ourIndex].empty() && type == "single" && !e.shiftKey) {
+  } else if (ranges.length > 1 && ranges[ourIndex].empty() && behavior.unit == "char" && !behavior.extend) {
     setSelection(doc, normalizeSelection(ranges.slice(0, ourIndex).concat(ranges.slice(ourIndex + 1)), 0),
                  {scroll: false, origin: "*mouse"});
     startSel = doc.sel;
@@ -17658,7 +18064,7 @@ function leftButtonSelect(cm, e, start, type, addNew) {
     if (cmp(lastPos, pos) == 0) { return }
     lastPos = pos;
 
-    if (type == "rect") {
+    if (behavior.unit == "rectangle") {
       var ranges = [], tabSize = cm.options.tabSize;
       var startCol = countColumn(getLine(doc, start.line).text, start.ch, tabSize);
       var posCol = countColumn(getLine(doc, pos.line).text, pos.ch, tabSize);
@@ -17677,23 +18083,17 @@ function leftButtonSelect(cm, e, start, type, addNew) {
       cm.scrollIntoView(pos);
     } else {
       var oldRange = ourRange;
-      var anchor = oldRange.anchor, head = pos;
-      if (type != "single") {
-        var range$$1;
-        if (type == "double")
-          { range$$1 = cm.findWordAt(pos); }
-        else
-          { range$$1 = new Range(Pos(pos.line, 0), clipPos(doc, Pos(pos.line + 1, 0))); }
-        if (cmp(range$$1.anchor, anchor) > 0) {
-          head = range$$1.head;
-          anchor = minPos(oldRange.from(), range$$1.anchor);
-        } else {
-          head = range$$1.anchor;
-          anchor = maxPos(oldRange.to(), range$$1.head);
-        }
+      var range$$1 = rangeForUnit(cm, pos, behavior.unit);
+      var anchor = oldRange.anchor, head;
+      if (cmp(range$$1.anchor, anchor) > 0) {
+        head = range$$1.head;
+        anchor = minPos(oldRange.from(), range$$1.anchor);
+      } else {
+        head = range$$1.anchor;
+        anchor = maxPos(oldRange.to(), range$$1.head);
       }
       var ranges$1 = startSel.ranges.slice(0);
-      ranges$1[ourIndex] = new Range(clipPos(doc, anchor), head);
+      ranges$1[ourIndex] = bidiSimplify(cm, new Range(clipPos(doc, anchor), head));
       setSelection(doc, normalizeSelection(ranges$1, ourIndex), sel_mouse);
     }
   }
@@ -17707,7 +18107,7 @@ function leftButtonSelect(cm, e, start, type, addNew) {
 
   function extend(e) {
     var curCount = ++counter;
-    var cur = posFromMouse(cm, e, true, type == "rect");
+    var cur = posFromMouse(cm, e, true, behavior.unit == "rectangle");
     if (!cur) { return }
     if (cmp(cur, lastPos) != 0) {
       cm.curOp.focus = activeElt();
@@ -17745,13 +18145,52 @@ function leftButtonSelect(cm, e, start, type, addNew) {
   on(document, "mouseup", up);
 }
 
+// Used when mouse-selecting to adjust the anchor to the proper side
+// of a bidi jump depending on the visual position of the head.
+function bidiSimplify(cm, range$$1) {
+  var anchor = range$$1.anchor;
+  var head = range$$1.head;
+  var anchorLine = getLine(cm.doc, anchor.line);
+  if (cmp(anchor, head) == 0 && anchor.sticky == head.sticky) { return range$$1 }
+  var order = getOrder(anchorLine);
+  if (!order) { return range$$1 }
+  var index = getBidiPartAt(order, anchor.ch, anchor.sticky), part = order[index];
+  if (part.from != anchor.ch && part.to != anchor.ch) { return range$$1 }
+  var boundary = index + ((part.from == anchor.ch) == (part.level != 1) ? 0 : 1);
+  if (boundary == 0 || boundary == order.length) { return range$$1 }
+
+  // Compute the relative visual position of the head compared to the
+  // anchor (<0 is to the left, >0 to the right)
+  var leftSide;
+  if (head.line != anchor.line) {
+    leftSide = (head.line - anchor.line) * (cm.doc.direction == "ltr" ? 1 : -1) > 0;
+  } else {
+    var headIndex = getBidiPartAt(order, head.ch, head.sticky);
+    var dir = headIndex - index || (head.ch - anchor.ch) * (part.level == 1 ? -1 : 1);
+    if (headIndex == boundary - 1 || headIndex == boundary)
+      { leftSide = dir < 0; }
+    else
+      { leftSide = dir > 0; }
+  }
+
+  var usePart = order[boundary + (leftSide ? -1 : 0)];
+  var from = leftSide == (usePart.level == 1);
+  var ch = from ? usePart.from : usePart.to, sticky = from ? "after" : "before";
+  return anchor.ch == ch && anchor.sticky == sticky ? range$$1 : new Range(new Pos(anchor.line, ch, sticky), head)
+}
+
 
 // Determines whether an event happened in the gutter, and fires the
 // handlers for the corresponding event.
 function gutterEvent(cm, e, type, prevent) {
   var mX, mY;
-  try { mX = e.clientX; mY = e.clientY; }
-  catch(e) { return false }
+  if (e.touches) {
+    mX = e.touches[0].clientX;
+    mY = e.touches[0].clientY;
+  } else {
+    try { mX = e.clientX; mY = e.clientY; }
+    catch(e) { return false }
+  }
   if (mX >= Math.floor(cm.display.gutters.getBoundingClientRect().right)) { return false }
   if (prevent) { e_preventDefault(e); }
 
@@ -17873,6 +18312,7 @@ function defineOptions(CodeMirror) {
     if (next.attach) { next.attach(cm, prev || null); }
   });
   option("extraKeys", null);
+  option("configureMouse", null);
 
   option("lineWrapping", false, wrappingChanged, true);
   option("gutters", [], function (cm) {
@@ -17900,14 +18340,12 @@ function defineOptions(CodeMirror) {
 
   option("resetSelectionOnContextMenu", true);
   option("lineWiseCopyCut", true);
+  option("pasteLinesPerSelection", true);
 
   option("readOnly", false, function (cm, val) {
     if (val == "nocursor") {
       onBlur(cm);
       cm.display.input.blur();
-      cm.display.disabled = true;
-    } else {
-      cm.display.disabled = false;
     }
     cm.display.input.readOnlyChanged(val);
   });
@@ -18090,7 +18528,7 @@ function registerEventHandlers(cm) {
     return dx * dx + dy * dy > 20 * 20
   }
   on(d.scroller, "touchstart", function (e) {
-    if (!signalDOMEvent(cm, e) && !isMouseLikeTouchEvent(e)) {
+    if (!signalDOMEvent(cm, e) && !isMouseLikeTouchEvent(e) && !clickInGutter(cm, e)) {
       d.input.ensurePolled();
       clearTimeout(touchFinished);
       var now = +new Date;
@@ -18128,7 +18566,7 @@ function registerEventHandlers(cm) {
   // area, ensure viewport is updated when scrolling.
   on(d.scroller, "scroll", function () {
     if (d.scroller.clientHeight) {
-      setScrollTop(cm, d.scroller.scrollTop);
+      updateScrollTop(cm, d.scroller.scrollTop);
       setScrollLeft(cm, d.scroller.scrollLeft, true);
       signal(cm, "scroll", cm);
     }
@@ -18172,7 +18610,7 @@ function indentLine(cm, n, how, aggressive) {
     // Fall back to "prev" when the mode doesn't have an indentation
     // method.
     if (!doc.mode.indent) { how = "prev"; }
-    else { state = getStateBefore(cm, n); }
+    else { state = getContextBefore(cm, n).state; }
   }
 
   var tabSize = cm.options.tabSize;
@@ -18248,7 +18686,7 @@ function applyTextInput(cm, inserted, deleted, sel, origin) {
         for (var i = 0; i < lastCopied.text.length; i++)
           { multiPaste.push(doc.splitLines(lastCopied.text[i])); }
       }
-    } else if (textLines.length == sel.ranges.length) {
+    } else if (textLines.length == sel.ranges.length && cm.options.pasteLinesPerSelection) {
       multiPaste = map(textLines, function (l) { return [l]; });
     }
   }
@@ -18508,7 +18946,7 @@ var addEditorMethods = function(CodeMirror) {
     getStateAfter: function(line, precise) {
       var doc = this.doc;
       line = clipLine(doc, line == null ? doc.first + doc.size - 1: line);
-      return getStateBefore(this, line + 1, precise)
+      return getContextBefore(this, line + 1, precise).state
     },
 
     cursorCoords: function(start, mode) {
@@ -18589,6 +19027,7 @@ var addEditorMethods = function(CodeMirror) {
     triggerOnKeyDown: methodOp(onKeyDown),
     triggerOnKeyPress: methodOp(onKeyPress),
     triggerOnKeyUp: onKeyUp,
+    triggerOnMouseDown: methodOp(onMouseDown),
 
     execCommand: function(cmd) {
       if (commands.hasOwnProperty(cmd))
@@ -18661,7 +19100,7 @@ var addEditorMethods = function(CodeMirror) {
         goals.push(headPos.left);
         var pos = findPosV(this$1, headPos, dir, unit);
         if (unit == "page" && range$$1 == doc.sel.primary())
-          { addToScrollPos(this$1, null, charCoords(this$1, pos, "div").top - headPos.top); }
+          { addToScrollTop(this$1, charCoords(this$1, pos, "div").top - headPos.top); }
         return pos
       }, sel_move);
       if (goals.length) { for (var i = 0; i < doc.sel.ranges.length; i++)
@@ -18698,11 +19137,7 @@ var addEditorMethods = function(CodeMirror) {
     hasFocus: function() { return this.display.input.getField() == activeElt() },
     isReadOnly: function() { return !!(this.options.readOnly || this.doc.cantEdit) },
 
-    scrollTo: methodOp(function(x, y) {
-      if (x != null || y != null) { resolveScrollToPos(this); }
-      if (x != null) { this.curOp.scrollLeft = x; }
-      if (y != null) { this.curOp.scrollTop = y; }
-    }),
+    scrollTo: methodOp(function (x, y) { scrollToCoords(this, x, y); }),
     getScrollInfo: function() {
       var scroller = this.display.scroller;
       return {left: scroller.scrollLeft, top: scroller.scrollTop,
@@ -18724,16 +19159,9 @@ var addEditorMethods = function(CodeMirror) {
       range$$1.margin = margin || 0;
 
       if (range$$1.from.line != null) {
-        resolveScrollToPos(this);
-        this.curOp.scrollToPos = range$$1;
+        scrollToRange(this, range$$1);
       } else {
-        var sPos = calculateScrollPos(this, {
-          left: Math.min(range$$1.from.left, range$$1.to.left),
-          top: Math.min(range$$1.from.top, range$$1.to.top) - range$$1.margin,
-          right: Math.max(range$$1.from.right, range$$1.to.right),
-          bottom: Math.max(range$$1.from.bottom, range$$1.to.bottom) + range$$1.margin
-        });
-        this.scrollTo(sPos.scrollLeft, sPos.scrollTop);
+        scrollToCoordsRange(this, range$$1.from, range$$1.to, range$$1.margin);
       }
     }),
 
@@ -18755,13 +19183,15 @@ var addEditorMethods = function(CodeMirror) {
     }),
 
     operation: function(f){return runInOp(this, f)},
+    startOperation: function(){return startOperation(this)},
+    endOperation: function(){return endOperation(this)},
 
     refresh: methodOp(function() {
       var oldHeight = this.display.cachedTextHeight;
       regChange(this);
       this.curOp.forceUpdate = true;
       clearCaches(this);
-      this.scrollTo(this.doc.scrollLeft, this.doc.scrollTop);
+      scrollToCoords(this, this.doc.scrollLeft, this.doc.scrollTop);
       updateGutterSpace(this);
       if (oldHeight == null || Math.abs(oldHeight - textHeight(this.display)) > .5)
         { estimateLineHeights(this); }
@@ -18774,7 +19204,7 @@ var addEditorMethods = function(CodeMirror) {
       attachDoc(this, doc);
       clearCaches(this);
       this.display.input.reset();
-      this.scrollTo(doc.scrollLeft, doc.scrollTop);
+      scrollToCoords(this, doc.scrollLeft, doc.scrollTop);
       this.curOp.forceScroll = true;
       signalLater(this, "swapDoc", this, old);
       return old
@@ -18985,36 +19415,41 @@ ContentEditableInput.prototype.showSelection = function (info, takeFocus) {
 };
 
 ContentEditableInput.prototype.showPrimarySelection = function () {
-  var sel = window.getSelection(), prim = this.cm.doc.sel.primary();
-  var curAnchor = domToPos(this.cm, sel.anchorNode, sel.anchorOffset);
-  var curFocus = domToPos(this.cm, sel.focusNode, sel.focusOffset);
-  if (curAnchor && !curAnchor.bad && curFocus && !curFocus.bad &&
-      cmp(minPos(curAnchor, curFocus), prim.from()) == 0 &&
-      cmp(maxPos(curAnchor, curFocus), prim.to()) == 0)
-    { return }
+  var sel = window.getSelection(), cm = this.cm, prim = cm.doc.sel.primary();
+  var from = prim.from(), to = prim.to();
 
-  var start = posToDOM(this.cm, prim.from());
-  var end = posToDOM(this.cm, prim.to());
-  if (!start && !end) {
+  if (cm.display.viewTo == cm.display.viewFrom || from.line >= cm.display.viewTo || to.line < cm.display.viewFrom) {
     sel.removeAllRanges();
     return
   }
 
-  var view = this.cm.display.view;
-  var old = sel.rangeCount && sel.getRangeAt(0);
-  if (!start) {
-    start = {node: view[0].measure.map[2], offset: 0};
-  } else if (!end) { // FIXME dangerously hacky
+  var curAnchor = domToPos(cm, sel.anchorNode, sel.anchorOffset);
+  var curFocus = domToPos(cm, sel.focusNode, sel.focusOffset);
+  if (curAnchor && !curAnchor.bad && curFocus && !curFocus.bad &&
+      cmp(minPos(curAnchor, curFocus), from) == 0 &&
+      cmp(maxPos(curAnchor, curFocus), to) == 0)
+    { return }
+
+  var view = cm.display.view;
+  var start = (from.line >= cm.display.viewFrom && posToDOM(cm, from)) ||
+      {node: view[0].measure.map[2], offset: 0};
+  var end = to.line < cm.display.viewTo && posToDOM(cm, to);
+  if (!end) {
     var measure = view[view.length - 1].measure;
     var map$$1 = measure.maps ? measure.maps[measure.maps.length - 1] : measure.map;
     end = {node: map$$1[map$$1.length - 1], offset: map$$1[map$$1.length - 2] - map$$1[map$$1.length - 3]};
   }
 
-  var rng;
+  if (!start || !end) {
+    sel.removeAllRanges();
+    return
+  }
+
+  var old = sel.rangeCount && sel.getRangeAt(0), rng;
   try { rng = range(start.node, start.offset, end.offset, end.node); }
   catch(e) {} // Our model of the DOM might be outdated, in which case the range we try to set can be impossible
   if (rng) {
-    if (!gecko && this.cm.state.focused) {
+    if (!gecko && cm.state.focused) {
       sel.collapse(start.node, start.offset);
       if (!rng.collapsed) {
         sel.removeAllRanges();
@@ -19293,7 +19728,7 @@ function domTextBetween(cm, from, to, fromLine, toLine) {
       var markerID = node.getAttribute("cm-marker"), range$$1;
       if (markerID) {
         var found = cm.findMarks(Pos(fromLine, 0), Pos(toLine + 1, 0), recognizeMarker(+markerID));
-        if (found.length && (range$$1 = found[0].find()))
+        if (found.length && (range$$1 = found[0].find(0)))
           { addText(getBetween(cm.doc, range$$1.from, range$$1.to).join(lineSep)); }
         return
       }
@@ -19402,9 +19837,6 @@ var TextareaInput = function(cm) {
   this.pollingFast = false;
   // Self-resetting timeout for the poller
   this.polling = new Delayed();
-  // Tracks when input.reset has punted to just putting a short
-  // string into the textarea instead of the full selection.
-  this.inaccurateSelection = false;
   // Used to work around IE issue with selection being forgotten when focus moves away from textarea
   this.hasSelection = false;
   this.composing = null;
@@ -19441,12 +19873,6 @@ TextareaInput.prototype.init = function (display) {
     if (signalDOMEvent(cm, e)) { return }
     if (cm.somethingSelected()) {
       setLastCopied({lineWise: false, text: cm.getSelections()});
-      if (input.inaccurateSelection) {
-        input.prevInput = "";
-        input.inaccurateSelection = false;
-        te.value = lastCopied.text.join("\n");
-        selectInput(te);
-      }
     } else if (!cm.options.lineWiseCopyCut) {
       return
     } else {
@@ -19524,14 +19950,11 @@ TextareaInput.prototype.showSelection = function (drawn) {
 // Reset the input to correspond to the selection (or to be empty,
 // when not typing and nothing is selected)
 TextareaInput.prototype.reset = function (typing) {
-  if (this.contextMenuPending) { return }
-  var minimal, selected, cm = this.cm, doc = cm.doc;
+  if (this.contextMenuPending || this.composing) { return }
+  var cm = this.cm;
   if (cm.somethingSelected()) {
     this.prevInput = "";
-    var range$$1 = doc.sel.primary();
-    minimal = hasCopyEvent &&
-      (range$$1.to().line - range$$1.from().line > 100 || (selected = cm.getSelection()).length > 1000);
-    var content = minimal ? "-" : selected || cm.getSelection();
+    var content = cm.getSelection();
     this.textarea.value = content;
     if (cm.state.focused) { selectInput(this.textarea); }
     if (ie && ie_version >= 9) { this.hasSelection = content; }
@@ -19539,7 +19962,6 @@ TextareaInput.prototype.reset = function (typing) {
     this.prevInput = this.textarea.value = "";
     if (ie && ie_version >= 9) { this.hasSelection = null; }
   }
-  this.inaccurateSelection = minimal;
 };
 
 TextareaInput.prototype.getField = function () { return this.textarea };
@@ -19734,6 +20156,7 @@ TextareaInput.prototype.onContextMenu = function (e) {
 
 TextareaInput.prototype.readOnlyChanged = function (val) {
   if (!val) { this.reset(); }
+  this.textarea.disabled = val == "nocursor";
 };
 
 TextareaInput.prototype.setUneditable = function () {};
@@ -19889,13 +20312,2675 @@ CodeMirror$1.fromTextArea = fromTextArea;
 
 addLegacyProps(CodeMirror$1);
 
-CodeMirror$1.version = "5.25.0";
+CodeMirror$1.version = "5.31.0";
 
 return CodeMirror$1;
 
 })));
 
-},{}],69:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
+"use strict";
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * 
+ */
+
+function makeEmptyFunction(arg) {
+  return function () {
+    return arg;
+  };
+}
+
+/**
+ * This function accepts and discards inputs; it has no side effects. This is
+ * primarily useful idiomatically for overridable function endpoints which
+ * always need to be callable, since JS lacks a null-call idiom ala Cocoa.
+ */
+var emptyFunction = function emptyFunction() {};
+
+emptyFunction.thatReturns = makeEmptyFunction;
+emptyFunction.thatReturnsFalse = makeEmptyFunction(false);
+emptyFunction.thatReturnsTrue = makeEmptyFunction(true);
+emptyFunction.thatReturnsNull = makeEmptyFunction(null);
+emptyFunction.thatReturnsThis = function () {
+  return this;
+};
+emptyFunction.thatReturnsArgument = function (arg) {
+  return arg;
+};
+
+module.exports = emptyFunction;
+},{}],67:[function(require,module,exports){
+(function (process){
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+'use strict';
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var validateFormat = function validateFormat(format) {};
+
+if (process.env.NODE_ENV !== 'production') {
+  validateFormat = function validateFormat(format) {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  };
+}
+
+function invariant(condition, format, a, b, c, d, e, f) {
+  validateFormat(format);
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error('Minified exception occurred; use the non-minified dev environment ' + 'for the full error message and additional helpful warnings.');
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(format.replace(/%s/g, function () {
+        return args[argIndex++];
+      }));
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
+}
+
+module.exports = invariant;
+}).call(this,require('_process'))
+},{"_process":170}],68:[function(require,module,exports){
+(function (process){
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+'use strict';
+
+var emptyFunction = require('./emptyFunction');
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var warning = emptyFunction;
+
+if (process.env.NODE_ENV !== 'production') {
+  var printWarning = function printWarning(format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  warning = function warning(condition, format) {
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
+      }
+
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
+}
+
+module.exports = warning;
+}).call(this,require('_process'))
+},{"./emptyFunction":66,"_process":170}],69:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GraphQLLanguageService = undefined;
+
+var _kinds = require('graphql/language/kinds');
+
+var _graphql = require('graphql');
+
+var _getAutocompleteSuggestions2 = require('./getAutocompleteSuggestions');
+
+var _getDiagnostics = require('./getDiagnostics');
+
+var _getDefinition = require('./getDefinition');
+
+var _graphqlLanguageServiceUtils = require('graphql-language-service-utils');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /**
+                                                                                                                                                           *  Copyright (c) Facebook, Inc.
+                                                                                                                                                           *  All rights reserved.
+                                                                                                                                                           *
+                                                                                                                                                           *  This source code is licensed under the license found in the
+                                                                                                                                                           *  LICENSE file in the root directory of this source tree.
+                                                                                                                                                           *
+                                                                                                                                                           *  
+                                                                                                                                                           */
+
+var GraphQLLanguageService = exports.GraphQLLanguageService = function () {
+  function GraphQLLanguageService(cache) {
+    _classCallCheck(this, GraphQLLanguageService);
+
+    this._graphQLCache = cache;
+    this._graphQLConfig = cache.getGraphQLConfig();
+  }
+
+  GraphQLLanguageService.prototype.getDiagnostics = function getDiagnostics(query, uri) {
+    var source, appName, schema, customRules, fragmentDefinitions, fragmentDependencies, dependenciesSource, customRulesModulePath, rulesPath;
+    return regeneratorRuntime.async(function getDiagnostics$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            source = query;
+            appName = this._graphQLConfig.getAppConfigNameByFilePath(uri);
+            // If there's a matching config, proceed to prepare to run validation
+
+            schema = void 0;
+            customRules = void 0;
+
+            if (!this._graphQLConfig.getSchemaPath(appName)) {
+              _context.next = 18;
+              break;
+            }
+
+            _context.next = 7;
+            return regeneratorRuntime.awrap(this._graphQLCache.getSchema(this._graphQLConfig.getSchemaPath(appName)));
+
+          case 7:
+            schema = _context.sent;
+            _context.next = 10;
+            return regeneratorRuntime.awrap(this._graphQLCache.getFragmentDefinitions(this._graphQLConfig, appName));
+
+          case 10:
+            fragmentDefinitions = _context.sent;
+            _context.next = 13;
+            return regeneratorRuntime.awrap(this._graphQLCache.getFragmentDependencies(query, fragmentDefinitions));
+
+          case 13:
+            fragmentDependencies = _context.sent;
+            dependenciesSource = fragmentDependencies.reduce(function (prev, cur) {
+              return prev + ' ' + (0, _graphql.print)(cur.definition);
+            }, '');
+
+
+            source = source + ' ' + dependenciesSource;
+
+            // Check if there are custom validation rules to be used
+            customRulesModulePath = this._graphQLConfig.getCustomValidationRulesModulePath(appName);
+
+            if (customRulesModulePath) {
+              /* eslint-disable no-implicit-coercion */
+              rulesPath = require.resolve('' + customRulesModulePath);
+
+              if (rulesPath) {
+                customRules = require('' + rulesPath)(this._graphQLConfig);
+              }
+              /* eslint-enable no-implicit-coercion */
+            }
+
+          case 18:
+            return _context.abrupt('return', (0, _getDiagnostics.getDiagnostics)(source, schema, customRules));
+
+          case 19:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, null, this);
+  };
+
+  GraphQLLanguageService.prototype.getAutocompleteSuggestions = function getAutocompleteSuggestions(query, position, filePath) {
+    var appName, schema;
+    return regeneratorRuntime.async(function getAutocompleteSuggestions$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            appName = this._graphQLConfig.getAppConfigNameByFilePath(filePath);
+            schema = void 0;
+
+            if (!this._graphQLConfig.getSchemaPath(appName)) {
+              _context2.next = 8;
+              break;
+            }
+
+            _context2.next = 5;
+            return regeneratorRuntime.awrap(this._graphQLCache.getSchema(this._graphQLConfig.getSchemaPath(appName)));
+
+          case 5:
+            schema = _context2.sent;
+
+            if (!schema) {
+              _context2.next = 8;
+              break;
+            }
+
+            return _context2.abrupt('return', (0, _getAutocompleteSuggestions2.getAutocompleteSuggestions)(schema, query, position));
+
+          case 8:
+            return _context2.abrupt('return', []);
+
+          case 9:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, null, this);
+  };
+
+  GraphQLLanguageService.prototype.getDefinition = function getDefinition(query, position, filePath) {
+    var appName, ast, node;
+    return regeneratorRuntime.async(function getDefinition$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            appName = this._graphQLConfig.getAppConfigNameByFilePath(filePath);
+            ast = void 0;
+            _context3.prev = 2;
+
+            ast = (0, _graphql.parse)(query);
+            _context3.next = 9;
+            break;
+
+          case 6:
+            _context3.prev = 6;
+            _context3.t0 = _context3['catch'](2);
+            return _context3.abrupt('return', null);
+
+          case 9:
+            node = (0, _graphqlLanguageServiceUtils.getASTNodeAtPosition)(query, ast, position);
+
+            if (!node) {
+              _context3.next = 16;
+              break;
+            }
+
+            _context3.t1 = node.kind;
+            _context3.next = _context3.t1 === _kinds.FRAGMENT_SPREAD ? 14 : _context3.t1 === _kinds.FRAGMENT_DEFINITION ? 15 : _context3.t1 === _kinds.OPERATION_DEFINITION ? 15 : 16;
+            break;
+
+          case 14:
+            return _context3.abrupt('return', this._getDefinitionForFragmentSpread(query, ast, node, filePath, this._graphQLConfig, appName));
+
+          case 15:
+            return _context3.abrupt('return', (0, _getDefinition.getDefinitionQueryResultForDefinitionNode)(filePath, query, node));
+
+          case 16:
+            return _context3.abrupt('return', null);
+
+          case 17:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, null, this, [[2, 6]]);
+  };
+
+  GraphQLLanguageService.prototype._getDefinitionForFragmentSpread = function _getDefinitionForFragmentSpread(query, ast, node, filePath, graphQLConfig, appName) {
+    var fragmentDefinitions, dependencies, localFragDefinitions, typeCastedDefs, localFragInfos, result;
+    return regeneratorRuntime.async(function _getDefinitionForFragmentSpread$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.next = 2;
+            return regeneratorRuntime.awrap(this._graphQLCache.getFragmentDefinitions(graphQLConfig, appName));
+
+          case 2:
+            fragmentDefinitions = _context4.sent;
+            _context4.next = 5;
+            return regeneratorRuntime.awrap(this._graphQLCache.getFragmentDependenciesForAST(ast, fragmentDefinitions));
+
+          case 5:
+            dependencies = _context4.sent;
+            localFragDefinitions = ast.definitions.filter(function (definition) {
+              return definition.kind === _kinds.FRAGMENT_DEFINITION;
+            });
+            typeCastedDefs = localFragDefinitions;
+            localFragInfos = typeCastedDefs.map(function (definition) {
+              return {
+                filePath: filePath,
+                content: query,
+                definition: definition
+              };
+            });
+            _context4.next = 11;
+            return regeneratorRuntime.awrap((0, _getDefinition.getDefinitionQueryResultForFragmentSpread)(query, node, dependencies.concat(localFragInfos)));
+
+          case 11:
+            result = _context4.sent;
+            return _context4.abrupt('return', result);
+
+          case 13:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, null, this);
+  };
+
+  return GraphQLLanguageService;
+}();
+},{"./getAutocompleteSuggestions":71,"./getDefinition":72,"./getDiagnostics":73,"graphql":94,"graphql-language-service-utils":83,"graphql/language/kinds":104}],70:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getDefinitionState = getDefinitionState;
+exports.getFieldDef = getFieldDef;
+exports.forEachState = forEachState;
+exports.objectValues = objectValues;
+exports.hintList = hintList;
+
+var _graphql = require('graphql');
+
+var _introspection = require('graphql/type/introspection');
+
+// Utility for returning the state representing the Definition this token state
+// is within, if any.
+function getDefinitionState(tokenState) {
+  var definitionState = void 0;
+
+  forEachState(tokenState, function (state) {
+    switch (state.kind) {
+      case 'Query':
+      case 'ShortQuery':
+      case 'Mutation':
+      case 'Subscription':
+      case 'FragmentDefinition':
+        definitionState = state;
+        break;
+    }
+  });
+
+  return definitionState;
+}
+
+// Gets the field definition given a type and field name
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  
+ */
+
+function getFieldDef(schema, type, fieldName) {
+  if (fieldName === _introspection.SchemaMetaFieldDef.name && schema.getQueryType() === type) {
+    return _introspection.SchemaMetaFieldDef;
+  }
+  if (fieldName === _introspection.TypeMetaFieldDef.name && schema.getQueryType() === type) {
+    return _introspection.TypeMetaFieldDef;
+  }
+  if (fieldName === _introspection.TypeNameMetaFieldDef.name && (0, _graphql.isCompositeType)(type)) {
+    return _introspection.TypeNameMetaFieldDef;
+  }
+  if (type.getFields && typeof type.getFields === 'function') {
+    return type.getFields()[fieldName];
+  }
+
+  return null;
+}
+
+// Utility for iterating through a CodeMirror parse state stack bottom-up.
+function forEachState(stack, fn) {
+  var reverseStateStack = [];
+  var state = stack;
+  while (state && state.kind) {
+    reverseStateStack.push(state);
+    state = state.prevState;
+  }
+  for (var i = reverseStateStack.length - 1; i >= 0; i--) {
+    fn(reverseStateStack[i]);
+  }
+}
+
+function objectValues(object) {
+  var keys = Object.keys(object);
+  var len = keys.length;
+  var values = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    values[i] = object[keys[i]];
+  }
+  return values;
+}
+
+// Create the expected hint response given a possible list and a token
+function hintList(token, list) {
+  return filterAndSortList(list, normalizeText(token.string));
+}
+
+// Given a list of hint entries and currently typed text, sort and filter to
+// provide a concise list.
+function filterAndSortList(list, text) {
+  if (!text) {
+    return filterNonEmpty(list, function (entry) {
+      return !entry.isDeprecated;
+    });
+  }
+
+  var byProximity = list.map(function (entry) {
+    return {
+      proximity: getProximity(normalizeText(entry.label), text),
+      entry: entry
+    };
+  });
+
+  var conciseMatches = filterNonEmpty(filterNonEmpty(byProximity, function (pair) {
+    return pair.proximity <= 2;
+  }), function (pair) {
+    return !pair.entry.isDeprecated;
+  });
+
+  var sortedMatches = conciseMatches.sort(function (a, b) {
+    return (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) || a.proximity - b.proximity || a.entry.label.length - b.entry.label.length;
+  });
+
+  return sortedMatches.map(function (pair) {
+    return pair.entry;
+  });
+}
+
+// Filters the array by the predicate, unless it results in an empty array,
+// in which case return the original array.
+function filterNonEmpty(array, predicate) {
+  var filtered = array.filter(predicate);
+  return filtered.length === 0 ? array : filtered;
+}
+
+function normalizeText(text) {
+  return text.toLowerCase().replace(/\W/g, '');
+}
+
+// Determine a numeric proximity for a suggestion based on current text.
+function getProximity(suggestion, text) {
+  // start with lexical distance
+  var proximity = lexicalDistance(text, suggestion);
+  if (suggestion.length > text.length) {
+    // do not penalize long suggestions.
+    proximity -= suggestion.length - text.length - 1;
+    // penalize suggestions not starting with this phrase
+    proximity += suggestion.indexOf(text) === 0 ? 0 : 0.5;
+  }
+  return proximity;
+}
+
+/**
+ * Computes the lexical distance between strings A and B.
+ *
+ * The "distance" between two strings is given by counting the minimum number
+ * of edits needed to transform string A into string B. An edit can be an
+ * insertion, deletion, or substitution of a single character, or a swap of two
+ * adjacent characters.
+ *
+ * This distance can be useful for detecting typos in input or sorting
+ *
+ * @param {string} a
+ * @param {string} b
+ * @return {int} distance in number of edits
+ */
+function lexicalDistance(a, b) {
+  var i = void 0;
+  var j = void 0;
+  var d = [];
+  var aLength = a.length;
+  var bLength = b.length;
+
+  for (i = 0; i <= aLength; i++) {
+    d[i] = [i];
+  }
+
+  for (j = 1; j <= bLength; j++) {
+    d[0][j] = j;
+  }
+
+  for (i = 1; i <= aLength; i++) {
+    for (j = 1; j <= bLength; j++) {
+      var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + cost);
+      }
+    }
+  }
+
+  return d[aLength][bLength];
+}
+},{"graphql":94,"graphql/type/introspection":117}],71:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+                                                                                                                                                                                                                                                                   *  Copyright (c) Facebook, Inc.
+                                                                                                                                                                                                                                                                   *  All rights reserved.
+                                                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                                                   *  This source code is licensed under the license found in the
+                                                                                                                                                                                                                                                                   *  LICENSE file in the root directory of this source tree.
+                                                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                                                   *  
+                                                                                                                                                                                                                                                                   */
+
+exports.getAutocompleteSuggestions = getAutocompleteSuggestions;
+
+var _graphql = require('graphql');
+
+var _graphqlLanguageServiceParser = require('graphql-language-service-parser');
+
+var _autocompleteUtils = require('./autocompleteUtils');
+
+/**
+ * Given GraphQLSchema, queryText, and context of the current position within
+ * the source text, provide a list of typeahead entries.
+ */
+function getAutocompleteSuggestions(schema, queryText, cursor, contextToken) {
+  var token = contextToken || getTokenAtPosition(queryText, cursor);
+
+  var state = token.state.kind === 'Invalid' ? token.state.prevState : token.state;
+
+  // relieve flow errors by checking if `state` exists
+  if (!state) {
+    return [];
+  }
+
+  var kind = state.kind;
+  var step = state.step;
+  var typeInfo = getTypeInfo(schema, token.state);
+
+  // Definition kinds
+  if (kind === 'Document') {
+    return (0, _autocompleteUtils.hintList)(token, [{ label: 'query' }, { label: 'mutation' }, { label: 'subscription' }, { label: 'fragment' }, { label: '{' }]);
+  }
+
+  // Field names
+  if (kind === 'SelectionSet' || kind === 'Field' || kind === 'AliasedField') {
+    return getSuggestionsForFieldNames(token, typeInfo, schema);
+  }
+
+  // Argument names
+  if (kind === 'Arguments' || kind === 'Argument' && step === 0) {
+    var argDefs = typeInfo.argDefs;
+    if (argDefs) {
+      return (0, _autocompleteUtils.hintList)(token, argDefs.map(function (argDef) {
+        return {
+          label: argDef.name,
+          detail: String(argDef.type),
+          documentation: argDef.description
+        };
+      }));
+    }
+  }
+
+  // Input Object fields
+  if (kind === 'ObjectValue' || kind === 'ObjectField' && step === 0) {
+    if (typeInfo.objectFieldDefs) {
+      var objectFields = (0, _autocompleteUtils.objectValues)(typeInfo.objectFieldDefs);
+      return (0, _autocompleteUtils.hintList)(token, objectFields.map(function (field) {
+        return {
+          label: field.name,
+          detail: String(field.type),
+          documentation: field.description
+        };
+      }));
+    }
+  }
+
+  // Input values: Enum and Boolean
+  if (kind === 'EnumValue' || kind === 'ListValue' && step === 1 || kind === 'ObjectField' && step === 2 || kind === 'Argument' && step === 2) {
+    return getSuggestionsForInputValues(token, typeInfo);
+  }
+
+  // Fragment type conditions
+  if (kind === 'TypeCondition' && step === 1 || kind === 'NamedType' && state.prevState != null && state.prevState.kind === 'TypeCondition') {
+    return getSuggestionsForFragmentTypeConditions(token, typeInfo, schema);
+  }
+
+  // Fragment spread names
+  if (kind === 'FragmentSpread' && step === 1) {
+    return getSuggestionsForFragmentSpread(token, typeInfo, schema, queryText);
+  }
+
+  // Variable definition types
+  if (kind === 'VariableDefinition' && step === 2 || kind === 'ListType' && step === 1 || kind === 'NamedType' && state.prevState && (state.prevState.kind === 'VariableDefinition' || state.prevState.kind === 'ListType')) {
+    return getSuggestionsForVariableDefinition(token, schema);
+  }
+
+  // Directive names
+  if (kind === 'Directive') {
+    return getSuggestionsForDirective(token, state, schema);
+  }
+
+  return [];
+}
+
+// Helper functions to get suggestions for each kinds
+function getSuggestionsForFieldNames(token, typeInfo, schema) {
+  if (typeInfo.parentType) {
+    var parentType = typeInfo.parentType;
+    var fields = parentType.getFields instanceof Function ? (0, _autocompleteUtils.objectValues)(parentType.getFields()) : [];
+    if ((0, _graphql.isAbstractType)(parentType)) {
+      fields.push(_graphql.TypeNameMetaFieldDef);
+    }
+    if (parentType === schema.getQueryType()) {
+      fields.push(_graphql.SchemaMetaFieldDef, _graphql.TypeMetaFieldDef);
+    }
+    return (0, _autocompleteUtils.hintList)(token, fields.map(function (field) {
+      return {
+        label: field.name,
+        detail: String(field.type),
+        documentation: field.description,
+        isDeprecated: field.isDeprecated,
+        deprecationReason: field.deprecationReason
+      };
+    }));
+  }
+  return [];
+}
+
+function getSuggestionsForInputValues(token, typeInfo) {
+  var namedInputType = (0, _graphql.getNamedType)(typeInfo.inputType);
+  if (namedInputType instanceof _graphql.GraphQLEnumType) {
+    var values = namedInputType.getValues();
+    return (0, _autocompleteUtils.hintList)(token, values.map(function (value) {
+      return {
+        label: value.name,
+        detail: String(namedInputType),
+        documentation: value.description,
+        isDeprecated: value.isDeprecated,
+        deprecationReason: value.deprecationReason
+      };
+    }));
+  } else if (namedInputType === _graphql.GraphQLBoolean) {
+    return (0, _autocompleteUtils.hintList)(token, [{
+      label: 'true',
+      detail: String(_graphql.GraphQLBoolean),
+      documentation: 'Not false.'
+    }, {
+      label: 'false',
+      detail: String(_graphql.GraphQLBoolean),
+      documentation: 'Not true.'
+    }]);
+  }
+
+  return [];
+}
+
+function getSuggestionsForFragmentTypeConditions(token, typeInfo, schema) {
+  var possibleTypes = void 0;
+  if (typeInfo.parentType) {
+    if ((0, _graphql.isAbstractType)(typeInfo.parentType)) {
+      var abstractType = (0, _graphql.assertAbstractType)(typeInfo.parentType);
+      // Collect both the possible Object types as well as the interfaces
+      // they implement.
+      var possibleObjTypes = schema.getPossibleTypes(abstractType);
+      var possibleIfaceMap = Object.create(null);
+      possibleObjTypes.forEach(function (type) {
+        type.getInterfaces().forEach(function (iface) {
+          possibleIfaceMap[iface.name] = iface;
+        });
+      });
+      possibleTypes = possibleObjTypes.concat((0, _autocompleteUtils.objectValues)(possibleIfaceMap));
+    } else {
+      // The parent type is a non-abstract Object type, so the only possible
+      // type that can be used is that same type.
+      possibleTypes = [typeInfo.parentType];
+    }
+  } else {
+    var typeMap = schema.getTypeMap();
+    possibleTypes = (0, _autocompleteUtils.objectValues)(typeMap).filter(_graphql.isCompositeType);
+  }
+  return (0, _autocompleteUtils.hintList)(token, possibleTypes.map(function (type) {
+    var namedType = (0, _graphql.getNamedType)(type);
+    return {
+      label: String(type),
+      documentation: namedType && namedType.description || ''
+    };
+  }));
+}
+
+function getSuggestionsForFragmentSpread(token, typeInfo, schema, queryText) {
+  var typeMap = schema.getTypeMap();
+  var defState = (0, _autocompleteUtils.getDefinitionState)(token.state);
+  var fragments = getFragmentDefinitions(queryText);
+
+  // Filter down to only the fragments which may exist here.
+  var relevantFrags = fragments.filter(function (frag) {
+    return (
+      // Only include fragments with known types.
+      typeMap[frag.typeCondition.name.value] &&
+      // Only include fragments which are not cyclic.
+      !(defState && defState.kind === 'FragmentDefinition' && defState.name === frag.name.value) &&
+      // Only include fragments which could possibly be spread here.
+      (0, _graphql.isCompositeType)(typeInfo.parentType) && (0, _graphql.isCompositeType)(typeMap[frag.typeCondition.name.value]) && (0, _graphql.doTypesOverlap)(schema, typeInfo.parentType, typeMap[frag.typeCondition.name.value])
+    );
+  });
+
+  return (0, _autocompleteUtils.hintList)(token, relevantFrags.map(function (frag) {
+    return {
+      label: frag.name.value,
+      detail: String(typeMap[frag.typeCondition.name.value]),
+      documentation: 'fragment ' + frag.name.value + ' on ' + frag.typeCondition.name.value
+    };
+  }));
+}
+
+function getFragmentDefinitions(queryText) {
+  var fragmentDefs = [];
+  runOnlineParser(queryText, function (_, state) {
+    if (state.kind === 'FragmentDefinition' && state.name && state.type) {
+      fragmentDefs.push({
+        kind: 'FragmentDefinition',
+        name: {
+          kind: 'Name',
+          value: state.name
+        },
+        selectionSet: {
+          kind: 'SelectionSet',
+          selections: []
+        },
+        typeCondition: {
+          kind: 'NamedType',
+          name: {
+            kind: 'Name',
+            value: state.type
+          }
+        }
+      });
+    }
+  });
+
+  return fragmentDefs;
+}
+
+function getSuggestionsForVariableDefinition(token, schema) {
+  var inputTypeMap = schema.getTypeMap();
+  var inputTypes = (0, _autocompleteUtils.objectValues)(inputTypeMap).filter(_graphql.isInputType);
+  return (0, _autocompleteUtils.hintList)(token, inputTypes.map(function (type) {
+    return {
+      label: type.name,
+      documentation: type.description
+    };
+  }));
+}
+
+function getSuggestionsForDirective(token, state, schema) {
+  if (state.prevState && state.prevState.kind) {
+    var directives = schema.getDirectives().filter(function (directive) {
+      return canUseDirective(state.prevState, directive);
+    });
+    return (0, _autocompleteUtils.hintList)(token, directives.map(function (directive) {
+      return {
+        label: directive.name,
+        documentation: directive.description || ''
+      };
+    }));
+  }
+  return [];
+}
+
+function getTokenAtPosition(queryText, cursor) {
+  var styleAtCursor = null;
+  var stateAtCursor = null;
+  var stringAtCursor = null;
+  var token = runOnlineParser(queryText, function (stream, state, style, index) {
+    if (index === cursor.line) {
+      if (stream.getCurrentPosition() >= cursor.character) {
+        styleAtCursor = style;
+        stateAtCursor = _extends({}, state);
+        stringAtCursor = stream.current();
+        return 'BREAK';
+      }
+    }
+  });
+
+  // Return the state/style of parsed token in case those at cursor aren't
+  // available.
+  return {
+    start: token.start,
+    end: token.end,
+    string: stringAtCursor || token.string,
+    state: stateAtCursor || token.state,
+    style: styleAtCursor || token.style
+  };
+}
+
+/**
+ * Provides an utility function to parse a given query text and construct a
+ * `token` context object.
+ * A token context provides useful information about the token/style that
+ * CharacterStream currently possesses, as well as the end state and style
+ * of the token.
+ */
+
+
+function runOnlineParser(queryText, callback) {
+  var lines = queryText.split('\n');
+  var parser = (0, _graphqlLanguageServiceParser.onlineParser)();
+  var state = parser.startState();
+  var style = '';
+
+  var stream = new _graphqlLanguageServiceParser.CharacterStream('');
+
+  for (var i = 0; i < lines.length; i++) {
+    stream = new _graphqlLanguageServiceParser.CharacterStream(lines[i]);
+    while (!stream.eol()) {
+      style = parser.token(stream, state);
+      var code = callback(stream, state, style, i);
+      if (code === 'BREAK') {
+        break;
+      }
+    }
+
+    // Above while loop won't run if there is an empty line.
+    // Run the callback one more time to catch this.
+    callback(stream, state, style, i);
+
+    if (!state.kind) {
+      state = parser.startState();
+    }
+  }
+
+  return {
+    start: stream.getStartOfToken(),
+    end: stream.getCurrentPosition(),
+    string: stream.current(),
+    state: state,
+    style: style
+  };
+}
+
+function canUseDirective(state, directive) {
+  if (!state || !state.kind) {
+    return false;
+  }
+  var kind = state.kind;
+  var locations = directive.locations;
+  switch (kind) {
+    case 'Query':
+      return locations.indexOf('QUERY') !== -1;
+    case 'Mutation':
+      return locations.indexOf('MUTATION') !== -1;
+    case 'Subscription':
+      return locations.indexOf('SUBSCRIPTION') !== -1;
+    case 'Field':
+    case 'AliasedField':
+      return locations.indexOf('FIELD') !== -1;
+    case 'FragmentDefinition':
+      return locations.indexOf('FRAGMENT_DEFINITION') !== -1;
+    case 'FragmentSpread':
+      return locations.indexOf('FRAGMENT_SPREAD') !== -1;
+    case 'InlineFragment':
+      return locations.indexOf('INLINE_FRAGMENT') !== -1;
+
+    // Schema Definitions
+    case 'SchemaDef':
+      return locations.indexOf('SCHEMA') !== -1;
+    case 'ScalarDef':
+      return locations.indexOf('SCALAR') !== -1;
+    case 'ObjectTypeDef':
+      return locations.indexOf('OBJECT') !== -1;
+    case 'FieldDef':
+      return locations.indexOf('FIELD_DEFINITION') !== -1;
+    case 'InterfaceDef':
+      return locations.indexOf('INTERFACE') !== -1;
+    case 'UnionDef':
+      return locations.indexOf('UNION') !== -1;
+    case 'EnumDef':
+      return locations.indexOf('ENUM') !== -1;
+    case 'EnumValue':
+      return locations.indexOf('ENUM_VALUE') !== -1;
+    case 'InputDef':
+      return locations.indexOf('INPUT_OBJECT') !== -1;
+    case 'InputValueDef':
+      var prevStateKind = state.prevState && state.prevState.kind;
+      switch (prevStateKind) {
+        case 'ArgumentsDef':
+          return locations.indexOf('ARGUMENT_DEFINITION') !== -1;
+        case 'InputDef':
+          return locations.indexOf('INPUT_FIELD_DEFINITION') !== -1;
+      }
+  }
+  return false;
+}
+
+// Utility for collecting rich type information given any token's state
+// from the graphql-mode parser.
+function getTypeInfo(schema, tokenState) {
+  var argDef = void 0;
+  var argDefs = void 0;
+  var directiveDef = void 0;
+  var enumValue = void 0;
+  var fieldDef = void 0;
+  var inputType = void 0;
+  var objectFieldDefs = void 0;
+  var parentType = void 0;
+  var type = void 0;
+
+  (0, _autocompleteUtils.forEachState)(tokenState, function (state) {
+    switch (state.kind) {
+      case 'Query':
+      case 'ShortQuery':
+        type = schema.getQueryType();
+        break;
+      case 'Mutation':
+        type = schema.getMutationType();
+        break;
+      case 'Subscription':
+        type = schema.getSubscriptionType();
+        break;
+      case 'InlineFragment':
+      case 'FragmentDefinition':
+        if (state.type) {
+          type = schema.getType(state.type);
+        }
+        break;
+      case 'Field':
+      case 'AliasedField':
+        if (!type || !state.name) {
+          fieldDef = null;
+        } else {
+          fieldDef = parentType ? (0, _autocompleteUtils.getFieldDef)(schema, parentType, state.name) : null;
+          type = fieldDef ? fieldDef.type : null;
+        }
+        break;
+      case 'SelectionSet':
+        parentType = (0, _graphql.getNamedType)(type);
+        break;
+      case 'Directive':
+        directiveDef = state.name ? schema.getDirective(state.name) : null;
+        break;
+      case 'Arguments':
+        if (!state.prevState) {
+          argDefs = null;
+        } else {
+          switch (state.prevState.kind) {
+            case 'Field':
+              argDefs = fieldDef && fieldDef.args;
+              break;
+            case 'Directive':
+              argDefs = directiveDef && directiveDef.args;
+              break;
+            case 'AliasedField':
+              var name = state.prevState && state.prevState.name;
+              if (!name) {
+                argDefs = null;
+                break;
+              }
+              var field = parentType ? (0, _autocompleteUtils.getFieldDef)(schema, parentType, name) : null;
+              if (!field) {
+                argDefs = null;
+                break;
+              }
+              argDefs = field.args;
+              break;
+            default:
+              argDefs = null;
+              break;
+          }
+        }
+        break;
+      case 'Argument':
+        if (argDefs) {
+          for (var i = 0; i < argDefs.length; i++) {
+            if (argDefs[i].name === state.name) {
+              argDef = argDefs[i];
+              break;
+            }
+          }
+        }
+        inputType = argDef && argDef.type;
+        break;
+      case 'EnumValue':
+        var enumType = (0, _graphql.getNamedType)(inputType);
+        enumValue = enumType instanceof _graphql.GraphQLEnumType ? find(enumType.getValues(), function (val) {
+          return val.value === state.name;
+        }) : null;
+        break;
+      case 'ListValue':
+        var nullableType = (0, _graphql.getNullableType)(inputType);
+        inputType = nullableType instanceof _graphql.GraphQLList ? nullableType.ofType : null;
+        break;
+      case 'ObjectValue':
+        var objectType = (0, _graphql.getNamedType)(inputType);
+        objectFieldDefs = objectType instanceof _graphql.GraphQLInputObjectType ? objectType.getFields() : null;
+        break;
+      case 'ObjectField':
+        var objectField = state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
+        inputType = objectField && objectField.type;
+        break;
+      case 'NamedType':
+        if (state.name) {
+          type = schema.getType(state.name);
+        }
+        break;
+    }
+  });
+
+  return {
+    argDef: argDef,
+    argDefs: argDefs,
+    directiveDef: directiveDef,
+    enumValue: enumValue,
+    fieldDef: fieldDef,
+    inputType: inputType,
+    objectFieldDefs: objectFieldDefs,
+    parentType: parentType,
+    type: type
+  };
+}
+
+// Returns the first item in the array which causes predicate to return truthy.
+function find(array, predicate) {
+  for (var i = 0; i < array.length; i++) {
+    if (predicate(array[i])) {
+      return array[i];
+    }
+  }
+  return null;
+}
+},{"./autocompleteUtils":70,"graphql":94,"graphql-language-service-parser":79}],72:[function(require,module,exports){
+(function (process){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LANGUAGE = undefined;
+exports.getDefinitionQueryResultForFragmentSpread = getDefinitionQueryResultForFragmentSpread;
+exports.getDefinitionQueryResultForDefinitionNode = getDefinitionQueryResultForDefinitionNode;
+
+var _graphqlLanguageServiceUtils = require('graphql-language-service-utils');
+
+var _assert = require('assert');
+
+var _assert2 = _interopRequireDefault(_assert);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  
+ */
+
+var LANGUAGE = exports.LANGUAGE = 'GraphQL';
+
+function getRange(text, node) {
+  var location = node.loc;
+  (0, _assert2.default)(location, 'Expected ASTNode to have a location.');
+  return (0, _graphqlLanguageServiceUtils.locToRange)(text, location);
+}
+
+function getPosition(text, node) {
+  var location = node.loc;
+  (0, _assert2.default)(location, 'Expected ASTNode to have a location.');
+  return (0, _graphqlLanguageServiceUtils.offsetToPosition)(text, location.start);
+}
+
+function getDefinitionQueryResultForFragmentSpread(text, fragment, dependencies) {
+  var name, defNodes, definitions;
+  return regeneratorRuntime.async(function getDefinitionQueryResultForFragmentSpread$(_context) {
+    while (1) {
+      switch (_context.prev = _context.next) {
+        case 0:
+          name = fragment.name.value;
+          defNodes = dependencies.filter(function (_ref) {
+            var definition = _ref.definition;
+            return definition.name.value === name;
+          });
+
+          if (!(defNodes.length === 0)) {
+            _context.next = 5;
+            break;
+          }
+
+          process.stderr.write('Definition not found for GraphQL fragment ' + name);
+          return _context.abrupt('return', { queryRange: [], definitions: [] });
+
+        case 5:
+          definitions = defNodes.map(function (_ref2) {
+            var filePath = _ref2.filePath,
+                content = _ref2.content,
+                definition = _ref2.definition;
+            return getDefinitionForFragmentDefinition(filePath || '', content, definition);
+          });
+          return _context.abrupt('return', {
+            definitions: definitions,
+            queryRange: definitions.map(function (_) {
+              return getRange(text, fragment);
+            })
+          });
+
+        case 7:
+        case 'end':
+          return _context.stop();
+      }
+    }
+  }, null, this);
+}
+
+function getDefinitionQueryResultForDefinitionNode(path, text, definition) {
+  return {
+    definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
+    queryRange: definition.name ? [getRange(text, definition.name)] : []
+  };
+}
+
+function getDefinitionForFragmentDefinition(path, text, definition) {
+  var name = definition.name;
+  (0, _assert2.default)(name, 'Expected ASTNode to have a Name.');
+  return {
+    path: path,
+    position: getPosition(text, name),
+    range: getRange(text, definition),
+    name: name.value || '',
+    language: LANGUAGE,
+    // This is a file inside the project root, good enough for now
+    projectRoot: path
+  };
+}
+}).call(this,require('_process'))
+},{"_process":170,"assert":35,"graphql-language-service-utils":83}],73:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SEVERITY = undefined;
+exports.getDiagnostics = getDiagnostics;
+
+var _assert = require('assert');
+
+var _assert2 = _interopRequireDefault(_assert);
+
+var _graphql = require('graphql');
+
+var _graphqlLanguageServiceParser = require('graphql-language-service-parser');
+
+var _graphqlLanguageServiceUtils = require('graphql-language-service-utils');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  
+ */
+
+var SEVERITY = exports.SEVERITY = {
+  ERROR: 1,
+  WARNING: 2,
+  INFORMATION: 3,
+  HINT: 4
+};
+
+function getDiagnostics(queryText) {
+  var schema = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var customRules = arguments[2];
+
+  var ast = null;
+  try {
+    ast = (0, _graphql.parse)(queryText);
+  } catch (error) {
+    var range = getRange(error.locations[0], queryText);
+
+    return [{
+      severity: SEVERITY.ERROR,
+      message: error.message,
+      source: 'GraphQL: Syntax',
+      range: range
+    }];
+  }
+
+  // We cannot validate the query unless a schema is provided.
+  if (!schema) {
+    return [];
+  }
+
+  var validationErrorAnnotations = mapCat((0, _graphqlLanguageServiceUtils.validateWithCustomRules)(schema, ast, customRules), function (error) {
+    return annotations(error, SEVERITY.ERROR, 'Validation');
+  });
+  // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
+  // support older versions of graphql-js.
+  var deprecationWarningAnnotations = !_graphql.findDeprecatedUsages ? [] : mapCat((0, _graphql.findDeprecatedUsages)(schema, ast), function (error) {
+    return annotations(error, SEVERITY.WARNING, 'Deprecation');
+  });
+  return validationErrorAnnotations.concat(deprecationWarningAnnotations);
+}
+
+// General utility for map-cating (aka flat-mapping).
+function mapCat(array, mapper) {
+  return Array.prototype.concat.apply([], array.map(mapper));
+}
+
+function annotations(error, severity, type) {
+  if (!error.nodes) {
+    return [];
+  }
+  return error.nodes.map(function (node) {
+    var highlightNode = node.kind !== 'Variable' && node.name ? node.name : node.variable ? node.variable : node;
+
+    (0, _assert2.default)(error.locations, 'GraphQL validation error requires locations.');
+    var loc = error.locations[0];
+    var highlightLoc = getLocation(highlightNode);
+    var end = loc.column + (highlightLoc.end - highlightLoc.start);
+    return {
+      source: 'GraphQL: ' + type,
+      message: error.message,
+      severity: severity,
+      range: new _graphqlLanguageServiceUtils.Range(new _graphqlLanguageServiceUtils.Position(loc.line - 1, loc.column - 1), new _graphqlLanguageServiceUtils.Position(loc.line - 1, end))
+    };
+  });
+}
+
+/**
+ * Get location info from a node in a type-safe way.
+ *
+ * The only way a node could not have a location is if we initialized the parser
+ * (and therefore the lexer) with the `noLocation` option, but we always
+ * call `parse` without options above.
+ */
+function getLocation(node) {
+  var typeCastedNode = node;
+  var location = typeCastedNode.loc;
+  (0, _assert2.default)(location, 'Expected ASTNode to have a location.');
+  return location;
+}
+
+function getRange(location, queryText) {
+  var parser = (0, _graphqlLanguageServiceParser.onlineParser)();
+  var state = parser.startState();
+  var lines = queryText.split('\n');
+
+  (0, _assert2.default)(lines.length >= location.line, 'Query text must have more lines than where the error happened');
+
+  var stream = null;
+
+  for (var i = 0; i < location.line; i++) {
+    stream = new _graphqlLanguageServiceParser.CharacterStream(lines[i]);
+    while (!stream.eol()) {
+      var style = parser.token(stream, state);
+      if (style === 'invalidchar') {
+        break;
+      }
+    }
+  }
+
+  (0, _assert2.default)(stream, 'Expected Parser stream to be available.');
+
+  var line = location.line - 1;
+  var start = stream.getStartOfToken();
+  var end = stream.getCurrentPosition();
+
+  return new _graphqlLanguageServiceUtils.Range(new _graphqlLanguageServiceUtils.Position(line, start), new _graphqlLanguageServiceUtils.Position(line, end));
+}
+},{"assert":35,"graphql":94,"graphql-language-service-parser":79,"graphql-language-service-utils":83}],74:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+                                                                                                                                                                                                                                                                   *  Copyright (c) Facebook, Inc.
+                                                                                                                                                                                                                                                                   *  All rights reserved.
+                                                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                                                   *  This source code is licensed under the license found in the
+                                                                                                                                                                                                                                                                   *  LICENSE file in the root directory of this source tree.
+                                                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                                                   *  
+                                                                                                                                                                                                                                                                   */
+
+exports.getOutline = getOutline;
+
+var _graphql = require('graphql');
+
+var _kinds = require('graphql/language/kinds');
+
+var _graphqlLanguageServiceUtils = require('graphql-language-service-utils');
+
+var OUTLINEABLE_KINDS = {
+  Field: true,
+  OperationDefinition: true,
+  Document: true,
+  SelectionSet: true,
+  Name: true,
+  FragmentDefinition: true,
+  FragmentSpread: true,
+  InlineFragment: true
+};
+
+function getOutline(queryText) {
+  var ast = void 0;
+  try {
+    ast = (0, _graphql.parse)(queryText);
+  } catch (error) {
+    return null;
+  }
+
+  var visitorFns = outlineTreeConverter(queryText);
+  var outlineTrees = (0, _graphql.visit)(ast, {
+    leave: function leave(node) {
+      if (OUTLINEABLE_KINDS[node.kind] && visitorFns[node.kind]) {
+        return visitorFns[node.kind](node);
+      }
+      return null;
+    }
+  });
+  return { outlineTrees: outlineTrees };
+}
+
+function outlineTreeConverter(docText) {
+  var meta = function meta(node) {
+    return {
+      representativeName: node.name,
+      startPosition: (0, _graphqlLanguageServiceUtils.offsetToPosition)(docText, node.loc.start),
+      endPosition: (0, _graphqlLanguageServiceUtils.offsetToPosition)(docText, node.loc.end),
+      children: node.selectionSet || []
+    };
+  };
+  return {
+    Field: function Field(node) {
+      var tokenizedText = node.alias ? [buildToken('plain', node.alias), buildToken('plain', ': ')] : [];
+      tokenizedText.push(buildToken('plain', node.name));
+      return _extends({ tokenizedText: tokenizedText }, meta(node));
+    },
+    OperationDefinition: function OperationDefinition(node) {
+      return _extends({
+        tokenizedText: [buildToken('keyword', node.operation), buildToken('whitespace', ' '), buildToken('class-name', node.name)]
+      }, meta(node));
+    },
+    Document: function Document(node) {
+      return node.definitions;
+    },
+    SelectionSet: function SelectionSet(node) {
+      return concatMap(node.selections, function (child) {
+        return child.kind === _kinds.INLINE_FRAGMENT ? child.selectionSet : child;
+      });
+    },
+    Name: function Name(node) {
+      return node.value;
+    },
+    FragmentDefinition: function FragmentDefinition(node) {
+      return _extends({
+        tokenizedText: [buildToken('keyword', 'fragment'), buildToken('whitespace', ' '), buildToken('class-name', node.name)]
+      }, meta(node));
+    },
+    FragmentSpread: function FragmentSpread(node) {
+      return _extends({
+        tokenizedText: [buildToken('plain', '...'), buildToken('class-name', node.name)]
+      }, meta(node));
+    },
+    InlineFragment: function InlineFragment(node) {
+      return node.selectionSet;
+    }
+  };
+}
+
+function buildToken(kind, value) {
+  return { kind: kind, value: value };
+}
+
+function concatMap(arr, fn) {
+  var res = [];
+  for (var i = 0; i < arr.length; i++) {
+    var x = fn(arr[i], i);
+    if (Array.isArray(x)) {
+      res.push.apply(res, x);
+    } else {
+      res.push(x);
+    }
+  }
+  return res;
+}
+},{"graphql":94,"graphql-language-service-utils":83,"graphql/language/kinds":104}],75:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _autocompleteUtils = require('./autocompleteUtils');
+
+Object.defineProperty(exports, 'getDefinitionState', {
+  enumerable: true,
+  get: function get() {
+    return _autocompleteUtils.getDefinitionState;
+  }
+});
+Object.defineProperty(exports, 'getFieldDef', {
+  enumerable: true,
+  get: function get() {
+    return _autocompleteUtils.getFieldDef;
+  }
+});
+Object.defineProperty(exports, 'forEachState', {
+  enumerable: true,
+  get: function get() {
+    return _autocompleteUtils.forEachState;
+  }
+});
+Object.defineProperty(exports, 'objectValues', {
+  enumerable: true,
+  get: function get() {
+    return _autocompleteUtils.objectValues;
+  }
+});
+Object.defineProperty(exports, 'hintList', {
+  enumerable: true,
+  get: function get() {
+    return _autocompleteUtils.hintList;
+  }
+});
+
+var _getAutocompleteSuggestions = require('./getAutocompleteSuggestions');
+
+Object.defineProperty(exports, 'getAutocompleteSuggestions', {
+  enumerable: true,
+  get: function get() {
+    return _getAutocompleteSuggestions.getAutocompleteSuggestions;
+  }
+});
+
+var _getDefinition = require('./getDefinition');
+
+Object.defineProperty(exports, 'LANGUAGE', {
+  enumerable: true,
+  get: function get() {
+    return _getDefinition.LANGUAGE;
+  }
+});
+Object.defineProperty(exports, 'getDefinitionQueryResultForFragmentSpread', {
+  enumerable: true,
+  get: function get() {
+    return _getDefinition.getDefinitionQueryResultForFragmentSpread;
+  }
+});
+Object.defineProperty(exports, 'getDefinitionQueryResultForDefinitionNode', {
+  enumerable: true,
+  get: function get() {
+    return _getDefinition.getDefinitionQueryResultForDefinitionNode;
+  }
+});
+
+var _getDiagnostics = require('./getDiagnostics');
+
+Object.defineProperty(exports, 'getDiagnostics', {
+  enumerable: true,
+  get: function get() {
+    return _getDiagnostics.getDiagnostics;
+  }
+});
+
+var _getOutline = require('./getOutline');
+
+Object.defineProperty(exports, 'getOutline', {
+  enumerable: true,
+  get: function get() {
+    return _getOutline.getOutline;
+  }
+});
+
+var _GraphQLLanguageService = require('./GraphQLLanguageService');
+
+Object.defineProperty(exports, 'GraphQLLanguageService', {
+  enumerable: true,
+  get: function get() {
+    return _GraphQLLanguageService.GraphQLLanguageService;
+  }
+});
+},{"./GraphQLLanguageService":69,"./autocompleteUtils":70,"./getAutocompleteSuggestions":71,"./getDefinition":72,"./getDiagnostics":73,"./getOutline":74}],76:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CharacterStream = function () {
+  function CharacterStream(sourceText) {
+    var _this = this;
+
+    _classCallCheck(this, CharacterStream);
+
+    this.getStartOfToken = function () {
+      return _this._start;
+    };
+
+    this.getCurrentPosition = function () {
+      return _this._pos;
+    };
+
+    this.eol = function () {
+      return _this._sourceText.length === _this._pos;
+    };
+
+    this.sol = function () {
+      return _this._pos === 0;
+    };
+
+    this.peek = function () {
+      return _this._sourceText.charAt(_this._pos) ? _this._sourceText.charAt(_this._pos) : null;
+    };
+
+    this.next = function () {
+      var char = _this._sourceText.charAt(_this._pos);
+      _this._pos++;
+      return char;
+    };
+
+    this.eat = function (pattern) {
+      var isMatched = _this._testNextCharacter(pattern);
+      if (isMatched) {
+        _this._start = _this._pos;
+        _this._pos++;
+        return _this._sourceText.charAt(_this._pos - 1);
+      }
+      return undefined;
+    };
+
+    this.eatWhile = function (match) {
+      var isMatched = _this._testNextCharacter(match);
+      var didEat = false;
+
+      // If a match, treat the total upcoming matches as one token
+      if (isMatched) {
+        didEat = isMatched;
+        _this._start = _this._pos;
+      }
+
+      while (isMatched) {
+        _this._pos++;
+        isMatched = _this._testNextCharacter(match);
+        didEat = true;
+      }
+
+      return didEat;
+    };
+
+    this.eatSpace = function () {
+      return _this.eatWhile(/[\s\u00a0]/);
+    };
+
+    this.skipToEnd = function () {
+      _this._pos = _this._sourceText.length;
+    };
+
+    this.skipTo = function (position) {
+      _this._pos = position;
+    };
+
+    this.match = function (pattern) {
+      var consume = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var caseFold = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      var token = null;
+      var match = null;
+
+      if (typeof pattern === 'string') {
+        var regex = new RegExp(pattern, caseFold ? 'i' : 'g');
+        match = regex.test(_this._sourceText.substr(_this._pos, pattern.length));
+        token = pattern;
+      } else if (pattern instanceof RegExp) {
+        match = _this._sourceText.slice(_this._pos).match(pattern);
+        token = match && match[0];
+      }
+
+      if (match != null) {
+        if (typeof pattern === 'string' || match instanceof Array &&
+        // String.match returns 'index' property, which flow fails to detect
+        // for some reason. The below is a workaround, but an easier solution
+        // is just checking if `match.index === 0`
+        _this._sourceText.startsWith(match[0], _this._pos)) {
+          if (consume) {
+            _this._start = _this._pos;
+            if (token && token.length) {
+              _this._pos += token.length;
+            }
+          }
+          return match;
+        }
+      }
+
+      // No match available.
+      return false;
+    };
+
+    this.backUp = function (num) {
+      _this._pos -= num;
+    };
+
+    this.column = function () {
+      return _this._pos;
+    };
+
+    this.indentation = function () {
+      var match = _this._sourceText.match(/\s*/);
+      var indent = 0;
+      if (match && match.length === 0) {
+        var whitespaces = match[0];
+        var pos = 0;
+        while (whitespaces.length > pos) {
+          if (whitespaces.charCodeAt(pos) === 9) {
+            indent += 2;
+          } else {
+            indent++;
+          }
+          pos++;
+        }
+      }
+
+      return indent;
+    };
+
+    this.current = function () {
+      return _this._sourceText.slice(_this._start, _this._pos);
+    };
+
+    this._start = 0;
+    this._pos = 0;
+    this._sourceText = sourceText;
+  }
+
+  CharacterStream.prototype._testNextCharacter = function _testNextCharacter(pattern) {
+    var character = this._sourceText.charAt(this._pos);
+    var isMatched = false;
+    if (typeof pattern === 'string') {
+      isMatched = character === pattern;
+    } else {
+      isMatched = pattern instanceof RegExp ? pattern.test(character) : pattern(character);
+    }
+    return isMatched;
+  };
+
+  return CharacterStream;
+}(); /**
+      *  Copyright (c) Facebook, Inc.
+      *  All rights reserved.
+      *
+      *  This source code is licensed under the license found in the
+      *  LICENSE file in the root directory of this source tree.
+      *
+      *  
+      */
+
+/**
+ * CharacterStream implements a stream of character tokens given a source text.
+ * The API design follows that of CodeMirror.StringStream.
+ *
+ * Required:
+ *
+ *      sourceText: (string), A raw GraphQL source text. Works best if a line
+ *        is supplied.
+ *
+ */
+
+exports.default = CharacterStream;
+},{}],77:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.opt = opt;
+exports.list = list;
+exports.butNot = butNot;
+exports.t = t;
+exports.p = p;
+
+
+// An optional rule.
+function opt(ofRule) {
+  return { ofRule: ofRule };
+}
+
+// A list of another rule.
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  
+ */
+
+// These functions help build matching rules for ParseRules.
+
+function list(ofRule, separator) {
+  return { ofRule: ofRule, isList: true, separator: separator };
+}
+
+// An constraint described as `but not` in the GraphQL spec.
+function butNot(rule, exclusions) {
+  var ruleMatch = rule.match;
+  rule.match = function (token) {
+    var check = false;
+    if (ruleMatch) {
+      check = ruleMatch(token);
+    }
+    return check && exclusions.every(function (exclusion) {
+      return exclusion.match && !exclusion.match(token);
+    });
+  };
+  return rule;
+}
+
+// Token of a kind
+function t(kind, style) {
+  return { style: style, match: function match(token) {
+      return token.kind === kind;
+    } };
+}
+
+// Punctuator
+function p(value, style) {
+  return {
+    style: style || 'punctuation',
+    match: function match(token) {
+      return token.kind === 'Punctuation' && token.value === value;
+    }
+  };
+}
+},{}],78:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ParseRules = exports.LexRules = exports.isIgnored = undefined;
+
+var _RuleHelpers = require('./RuleHelpers');
+
+/**
+  * Whitespace tokens defined in GraphQL spec.
+  */
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  
+ */
+
+var isIgnored = exports.isIgnored = function isIgnored(ch) {
+  return ch === ' ' || ch === '\t' || ch === ',' || ch === '\n' || ch === '\r' || ch === '\uFEFF';
+};
+
+/**
+ * The lexer rules. These are exactly as described by the spec.
+ */
+var LexRules = exports.LexRules = {
+  // The Name token.
+  Name: /^[_A-Za-z][_0-9A-Za-z]*/,
+
+  // All Punctuation used in GraphQL
+  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|]|\{|\||\})/,
+
+  // Combines the IntValue and FloatValue tokens.
+  Number: /^-?(?:0|(?:[1-9][0-9]*))(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?/,
+
+  // Note the closing quote is made optional as an IDE experience improvment.
+  String: /^"(?:[^"\\]|\\(?:"|\/|\\|b|f|n|r|t|u[0-9a-fA-F]{4}))*"?/,
+
+  // Comments consume entire lines.
+  Comment: /^#.*/
+};
+
+/**
+ * The parser rules. These are very close to, but not exactly the same as the
+ * spec. Minor deviations allow for a simpler implementation. The resulting
+ * parser can parse everything the spec declares possible.
+ */
+var ParseRules = exports.ParseRules = {
+  Document: [(0, _RuleHelpers.list)('Definition')],
+  Definition: function Definition(token) {
+    switch (token.value) {
+      case '{':
+        return 'ShortQuery';
+      case 'query':
+        return 'Query';
+      case 'mutation':
+        return 'Mutation';
+      case 'subscription':
+        return 'Subscription';
+      case 'fragment':
+        return 'FragmentDefinition';
+      case 'schema':
+        return 'SchemaDef';
+      case 'scalar':
+        return 'ScalarDef';
+      case 'type':
+        return 'ObjectTypeDef';
+      case 'interface':
+        return 'InterfaceDef';
+      case 'union':
+        return 'UnionDef';
+      case 'enum':
+        return 'EnumDef';
+      case 'input':
+        return 'InputDef';
+      case 'extend':
+        return 'ExtendDef';
+      case 'directive':
+        return 'DirectiveDef';
+    }
+  },
+
+  // Note: instead of "Operation", these rules have been separated out.
+  ShortQuery: ['SelectionSet'],
+  Query: [word('query'), (0, _RuleHelpers.opt)(name('def')), (0, _RuleHelpers.opt)('VariableDefinitions'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
+  Mutation: [word('mutation'), (0, _RuleHelpers.opt)(name('def')), (0, _RuleHelpers.opt)('VariableDefinitions'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
+  Subscription: [word('subscription'), (0, _RuleHelpers.opt)(name('def')), (0, _RuleHelpers.opt)('VariableDefinitions'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
+  VariableDefinitions: [(0, _RuleHelpers.p)('('), (0, _RuleHelpers.list)('VariableDefinition'), (0, _RuleHelpers.p)(')')],
+  VariableDefinition: ['Variable', (0, _RuleHelpers.p)(':'), 'Type', (0, _RuleHelpers.opt)('DefaultValue')],
+  Variable: [(0, _RuleHelpers.p)('$', 'variable'), name('variable')],
+  DefaultValue: [(0, _RuleHelpers.p)('='), 'Value'],
+  SelectionSet: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('Selection'), (0, _RuleHelpers.p)('}')],
+  Selection: function Selection(token, stream) {
+    return token.value === '...' ? stream.match(/[\s\u00a0,]*(on\b|@|{)/, false) ? 'InlineFragment' : 'FragmentSpread' : stream.match(/[\s\u00a0,]*:/, false) ? 'AliasedField' : 'Field';
+  },
+
+  // Note: this minor deviation of "AliasedField" simplifies the lookahead.
+  AliasedField: [name('property'), (0, _RuleHelpers.p)(':'), name('qualifier'), (0, _RuleHelpers.opt)('Arguments'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.opt)('SelectionSet')],
+  Field: [name('property'), (0, _RuleHelpers.opt)('Arguments'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.opt)('SelectionSet')],
+  Arguments: [(0, _RuleHelpers.p)('('), (0, _RuleHelpers.list)('Argument'), (0, _RuleHelpers.p)(')')],
+  Argument: [name('attribute'), (0, _RuleHelpers.p)(':'), 'Value'],
+  FragmentSpread: [(0, _RuleHelpers.p)('...'), name('def'), (0, _RuleHelpers.list)('Directive')],
+  InlineFragment: [(0, _RuleHelpers.p)('...'), (0, _RuleHelpers.opt)('TypeCondition'), (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
+  FragmentDefinition: [word('fragment'), (0, _RuleHelpers.opt)((0, _RuleHelpers.butNot)(name('def'), [word('on')])), 'TypeCondition', (0, _RuleHelpers.list)('Directive'), 'SelectionSet'],
+  TypeCondition: [word('on'), 'NamedType'],
+  // Variables could be parsed in cases where only Const is expected by spec.
+  Value: function Value(token) {
+    switch (token.kind) {
+      case 'Number':
+        return 'NumberValue';
+      case 'String':
+        return 'StringValue';
+      case 'Punctuation':
+        switch (token.value) {
+          case '[':
+            return 'ListValue';
+          case '{':
+            return 'ObjectValue';
+          case '$':
+            return 'Variable';
+        }
+        return null;
+      case 'Name':
+        switch (token.value) {
+          case 'true':
+          case 'false':
+            return 'BooleanValue';
+        }
+        if (token.value === 'null') {
+          return 'NullValue';
+        }
+        return 'EnumValue';
+    }
+  },
+
+  NumberValue: [(0, _RuleHelpers.t)('Number', 'number')],
+  StringValue: [(0, _RuleHelpers.t)('String', 'string')],
+  BooleanValue: [(0, _RuleHelpers.t)('Name', 'builtin')],
+  NullValue: [(0, _RuleHelpers.t)('Name', 'keyword')],
+  EnumValue: [name('string-2')],
+  ListValue: [(0, _RuleHelpers.p)('['), (0, _RuleHelpers.list)('Value'), (0, _RuleHelpers.p)(']')],
+  ObjectValue: [(0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('ObjectField'), (0, _RuleHelpers.p)('}')],
+  ObjectField: [name('attribute'), (0, _RuleHelpers.p)(':'), 'Value'],
+  Type: function Type(token) {
+    return token.value === '[' ? 'ListType' : 'NonNullType';
+  },
+
+  // NonNullType has been merged into ListType to simplify.
+  ListType: [(0, _RuleHelpers.p)('['), 'Type', (0, _RuleHelpers.p)(']'), (0, _RuleHelpers.opt)((0, _RuleHelpers.p)('!'))],
+  NonNullType: ['NamedType', (0, _RuleHelpers.opt)((0, _RuleHelpers.p)('!'))],
+  NamedType: [type('atom')],
+  Directive: [(0, _RuleHelpers.p)('@', 'meta'), name('meta'), (0, _RuleHelpers.opt)('Arguments')],
+  // GraphQL schema language
+  SchemaDef: [word('schema'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('OperationTypeDef'), (0, _RuleHelpers.p)('}')],
+  OperationTypeDef: [name('keyword'), (0, _RuleHelpers.p)(':'), name('atom')],
+  ScalarDef: [word('scalar'), name('atom'), (0, _RuleHelpers.list)('Directive')],
+  ObjectTypeDef: [word('type'), name('atom'), (0, _RuleHelpers.opt)('Implements'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('FieldDef'), (0, _RuleHelpers.p)('}')],
+  Implements: [word('implements'), (0, _RuleHelpers.list)('NamedType')],
+  FieldDef: [name('property'), (0, _RuleHelpers.opt)('ArgumentsDef'), (0, _RuleHelpers.p)(':'), 'Type', (0, _RuleHelpers.list)('Directive')],
+  ArgumentsDef: [(0, _RuleHelpers.p)('('), (0, _RuleHelpers.list)('InputValueDef'), (0, _RuleHelpers.p)(')')],
+  InputValueDef: [name('attribute'), (0, _RuleHelpers.p)(':'), 'Type', (0, _RuleHelpers.opt)('DefaultValue'), (0, _RuleHelpers.list)('Directive')],
+  InterfaceDef: [word('interface'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('FieldDef'), (0, _RuleHelpers.p)('}')],
+  UnionDef: [word('union'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('='), (0, _RuleHelpers.list)('UnionMember', (0, _RuleHelpers.p)('|'))],
+  UnionMember: ['NamedType'],
+  EnumDef: [word('enum'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('EnumValueDef'), (0, _RuleHelpers.p)('}')],
+  EnumValueDef: [name('string-2'), (0, _RuleHelpers.list)('Directive')],
+  InputDef: [word('input'), name('atom'), (0, _RuleHelpers.list)('Directive'), (0, _RuleHelpers.p)('{'), (0, _RuleHelpers.list)('InputValueDef'), (0, _RuleHelpers.p)('}')],
+  ExtendDef: [word('extend'), 'ObjectTypeDef'],
+  DirectiveDef: [word('directive'), (0, _RuleHelpers.p)('@', 'meta'), name('meta'), (0, _RuleHelpers.opt)('ArgumentsDef'), word('on'), (0, _RuleHelpers.list)('DirectiveLocation', (0, _RuleHelpers.p)('|'))],
+  DirectiveLocation: [name('string-2')]
+};
+
+// A keyword Token.
+function word(value) {
+  return {
+    style: 'keyword',
+    match: function match(token) {
+      return token.kind === 'Name' && token.value === value;
+    }
+  };
+}
+
+// A Name Token which will decorate the state with a `name`.
+function name(style) {
+  return {
+    style: style,
+    match: function match(token) {
+      return token.kind === 'Name';
+    },
+    update: function update(state, token) {
+      state.name = token.value;
+    }
+  };
+}
+
+// A Name Token which will decorate the previous state with a `type`.
+function type(style) {
+  return {
+    style: style,
+    match: function match(token) {
+      return token.kind === 'Name';
+    },
+    update: function update(state, token) {
+      if (state.prevState && state.prevState.prevState) {
+        state.name = token.value;
+        state.prevState.prevState.type = token.value;
+      }
+    }
+  };
+}
+},{"./RuleHelpers":77}],79:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _CharacterStream = require('./CharacterStream');
+
+Object.defineProperty(exports, 'CharacterStream', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_CharacterStream).default;
+  }
+});
+
+var _Rules = require('./Rules');
+
+Object.defineProperty(exports, 'LexRules', {
+  enumerable: true,
+  get: function get() {
+    return _Rules.LexRules;
+  }
+});
+Object.defineProperty(exports, 'ParseRules', {
+  enumerable: true,
+  get: function get() {
+    return _Rules.ParseRules;
+  }
+});
+Object.defineProperty(exports, 'isIgnored', {
+  enumerable: true,
+  get: function get() {
+    return _Rules.isIgnored;
+  }
+});
+
+var _RuleHelpers = require('./RuleHelpers');
+
+Object.defineProperty(exports, 'butNot', {
+  enumerable: true,
+  get: function get() {
+    return _RuleHelpers.butNot;
+  }
+});
+Object.defineProperty(exports, 'list', {
+  enumerable: true,
+  get: function get() {
+    return _RuleHelpers.list;
+  }
+});
+Object.defineProperty(exports, 'opt', {
+  enumerable: true,
+  get: function get() {
+    return _RuleHelpers.opt;
+  }
+});
+Object.defineProperty(exports, 'p', {
+  enumerable: true,
+  get: function get() {
+    return _RuleHelpers.p;
+  }
+});
+Object.defineProperty(exports, 't', {
+  enumerable: true,
+  get: function get() {
+    return _RuleHelpers.t;
+  }
+});
+
+var _onlineParser = require('./onlineParser');
+
+Object.defineProperty(exports, 'onlineParser', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_onlineParser).default;
+  }
+});
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./CharacterStream":76,"./RuleHelpers":77,"./Rules":78,"./onlineParser":80}],80:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /**
+                                                                                                                                                                                                                                                                   *  Copyright (c) Facebook, Inc.
+                                                                                                                                                                                                                                                                   *  All rights reserved.
+                                                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                                                   *  This source code is licensed under the license found in the
+                                                                                                                                                                                                                                                                   *  LICENSE file in the root directory of this source tree.
+                                                                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                                                                   *  
+                                                                                                                                                                                                                                                                   */
+
+/**
+ * Builds an online immutable parser, designed to be used as part of a syntax
+ * highlighting and code intelligence tools.
+ *
+ * Options:
+ *
+ *     eatWhitespace: (
+ *       stream: Stream | CodeMirror.StringStream | CharacterStream
+ *     ) => boolean
+ *       Use CodeMirror API.
+ *
+ *     LexRules: { [name: string]: RegExp }, Includes `Punctuation`, `Comment`.
+ *
+ *     ParseRules: { [name: string]: Array<Rule> }, Includes `Document`.
+ *
+ *     editorConfig: { [name: string]: any }, Provides an editor-specific
+ *       configurations set.
+ *
+ */
+
+exports.default = onlineParser;
+
+var _Rules = require('./Rules');
+
+function onlineParser() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+    eatWhitespace: function eatWhitespace(stream) {
+      return stream.eatWhile(_Rules.isIgnored);
+    },
+    lexRules: _Rules.LexRules,
+    parseRules: _Rules.ParseRules,
+    editorConfig: {}
+  };
+
+  return {
+    startState: function startState() {
+      var initialState = {
+        level: 0,
+        step: 0,
+        name: null,
+        kind: null,
+        type: null,
+        rule: null,
+        needsSeperator: false,
+        prevState: null
+      };
+      pushRule(options.parseRules, initialState, 'Document');
+      return initialState;
+    },
+    token: function token(stream, state) {
+      return getToken(stream, state, options);
+    }
+  };
+}
+
+function getToken(stream, state, options) {
+  var lexRules = options.lexRules,
+      parseRules = options.parseRules,
+      eatWhitespace = options.eatWhitespace,
+      editorConfig = options.editorConfig;
+  // Restore state after an empty-rule.
+
+  if (state.rule && state.rule.length === 0) {
+    popRule(state);
+  } else if (state.needsAdvance) {
+    state.needsAdvance = false;
+    advanceRule(state, true);
+  }
+
+  // Remember initial indentation
+  if (stream.sol()) {
+    var tabSize = editorConfig && editorConfig.tabSize || 2;
+    state.indentLevel = Math.floor(stream.indentation() / tabSize);
+  }
+
+  // Consume spaces and ignored characters
+  if (eatWhitespace(stream)) {
+    return 'ws';
+  }
+
+  // Get a matched token from the stream, using lex
+  var token = lex(lexRules, stream);
+
+  // If there's no matching token, skip ahead.
+  if (!token) {
+    stream.match(/\S+/);
+    pushRule(SpecialParseRules, state, 'Invalid');
+    return 'invalidchar';
+  }
+
+  // If the next token is a Comment, insert a Comment parsing rule.
+  if (token.kind === 'Comment') {
+    pushRule(SpecialParseRules, state, 'Comment');
+    return 'comment';
+  }
+
+  // Save state before continuing.
+  var backupState = assign({}, state);
+
+  // Handle changes in expected indentation level
+  if (token.kind === 'Punctuation') {
+    if (/^[{([]/.test(token.value)) {
+      // Push on the stack of levels one level deeper than the current level.
+      state.levels = (state.levels || []).concat(state.indentLevel + 1);
+    } else if (/^[})\]]/.test(token.value)) {
+      // Pop from the stack of levels.
+      // If the top of the stack is lower than the current level, lower the
+      // current level to match.
+      var levels = state.levels = (state.levels || []).slice(0, -1);
+      if (state.indentLevel) {
+        if (levels.length > 0 && levels[levels.length - 1] < state.indentLevel) {
+          state.indentLevel = levels[levels.length - 1];
+        }
+      }
+    }
+  }
+
+  while (state.rule) {
+    // If this is a forking rule, determine what rule to use based on
+    var expected = typeof state.rule === 'function' ? state.step === 0 ? state.rule(token, stream) : null : state.rule[state.step];
+
+    // Seperator between list elements if necessary.
+    if (state.needsSeperator) {
+      expected = expected && expected.separator;
+    }
+
+    if (expected) {
+      // Un-wrap optional/list parseRules.
+      if (expected.ofRule) {
+        expected = expected.ofRule;
+      }
+
+      // A string represents a Rule
+      if (typeof expected === 'string') {
+        pushRule(parseRules, state, expected);
+        continue;
+      }
+
+      // Otherwise, match a Terminal.
+      if (expected.match && expected.match(token)) {
+        if (expected.update) {
+          expected.update(state, token);
+        }
+
+        // If this token was a punctuator, advance the parse rule, otherwise
+        // mark the state to be advanced before the next token. This ensures
+        // that tokens which can be appended to keep the appropriate state.
+        if (token.kind === 'Punctuation') {
+          advanceRule(state, true);
+        } else {
+          state.needsAdvance = true;
+        }
+
+        return expected.style;
+      }
+    }
+    unsuccessful(state);
+  }
+
+  // The parser does not know how to interpret this token, do not affect state.
+  assign(state, backupState);
+  pushRule(SpecialParseRules, state, 'Invalid');
+  return 'invalidchar';
+}
+
+// Utility function to assign from object to another object.
+function assign(to, from) {
+  var keys = Object.keys(from);
+  for (var i = 0; i < keys.length; i++) {
+    to[keys[i]] = from[keys[i]];
+  }
+  return to;
+}
+
+// A special rule set for parsing comment tokens.
+var SpecialParseRules = {
+  Invalid: [],
+  Comment: []
+};
+
+// Push a new rule onto the state.
+function pushRule(rules, state, ruleKind) {
+  if (!rules[ruleKind]) {
+    throw new TypeError('Unknown rule: ' + ruleKind);
+  }
+  state.prevState = _extends({}, state);
+  state.kind = ruleKind;
+  state.name = null;
+  state.type = null;
+  state.rule = rules[ruleKind];
+  state.step = 0;
+  state.needsSeperator = false;
+}
+
+// Pop the current rule from the state.
+function popRule(state) {
+  // Check if there's anything to pop
+  if (!state.prevState) {
+    return;
+  }
+  state.kind = state.prevState.kind;
+  state.name = state.prevState.name;
+  state.type = state.prevState.type;
+  state.rule = state.prevState.rule;
+  state.step = state.prevState.step;
+  state.needsSeperator = state.prevState.needsSeperator;
+  state.prevState = state.prevState.prevState;
+}
+
+// Advance the step of the current rule.
+function advanceRule(state, successful) {
+  // If this is advancing successfully and the current state is a list, give
+  // it an opportunity to repeat itself.
+  if (isList(state)) {
+    if (state.rule && state.rule[state.step].separator) {
+      var separator = state.rule[state.step].separator;
+      state.needsSeperator = !state.needsSeperator;
+      // If the separator was optional, then give it an opportunity to repeat.
+      if (!state.needsSeperator && separator.ofRule) {
+        return;
+      }
+    }
+    // If this was a successful list parse, then allow it to repeat itself.
+    if (successful) {
+      return;
+    }
+  }
+
+  // Advance the step in the rule. If the rule is completed, pop
+  // the rule and advance the parent rule as well (recursively).
+  state.needsSeperator = false;
+  state.step++;
+
+  // While the current rule is completed.
+  while (state.rule && !(Array.isArray(state.rule) && state.step < state.rule.length)) {
+    popRule(state);
+
+    if (state.rule) {
+      // Do not advance a List step so it has the opportunity to repeat itself.
+      if (isList(state)) {
+        if (state.rule && state.rule[state.step].separator) {
+          state.needsSeperator = !state.needsSeperator;
+        }
+      } else {
+        state.needsSeperator = false;
+        state.step++;
+      }
+    }
+  }
+}
+
+function isList(state) {
+  return Array.isArray(state.rule) && typeof state.rule[state.step] !== 'string' && state.rule[state.step].isList;
+}
+
+// Unwind the state after an unsuccessful match.
+function unsuccessful(state) {
+  // Fall back to the parent rule until you get to an optional or list rule or
+  // until the entire stack of rules is empty.
+  while (state.rule && !(Array.isArray(state.rule) && state.rule[state.step].ofRule)) {
+    popRule(state);
+  }
+
+  // If there is still a rule, it must be an optional or list rule.
+  // Consider this rule a success so that we may move past it.
+  if (state.rule) {
+    advanceRule(state, false);
+  }
+}
+
+// Given a stream, returns a { kind, value } pair, or null.
+function lex(lexRules, stream) {
+  var kinds = Object.keys(lexRules);
+  for (var i = 0; i < kinds.length; i++) {
+    var match = stream.match(lexRules[kinds[i]]);
+    if (match && match instanceof Array) {
+      return { kind: kinds[i], value: match[0] };
+    }
+  }
+}
+},{"./Rules":78}],81:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.offsetToPosition = offsetToPosition;
+exports.locToRange = locToRange;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  
+ */
+
+var Range = exports.Range = function () {
+  function Range(start, end) {
+    var _this = this;
+
+    _classCallCheck(this, Range);
+
+    this.containsPosition = function (position) {
+      if (_this.start.line === position.line) {
+        return _this.start.character <= position.character;
+      } else if (_this.end.line === position.line) {
+        return _this.end.character >= position.character;
+      } else {
+        return _this.start.line <= position.line && _this.end.line >= position.line;
+      }
+    };
+
+    this.start = start;
+    this.end = end;
+  }
+
+  Range.prototype.setStart = function setStart(line, character) {
+    this.start = new Position(line, character);
+  };
+
+  Range.prototype.setEnd = function setEnd(line, character) {
+    this.end = new Position(line, character);
+  };
+
+  return Range;
+}();
+
+var Position = exports.Position = function () {
+  function Position(line, character) {
+    var _this2 = this;
+
+    _classCallCheck(this, Position);
+
+    this.lessThanOrEqualTo = function (position) {
+      return _this2.line < position.line || _this2.line === position.line && _this2.character <= position.character;
+    };
+
+    this.line = line;
+    this.character = character;
+  }
+
+  Position.prototype.setLine = function setLine(line) {
+    this.line = line;
+  };
+
+  Position.prototype.setCharacter = function setCharacter(character) {
+    this.character = character;
+  };
+
+  return Position;
+}();
+
+function offsetToPosition(text, loc) {
+  var EOL = '\n';
+  var buf = text.slice(0, loc);
+  var lines = buf.split(EOL).length - 1;
+  var lastLineIndex = buf.lastIndexOf(EOL);
+  return new Position(lines, loc - lastLineIndex - 1);
+}
+
+function locToRange(text, loc) {
+  var start = offsetToPosition(text, loc.start);
+  var end = offsetToPosition(text, loc.end);
+  return new Range(start, end);
+}
+},{}],82:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getASTNodeAtPosition = getASTNodeAtPosition;
+exports.pointToOffset = pointToOffset;
+
+var _Range = require('./Range');
+
+var _graphql = require('graphql');
+
+function getASTNodeAtPosition(query, ast, point) {
+  var offset = pointToOffset(query, point);
+  var nodeContainingPosition = void 0;
+  (0, _graphql.visit)(ast, {
+    enter: function enter(node) {
+      if (node.kind !== 'Name' && // We're usually interested in their parents
+      node.loc.start <= offset && offset <= node.loc.end) {
+        nodeContainingPosition = node;
+      } else {
+        return false;
+      }
+    },
+    leave: function leave(node) {
+      if (node.loc.start <= offset && offset <= node.loc.end) {
+        return false;
+      }
+    }
+  });
+  return nodeContainingPosition;
+} /**
+   *  Copyright (c) Facebook, Inc.
+   *  All rights reserved.
+   *
+   *  This source code is licensed under the license found in the
+   *  LICENSE file in the root directory of this source tree.
+   *
+   *  
+   */
+
+function pointToOffset(text, point) {
+  var linesUntilPosition = text.split('\n').slice(0, point.line);
+  return point.character + linesUntilPosition.map(function (line) {
+    return line.length + 1;
+  } // count EOL
+  ).reduce(function (a, b) {
+    return a + b;
+  }, 0);
+}
+},{"./Range":81,"graphql":94}],83:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _getASTNodeAtPosition = require('./getASTNodeAtPosition');
+
+Object.defineProperty(exports, 'getASTNodeAtPosition', {
+  enumerable: true,
+  get: function get() {
+    return _getASTNodeAtPosition.getASTNodeAtPosition;
+  }
+});
+Object.defineProperty(exports, 'pointToOffset', {
+  enumerable: true,
+  get: function get() {
+    return _getASTNodeAtPosition.pointToOffset;
+  }
+});
+
+var _Range = require('./Range');
+
+Object.defineProperty(exports, 'Position', {
+  enumerable: true,
+  get: function get() {
+    return _Range.Position;
+  }
+});
+Object.defineProperty(exports, 'Range', {
+  enumerable: true,
+  get: function get() {
+    return _Range.Range;
+  }
+});
+Object.defineProperty(exports, 'locToRange', {
+  enumerable: true,
+  get: function get() {
+    return _Range.locToRange;
+  }
+});
+Object.defineProperty(exports, 'offsetToPosition', {
+  enumerable: true,
+  get: function get() {
+    return _Range.offsetToPosition;
+  }
+});
+
+var _validateWithCustomRules = require('./validateWithCustomRules');
+
+Object.defineProperty(exports, 'validateWithCustomRules', {
+  enumerable: true,
+  get: function get() {
+    return _validateWithCustomRules.validateWithCustomRules;
+  }
+});
+},{"./Range":81,"./getASTNodeAtPosition":82,"./validateWithCustomRules":84}],84:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.validateWithCustomRules = validateWithCustomRules;
+
+var _graphql = require('graphql');
+
+/**
+ * Validate a GraphQL Document optionally with custom validation rules.
+ */
+function validateWithCustomRules(schema, ast, customRules) {
+  // Because every fragment is considered for determing model subsets that may
+  // be used anywhere in the codebase they're all technically "used" by clients
+  // of graphql-data. So we remove this rule from the validators.
+  var _require = require('graphql/validation/rules/NoUnusedFragments'),
+      NoUnusedFragments = _require.NoUnusedFragments;
+
+  var rules = _graphql.specifiedRules.filter(function (rule) {
+    return rule !== NoUnusedFragments;
+  });
+
+  var typeInfo = new _graphql.TypeInfo(schema);
+  if (customRules) {
+    Array.prototype.push.apply(rules, customRules);
+  }
+
+  var errors = (0, _graphql.validate)(schema, ast, rules, typeInfo);
+
+  if (errors.length > 0) {
+    return errors;
+  }
+
+  return [];
+} /**
+   *  Copyright (c) Facebook, Inc.
+   *  All rights reserved.
+   *
+   *  This source code is licensed under the license found in the
+   *  LICENSE file in the root directory of this source tree.
+   *
+   *  
+   */
+},{"graphql":94,"graphql/validation/rules/NoUnusedFragments":151}],85:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19913,23 +22998,6 @@ var _location = require('../language/location');
  */
 function GraphQLError( // eslint-disable-line no-redeclare
 message, nodes, source, positions, path, originalError) {
-  // Include (non-enumerable) stack trace.
-  if (originalError && originalError.stack) {
-    Object.defineProperty(this, 'stack', {
-      value: originalError.stack,
-      writable: true,
-      configurable: true
-    });
-  } else if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, GraphQLError);
-  } else {
-    Object.defineProperty(this, 'stack', {
-      value: Error().stack,
-      writable: true,
-      configurable: true
-    });
-  }
-
   // Compute locations in the source for the given nodes/positions.
   var _source = source;
   if (!_source && nodes && nodes.length > 0) {
@@ -19961,7 +23029,7 @@ message, nodes, source, positions, path, originalError) {
     message: {
       value: message,
       // By being enumerable, JSON.stringify will include `message` in the
-      // resulting output. This ensures that the simplist possible GraphQL
+      // resulting output. This ensures that the simplest possible GraphQL
       // service adheres to the spec.
       enumerable: true,
       writable: true
@@ -19971,7 +23039,7 @@ message, nodes, source, positions, path, originalError) {
       // in JSON.stringify() when not provided.
       value: _locations || undefined,
       // By being enumerable, JSON.stringify will include `locations` in the
-      // resulting output. This ensures that the simplist possible GraphQL
+      // resulting output. This ensures that the simplest possible GraphQL
       // service adheres to the spec.
       enumerable: true
     },
@@ -19980,7 +23048,7 @@ message, nodes, source, positions, path, originalError) {
       // in JSON.stringify() when not provided.
       value: path || undefined,
       // By being enumerable, JSON.stringify will include `path` in the
-      // resulting output. This ensures that the simplist possible GraphQL
+      // resulting output. This ensures that the simplest possible GraphQL
       // service adheres to the spec.
       enumerable: true
     },
@@ -19997,6 +23065,23 @@ message, nodes, source, positions, path, originalError) {
       value: originalError
     }
   });
+
+  // Include (non-enumerable) stack trace.
+  if (originalError && originalError.stack) {
+    Object.defineProperty(this, 'stack', {
+      value: originalError.stack,
+      writable: true,
+      configurable: true
+    });
+  } else if (Error.captureStackTrace) {
+    Error.captureStackTrace(this, GraphQLError);
+  } else {
+    Object.defineProperty(this, 'stack', {
+      value: Error().stack,
+      writable: true,
+      configurable: true
+    });
+  }
 }
 /**
  *  Copyright (c) 2015, Facebook, Inc.
@@ -20011,7 +23096,7 @@ GraphQLError.prototype = Object.create(Error.prototype, {
   constructor: { value: GraphQLError },
   name: { value: 'GraphQLError' }
 });
-},{"../language/location":90}],70:[function(require,module,exports){
+},{"../language/location":106}],86:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20023,14 +23108,14 @@ var _invariant = require('../jsutils/invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Given a GraphQLError, format it according to the rules described by the
  * Response Format, Errors section of the GraphQL Specification.
  */
 function formatError(error) {
-  (0, _invariant2.default)(error, 'Received null or undefined error.');
+  !error ? (0, _invariant2.default)(0, 'Received null or undefined error.') : void 0;
   return {
     message: error.message,
     locations: error.locations,
@@ -20045,7 +23130,7 @@ function formatError(error) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../jsutils/invariant":80}],71:[function(require,module,exports){
+},{"../jsutils/invariant":96}],87:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20087,7 +23172,7 @@ Object.defineProperty(exports, 'formatError', {
     return _formatError.formatError;
   }
 });
-},{"./GraphQLError":69,"./formatError":70,"./locatedError":72,"./syntaxError":73}],72:[function(require,module,exports){
+},{"./GraphQLError":85,"./formatError":86,"./locatedError":88,"./syntaxError":89}],88:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20120,7 +23205,7 @@ function locatedError(originalError, nodes, path) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"./GraphQLError":69}],73:[function(require,module,exports){
+},{"./GraphQLError":85}],89:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20148,7 +23233,10 @@ var _GraphQLError = require('./GraphQLError');
 
 function syntaxError(source, position, description) {
   var location = (0, _location.getLocation)(source, position);
-  var error = new _GraphQLError.GraphQLError('Syntax Error ' + source.name + ' (' + location.line + ':' + location.column + ') ' + description + '\n\n' + highlightSourceAtLocation(source, location), undefined, source, [position]);
+  var line = location.line + source.locationOffset.line - 1;
+  var columnOffset = getColumnOffset(source, location);
+  var column = location.column + columnOffset;
+  var error = new _GraphQLError.GraphQLError('Syntax Error ' + source.name + ' (' + line + ':' + column + ') ' + description + '\n\n' + highlightSourceAtLocation(source, location), undefined, source, [position]);
   return error;
 }
 
@@ -20158,34 +23246,61 @@ function syntaxError(source, position, description) {
  */
 function highlightSourceAtLocation(source, location) {
   var line = location.line;
-  var prevLineNum = (line - 1).toString();
-  var lineNum = line.toString();
-  var nextLineNum = (line + 1).toString();
+  var lineOffset = source.locationOffset.line - 1;
+  var columnOffset = getColumnOffset(source, location);
+  var contextLine = line + lineOffset;
+  var prevLineNum = (contextLine - 1).toString();
+  var lineNum = contextLine.toString();
+  var nextLineNum = (contextLine + 1).toString();
   var padLen = nextLineNum.length;
   var lines = source.body.split(/\r\n|[\n\r]/g);
-  return (line >= 2 ? lpad(padLen, prevLineNum) + ': ' + lines[line - 2] + '\n' : '') + lpad(padLen, lineNum) + ': ' + lines[line - 1] + '\n' + Array(2 + padLen + location.column).join(' ') + '^\n' + (line < lines.length ? lpad(padLen, nextLineNum) + ': ' + lines[line] + '\n' : '');
+  lines[0] = whitespace(source.locationOffset.column - 1) + lines[0];
+  return (line >= 2 ? lpad(padLen, prevLineNum) + ': ' + lines[line - 2] + '\n' : '') + lpad(padLen, lineNum) + ': ' + lines[line - 1] + '\n' + whitespace(2 + padLen + location.column - 1 + columnOffset) + '^\n' + (line < lines.length ? lpad(padLen, nextLineNum) + ': ' + lines[line] + '\n' : '');
+}
+
+function getColumnOffset(source, location) {
+  return location.line === 1 ? source.locationOffset.column - 1 : 0;
+}
+
+function whitespace(len) {
+  return Array(len + 1).join(' ');
 }
 
 function lpad(len, str) {
-  return Array(len - str.length + 1).join(' ') + str;
+  return whitespace(len - str.length) + str;
 }
-},{"../language/location":90,"./GraphQLError":69}],74:[function(require,module,exports){
+},{"../language/location":106,"./GraphQLError":85}],90:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.defaultFieldResolver = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 exports.execute = execute;
 exports.responsePathAsArray = responsePathAsArray;
+exports.addPath = addPath;
+exports.assertValidExecutionArguments = assertValidExecutionArguments;
+exports.buildExecutionContext = buildExecutionContext;
+exports.getOperationRootType = getOperationRootType;
+exports.collectFields = collectFields;
+exports.buildResolveInfo = buildResolveInfo;
+exports.resolveFieldValueOrError = resolveFieldValueOrError;
+exports.getFieldDef = getFieldDef;
 
 var _iterall = require('iterall');
 
 var _error = require('../error');
-
-var _find = require('../jsutils/find');
-
-var _find2 = _interopRequireDefault(_find);
 
 var _invariant = require('../jsutils/invariant');
 
@@ -20213,17 +23328,7 @@ var _directives = require('../type/directives');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-/**
- * Implements the "Evaluating requests" section of the GraphQL specification.
- *
- * Returns a Promise that will eventually be resolved and never rejected.
- *
- * If the arguments to this function do not result in a legal execution context,
- * a GraphQLError will be thrown immediately explaining the invalid input.
- */
-
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Terminology
@@ -20256,30 +23361,42 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 /**
  * The result of GraphQL execution.
  *
- *   - `data` is the result of a successful execution of the query.
  *   - `errors` is included when any errors occurred as a non-empty array.
+ *   - `data` is the result of a successful execution of the query.
  */
+
 
 /**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
+ * Implements the "Evaluating requests" section of the GraphQL specification.
  *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
+ * Returns a Promise that will eventually be resolved and never rejected.
+ *
+ * If the arguments to this function do not result in a legal execution context,
+ * a GraphQLError will be thrown immediately explaining the invalid input.
+ *
+ * Accepts either an object with named arguments, or individual arguments.
  */
 
-function execute(schema, document, rootValue, contextValue, variableValues, operationName) {
-  (0, _invariant2.default)(schema, 'Must provide schema');
-  (0, _invariant2.default)(document, 'Must provide document');
-  (0, _invariant2.default)(schema instanceof _schema.GraphQLSchema, 'Schema must be an instance of GraphQLSchema. Also ensure that there are ' + 'not multiple versions of GraphQL installed in your node_modules directory.');
+/* eslint-disable no-redeclare */
+function execute(argsOrSchema, document, rootValue, contextValue, variableValues, operationName, fieldResolver) {
+  // Extract arguments from object args if provided.
+  var args = arguments.length === 1 ? argsOrSchema : undefined;
+  var schema = args ? args.schema : argsOrSchema;
+  return args ? executeImpl(schema, args.document, args.rootValue, args.contextValue, args.variableValues, args.operationName, args.fieldResolver) : executeImpl(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver);
+}
 
-  // Variables, if provided, must be an object.
-  (0, _invariant2.default)(!variableValues || typeof variableValues === 'object', 'Variables must be provided as an Object where each property is a ' + 'variable value. Perhaps look to see if an unparsed JSON string ' + 'was provided.');
+function executeImpl(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver) {
+  // If arguments are missing or incorrect, throw an error.
+  assertValidExecutionArguments(schema, document, variableValues);
 
   // If a valid context cannot be created due to incorrect arguments,
-  // this will throw an error.
-  var context = buildExecutionContext(schema, document, rootValue, contextValue, variableValues, operationName);
+  // a "Response" with only errors is returned.
+  var context = void 0;
+  try {
+    context = buildExecutionContext(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver);
+  } catch (error) {
+    return Promise.resolve({ errors: [error] });
+  }
 
   // Return a Promise that will eventually resolve to the data described by
   // The "Response" section of the GraphQL specification.
@@ -20288,19 +23405,8 @@ function execute(schema, document, rootValue, contextValue, variableValues, oper
   // field and its descendants will be omitted, and sibling fields will still
   // be executed. An execution which encounters errors will still result in a
   // resolved Promise.
-  return new Promise(function (resolve) {
-    resolve(executeOperation(context, context.operation, rootValue));
-  }).then(undefined, function (error) {
-    // Errors from sub-fields of a NonNull type may propagate to the top level,
-    // at which point we still log the error and null the parent field, which
-    // in this case is the entire response.
-    context.errors.push(error);
-    return null;
-  }).then(function (data) {
-    if (!context.errors.length) {
-      return { data: data };
-    }
-    return { data: data, errors: context.errors };
+  return Promise.resolve(executeOperation(context, context.operation, rootValue)).then(function (data) {
+    return context.errors.length === 0 ? { data: data } : { errors: context.errors, data: data };
   });
 }
 
@@ -20318,8 +23424,25 @@ function responsePathAsArray(path) {
   return flattened.reverse();
 }
 
+/**
+ * Given a ResponsePath and a key, return a new ResponsePath containing the
+ * new key.
+ */
 function addPath(prev, key) {
   return { prev: prev, key: key };
+}
+
+/**
+ * Essential assertions before executing to provide developer feedback for
+ * improper use of the GraphQL library.
+ */
+function assertValidExecutionArguments(schema, document, rawVariableValues) {
+  !schema ? (0, _invariant2.default)(0, 'Must provide schema') : void 0;
+  !document ? (0, _invariant2.default)(0, 'Must provide document') : void 0;
+  !(schema instanceof _schema.GraphQLSchema) ? (0, _invariant2.default)(0, 'Schema must be an instance of GraphQLSchema. Also ensure that there are ' + 'not multiple versions of GraphQL installed in your node_modules directory.') : void 0;
+
+  // Variables, if provided, must be an object.
+  !(!rawVariableValues || (typeof rawVariableValues === 'undefined' ? 'undefined' : _typeof(rawVariableValues)) === 'object') ? (0, _invariant2.default)(0, 'Variables must be provided as an Object where each property is a ' + 'variable value. Perhaps look to see if an unparsed JSON string ' + 'was provided.') : void 0;
 }
 
 /**
@@ -20328,7 +23451,7 @@ function addPath(prev, key) {
  *
  * Throws a GraphQLError if a valid execution context cannot be created.
  */
-function buildExecutionContext(schema, document, rootValue, contextValue, rawVariableValues, operationName) {
+function buildExecutionContext(schema, document, rootValue, contextValue, rawVariableValues, operationName, fieldResolver) {
   var errors = [];
   var operation = void 0;
   var fragments = Object.create(null);
@@ -20365,6 +23488,7 @@ function buildExecutionContext(schema, document, rootValue, contextValue, rawVar
     contextValue: contextValue,
     operation: operation,
     variableValues: variableValues,
+    fieldResolver: fieldResolver || defaultFieldResolver,
     errors: errors
   };
 }
@@ -20378,10 +23502,25 @@ function executeOperation(exeContext, operation, rootValue) {
 
   var path = undefined;
 
-  if (operation.operation === 'mutation') {
-    return executeFieldsSerially(exeContext, type, rootValue, path, fields);
+  // Errors from sub-fields of a NonNull type may propagate to the top level,
+  // at which point we still log the error and null the parent field, which
+  // in this case is the entire response.
+  //
+  // Similar to completeValueCatchingError.
+  try {
+    var result = operation.operation === 'mutation' ? executeFieldsSerially(exeContext, type, rootValue, path, fields) : executeFields(exeContext, type, rootValue, path, fields);
+    var promise = getPromise(result);
+    if (promise) {
+      return promise.then(undefined, function (error) {
+        exeContext.errors.push(error);
+        return Promise.resolve(null);
+      });
+    }
+    return result;
+  } catch (error) {
+    exeContext.errors.push(error);
+    return null;
   }
-  return executeFields(exeContext, type, rootValue, path, fields);
 }
 
 /**
@@ -20472,7 +23611,7 @@ function executeFields(exeContext, parentType, sourceValue, path, fields) {
  * the passed in map of fields, and returns it at the end.
  *
  * CollectFields requires the "runtime type" of an object. For a field which
- * returns and Interface or Union type, the "runtime type" will be the actual
+ * returns an Interface or Union type, the "runtime type" will be the actual
  * Object type returned by that field.
  */
 function collectFields(exeContext, runtimeType, selectionSet, fields, visitedFragmentNames) {
@@ -20480,7 +23619,7 @@ function collectFields(exeContext, runtimeType, selectionSet, fields, visitedFra
     var selection = selectionSet.selections[i];
     switch (selection.kind) {
       case Kind.FIELD:
-        if (!shouldIncludeNode(exeContext, selection.directives)) {
+        if (!shouldIncludeNode(exeContext, selection)) {
           continue;
         }
         var _name = getFieldEntryKey(selection);
@@ -20490,14 +23629,14 @@ function collectFields(exeContext, runtimeType, selectionSet, fields, visitedFra
         fields[_name].push(selection);
         break;
       case Kind.INLINE_FRAGMENT:
-        if (!shouldIncludeNode(exeContext, selection.directives) || !doesFragmentConditionMatch(exeContext, selection, runtimeType)) {
+        if (!shouldIncludeNode(exeContext, selection) || !doesFragmentConditionMatch(exeContext, selection, runtimeType)) {
           continue;
         }
         collectFields(exeContext, runtimeType, selection.selectionSet, fields, visitedFragmentNames);
         break;
       case Kind.FRAGMENT_SPREAD:
         var fragName = selection.name.value;
-        if (visitedFragmentNames[fragName] || !shouldIncludeNode(exeContext, selection.directives)) {
+        if (visitedFragmentNames[fragName] || !shouldIncludeNode(exeContext, selection)) {
           continue;
         }
         visitedFragmentNames[fragName] = true;
@@ -20516,31 +23655,16 @@ function collectFields(exeContext, runtimeType, selectionSet, fields, visitedFra
  * Determines if a field should be included based on the @include and @skip
  * directives, where @skip has higher precidence than @include.
  */
-function shouldIncludeNode(exeContext, directives) {
-  var skipNode = directives && (0, _find2.default)(directives, function (directive) {
-    return directive.name.value === _directives.GraphQLSkipDirective.name;
-  });
-  if (skipNode) {
-    var _getArgumentValues = (0, _values.getArgumentValues)(_directives.GraphQLSkipDirective, skipNode, exeContext.variableValues),
-        skipIf = _getArgumentValues.if;
-
-    if (skipIf === true) {
-      return false;
-    }
+function shouldIncludeNode(exeContext, node) {
+  var skip = (0, _values.getDirectiveValues)(_directives.GraphQLSkipDirective, node, exeContext.variableValues);
+  if (skip && skip.if === true) {
+    return false;
   }
 
-  var includeNode = directives && (0, _find2.default)(directives, function (directive) {
-    return directive.name.value === _directives.GraphQLIncludeDirective.name;
-  });
-  if (includeNode) {
-    var _getArgumentValues2 = (0, _values.getArgumentValues)(_directives.GraphQLIncludeDirective, includeNode, exeContext.variableValues),
-        includeIf = _getArgumentValues2.if;
-
-    if (includeIf === false) {
-      return false;
-    }
+  var include = (0, _values.getDirectiveValues)(_directives.GraphQLIncludeDirective, node, exeContext.variableValues);
+  if (include && include.if === false) {
+    return false;
   }
-
   return true;
 }
 
@@ -20557,8 +23681,7 @@ function doesFragmentConditionMatch(exeContext, fragment, type) {
     return true;
   }
   if ((0, _definition.isAbstractType)(conditionalType)) {
-    var abstractType = conditionalType;
-    return exeContext.schema.isPossibleType(abstractType, type);
+    return exeContext.schema.isPossibleType(conditionalType, type);
   }
   return false;
 }
@@ -20605,20 +23728,24 @@ function resolveField(exeContext, parentType, source, fieldNodes, path) {
     return;
   }
 
-  var returnType = fieldDef.type;
-  var resolveFn = fieldDef.resolve || defaultFieldResolver;
+  var resolveFn = fieldDef.resolve || exeContext.fieldResolver;
 
-  // The resolve function's optional third argument is a context value that
-  // is provided to every resolve function within an execution. It is commonly
-  // used to represent an authenticated user, or request-specific caches.
-  var context = exeContext.contextValue;
+  var info = buildResolveInfo(exeContext, fieldDef, fieldNodes, parentType, path);
 
+  // Get the resolve function, regardless of if its result is normal
+  // or abrupt (error).
+  var result = resolveFieldValueOrError(exeContext, fieldDef, fieldNodes, resolveFn, source, info);
+
+  return completeValueCatchingError(exeContext, fieldDef.type, fieldNodes, info, path, result);
+}
+
+function buildResolveInfo(exeContext, fieldDef, fieldNodes, parentType, path) {
   // The resolve function's optional fourth argument is a collection of
   // information about the current execution state.
-  var info = {
-    fieldName: fieldName,
+  return {
+    fieldName: fieldNodes[0].name.value,
     fieldNodes: fieldNodes,
-    returnType: returnType,
+    returnType: fieldDef.type,
     parentType: parentType,
     path: path,
     schema: exeContext.schema,
@@ -20627,22 +23754,21 @@ function resolveField(exeContext, parentType, source, fieldNodes, path) {
     operation: exeContext.operation,
     variableValues: exeContext.variableValues
   };
-
-  // Get the resolve function, regardless of if its result is normal
-  // or abrupt (error).
-  var result = resolveOrError(exeContext, fieldDef, fieldNode, resolveFn, source, context, info);
-
-  return completeValueCatchingError(exeContext, returnType, fieldNodes, info, path, result);
 }
 
 // Isolates the "ReturnOrAbrupt" behavior to not de-opt the `resolveField`
 // function. Returns the result of resolveFn or the abrupt-return Error object.
-function resolveOrError(exeContext, fieldDef, fieldNode, resolveFn, source, context, info) {
+function resolveFieldValueOrError(exeContext, fieldDef, fieldNodes, resolveFn, source, info) {
   try {
     // Build a JS object of arguments from the field.arguments AST, using the
     // variables scope to fulfill any variable references.
     // TODO: find a way to memoize, in case this field is within a List type.
-    var args = (0, _values.getArgumentValues)(fieldDef, fieldNode, exeContext.variableValues);
+    var args = (0, _values.getArgumentValues)(fieldDef, fieldNodes[0], exeContext.variableValues);
+
+    // The resolve function's optional third argument is a context value that
+    // is provided to every resolve function within an execution. It is commonly
+    // used to represent an authenticated user, or request-specific caches.
+    var context = exeContext.contextValue;
 
     return resolveFn(source, args, context, info);
   } catch (error) {
@@ -20759,13 +23885,13 @@ function completeValue(exeContext, returnType, fieldNodes, info, path, result) {
 
   // If field type is a leaf type, Scalar or Enum, serialize to a valid value,
   // returning null if serialization is not possible.
-  if (returnType instanceof _definition.GraphQLScalarType || returnType instanceof _definition.GraphQLEnumType) {
+  if ((0, _definition.isLeafType)(returnType)) {
     return completeLeafValue(returnType, result);
   }
 
   // If field type is an abstract type, Interface or Union, determine the
   // runtime Object type and complete for that type.
-  if (returnType instanceof _definition.GraphQLInterfaceType || returnType instanceof _definition.GraphQLUnionType) {
+  if ((0, _definition.isAbstractType)(returnType)) {
     return completeAbstractValue(exeContext, returnType, fieldNodes, info, path, result);
   }
 
@@ -20783,7 +23909,7 @@ function completeValue(exeContext, returnType, fieldNodes, info, path, result) {
  * inner type
  */
 function completeListValue(exeContext, returnType, fieldNodes, info, path, result) {
-  (0, _invariant2.default)((0, _iterall.isCollection)(result), 'Expected Iterable, but did not find one for field ' + info.parentType.name + '.' + info.fieldName + '.');
+  !(0, _iterall.isCollection)(result) ? (0, _invariant2.default)(0, 'Expected Iterable, but did not find one for field ' + info.parentType.name + '.' + info.fieldName + '.') : void 0;
 
   // This is specified as a simple map, however we're optimizing the path
   // where the list contains no Promises by avoiding creating another Promise.
@@ -20810,7 +23936,7 @@ function completeListValue(exeContext, returnType, fieldNodes, info, path, resul
  * null if serialization is not possible.
  */
 function completeLeafValue(returnType, result) {
-  (0, _invariant2.default)(returnType.serialize, 'Missing serialize method on type');
+  !returnType.serialize ? (0, _invariant2.default)(0, 'Missing serialize method on type') : void 0;
   var serializedResult = returnType.serialize(result);
   if ((0, _isNullish2.default)(serializedResult)) {
     throw new Error('Expected a value of type "' + String(returnType) + '" but ' + ('received: ' + String(result)));
@@ -20938,7 +24064,7 @@ function defaultResolveTypeFn(value, context, info, abstractType) {
  */
 var defaultFieldResolver = exports.defaultFieldResolver = function defaultFieldResolver(source, args, context, info) {
   // ensure source is a value for which property access is acceptable.
-  if (typeof source === 'object' || typeof source === 'function') {
+  if ((typeof source === 'undefined' ? 'undefined' : _typeof(source)) === 'object' || typeof source === 'function') {
     var property = source[info.fieldName];
     if (typeof property === 'function') {
       return source[info.fieldName](args, context, info);
@@ -20952,7 +24078,7 @@ var defaultFieldResolver = exports.defaultFieldResolver = function defaultFieldR
  * otherwise returns void.
  */
 function getPromise(value) {
-  if (typeof value === 'object' && value !== null && typeof value.then === 'function') {
+  if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' && value !== null && typeof value.then === 'function') {
     return value;
   }
 }
@@ -20976,7 +24102,7 @@ function getFieldDef(schema, parentType, fieldName) {
   }
   return parentType.getFields()[fieldName];
 }
-},{"../error":71,"../jsutils/find":79,"../jsutils/invariant":80,"../jsutils/isNullish":82,"../language/kinds":88,"../type/definition":95,"../type/directives":96,"../type/introspection":98,"../type/schema":100,"../utilities/typeFromAST":118,"./values":76,"iterall":148}],75:[function(require,module,exports){
+},{"../error":87,"../jsutils/invariant":96,"../jsutils/isNullish":98,"../language/kinds":104,"../type/definition":114,"../type/directives":115,"../type/introspection":117,"../type/schema":119,"../utilities/typeFromAST":137,"./values":92,"iterall":168}],91:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21003,18 +24129,43 @@ Object.defineProperty(exports, 'responsePathAsArray', {
     return _execute.responsePathAsArray;
   }
 });
-},{"./execute":74}],76:[function(require,module,exports){
+
+var _values = require('./values');
+
+Object.defineProperty(exports, 'getDirectiveValues', {
+  enumerable: true,
+  get: function get() {
+    return _values.getDirectiveValues;
+  }
+});
+},{"./execute":90,"./values":92}],92:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 exports.getVariableValues = getVariableValues;
 exports.getArgumentValues = getArgumentValues;
+exports.getDirectiveValues = getDirectiveValues;
 
 var _iterall = require('iterall');
 
 var _error = require('../error');
+
+var _find = require('../jsutils/find');
+
+var _find2 = _interopRequireDefault(_find);
 
 var _invariant = require('../jsutils/invariant');
 
@@ -21050,7 +24201,7 @@ var _definition = require('../type/definition');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Prepares an object map of variableValues of the correct type based on the
@@ -21066,7 +24217,6 @@ function getVariableValues(schema, varDefNodes, inputs) {
     if (!(0, _definition.isInputType)(varType)) {
       throw new _error.GraphQLError('Variable "$' + varName + '" expected value of type ' + ('"' + (0, _printer.print)(varDefNode.type) + '" which cannot be used as an input type.'), [varDefNode.type]);
     }
-    varType = varType;
 
     var value = inputs[varName];
     if ((0, _isInvalid2.default)(value)) {
@@ -21085,7 +24235,7 @@ function getVariableValues(schema, varDefNodes, inputs) {
       }
 
       var coercedValue = coerceValue(varType, value);
-      (0, _invariant2.default)(!(0, _isInvalid2.default)(coercedValue), 'Should have reported error.');
+      !!(0, _isInvalid2.default)(coercedValue) ? (0, _invariant2.default)(0, 'Should have reported error.') : void 0;
       coercedValues[varName] = coercedValue;
     }
   }
@@ -21096,16 +24246,6 @@ function getVariableValues(schema, varDefNodes, inputs) {
  * Prepares an object map of argument values given a list of argument
  * definitions and list of argument AST nodes.
  */
-
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
 function getArgumentValues(def, node, variableValues) {
   var argDefs = def.args;
   var argNodes = node.arguments;
@@ -21152,6 +24292,23 @@ function getArgumentValues(def, node, variableValues) {
     }
   }
   return coercedValues;
+}
+
+/**
+ * Prepares an object map of argument values given a directive definition
+ * and a AST node which may contain directives. Optionally also accepts a map
+ * of variable values.
+ *
+ * If the directive does not exist on the node, returns undefined.
+ */
+function getDirectiveValues(directiveDef, node, variableValues) {
+  var directiveNode = node.directives && (0, _find2.default)(node.directives, function (directive) {
+    return directive.name.value === directiveDef.name;
+  });
+
+  if (directiveNode) {
+    return getArgumentValues(directiveDef, directiveNode, variableValues);
+  }
 }
 
 /**
@@ -21203,7 +24360,7 @@ function coerceValue(type, value) {
   }
 
   if (type instanceof _definition.GraphQLInputObjectType) {
-    if (typeof _value !== 'object') {
+    if ((typeof _value === 'undefined' ? 'undefined' : _typeof(_value)) !== 'object') {
       return; // Intentionally return no value.
     }
     var coercedObj = Object.create(null);
@@ -21229,7 +24386,7 @@ function coerceValue(type, value) {
     return coercedObj;
   }
 
-  (0, _invariant2.default)(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType, 'Must be input type');
+  !(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType) ? (0, _invariant2.default)(0, 'Must be input type') : void 0;
 
   var parsed = type.parseValue(_value);
   if ((0, _isNullish2.default)(parsed)) {
@@ -21240,15 +24397,13 @@ function coerceValue(type, value) {
 
   return parsed;
 }
-},{"../error":71,"../jsutils/invariant":80,"../jsutils/isInvalid":81,"../jsutils/isNullish":82,"../jsutils/keyMap":83,"../language/kinds":88,"../language/printer":92,"../type/definition":95,"../utilities/isValidJSValue":113,"../utilities/isValidLiteralValue":114,"../utilities/typeFromAST":118,"../utilities/valueFromAST":119,"iterall":148}],77:[function(require,module,exports){
+},{"../error":87,"../jsutils/find":95,"../jsutils/invariant":96,"../jsutils/isInvalid":97,"../jsutils/isNullish":98,"../jsutils/keyMap":99,"../language/kinds":104,"../language/printer":108,"../type/definition":114,"../utilities/isValidJSValue":132,"../utilities/isValidLiteralValue":133,"../utilities/typeFromAST":137,"../utilities/valueFromAST":138,"iterall":168}],93:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.graphql = graphql;
-
-var _source = require('./language/source');
 
 var _parser = require('./language/parser');
 
@@ -21265,9 +24420,11 @@ var _execute = require('./execution/execute');
  * may wish to separate the validation and execution phases to a static time
  * tooling step, and a server runtime step.
  *
+ * Accepts either an object with named arguments, or individual arguments:
+ *
  * schema:
  *    The GraphQL type system to use when validating and executing a query.
- * requestString:
+ * source:
  *    A GraphQL language formatted string representing the requested operation.
  * rootValue:
  *    The value provided as the first argument to resolver functions on the top
@@ -21279,8 +24436,19 @@ var _execute = require('./execution/execute');
  *    The name of the operation to use if requestString contains multiple
  *    possible operations. Can be omitted if requestString contains only
  *    one operation.
+ * fieldResolver:
+ *    A resolver function to use when one is not provided by the schema.
+ *    If not provided, the default field resolver is used (which looks for a
+ *    value or method on the source value with the field's name).
  */
 
+/* eslint-disable no-redeclare */
+function graphql(argsOrSchema, source, rootValue, contextValue, variableValues, operationName, fieldResolver) {
+  // Extract arguments from object args if provided.
+  var args = arguments.length === 1 ? argsOrSchema : undefined;
+  var schema = args ? args.schema : argsOrSchema;
+  return args ? graphqlImpl(schema, args.source, args.rootValue, args.contextValue, args.variableValues, args.operationName, args.fieldResolver) : graphqlImpl(schema, source, rootValue, contextValue, variableValues, operationName, fieldResolver);
+}
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -21290,21 +24458,27 @@ var _execute = require('./execution/execute');
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-function graphql(schema, requestString, rootValue, contextValue, variableValues, operationName) {
+function graphqlImpl(schema, source, rootValue, contextValue, variableValues, operationName, fieldResolver) {
   return new Promise(function (resolve) {
-    var source = new _source.Source(requestString || '', 'GraphQL request');
-    var documentAST = (0, _parser.parse)(source);
-    var validationErrors = (0, _validate.validate)(schema, documentAST);
-    if (validationErrors.length > 0) {
-      resolve({ errors: validationErrors });
-    } else {
-      resolve((0, _execute.execute)(schema, documentAST, rootValue, contextValue, variableValues, operationName));
+    // Parse
+    var document = void 0;
+    try {
+      document = (0, _parser.parse)(source);
+    } catch (syntaxError) {
+      return resolve({ errors: [syntaxError] });
     }
-  }).then(undefined, function (error) {
-    return { errors: [error] };
+
+    // Validate
+    var validationErrors = (0, _validate.validate)(schema, document);
+    if (validationErrors.length > 0) {
+      return resolve({ errors: validationErrors });
+    }
+
+    // Execute
+    resolve((0, _execute.execute)(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver));
   });
 }
-},{"./execution/execute":74,"./language/parser":91,"./language/source":93,"./validation/validate":147}],78:[function(require,module,exports){
+},{"./execution/execute":90,"./language/parser":107,"./validation/validate":167}],94:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21673,6 +24847,12 @@ Object.defineProperty(exports, 'visitWithTypeInfo', {
     return _language.visitWithTypeInfo;
   }
 });
+Object.defineProperty(exports, 'getVisitFn', {
+  enumerable: true,
+  get: function get() {
+    return _language.getVisitFn;
+  }
+});
 Object.defineProperty(exports, 'Kind', {
   enumerable: true,
   get: function get() {
@@ -21712,6 +24892,27 @@ Object.defineProperty(exports, 'responsePathAsArray', {
     return _execution.responsePathAsArray;
   }
 });
+Object.defineProperty(exports, 'getDirectiveValues', {
+  enumerable: true,
+  get: function get() {
+    return _execution.getDirectiveValues;
+  }
+});
+
+var _subscription = require('./subscription');
+
+Object.defineProperty(exports, 'subscribe', {
+  enumerable: true,
+  get: function get() {
+    return _subscription.subscribe;
+  }
+});
+Object.defineProperty(exports, 'createSourceEventStream', {
+  enumerable: true,
+  get: function get() {
+    return _subscription.createSourceEventStream;
+  }
+});
 
 var _validation = require('./validation');
 
@@ -21731,6 +24932,162 @@ Object.defineProperty(exports, 'specifiedRules', {
   enumerable: true,
   get: function get() {
     return _validation.specifiedRules;
+  }
+});
+Object.defineProperty(exports, 'ArgumentsOfCorrectTypeRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.ArgumentsOfCorrectTypeRule;
+  }
+});
+Object.defineProperty(exports, 'DefaultValuesOfCorrectTypeRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.DefaultValuesOfCorrectTypeRule;
+  }
+});
+Object.defineProperty(exports, 'FieldsOnCorrectTypeRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.FieldsOnCorrectTypeRule;
+  }
+});
+Object.defineProperty(exports, 'FragmentsOnCompositeTypesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.FragmentsOnCompositeTypesRule;
+  }
+});
+Object.defineProperty(exports, 'KnownArgumentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.KnownArgumentNamesRule;
+  }
+});
+Object.defineProperty(exports, 'KnownDirectivesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.KnownDirectivesRule;
+  }
+});
+Object.defineProperty(exports, 'KnownFragmentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.KnownFragmentNamesRule;
+  }
+});
+Object.defineProperty(exports, 'KnownTypeNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.KnownTypeNamesRule;
+  }
+});
+Object.defineProperty(exports, 'LoneAnonymousOperationRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.LoneAnonymousOperationRule;
+  }
+});
+Object.defineProperty(exports, 'NoFragmentCyclesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.NoFragmentCyclesRule;
+  }
+});
+Object.defineProperty(exports, 'NoUndefinedVariablesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.NoUndefinedVariablesRule;
+  }
+});
+Object.defineProperty(exports, 'NoUnusedFragmentsRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.NoUnusedFragmentsRule;
+  }
+});
+Object.defineProperty(exports, 'NoUnusedVariablesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.NoUnusedVariablesRule;
+  }
+});
+Object.defineProperty(exports, 'OverlappingFieldsCanBeMergedRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.OverlappingFieldsCanBeMergedRule;
+  }
+});
+Object.defineProperty(exports, 'PossibleFragmentSpreadsRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.PossibleFragmentSpreadsRule;
+  }
+});
+Object.defineProperty(exports, 'ProvidedNonNullArgumentsRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.ProvidedNonNullArgumentsRule;
+  }
+});
+Object.defineProperty(exports, 'ScalarLeafsRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.ScalarLeafsRule;
+  }
+});
+Object.defineProperty(exports, 'SingleFieldSubscriptionsRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.SingleFieldSubscriptionsRule;
+  }
+});
+Object.defineProperty(exports, 'UniqueArgumentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.UniqueArgumentNamesRule;
+  }
+});
+Object.defineProperty(exports, 'UniqueDirectivesPerLocationRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.UniqueDirectivesPerLocationRule;
+  }
+});
+Object.defineProperty(exports, 'UniqueFragmentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.UniqueFragmentNamesRule;
+  }
+});
+Object.defineProperty(exports, 'UniqueInputFieldNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.UniqueInputFieldNamesRule;
+  }
+});
+Object.defineProperty(exports, 'UniqueOperationNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.UniqueOperationNamesRule;
+  }
+});
+Object.defineProperty(exports, 'UniqueVariableNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.UniqueVariableNamesRule;
+  }
+});
+Object.defineProperty(exports, 'VariablesAreInputTypesRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.VariablesAreInputTypesRule;
+  }
+});
+Object.defineProperty(exports, 'VariablesInAllowedPositionRule', {
+  enumerable: true,
+  get: function get() {
+    return _validation.VariablesInAllowedPositionRule;
   }
 });
 
@@ -21791,6 +25148,12 @@ Object.defineProperty(exports, 'printSchema', {
   enumerable: true,
   get: function get() {
     return _utilities.printSchema;
+  }
+});
+Object.defineProperty(exports, 'printIntrospectionSchema', {
+  enumerable: true,
+  get: function get() {
+    return _utilities.printIntrospectionSchema;
   }
 });
 Object.defineProperty(exports, 'printType', {
@@ -21877,13 +25240,25 @@ Object.defineProperty(exports, 'findBreakingChanges', {
     return _utilities.findBreakingChanges;
   }
 });
+Object.defineProperty(exports, 'BreakingChangeType', {
+  enumerable: true,
+  get: function get() {
+    return _utilities.BreakingChangeType;
+  }
+});
+Object.defineProperty(exports, 'DangerousChangeType', {
+  enumerable: true,
+  get: function get() {
+    return _utilities.DangerousChangeType;
+  }
+});
 Object.defineProperty(exports, 'findDeprecatedUsages', {
   enumerable: true,
   get: function get() {
     return _utilities.findDeprecatedUsages;
   }
 });
-},{"./error":71,"./execution":75,"./graphql":77,"./language":87,"./type":97,"./utilities":111,"./validation":120}],79:[function(require,module,exports){
+},{"./error":87,"./execution":91,"./graphql":93,"./language":103,"./subscription":111,"./type":116,"./utilities":130,"./validation":139}],95:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21907,7 +25282,7 @@ function find(list, predicate) {
     }
   }
 }
-},{}],80:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21929,7 +25304,7 @@ function invariant(condition, message) {
     throw new Error(message);
   }
 }
-},{}],81:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21952,7 +25327,7 @@ exports.default = isInvalid;
 function isInvalid(value) {
   return value === undefined || value !== value;
 }
-},{}],82:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21975,7 +25350,7 @@ exports.default = isNullish;
 function isNullish(value) {
   return value === null || value === undefined || value !== value;
 }
-},{}],83:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22018,9 +25393,9 @@ exports.default = keyMap;
 function keyMap(list, keyFn) {
   return list.reduce(function (map, item) {
     return map[keyFn(item)] = item, map;
-  }, {});
+  }, Object.create(null));
 }
-},{}],84:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22057,9 +25432,9 @@ exports.default = keyValMap;
 function keyValMap(list, keyFn, valFn) {
   return list.reduce(function (map, item) {
     return map[keyFn(item)] = valFn(item), map;
-  }, {});
+  }, Object.create(null));
 }
-},{}],85:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22089,7 +25464,7 @@ function quotedOrList(items) {
     return list + (selected.length > 2 ? ', ' : ' ') + (index === selected.length - 1 ? 'or ' : '') + quoted;
   });
 }
-},{}],86:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22169,13 +25544,13 @@ function lexicalDistance(a, b) {
 
   return d[aLength][bLength];
 }
-},{}],87:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BREAK = exports.visitWithTypeInfo = exports.visitInParallel = exports.visit = exports.Source = exports.print = exports.parseType = exports.parseValue = exports.parse = exports.TokenKind = exports.createLexer = exports.Kind = exports.getLocation = undefined;
+exports.BREAK = exports.getVisitFn = exports.visitWithTypeInfo = exports.visitInParallel = exports.visit = exports.Source = exports.print = exports.parseType = exports.parseValue = exports.parse = exports.TokenKind = exports.createLexer = exports.Kind = exports.getLocation = undefined;
 
 var _location = require('./location');
 
@@ -22260,6 +25635,12 @@ Object.defineProperty(exports, 'visitWithTypeInfo', {
     return _visitor.visitWithTypeInfo;
   }
 });
+Object.defineProperty(exports, 'getVisitFn', {
+  enumerable: true,
+  get: function get() {
+    return _visitor.getVisitFn;
+  }
+});
 Object.defineProperty(exports, 'BREAK', {
   enumerable: true,
   get: function get() {
@@ -22274,7 +25655,7 @@ var Kind = _interopRequireWildcard(_kinds);
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 exports.Kind = Kind;
-},{"./kinds":88,"./lexer":89,"./location":90,"./parser":91,"./printer":92,"./source":93,"./visitor":94}],88:[function(require,module,exports){
+},{"./kinds":104,"./lexer":105,"./location":106,"./parser":107,"./printer":108,"./source":109,"./visitor":110}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22356,7 +25737,7 @@ var TYPE_EXTENSION_DEFINITION = exports.TYPE_EXTENSION_DEFINITION = 'TypeExtensi
 // Directive Definitions
 
 var DIRECTIVE_DEFINITION = exports.DIRECTIVE_DEFINITION = 'DirectiveDefinition';
-},{}],89:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22859,7 +26240,7 @@ function readName(source, position, line, col, prev) {
   }
   return new Tok(NAME, position, end, line, col, prev, slice.call(body, position, end));
 }
-},{"../error":71}],90:[function(require,module,exports){
+},{"../error":87}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22897,7 +26278,7 @@ function getLocation(source, position) {
 /**
  * Represents a location in a Source.
  */
-},{}],91:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22939,6 +26320,9 @@ var _kinds = require('./kinds');
 
 function parse(source, options) {
   var sourceObj = typeof source === 'string' ? new _source.Source(source) : source;
+  if (!(sourceObj instanceof _source.Source)) {
+    throw new TypeError('Must provide Source. Received: ' + String(sourceObj));
+  }
   var lexer = (0, _lexer.createLexer)(sourceObj, options || {});
   return parseDocument(lexer);
 }
@@ -23697,10 +27081,12 @@ function parseUnionTypeDefinition(lexer) {
 
 /**
  * UnionMembers :
- *   - NamedType
+ *   - `|`? NamedType
  *   - UnionMembers | NamedType
  */
 function parseUnionMembers(lexer) {
+  // Optional leading pipe
+  skip(lexer, _lexer.TokenKind.PIPE);
   var members = [];
   do {
     members.push(parseNamedType(lexer));
@@ -23798,10 +27184,12 @@ function parseDirectiveDefinition(lexer) {
 
 /**
  * DirectiveLocations :
- *   - Name
+ *   - `|`? Name
  *   - DirectiveLocations | Name
  */
 function parseDirectiveLocations(lexer) {
+  // Optional leading pipe
+  skip(lexer, _lexer.TokenKind.PIPE);
   var locations = [];
   do {
     locations.push(parseName(lexer));
@@ -23918,7 +27306,7 @@ function many(lexer, openKind, parseFn, closeKind) {
   }
   return nodes;
 }
-},{"../error":71,"./kinds":88,"./lexer":89,"./source":93}],92:[function(require,module,exports){
+},{"../error":87,"./kinds":104,"./lexer":105,"./source":109}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24201,15 +27589,21 @@ function wrap(start, maybeString, end) {
 function indent(maybeString) {
   return maybeString && maybeString.replace(/\n/g, '\n  ');
 }
-},{"./visitor":94}],93:[function(require,module,exports){
+},{"./visitor":110}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.Source = undefined;
+
+var _invariant = require('../jsutils/invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -24220,18 +27614,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 /**
- * A representation of source input to GraphQL. The name is optional,
- * but is mostly useful for clients who store GraphQL documents in
- * source files; for example, if the GraphQL input is in a file Foo.graphql,
- * it might be useful for name to be "Foo.graphql".
+ * A representation of source input to GraphQL.
+ * `name` and `locationOffset` are optional. They are useful for clients who
+ * store GraphQL documents in source files; for example, if the GraphQL input
+ * starts at line 40 in a file named Foo.graphql, it might be useful for name to
+ * be "Foo.graphql" and location to be `{ line: 40, column: 0 }`.
+ * line and column in locationOffset are 1-indexed
  */
-var Source = exports.Source = function Source(body, name) {
+var Source = exports.Source = function Source(body, name, locationOffset) {
   _classCallCheck(this, Source);
 
   this.body = body;
-  this.name = name || 'GraphQL';
+  this.name = name || 'GraphQL request';
+  this.locationOffset = locationOffset || { line: 1, column: 1 };
+  !(this.locationOffset.line > 0) ? (0, _invariant2.default)(0, 'line in locationOffset is 1-indexed and must be positive') : void 0;
+  !(this.locationOffset.column > 0) ? (0, _invariant2.default)(0, 'column in locationOffset is 1-indexed and must be positive') : void 0;
 };
-},{}],94:[function(require,module,exports){
+},{"../jsutils/invariant":96}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -24240,6 +27639,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.visit = visit;
 exports.visitInParallel = visitInParallel;
 exports.visitWithTypeInfo = visitWithTypeInfo;
+exports.getVisitFn = getVisitFn;
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -24622,13 +28022,225 @@ function getVisitFn(visitor, kind, isLeaving) {
     }
   }
 }
-},{}],95:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _subscribe = require('./subscribe');
+
+Object.defineProperty(exports, 'subscribe', {
+  enumerable: true,
+  get: function get() {
+    return _subscribe.subscribe;
+  }
+});
+Object.defineProperty(exports, 'createSourceEventStream', {
+  enumerable: true,
+  get: function get() {
+    return _subscribe.createSourceEventStream;
+  }
+});
+},{"./subscribe":113}],112:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = mapAsyncIterator;
+
+var _iterall = require('iterall');
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } /**
+                                                                                                                                                                                                                   * Copyright (c) 2017, Facebook, Inc.
+                                                                                                                                                                                                                   * All rights reserved.
+                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                   * This source code is licensed under the BSD-style license found in the
+                                                                                                                                                                                                                   * LICENSE file in the root directory of this source tree. An additional grant
+                                                                                                                                                                                                                   * of patent rights can be found in the PATENTS file in the same directory.
+                                                                                                                                                                                                                   *
+                                                                                                                                                                                                                   * 
+                                                                                                                                                                                                                   */
+
+/**
+ * Given an AsyncIterable and a callback function, return an AsyncIterator
+ * which produces values mapped via calling the callback function.
+ */
+function mapAsyncIterator(iterable, callback) {
+  var iterator = (0, _iterall.getAsyncIterator)(iterable);
+  var $return = void 0;
+  var abruptClose = void 0;
+  if (typeof iterator.return === 'function') {
+    $return = iterator.return;
+    abruptClose = function abruptClose(error) {
+      var rethrow = function rethrow() {
+        return Promise.reject(error);
+      };
+      return $return.call(iterator).then(rethrow, rethrow);
+    };
+  }
+
+  function mapResult(result) {
+    return result.done ? result : asyncMapValue(result.value, callback).then(iteratorResult, abruptClose);
+  }
+
+  return _defineProperty({
+    next: function next() {
+      return iterator.next().then(mapResult);
+    },
+    return: function _return() {
+      return $return ? $return.call(iterator).then(mapResult) : Promise.resolve({ value: undefined, done: true });
+    },
+    throw: function _throw(error) {
+      if (typeof iterator.throw === 'function') {
+        return iterator.throw(error).then(mapResult);
+      }
+      return Promise.reject(error).catch(abruptClose);
+    }
+  }, _iterall.$$asyncIterator, function () {
+    return this;
+  });
+}
+
+function asyncMapValue(value, callback) {
+  return new Promise(function (resolve) {
+    return resolve(callback(value));
+  });
+}
+
+function iteratorResult(value) {
+  return { value: value, done: false };
+}
+},{"iterall":168}],113:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.subscribe = subscribe;
+exports.createSourceEventStream = createSourceEventStream;
+
+var _iterall = require('iterall');
+
+var _execute = require('../execution/execute');
+
+var _schema = require('../type/schema');
+
+var _invariant = require('../jsutils/invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _mapAsyncIterator = require('./mapAsyncIterator');
+
+var _mapAsyncIterator2 = _interopRequireDefault(_mapAsyncIterator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Implements the "Subscribe" algorithm described in the GraphQL specification.
+ *
+ * Returns an AsyncIterator
+ *
+ * If the arguments to this function do not result in a legal execution context,
+ * a GraphQLError will be thrown immediately explaining the invalid input.
+ *
+ * Accepts either an object with named arguments, or individual arguments.
+ */
+
+/* eslint-disable no-redeclare */
+function subscribe(argsOrSchema, document, rootValue, contextValue, variableValues, operationName, fieldResolver, subscribeFieldResolver) {
+  // Extract arguments from object args if provided.
+  var args = arguments.length === 1 ? argsOrSchema : undefined;
+  var schema = args ? args.schema : argsOrSchema;
+  return args ? subscribeImpl(schema, args.document, args.rootValue, args.contextValue, args.variableValues, args.operationName, args.fieldResolver, args.subscribeFieldResolver) : subscribeImpl(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver, subscribeFieldResolver);
+} /**
+   * Copyright (c) 2017, Facebook, Inc.
+   * All rights reserved.
+   *
+   * This source code is licensed under the BSD-style license found in the
+   * LICENSE file in the root directory of this source tree. An additional grant
+   * of patent rights can be found in the PATENTS file in the same directory.
+   *
+   * 
+   */
+
+function subscribeImpl(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver, subscribeFieldResolver) {
+  var subscription = createSourceEventStream(schema, document, rootValue, contextValue, variableValues, operationName, subscribeFieldResolver);
+
+  // For each payload yielded from a subscription, map it over the normal
+  // GraphQL `execute` function, with `payload` as the rootValue.
+  // This implements the "MapSourceToResponseEvent" algorithm described in
+  // the GraphQL specification. The `execute` function provides the
+  // "ExecuteSubscriptionEvent" algorithm, as it is nearly identical to the
+  // "ExecuteQuery" algorithm, for which `execute` is also used.
+  return (0, _mapAsyncIterator2.default)(subscription, function (payload) {
+    return (0, _execute.execute)(schema, document, payload, contextValue, variableValues, operationName, fieldResolver);
+  });
+}
+
+/**
+ * Implements the "CreateSourceEventStream" algorithm described in the
+ * GraphQL specification, resolving the subscription source event stream.
+ *
+ * Returns an AsyncIterable, may through a GraphQLError.
+ *
+ * A Source Stream represents the sequence of events, each of which is
+ * expected to be used to trigger a GraphQL execution for that event.
+ *
+ * This may be useful when hosting the stateful subscription service in a
+ * different process or machine than the stateless GraphQL execution engine,
+ * or otherwise separating these two steps. For more on this, see the
+ * "Supporting Subscriptions at Scale" information in the GraphQL specification.
+ */
+function createSourceEventStream(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver) {
+  // If arguments are missing or incorrect, throw an error.
+  (0, _execute.assertValidExecutionArguments)(schema, document, variableValues);
+
+  // If a valid context cannot be created due to incorrect arguments,
+  // this will throw an error.
+  var exeContext = (0, _execute.buildExecutionContext)(schema, document, rootValue, contextValue, variableValues, operationName, fieldResolver);
+
+  var type = (0, _execute.getOperationRootType)(schema, exeContext.operation);
+  var fields = (0, _execute.collectFields)(exeContext, type, exeContext.operation.selectionSet, Object.create(null), Object.create(null));
+  var responseNames = Object.keys(fields);
+  var responseName = responseNames[0];
+  var fieldNodes = fields[responseName];
+  var fieldNode = fieldNodes[0];
+  var fieldDef = (0, _execute.getFieldDef)(schema, type, fieldNode.name.value);
+  !fieldDef ? (0, _invariant2.default)(0, 'This subscription is not defined by the schema.') : void 0;
+
+  // Call the `subscribe()` resolver or the default resolver to produce an
+  // AsyncIterable yielding raw payloads.
+  var resolveFn = fieldDef.subscribe || exeContext.fieldResolver;
+
+  var info = (0, _execute.buildResolveInfo)(exeContext, fieldDef, fieldNodes, type, (0, _execute.addPath)(undefined, responseName));
+
+  // resolveFieldValueOrError implements the "ResolveFieldEventStream"
+  // algorithm from GraphQL specification. It differs from
+  // "ResolveFieldValue" due to providing a different `resolveFn`.
+  var subscription = (0, _execute.resolveFieldValueOrError)(exeContext, fieldDef, fieldNodes, resolveFn, rootValue, info);
+
+  if (subscription instanceof Error) {
+    throw subscription;
+  }
+
+  if (!(0, _iterall.isAsyncIterable)(subscription)) {
+    throw new Error('Subscription must return Async Iterable. ' + 'Received: ' + String(subscription));
+  }
+
+  return subscription;
+}
+},{"../execution/execute":90,"../jsutils/invariant":96,"../type/schema":119,"./mapAsyncIterator":112,"iterall":168}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.GraphQLNonNull = exports.GraphQLList = exports.GraphQLInputObjectType = exports.GraphQLEnumType = exports.GraphQLUnionType = exports.GraphQLInterfaceType = exports.GraphQLObjectType = exports.GraphQLScalarType = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -24659,9 +28271,13 @@ var _isNullish2 = _interopRequireDefault(_isNullish);
 
 var _kinds = require('../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _assertValidName = require('../utilities/assertValidName');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 /**
@@ -24683,7 +28299,7 @@ function isType(type) {
 }
 
 function assertType(type) {
-  (0, _invariant2.default)(isType(type), 'Expected ' + String(type) + ' to be a GraphQL type.');
+  !isType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL type.') : void 0;
   return type;
 }
 
@@ -24691,12 +28307,11 @@ function assertType(type) {
  * These types may be used as input types for arguments and directives.
  */
 function isInputType(type) {
-  var namedType = getNamedType(type);
-  return namedType instanceof GraphQLScalarType || namedType instanceof GraphQLEnumType || namedType instanceof GraphQLInputObjectType;
+  return type instanceof GraphQLScalarType || type instanceof GraphQLEnumType || type instanceof GraphQLInputObjectType || type instanceof GraphQLNonNull && isInputType(type.ofType) || type instanceof GraphQLList && isInputType(type.ofType);
 }
 
 function assertInputType(type) {
-  (0, _invariant2.default)(isInputType(type), 'Expected ' + String(type) + ' to be a GraphQL input type.');
+  !isInputType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL input type.') : void 0;
   return type;
 }
 
@@ -24704,12 +28319,11 @@ function assertInputType(type) {
  * These types may be used as output types as the result of fields.
  */
 function isOutputType(type) {
-  var namedType = getNamedType(type);
-  return namedType instanceof GraphQLScalarType || namedType instanceof GraphQLObjectType || namedType instanceof GraphQLInterfaceType || namedType instanceof GraphQLUnionType || namedType instanceof GraphQLEnumType;
+  return type instanceof GraphQLScalarType || type instanceof GraphQLObjectType || type instanceof GraphQLInterfaceType || type instanceof GraphQLUnionType || type instanceof GraphQLEnumType || type instanceof GraphQLNonNull && isOutputType(type.ofType) || type instanceof GraphQLList && isOutputType(type.ofType);
 }
 
 function assertOutputType(type) {
-  (0, _invariant2.default)(isOutputType(type), 'Expected ' + String(type) + ' to be a GraphQL output type.');
+  !isOutputType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL output type.') : void 0;
   return type;
 }
 
@@ -24721,7 +28335,7 @@ function isLeafType(type) {
 }
 
 function assertLeafType(type) {
-  (0, _invariant2.default)(isLeafType(type), 'Expected ' + String(type) + ' to be a GraphQL leaf type.');
+  !isLeafType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL leaf type.') : void 0;
   return type;
 }
 
@@ -24733,7 +28347,7 @@ function isCompositeType(type) {
 }
 
 function assertCompositeType(type) {
-  (0, _invariant2.default)(isCompositeType(type), 'Expected ' + String(type) + ' to be a GraphQL composite type.');
+  !isCompositeType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL composite type.') : void 0;
   return type;
 }
 
@@ -24745,7 +28359,7 @@ function isAbstractType(type) {
 }
 
 function assertAbstractType(type) {
-  (0, _invariant2.default)(isAbstractType(type), 'Expected ' + String(type) + ' to be a GraphQL abstract type.');
+  !isAbstractType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL abstract type.') : void 0;
   return type;
 }
 
@@ -24764,16 +28378,20 @@ function isNamedType(type) {
 }
 
 function assertNamedType(type) {
-  (0, _invariant2.default)(isNamedType(type), 'Expected ' + String(type) + ' to be a GraphQL named type.');
+  !isNamedType(type) ? (0, _invariant2.default)(0, 'Expected ' + String(type) + ' to be a GraphQL named type.') : void 0;
   return type;
 }
 
+/* eslint-disable no-redeclare */
 function getNamedType(type) {
-  var unmodifiedType = type;
-  while (unmodifiedType instanceof GraphQLList || unmodifiedType instanceof GraphQLNonNull) {
-    unmodifiedType = unmodifiedType.ofType;
+  /* eslint-enable no-redeclare */
+  if (type) {
+    var unmodifiedType = type;
+    while (unmodifiedType instanceof GraphQLList || unmodifiedType instanceof GraphQLNonNull) {
+      unmodifiedType = unmodifiedType.ofType;
+    }
+    return unmodifiedType;
   }
-  return unmodifiedType;
 }
 
 /**
@@ -24811,9 +28429,10 @@ var GraphQLScalarType = exports.GraphQLScalarType = function () {
     (0, _assertValidName.assertValidName)(config.name);
     this.name = config.name;
     this.description = config.description;
-    (0, _invariant2.default)(typeof config.serialize === 'function', this.name + ' must provide "serialize" function. If this custom Scalar ' + 'is also used as an input type, ensure "parseValue" and "parseLiteral" ' + 'functions are also provided.');
+    this.astNode = config.astNode;
+    !(typeof config.serialize === 'function') ? (0, _invariant2.default)(0, this.name + ' must provide "serialize" function. If this custom Scalar ' + 'is also used as an input type, ensure "parseValue" and "parseLiteral" ' + 'functions are also provided.') : void 0;
     if (config.parseValue || config.parseLiteral) {
-      (0, _invariant2.default)(typeof config.parseValue === 'function' && typeof config.parseLiteral === 'function', this.name + ' must provide both "parseValue" and "parseLiteral" ' + 'functions.');
+      !(typeof config.parseValue === 'function' && typeof config.parseLiteral === 'function') ? (0, _invariant2.default)(0, this.name + ' must provide both "parseValue" and "parseLiteral" ' + 'functions.') : void 0;
     }
     this._scalarConfig = config;
   }
@@ -24826,12 +28445,28 @@ var GraphQLScalarType = exports.GraphQLScalarType = function () {
     return serializer(value);
   };
 
+  // Determines if an internal value is valid for this type.
+  // Equivalent to checking for if the parsedValue is nullish.
+
+
+  GraphQLScalarType.prototype.isValidValue = function isValidValue(value) {
+    return !(0, _isNullish2.default)(this.parseValue(value));
+  };
+
   // Parses an externally provided value to use as an input.
 
 
   GraphQLScalarType.prototype.parseValue = function parseValue(value) {
     var parser = this._scalarConfig.parseValue;
-    return parser ? parser(value) : null;
+    return parser && !(0, _isNullish2.default)(value) ? parser(value) : undefined;
+  };
+
+  // Determines if an internal value is valid for this type.
+  // Equivalent to checking for if the parsedLiteral is nullish.
+
+
+  GraphQLScalarType.prototype.isValidLiteral = function isValidLiteral(valueNode) {
+    return !(0, _isNullish2.default)(this.parseLiteral(valueNode));
   };
 
   // Parses an externally provided literal value to use as an input.
@@ -24839,7 +28474,7 @@ var GraphQLScalarType = exports.GraphQLScalarType = function () {
 
   GraphQLScalarType.prototype.parseLiteral = function parseLiteral(valueNode) {
     var parser = this._scalarConfig.parseLiteral;
-    return parser ? parser(valueNode) : null;
+    return parser ? parser(valueNode) : undefined;
   };
 
   GraphQLScalarType.prototype.toString = function toString() {
@@ -24898,8 +28533,10 @@ var GraphQLObjectType = exports.GraphQLObjectType = function () {
     (0, _assertValidName.assertValidName)(config.name, config.isIntrospection);
     this.name = config.name;
     this.description = config.description;
+    this.astNode = config.astNode;
+    this.extensionASTNodes = config.extensionASTNodes || [];
     if (config.isTypeOf) {
-      (0, _invariant2.default)(typeof config.isTypeOf === 'function', this.name + ' must provide "isTypeOf" as a function.');
+      !(typeof config.isTypeOf === 'function') ? (0, _invariant2.default)(0, this.name + ' must provide "isTypeOf" as a function.') : void 0;
     }
     this.isTypeOf = config.isTypeOf;
     this._typeConfig = config;
@@ -24930,11 +28567,15 @@ function defineInterfaces(type, interfacesThunk) {
   if (!interfaces) {
     return [];
   }
-  (0, _invariant2.default)(Array.isArray(interfaces), type.name + ' interfaces must be an Array or a function which returns ' + 'an Array.');
+  !Array.isArray(interfaces) ? (0, _invariant2.default)(0, type.name + ' interfaces must be an Array or a function which returns ' + 'an Array.') : void 0;
+
+  var implementedTypeNames = Object.create(null);
   interfaces.forEach(function (iface) {
-    (0, _invariant2.default)(iface instanceof GraphQLInterfaceType, type.name + ' may only implement Interface types, it cannot ' + ('implement: ' + String(iface) + '.'));
+    !(iface instanceof GraphQLInterfaceType) ? (0, _invariant2.default)(0, type.name + ' may only implement Interface types, it cannot ' + ('implement: ' + String(iface) + '.')) : void 0;
+    !!implementedTypeNames[iface.name] ? (0, _invariant2.default)(0, type.name + ' may declare it implements ' + iface.name + ' only once.') : void 0;
+    implementedTypeNames[iface.name] = true;
     if (typeof iface.resolveType !== 'function') {
-      (0, _invariant2.default)(typeof type.isTypeOf === 'function', 'Interface Type ' + iface.name + ' does not provide a "resolveType" ' + ('function and implementing Type ' + type.name + ' does not provide a ') + '"isTypeOf" function. There is no way to resolve this implementing ' + 'type during execution.');
+      !(typeof type.isTypeOf === 'function') ? (0, _invariant2.default)(0, 'Interface Type ' + iface.name + ' does not provide a "resolveType" ' + ('function and implementing Type ' + type.name + ' does not provide a ') + '"isTypeOf" function. There is no way to resolve this implementing ' + 'type during execution.') : void 0;
     }
   });
   return interfaces;
@@ -24942,37 +28583,38 @@ function defineInterfaces(type, interfacesThunk) {
 
 function defineFieldMap(type, fieldsThunk) {
   var fieldMap = resolveThunk(fieldsThunk);
-  (0, _invariant2.default)(isPlainObj(fieldMap), type.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.');
+  !isPlainObj(fieldMap) ? (0, _invariant2.default)(0, type.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.') : void 0;
 
   var fieldNames = Object.keys(fieldMap);
-  (0, _invariant2.default)(fieldNames.length > 0, type.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.');
+  !(fieldNames.length > 0) ? (0, _invariant2.default)(0, type.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.') : void 0;
 
-  var resultFieldMap = {};
+  var resultFieldMap = Object.create(null);
   fieldNames.forEach(function (fieldName) {
     (0, _assertValidName.assertValidName)(fieldName);
     var fieldConfig = fieldMap[fieldName];
-    (0, _invariant2.default)(isPlainObj(fieldConfig), type.name + '.' + fieldName + ' field config must be an object');
-    (0, _invariant2.default)(!fieldConfig.hasOwnProperty('isDeprecated'), type.name + '.' + fieldName + ' should provide "deprecationReason" instead ' + 'of "isDeprecated".');
+    !isPlainObj(fieldConfig) ? (0, _invariant2.default)(0, type.name + '.' + fieldName + ' field config must be an object') : void 0;
+    !!fieldConfig.hasOwnProperty('isDeprecated') ? (0, _invariant2.default)(0, type.name + '.' + fieldName + ' should provide "deprecationReason" instead ' + 'of "isDeprecated".') : void 0;
     var field = _extends({}, fieldConfig, {
       isDeprecated: Boolean(fieldConfig.deprecationReason),
       name: fieldName
     });
-    (0, _invariant2.default)(isOutputType(field.type), type.name + '.' + fieldName + ' field type must be Output Type but ' + ('got: ' + String(field.type) + '.'));
-    (0, _invariant2.default)(isValidResolver(field.resolve), type.name + '.' + fieldName + ' field resolver must be a function if ' + ('provided, but got: ' + String(field.resolve) + '.'));
+    !isOutputType(field.type) ? (0, _invariant2.default)(0, type.name + '.' + fieldName + ' field type must be Output Type but ' + ('got: ' + String(field.type) + '.')) : void 0;
+    !isValidResolver(field.resolve) ? (0, _invariant2.default)(0, type.name + '.' + fieldName + ' field resolver must be a function if ' + ('provided, but got: ' + String(field.resolve) + '.')) : void 0;
     var argsConfig = fieldConfig.args;
     if (!argsConfig) {
       field.args = [];
     } else {
-      (0, _invariant2.default)(isPlainObj(argsConfig), type.name + '.' + fieldName + ' args must be an object with argument ' + 'names as keys.');
+      !isPlainObj(argsConfig) ? (0, _invariant2.default)(0, type.name + '.' + fieldName + ' args must be an object with argument ' + 'names as keys.') : void 0;
       field.args = Object.keys(argsConfig).map(function (argName) {
         (0, _assertValidName.assertValidName)(argName);
         var arg = argsConfig[argName];
-        (0, _invariant2.default)(isInputType(arg.type), type.name + '.' + fieldName + '(' + argName + ':) argument type must be ' + ('Input Type but got: ' + String(arg.type) + '.'));
+        !isInputType(arg.type) ? (0, _invariant2.default)(0, type.name + '.' + fieldName + '(' + argName + ':) argument type must be ' + ('Input Type but got: ' + String(arg.type) + '.')) : void 0;
         return {
           name: argName,
           description: arg.description === undefined ? null : arg.description,
           type: arg.type,
-          defaultValue: arg.defaultValue
+          defaultValue: arg.defaultValue,
+          astNode: arg.astNode
         };
       });
     }
@@ -24982,7 +28624,7 @@ function defineFieldMap(type, fieldsThunk) {
 }
 
 function isPlainObj(obj) {
-  return obj && typeof obj === 'object' && !Array.isArray(obj);
+  return obj && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && !Array.isArray(obj);
 }
 
 // If a resolver is defined, it must be a function.
@@ -25015,8 +28657,9 @@ var GraphQLInterfaceType = exports.GraphQLInterfaceType = function () {
     (0, _assertValidName.assertValidName)(config.name);
     this.name = config.name;
     this.description = config.description;
+    this.astNode = config.astNode;
     if (config.resolveType) {
-      (0, _invariant2.default)(typeof config.resolveType === 'function', this.name + ' must provide "resolveType" as a function.');
+      !(typeof config.resolveType === 'function') ? (0, _invariant2.default)(0, this.name + ' must provide "resolveType" as a function.') : void 0;
     }
     this.resolveType = config.resolveType;
     this._typeConfig = config;
@@ -25068,8 +28711,9 @@ var GraphQLUnionType = exports.GraphQLUnionType = function () {
     (0, _assertValidName.assertValidName)(config.name);
     this.name = config.name;
     this.description = config.description;
+    this.astNode = config.astNode;
     if (config.resolveType) {
-      (0, _invariant2.default)(typeof config.resolveType === 'function', this.name + ' must provide "resolveType" as a function.');
+      !(typeof config.resolveType === 'function') ? (0, _invariant2.default)(0, this.name + ' must provide "resolveType" as a function.') : void 0;
     }
     this.resolveType = config.resolveType;
     this._typeConfig = config;
@@ -25094,11 +28738,14 @@ GraphQLUnionType.prototype.toJSON = GraphQLUnionType.prototype.inspect = GraphQL
 function defineTypes(unionType, typesThunk) {
   var types = resolveThunk(typesThunk);
 
-  (0, _invariant2.default)(Array.isArray(types) && types.length > 0, 'Must provide Array of types or a function which returns ' + ('such an array for Union ' + unionType.name + '.'));
+  !(Array.isArray(types) && types.length > 0) ? (0, _invariant2.default)(0, 'Must provide Array of types or a function which returns ' + ('such an array for Union ' + unionType.name + '.')) : void 0;
+  var includedTypeNames = Object.create(null);
   types.forEach(function (objType) {
-    (0, _invariant2.default)(objType instanceof GraphQLObjectType, unionType.name + ' may only contain Object types, it cannot contain: ' + (String(objType) + '.'));
+    !(objType instanceof GraphQLObjectType) ? (0, _invariant2.default)(0, unionType.name + ' may only contain Object types, it cannot contain: ' + (String(objType) + '.')) : void 0;
+    !!includedTypeNames[objType.name] ? (0, _invariant2.default)(0, unionType.name + ' can include ' + objType.name + ' type only once.') : void 0;
+    includedTypeNames[objType.name] = true;
     if (typeof unionType.resolveType !== 'function') {
-      (0, _invariant2.default)(typeof objType.isTypeOf === 'function', 'Union type "' + unionType.name + '" does not provide a "resolveType" ' + ('function and possible type "' + objType.name + '" does not provide an ') + '"isTypeOf" function. There is no way to resolve this possible type ' + 'during execution.');
+      !(typeof objType.isTypeOf === 'function') ? (0, _invariant2.default)(0, 'Union type "' + unionType.name + '" does not provide a "resolveType" ' + ('function and possible type "' + objType.name + '" does not provide an ') + '"isTypeOf" function. There is no way to resolve this possible type ' + 'during execution.') : void 0;
     }
   });
 
@@ -25133,6 +28780,7 @@ var GraphQLEnumType /* <T> */ = exports.GraphQLEnumType = function () {
     this.name = config.name;
     (0, _assertValidName.assertValidName)(config.name, config.isIntrospection);
     this.description = config.description;
+    this.astNode = config.astNode;
     this._values = defineEnumValues(this, config.values);
     this._enumConfig = config;
   }
@@ -25150,6 +28798,10 @@ var GraphQLEnumType /* <T> */ = exports.GraphQLEnumType = function () {
     return enumValue ? enumValue.name : null;
   };
 
+  GraphQLEnumType.prototype.isValidValue = function isValidValue(value) {
+    return typeof value === 'string' && this._getNameLookup()[value] !== undefined;
+  };
+
   GraphQLEnumType.prototype.parseValue = function parseValue(value) /* T */{
     if (typeof value === 'string') {
       var enumValue = this._getNameLookup()[value];
@@ -25159,8 +28811,12 @@ var GraphQLEnumType /* <T> */ = exports.GraphQLEnumType = function () {
     }
   };
 
+  GraphQLEnumType.prototype.isValidLiteral = function isValidLiteral(valueNode) {
+    return valueNode.kind === Kind.ENUM && this._getNameLookup()[valueNode.value] !== undefined;
+  };
+
   GraphQLEnumType.prototype.parseLiteral = function parseLiteral(valueNode) /* T */{
-    if (valueNode.kind === _kinds.ENUM) {
+    if (valueNode.kind === Kind.ENUM) {
       var enumValue = this._getNameLookup()[valueNode.value];
       if (enumValue) {
         return enumValue.value;
@@ -25204,20 +28860,23 @@ GraphQLEnumType.prototype.toJSON = GraphQLEnumType.prototype.inspect = GraphQLEn
 
 function defineEnumValues(type, valueMap /* <T> */
 ) {
-  (0, _invariant2.default)(isPlainObj(valueMap), type.name + ' values must be an object with value names as keys.');
+  !isPlainObj(valueMap) ? (0, _invariant2.default)(0, type.name + ' values must be an object with value names as keys.') : void 0;
   var valueNames = Object.keys(valueMap);
-  (0, _invariant2.default)(valueNames.length > 0, type.name + ' values must be an object with value names as keys.');
+  !(valueNames.length > 0) ? (0, _invariant2.default)(0, type.name + ' values must be an object with value names as keys.') : void 0;
   return valueNames.map(function (valueName) {
     (0, _assertValidName.assertValidName)(valueName);
+    !(['true', 'false', 'null'].indexOf(valueName) === -1) ? (0, _invariant2.default)(0, 'Name "' + valueName + '" can not be used as an Enum value.') : void 0;
+
     var value = valueMap[valueName];
-    (0, _invariant2.default)(isPlainObj(value), type.name + '.' + valueName + ' must refer to an object with a "value" key ' + ('representing an internal value but got: ' + String(value) + '.'));
-    (0, _invariant2.default)(!value.hasOwnProperty('isDeprecated'), type.name + '.' + valueName + ' should provide "deprecationReason" instead ' + 'of "isDeprecated".');
+    !isPlainObj(value) ? (0, _invariant2.default)(0, type.name + '.' + valueName + ' must refer to an object with a "value" key ' + ('representing an internal value but got: ' + String(value) + '.')) : void 0;
+    !!value.hasOwnProperty('isDeprecated') ? (0, _invariant2.default)(0, type.name + '.' + valueName + ' should provide "deprecationReason" instead ' + 'of "isDeprecated".') : void 0;
     return {
       name: valueName,
       description: value.description,
       isDeprecated: Boolean(value.deprecationReason),
       deprecationReason: value.deprecationReason,
-      value: (0, _isNullish2.default)(value.value) ? valueName : value.value
+      astNode: value.astNode,
+      value: value.hasOwnProperty('value') ? value.value : valueName
     };
   });
 } /* <T> */
@@ -25250,6 +28909,7 @@ var GraphQLInputObjectType = exports.GraphQLInputObjectType = function () {
     (0, _assertValidName.assertValidName)(config.name);
     this.name = config.name;
     this.description = config.description;
+    this.astNode = config.astNode;
     this._typeConfig = config;
   }
 
@@ -25261,17 +28921,17 @@ var GraphQLInputObjectType = exports.GraphQLInputObjectType = function () {
     var _this = this;
 
     var fieldMap = resolveThunk(this._typeConfig.fields);
-    (0, _invariant2.default)(isPlainObj(fieldMap), this.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.');
+    !isPlainObj(fieldMap) ? (0, _invariant2.default)(0, this.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.') : void 0;
     var fieldNames = Object.keys(fieldMap);
-    (0, _invariant2.default)(fieldNames.length > 0, this.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.');
-    var resultFieldMap = {};
+    !(fieldNames.length > 0) ? (0, _invariant2.default)(0, this.name + ' fields must be an object with field names as keys or a ' + 'function which returns such an object.') : void 0;
+    var resultFieldMap = Object.create(null);
     fieldNames.forEach(function (fieldName) {
       (0, _assertValidName.assertValidName)(fieldName);
       var field = _extends({}, fieldMap[fieldName], {
         name: fieldName
       });
-      (0, _invariant2.default)(isInputType(field.type), _this.name + '.' + fieldName + ' field type must be Input Type but ' + ('got: ' + String(field.type) + '.'));
-      (0, _invariant2.default)(field.resolve == null, _this.name + '.' + fieldName + ' field type has a resolve property, but ' + 'Input Types cannot define resolvers.');
+      !isInputType(field.type) ? (0, _invariant2.default)(0, _this.name + '.' + fieldName + ' field type must be Input Type but ' + ('got: ' + String(field.type) + '.')) : void 0;
+      !(field.resolve == null) ? (0, _invariant2.default)(0, _this.name + '.' + fieldName + ' field type has a resolve property, but ' + 'Input Types cannot define resolvers.') : void 0;
       resultFieldMap[fieldName] = field;
     });
     return resultFieldMap;
@@ -25311,7 +28971,7 @@ var GraphQLList = exports.GraphQLList = function () {
   function GraphQLList(type) {
     _classCallCheck(this, GraphQLList);
 
-    (0, _invariant2.default)(isType(type), 'Can only create List of a GraphQLType but got: ' + String(type) + '.');
+    !isType(type) ? (0, _invariant2.default)(0, 'Can only create List of a GraphQLType but got: ' + String(type) + '.') : void 0;
     this.ofType = type;
   }
 
@@ -25352,7 +29012,7 @@ var GraphQLNonNull = exports.GraphQLNonNull = function () {
   function GraphQLNonNull(type) {
     _classCallCheck(this, GraphQLNonNull);
 
-    (0, _invariant2.default)(isType(type) && !(type instanceof GraphQLNonNull), 'Can only create NonNull of a Nullable GraphQLType but got: ' + (String(type) + '.'));
+    !(isType(type) && !(type instanceof GraphQLNonNull)) ? (0, _invariant2.default)(0, 'Can only create NonNull of a Nullable GraphQLType but got: ' + (String(type) + '.')) : void 0;
     this.ofType = type;
   }
 
@@ -25367,7 +29027,7 @@ var GraphQLNonNull = exports.GraphQLNonNull = function () {
 
 
 GraphQLNonNull.prototype.toJSON = GraphQLNonNull.prototype.inspect = GraphQLNonNull.prototype.toString;
-},{"../jsutils/invariant":80,"../jsutils/isNullish":82,"../language/kinds":88,"../utilities/assertValidName":102}],96:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../jsutils/isNullish":98,"../language/kinds":104,"../utilities/assertValidName":121}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25385,7 +29045,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _assertValidName = require('../utilities/assertValidName');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 /**
@@ -25429,27 +29089,29 @@ var DirectiveLocation = exports.DirectiveLocation = {
 var GraphQLDirective = exports.GraphQLDirective = function GraphQLDirective(config) {
   _classCallCheck(this, GraphQLDirective);
 
-  (0, _invariant2.default)(config.name, 'Directive must be named.');
+  !config.name ? (0, _invariant2.default)(0, 'Directive must be named.') : void 0;
   (0, _assertValidName.assertValidName)(config.name);
-  (0, _invariant2.default)(Array.isArray(config.locations), 'Must provide locations for directive.');
+  !Array.isArray(config.locations) ? (0, _invariant2.default)(0, 'Must provide locations for directive.') : void 0;
   this.name = config.name;
   this.description = config.description;
   this.locations = config.locations;
+  this.astNode = config.astNode;
 
   var args = config.args;
   if (!args) {
     this.args = [];
   } else {
-    (0, _invariant2.default)(!Array.isArray(args), '@' + config.name + ' args must be an object with argument names as keys.');
+    !!Array.isArray(args) ? (0, _invariant2.default)(0, '@' + config.name + ' args must be an object with argument names as keys.') : void 0;
     this.args = Object.keys(args).map(function (argName) {
       (0, _assertValidName.assertValidName)(argName);
       var arg = args[argName];
-      (0, _invariant2.default)((0, _definition.isInputType)(arg.type), '@' + config.name + '(' + argName + ':) argument type must be ' + ('Input Type but got: ' + String(arg.type) + '.'));
+      !(0, _definition.isInputType)(arg.type) ? (0, _invariant2.default)(0, '@' + config.name + '(' + argName + ':) argument type must be ' + ('Input Type but got: ' + String(arg.type) + '.')) : void 0;
       return {
         name: argName,
         description: arg.description === undefined ? null : arg.description,
         type: arg.type,
-        defaultValue: arg.defaultValue
+        defaultValue: arg.defaultValue,
+        astNode: arg.astNode
       };
     });
   }
@@ -25463,7 +29125,7 @@ var GraphQLIncludeDirective = exports.GraphQLIncludeDirective = new GraphQLDirec
   description: 'Directs the executor to include this field or fragment only when ' + 'the `if` argument is true.',
   locations: [DirectiveLocation.FIELD, DirectiveLocation.FRAGMENT_SPREAD, DirectiveLocation.INLINE_FRAGMENT],
   args: {
-    'if': {
+    if: {
       type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean),
       description: 'Included when true.'
     }
@@ -25478,7 +29140,7 @@ var GraphQLSkipDirective = exports.GraphQLSkipDirective = new GraphQLDirective({
   description: 'Directs the executor to skip this field or fragment when the `if` ' + 'argument is true.',
   locations: [DirectiveLocation.FIELD, DirectiveLocation.FRAGMENT_SPREAD, DirectiveLocation.INLINE_FRAGMENT],
   args: {
-    'if': {
+    if: {
       type: new _definition.GraphQLNonNull(_scalars.GraphQLBoolean),
       description: 'Skipped when true.'
     }
@@ -25510,7 +29172,7 @@ var GraphQLDeprecatedDirective = exports.GraphQLDeprecatedDirective = new GraphQ
  * The full list of specified directives.
  */
 var specifiedDirectives = exports.specifiedDirectives = [GraphQLIncludeDirective, GraphQLSkipDirective, GraphQLDeprecatedDirective];
-},{"../jsutils/invariant":80,"../utilities/assertValidName":102,"./definition":95,"./scalars":99}],97:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../utilities/assertValidName":121,"./definition":114,"./scalars":118}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25825,7 +29487,7 @@ Object.defineProperty(exports, 'TypeNameMetaFieldDef', {
     return _introspection.TypeNameMetaFieldDef;
   }
 });
-},{"./definition":95,"./directives":96,"./introspection":98,"./scalars":99,"./schema":100}],98:[function(require,module,exports){
+},{"./definition":114,"./directives":115,"./introspection":117,"./scalars":118,"./schema":119}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25847,7 +29509,7 @@ var _scalars = require('./scalars');
 
 var _directives = require('./directives');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  *  Copyright (c) 2015, Facebook, Inc.
@@ -26097,7 +29759,7 @@ var __Type = exports.__Type = new _definition.GraphQLObjectType({
         resolve: function resolve(type, args, context, _ref2) {
           var schema = _ref2.schema;
 
-          if (type instanceof _definition.GraphQLInterfaceType || type instanceof _definition.GraphQLUnionType) {
+          if ((0, _definition.isAbstractType)(type)) {
             return schema.getPossibleTypes(type);
           }
         }
@@ -26285,7 +29947,7 @@ var TypeNameMetaFieldDef = exports.TypeNameMetaFieldDef = {
     return parentType.name;
   }
 };
-},{"../jsutils/isInvalid":81,"../language/printer":92,"../utilities/astFromValue":103,"./definition":95,"./directives":96,"./scalars":99}],99:[function(require,module,exports){
+},{"../jsutils/isInvalid":97,"../language/printer":108,"../utilities/astFromValue":122,"./definition":114,"./directives":115,"./scalars":118}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26324,10 +29986,14 @@ function coerceInt(value) {
     throw new TypeError('Int cannot represent non 32-bit signed integer value: (empty string)');
   }
   var num = Number(value);
-  if (num === num && num <= MAX_INT && num >= MIN_INT) {
-    return (num < 0 ? Math.ceil : Math.floor)(num);
+  if (num !== num || num > MAX_INT || num < MIN_INT) {
+    throw new TypeError('Int cannot represent non 32-bit signed integer value: ' + String(value));
   }
-  throw new TypeError('Int cannot represent non 32-bit signed integer value: ' + String(value));
+  var int = Math.floor(num);
+  if (int !== num) {
+    throw new TypeError('Int cannot represent non-integer value: ' + String(value));
+  }
+  return int;
 }
 
 var GraphQLInt = exports.GraphQLInt = new _definition.GraphQLScalarType({
@@ -26396,13 +30062,15 @@ var GraphQLID = exports.GraphQLID = new _definition.GraphQLScalarType({
     return ast.kind === Kind.STRING || ast.kind === Kind.INT ? ast.value : null;
   }
 });
-},{"../language/kinds":88,"./definition":95}],100:[function(require,module,exports){
+},{"../language/kinds":104,"./definition":114}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.GraphQLSchema = undefined;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _definition = require('./definition');
 
@@ -26420,7 +30088,7 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _typeComparators = require('../utilities/typeComparators');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 /**
@@ -26464,24 +30132,25 @@ var GraphQLSchema = exports.GraphQLSchema = function () {
 
     _classCallCheck(this, GraphQLSchema);
 
-    (0, _invariant2.default)(typeof config === 'object', 'Must provide configuration object.');
+    !((typeof config === 'undefined' ? 'undefined' : _typeof(config)) === 'object') ? (0, _invariant2.default)(0, 'Must provide configuration object.') : void 0;
 
-    (0, _invariant2.default)(config.query instanceof _definition.GraphQLObjectType, 'Schema query must be Object Type but got: ' + String(config.query) + '.');
+    !(config.query instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'Schema query must be Object Type but got: ' + String(config.query) + '.') : void 0;
     this._queryType = config.query;
 
-    (0, _invariant2.default)(!config.mutation || config.mutation instanceof _definition.GraphQLObjectType, 'Schema mutation must be Object Type if provided but got: ' + String(config.mutation) + '.');
+    !(!config.mutation || config.mutation instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'Schema mutation must be Object Type if provided but got: ' + String(config.mutation) + '.') : void 0;
     this._mutationType = config.mutation;
 
-    (0, _invariant2.default)(!config.subscription || config.subscription instanceof _definition.GraphQLObjectType, 'Schema subscription must be Object Type if provided but got: ' + String(config.subscription) + '.');
+    !(!config.subscription || config.subscription instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'Schema subscription must be Object Type if provided but got: ' + String(config.subscription) + '.') : void 0;
     this._subscriptionType = config.subscription;
 
-    (0, _invariant2.default)(!config.types || Array.isArray(config.types), 'Schema types must be Array if provided but got: ' + String(config.types) + '.');
+    !(!config.types || Array.isArray(config.types)) ? (0, _invariant2.default)(0, 'Schema types must be Array if provided but got: ' + String(config.types) + '.') : void 0;
 
-    (0, _invariant2.default)(!config.directives || Array.isArray(config.directives) && config.directives.every(function (directive) {
+    !(!config.directives || Array.isArray(config.directives) && config.directives.every(function (directive) {
       return directive instanceof _directives.GraphQLDirective;
-    }), 'Schema directives must be Array<GraphQLDirective> if provided but got: ' + String(config.directives) + '.');
+    })) ? (0, _invariant2.default)(0, 'Schema directives must be Array<GraphQLDirective> if provided but got: ' + String(config.directives) + '.') : void 0;
     // Provide specified directives (e.g. @include and @skip) by default.
     this._directives = config.directives || _directives.specifiedDirectives;
+    this.astNode = config.astNode || null;
 
     // Build type map now to detect any errors within this schema.
     var initialTypes = [this.getQueryType(), this.getMutationType(), this.getSubscriptionType(), _introspection.__Schema];
@@ -26544,7 +30213,7 @@ var GraphQLSchema = exports.GraphQLSchema = function () {
     if (abstractType instanceof _definition.GraphQLUnionType) {
       return abstractType.getTypes();
     }
-    (0, _invariant2.default)(abstractType instanceof _definition.GraphQLInterfaceType);
+    !(abstractType instanceof _definition.GraphQLInterfaceType) ? (0, _invariant2.default)(0) : void 0;
     return this._implementations[abstractType.name];
   };
 
@@ -26556,7 +30225,7 @@ var GraphQLSchema = exports.GraphQLSchema = function () {
 
     if (!possibleTypeMap[abstractType.name]) {
       var possibleTypes = this.getPossibleTypes(abstractType);
-      (0, _invariant2.default)(Array.isArray(possibleTypes), 'Could not find possible implementing types for ' + abstractType.name + ' ' + 'in schema. Check that schema.types is defined and is an array of ' + 'all possible types in the schema.');
+      !Array.isArray(possibleTypes) ? (0, _invariant2.default)(0, 'Could not find possible implementing types for ' + abstractType.name + ' ' + 'in schema. Check that schema.types is defined and is an array of ' + 'all possible types in the schema.') : void 0;
       possibleTypeMap[abstractType.name] = possibleTypes.reduce(function (map, type) {
         return map[type.name] = true, map;
       }, Object.create(null));
@@ -26586,7 +30255,7 @@ function typeMapReducer(map, type) {
     return typeMapReducer(map, type.ofType);
   }
   if (map[type.name]) {
-    (0, _invariant2.default)(map[type.name] === type, 'Schema must contain unique named types but contains multiple ' + ('types named "' + type.name + '".'));
+    !(map[type.name] === type) ? (0, _invariant2.default)(0, 'Schema must contain unique named types but contains multiple ' + ('types named "' + type.name + '".')) : void 0;
     return map;
   }
   map[type.name] = type;
@@ -26637,11 +30306,11 @@ function assertObjectImplementsInterface(schema, object, iface) {
     var ifaceField = ifaceFieldMap[fieldName];
 
     // Assert interface field exists on object.
-    (0, _invariant2.default)(objectField, '"' + iface.name + '" expects field "' + fieldName + '" but "' + object.name + '" ' + 'does not provide it.');
+    !objectField ? (0, _invariant2.default)(0, '"' + iface.name + '" expects field "' + fieldName + '" but "' + object.name + '" ' + 'does not provide it.') : void 0;
 
     // Assert interface field type is satisfied by object field type, by being
     // a valid subtype. (covariant)
-    (0, _invariant2.default)((0, _typeComparators.isTypeSubTypeOf)(schema, objectField.type, ifaceField.type), iface.name + '.' + fieldName + ' expects type "' + String(ifaceField.type) + '" ' + 'but ' + (object.name + '.' + fieldName + ' provides type "' + String(objectField.type) + '".'));
+    !(0, _typeComparators.isTypeSubTypeOf)(schema, objectField.type, ifaceField.type) ? (0, _invariant2.default)(0, iface.name + '.' + fieldName + ' expects type "' + String(ifaceField.type) + '" ' + 'but ' + (object.name + '.' + fieldName + ' provides type "' + String(objectField.type) + '".')) : void 0;
 
     // Assert each interface field arg is implemented.
     ifaceField.args.forEach(function (ifaceArg) {
@@ -26651,11 +30320,11 @@ function assertObjectImplementsInterface(schema, object, iface) {
       });
 
       // Assert interface field arg exists on object field.
-      (0, _invariant2.default)(objectArg, iface.name + '.' + fieldName + ' expects argument "' + argName + '" but ' + (object.name + '.' + fieldName + ' does not provide it.'));
+      !objectArg ? (0, _invariant2.default)(0, iface.name + '.' + fieldName + ' expects argument "' + argName + '" but ' + (object.name + '.' + fieldName + ' does not provide it.')) : void 0;
 
       // Assert interface field arg type matches object field arg type.
       // (invariant)
-      (0, _invariant2.default)((0, _typeComparators.isEqualType)(ifaceArg.type, objectArg.type), iface.name + '.' + fieldName + '(' + argName + ':) expects type ' + ('"' + String(ifaceArg.type) + '" but ') + (object.name + '.' + fieldName + '(' + argName + ':) provides type ') + ('"' + String(objectArg.type) + '".'));
+      !(0, _typeComparators.isEqualType)(ifaceArg.type, objectArg.type) ? (0, _invariant2.default)(0, iface.name + '.' + fieldName + '(' + argName + ':) expects type ' + ('"' + String(ifaceArg.type) + '" but ') + (object.name + '.' + fieldName + '(' + argName + ':) provides type ') + ('"' + String(objectArg.type) + '".')) : void 0;
     });
 
     // Assert additional arguments must not be required.
@@ -26665,12 +30334,12 @@ function assertObjectImplementsInterface(schema, object, iface) {
         return arg.name === argName;
       });
       if (!ifaceArg) {
-        (0, _invariant2.default)(!(objectArg.type instanceof _definition.GraphQLNonNull), object.name + '.' + fieldName + '(' + argName + ':) is of required type ' + ('"' + String(objectArg.type) + '" but is not also provided by the ') + ('interface ' + iface.name + '.' + fieldName + '.'));
+        !!(objectArg.type instanceof _definition.GraphQLNonNull) ? (0, _invariant2.default)(0, object.name + '.' + fieldName + '(' + argName + ':) is of required type ' + ('"' + String(objectArg.type) + '" but is not also provided by the ') + ('interface ' + iface.name + '.' + fieldName + '.')) : void 0;
       }
     });
   });
 }
-},{"../jsutils/find":79,"../jsutils/invariant":80,"../utilities/typeComparators":117,"./definition":95,"./directives":96,"./introspection":98}],101:[function(require,module,exports){
+},{"../jsutils/find":95,"../jsutils/invariant":96,"../utilities/typeComparators":136,"./definition":114,"./directives":115,"./introspection":117}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26692,7 +30361,7 @@ var _find = require('../jsutils/find');
 
 var _find2 = _interopRequireDefault(_find);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -26899,14 +30568,15 @@ function getFieldDef(schema, parentType, fieldNode) {
   if (name === _introspection.TypeMetaFieldDef.name && schema.getQueryType() === parentType) {
     return _introspection.TypeMetaFieldDef;
   }
-  if (name === _introspection.TypeNameMetaFieldDef.name && (parentType instanceof _definition.GraphQLObjectType || parentType instanceof _definition.GraphQLInterfaceType || parentType instanceof _definition.GraphQLUnionType)) {
+  if (name === _introspection.TypeNameMetaFieldDef.name && (0, _definition.isCompositeType)(parentType)) {
     return _introspection.TypeNameMetaFieldDef;
   }
   if (parentType instanceof _definition.GraphQLObjectType || parentType instanceof _definition.GraphQLInterfaceType) {
     return parentType.getFields()[name];
   }
 }
-},{"../jsutils/find":79,"../language/kinds":88,"../type/definition":95,"../type/introspection":98,"./typeFromAST":118}],102:[function(require,module,exports){
+},{"../jsutils/find":95,"../language/kinds":104,"../type/definition":114,"../type/introspection":117,"./typeFromAST":137}],121:[function(require,module,exports){
+(function (process){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26927,6 +30597,9 @@ exports.formatWarning = formatWarning;
 var NAME_RX = /^[_a-zA-Z][_a-zA-Z0-9]*$/;
 var ERROR_PREFIX_RX = /^Error: /;
 
+// Silences warnings if an environment flag is enabled
+var noNameWarning = Boolean(process && process.env && process.env.GRAPHQL_NO_NAME_WARNING);
+
 // Ensures console warnings are only issued once.
 var hasWarnedAboutDunder = false;
 
@@ -26937,7 +30610,7 @@ function assertValidName(name, isIntrospection) {
   if (!name || typeof name !== 'string') {
     throw new Error('Must be named. Unexpected name: ' + name + '.');
   }
-  if (!isIntrospection && name.slice(0, 2) === '__' && !hasWarnedAboutDunder) {
+  if (!isIntrospection && !hasWarnedAboutDunder && !noNameWarning && name.slice(0, 2) === '__') {
     hasWarnedAboutDunder = true;
     /* eslint-disable no-console */
     if (console && console.warn) {
@@ -26967,12 +30640,24 @@ function formatWarning(error) {
   }
   return formatted.trim();
 }
-},{}],103:[function(require,module,exports){
+}).call(this,require('_process'))
+},{"_process":170}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 exports.astFromValue = astFromValue;
 
 var _iterall = require('iterall');
@@ -26991,11 +30676,15 @@ var _isInvalid2 = _interopRequireDefault(_isInvalid);
 
 var _kinds = require('../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _definition = require('../type/definition');
 
 var _scalars = require('../type/scalars');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Produces a GraphQL Value AST given a JavaScript value.
@@ -27020,7 +30709,7 @@ function astFromValue(value, type) {
 
   if (type instanceof _definition.GraphQLNonNull) {
     var astValue = astFromValue(_value, type.ofType);
-    if (astValue && astValue.kind === _kinds.NULL) {
+    if (astValue && astValue.kind === Kind.NULL) {
       return null;
     }
     return astValue;
@@ -27028,7 +30717,7 @@ function astFromValue(value, type) {
 
   // only explicit null, not undefined, NaN
   if (_value === null) {
-    return { kind: _kinds.NULL };
+    return { kind: Kind.NULL };
   }
 
   // undefined, NaN
@@ -27048,7 +30737,7 @@ function astFromValue(value, type) {
           valuesNodes.push(itemNode);
         }
       });
-      return { kind: _kinds.LIST, values: valuesNodes };
+      return { kind: Kind.LIST, values: valuesNodes };
     }
     return astFromValue(_value, itemType);
   }
@@ -27056,7 +30745,7 @@ function astFromValue(value, type) {
   // Populate the fields of the input object by creating ASTs from each value
   // in the JavaScript object according to the fields in the input type.
   if (type instanceof _definition.GraphQLInputObjectType) {
-    if (_value === null || typeof _value !== 'object') {
+    if (_value === null || (typeof _value === 'undefined' ? 'undefined' : _typeof(_value)) !== 'object') {
       return null;
     }
     var fields = type.getFields();
@@ -27066,16 +30755,16 @@ function astFromValue(value, type) {
       var fieldValue = astFromValue(_value[fieldName], fieldType);
       if (fieldValue) {
         fieldNodes.push({
-          kind: _kinds.OBJECT_FIELD,
-          name: { kind: _kinds.NAME, value: fieldName },
+          kind: Kind.OBJECT_FIELD,
+          name: { kind: Kind.NAME, value: fieldName },
           value: fieldValue
         });
       }
     });
-    return { kind: _kinds.OBJECT, fields: fieldNodes };
+    return { kind: Kind.OBJECT, fields: fieldNodes };
   }
 
-  (0, _invariant2.default)(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType, 'Must provide Input Type, cannot use: ' + String(type));
+  !(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType) ? (0, _invariant2.default)(0, 'Must provide Input Type, cannot use: ' + String(type)) : void 0;
 
   // Since value is an internally represented value, it must be serialized
   // to an externally represented value before converting into an AST.
@@ -27086,46 +30775,38 @@ function astFromValue(value, type) {
 
   // Others serialize based on their corresponding JavaScript scalar types.
   if (typeof serialized === 'boolean') {
-    return { kind: _kinds.BOOLEAN, value: serialized };
+    return { kind: Kind.BOOLEAN, value: serialized };
   }
 
   // JavaScript numbers can be Int or Float values.
   if (typeof serialized === 'number') {
     var stringNum = String(serialized);
-    return (/^[0-9]+$/.test(stringNum) ? { kind: _kinds.INT, value: stringNum } : { kind: _kinds.FLOAT, value: stringNum }
+    return (/^[0-9]+$/.test(stringNum) ? { kind: Kind.INT, value: stringNum } : { kind: Kind.FLOAT, value: stringNum }
     );
   }
 
   if (typeof serialized === 'string') {
     // Enum types use Enum literals.
     if (type instanceof _definition.GraphQLEnumType) {
-      return { kind: _kinds.ENUM, value: serialized };
+      return { kind: Kind.ENUM, value: serialized };
     }
 
     // ID types can use Int literals.
     if (type === _scalars.GraphQLID && /^[0-9]+$/.test(serialized)) {
-      return { kind: _kinds.INT, value: serialized };
+      return { kind: Kind.INT, value: serialized };
     }
 
     // Use JSON stringify, which uses the same string encoding as GraphQL,
     // then remove the quotes.
     return {
-      kind: _kinds.STRING,
+      kind: Kind.STRING,
       value: JSON.stringify(serialized).slice(1, -1)
     };
   }
 
   throw new TypeError('Cannot convert value to AST: ' + String(serialized));
 }
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-},{"../jsutils/invariant":80,"../jsutils/isInvalid":81,"../jsutils/isNullish":82,"../language/kinds":88,"../type/definition":95,"../type/scalars":99,"iterall":148}],104:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../jsutils/isInvalid":97,"../jsutils/isNullish":98,"../language/kinds":104,"../type/definition":114,"../type/scalars":118,"iterall":168}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27135,10 +30816,6 @@ exports.buildASTSchema = buildASTSchema;
 exports.getDeprecationReason = getDeprecationReason;
 exports.getDescription = getDescription;
 exports.buildSchema = buildSchema;
-
-var _find = require('../jsutils/find');
-
-var _find2 = _interopRequireDefault(_find);
 
 var _invariant = require('../jsutils/invariant');
 
@@ -27158,6 +30835,8 @@ var _values = require('../execution/values');
 
 var _kinds = require('../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _schema = require('../type/schema');
 
 var _scalars = require('../type/scalars');
@@ -27168,19 +30847,10 @@ var _directives = require('../type/directives');
 
 var _introspection = require('../type/introspection');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function buildWrappedType(innerType, inputTypeNode) {
-  if (inputTypeNode.kind === _kinds.LIST_TYPE) {
-    return new _definition.GraphQLList(buildWrappedType(innerType, inputTypeNode.type));
-  }
-  if (inputTypeNode.kind === _kinds.NON_NULL_TYPE) {
-    var wrappedType = buildWrappedType(innerType, inputTypeNode.type);
-    (0, _invariant2.default)(!(wrappedType instanceof _definition.GraphQLNonNull), 'No nesting nonnull.');
-    return new _definition.GraphQLNonNull(wrappedType);
-  }
-  return innerType;
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -27190,9 +30860,21 @@ function buildWrappedType(innerType, inputTypeNode) {
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+function buildWrappedType(innerType, inputTypeNode) {
+  if (inputTypeNode.kind === Kind.LIST_TYPE) {
+    return new _definition.GraphQLList(buildWrappedType(innerType, inputTypeNode.type));
+  }
+  if (inputTypeNode.kind === Kind.NON_NULL_TYPE) {
+    var wrappedType = buildWrappedType(innerType, inputTypeNode.type);
+    !!(wrappedType instanceof _definition.GraphQLNonNull) ? (0, _invariant2.default)(0, 'No nesting nonnull.') : void 0;
+    return new _definition.GraphQLNonNull(wrappedType);
+  }
+  return innerType;
+}
+
 function getNamedTypeNode(typeNode) {
   var namedType = typeNode;
-  while (namedType.kind === _kinds.LIST_TYPE || namedType.kind === _kinds.NON_NULL_TYPE) {
+  while (namedType.kind === Kind.LIST_TYPE || namedType.kind === Kind.NON_NULL_TYPE) {
     namedType = namedType.type;
   }
   return namedType;
@@ -27209,7 +30891,7 @@ function getNamedTypeNode(typeNode) {
  * has no resolve methods, so execution will use default resolvers.
  */
 function buildASTSchema(ast) {
-  if (!ast || ast.kind !== _kinds.DOCUMENT) {
+  if (!ast || ast.kind !== Kind.DOCUMENT) {
     throw new Error('Must provide a document ast.');
   }
 
@@ -27221,22 +30903,26 @@ function buildASTSchema(ast) {
   for (var i = 0; i < ast.definitions.length; i++) {
     var d = ast.definitions[i];
     switch (d.kind) {
-      case _kinds.SCHEMA_DEFINITION:
+      case Kind.SCHEMA_DEFINITION:
         if (schemaDef) {
           throw new Error('Must provide only one schema definition.');
         }
         schemaDef = d;
         break;
-      case _kinds.SCALAR_TYPE_DEFINITION:
-      case _kinds.OBJECT_TYPE_DEFINITION:
-      case _kinds.INTERFACE_TYPE_DEFINITION:
-      case _kinds.ENUM_TYPE_DEFINITION:
-      case _kinds.UNION_TYPE_DEFINITION:
-      case _kinds.INPUT_OBJECT_TYPE_DEFINITION:
+      case Kind.SCALAR_TYPE_DEFINITION:
+      case Kind.OBJECT_TYPE_DEFINITION:
+      case Kind.INTERFACE_TYPE_DEFINITION:
+      case Kind.ENUM_TYPE_DEFINITION:
+      case Kind.UNION_TYPE_DEFINITION:
+      case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+        var typeName = d.name.value;
+        if (nodeMap[typeName]) {
+          throw new Error('Type "' + typeName + '" was defined more than once.');
+        }
         typeDefs.push(d);
-        nodeMap[d.name.value] = d;
+        nodeMap[typeName] = d;
         break;
-      case _kinds.DIRECTIVE_DEFINITION:
+      case Kind.DIRECTIVE_DEFINITION:
         directiveDefs.push(d);
         break;
     }
@@ -27336,7 +31022,8 @@ function buildASTSchema(ast) {
     mutation: mutationTypeName ? getObjectType(nodeMap[mutationTypeName]) : null,
     subscription: subscriptionTypeName ? getObjectType(nodeMap[subscriptionTypeName]) : null,
     types: types,
-    directives: directives
+    directives: directives,
+    astNode: schemaDef
   });
 
   function getDirective(directiveNode) {
@@ -27346,13 +31033,14 @@ function buildASTSchema(ast) {
       locations: directiveNode.locations.map(function (node) {
         return node.value;
       }),
-      args: directiveNode.arguments && makeInputValues(directiveNode.arguments)
+      args: directiveNode.arguments && makeInputValues(directiveNode.arguments),
+      astNode: directiveNode
     });
   }
 
   function getObjectType(typeNode) {
     var type = typeDefNamed(typeNode.name.value);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLObjectType, 'AST must provide object type.');
+    !(type instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'AST must provide object type.') : void 0;
     return type;
   }
 
@@ -27363,26 +31051,22 @@ function buildASTSchema(ast) {
   }
 
   function produceInputType(typeNode) {
-    var type = produceType(typeNode);
-    (0, _invariant2.default)((0, _definition.isInputType)(type), 'Expected Input type.');
-    return type;
+    return (0, _definition.assertInputType)(produceType(typeNode));
   }
 
   function produceOutputType(typeNode) {
-    var type = produceType(typeNode);
-    (0, _invariant2.default)((0, _definition.isOutputType)(type), 'Expected Output type.');
-    return type;
+    return (0, _definition.assertOutputType)(produceType(typeNode));
   }
 
   function produceObjectType(typeNode) {
     var type = produceType(typeNode);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLObjectType, 'Expected Object type.');
+    !(type instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'Expected Object type.') : void 0;
     return type;
   }
 
   function produceInterfaceType(typeNode) {
     var type = produceType(typeNode);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLInterfaceType, 'Expected Interface type.');
+    !(type instanceof _definition.GraphQLInterfaceType) ? (0, _invariant2.default)(0, 'Expected Interface type.') : void 0;
     return type;
   }
 
@@ -27408,17 +31092,17 @@ function buildASTSchema(ast) {
       throw new Error('def must be defined');
     }
     switch (def.kind) {
-      case _kinds.OBJECT_TYPE_DEFINITION:
+      case Kind.OBJECT_TYPE_DEFINITION:
         return makeTypeDef(def);
-      case _kinds.INTERFACE_TYPE_DEFINITION:
+      case Kind.INTERFACE_TYPE_DEFINITION:
         return makeInterfaceDef(def);
-      case _kinds.ENUM_TYPE_DEFINITION:
+      case Kind.ENUM_TYPE_DEFINITION:
         return makeEnumDef(def);
-      case _kinds.UNION_TYPE_DEFINITION:
+      case Kind.UNION_TYPE_DEFINITION:
         return makeUnionDef(def);
-      case _kinds.SCALAR_TYPE_DEFINITION:
+      case Kind.SCALAR_TYPE_DEFINITION:
         return makeScalarDef(def);
-      case _kinds.INPUT_OBJECT_TYPE_DEFINITION:
+      case Kind.INPUT_OBJECT_TYPE_DEFINITION:
         return makeInputObjectDef(def);
       default:
         throw new Error('Type kind "' + def.kind + '" not supported.');
@@ -27435,7 +31119,8 @@ function buildASTSchema(ast) {
       },
       interfaces: function interfaces() {
         return makeImplementedInterfaces(def);
-      }
+      },
+      astNode: def
     });
   }
 
@@ -27447,7 +31132,8 @@ function buildASTSchema(ast) {
         type: produceOutputType(field.type),
         description: getDescription(field),
         args: makeInputValues(field.arguments),
-        deprecationReason: getDeprecationReason(field.directives)
+        deprecationReason: getDeprecationReason(field),
+        astNode: field
       };
     });
   }
@@ -27466,7 +31152,8 @@ function buildASTSchema(ast) {
       return {
         type: type,
         description: getDescription(value),
-        defaultValue: (0, _valueFromAST.valueFromAST)(value.defaultValue, type)
+        defaultValue: (0, _valueFromAST.valueFromAST)(value.defaultValue, type),
+        astNode: value
       };
     });
   }
@@ -27479,6 +31166,7 @@ function buildASTSchema(ast) {
       fields: function fields() {
         return makeFieldDefMap(def);
       },
+      astNode: def,
       resolveType: cannotExecuteSchema
     });
   }
@@ -27492,9 +31180,11 @@ function buildASTSchema(ast) {
       }, function (enumValue) {
         return {
           description: getDescription(enumValue),
-          deprecationReason: getDeprecationReason(enumValue.directives)
+          deprecationReason: getDeprecationReason(enumValue),
+          astNode: enumValue
         };
-      })
+      }),
+      astNode: def
     });
 
     return enumType;
@@ -27507,7 +31197,8 @@ function buildASTSchema(ast) {
       types: def.types.map(function (t) {
         return produceObjectType(t);
       }),
-      resolveType: cannotExecuteSchema
+      resolveType: cannotExecuteSchema,
+      astNode: def
     });
   }
 
@@ -27515,6 +31206,7 @@ function buildASTSchema(ast) {
     return new _definition.GraphQLScalarType({
       name: def.name.value,
       description: getDescription(def),
+      astNode: def,
       serialize: function serialize() {
         return null;
       },
@@ -27537,27 +31229,19 @@ function buildASTSchema(ast) {
       description: getDescription(def),
       fields: function fields() {
         return makeInputValues(def.fields);
-      }
+      },
+      astNode: def
     });
   }
 }
 
 /**
- * Given a collection of directives, returns the string value for the
+ * Given a field or enum value node, returns the string value for the
  * deprecation reason.
  */
-function getDeprecationReason(directives) {
-  var deprecatedAST = directives && (0, _find2.default)(directives, function (directive) {
-    return directive.name.value === _directives.GraphQLDeprecatedDirective.name;
-  });
-  if (!deprecatedAST) {
-    return;
-  }
-
-  var _getArgumentValues = (0, _values.getArgumentValues)(_directives.GraphQLDeprecatedDirective, deprecatedAST),
-      reason = _getArgumentValues.reason;
-
-  return reason;
+function getDeprecationReason(node) {
+  var deprecated = (0, _values.getDirectiveValues)(_directives.GraphQLDeprecatedDirective, node);
+  return deprecated && deprecated.reason;
 }
 
 /**
@@ -27608,7 +31292,7 @@ function leadingSpaces(str) {
 function cannotExecuteSchema() {
   throw new Error('Generated Schema cannot use Interface or Union types for execution.');
 }
-},{"../execution/values":76,"../jsutils/find":79,"../jsutils/invariant":80,"../jsutils/keyValMap":84,"../language/kinds":88,"../language/lexer":89,"../language/parser":91,"../type/definition":95,"../type/directives":96,"../type/introspection":98,"../type/scalars":99,"../type/schema":100,"./valueFromAST":119}],105:[function(require,module,exports){
+},{"../execution/values":92,"../jsutils/invariant":96,"../jsutils/keyValMap":100,"../language/kinds":104,"../language/lexer":105,"../language/parser":107,"../type/definition":114,"../type/directives":115,"../type/introspection":117,"../type/scalars":118,"../type/schema":119,"./valueFromAST":138}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27642,7 +31326,7 @@ var _scalars = require('../type/scalars');
 
 var _directives = require('../type/directives');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Build a GraphQLSchema for use by client tools.
@@ -27698,7 +31382,7 @@ function buildClientSchema(introspection) {
         throw new Error('Decorated type deeper than introspection query.');
       }
       var nullableType = getType(nullableRef);
-      (0, _invariant2.default)(!(nullableType instanceof _definition.GraphQLNonNull), 'No nesting nonnull.');
+      !!(nullableType instanceof _definition.GraphQLNonNull) ? (0, _invariant2.default)(0, 'No nesting nonnull.') : void 0;
       return new _definition.GraphQLNonNull(nullableType);
     }
     return getNamedType(typeRef.name);
@@ -27719,25 +31403,25 @@ function buildClientSchema(introspection) {
 
   function getInputType(typeRef) {
     var type = getType(typeRef);
-    (0, _invariant2.default)((0, _definition.isInputType)(type), 'Introspection must provide input type for arguments.');
+    !(0, _definition.isInputType)(type) ? (0, _invariant2.default)(0, 'Introspection must provide input type for arguments.') : void 0;
     return type;
   }
 
   function getOutputType(typeRef) {
     var type = getType(typeRef);
-    (0, _invariant2.default)((0, _definition.isOutputType)(type), 'Introspection must provide output type for fields.');
+    !(0, _definition.isOutputType)(type) ? (0, _invariant2.default)(0, 'Introspection must provide output type for fields.') : void 0;
     return type;
   }
 
   function getObjectType(typeRef) {
     var type = getType(typeRef);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLObjectType, 'Introspection must provide object type for possibleTypes.');
+    !(type instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'Introspection must provide object type for possibleTypes.') : void 0;
     return type;
   }
 
   function getInterfaceType(typeRef) {
     var type = getType(typeRef);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLInterfaceType, 'Introspection must provide interface type for interfaces.');
+    !(type instanceof _definition.GraphQLInterfaceType) ? (0, _invariant2.default)(0, 'Introspection must provide interface type for interfaces.') : void 0;
     return type;
   }
 
@@ -27918,7 +31602,7 @@ function buildClientSchema(introspection) {
 function cannotExecuteClientSchema() {
   throw new Error('Client Schema cannot use Interface or Union types for execution.');
 }
-},{"../jsutils/invariant":80,"../jsutils/keyMap":83,"../jsutils/keyValMap":84,"../language/parser":91,"../type/definition":95,"../type/directives":96,"../type/introspection":98,"../type/scalars":99,"../type/schema":100,"./valueFromAST":119}],106:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../jsutils/keyMap":99,"../jsutils/keyValMap":100,"../language/parser":107,"../type/definition":114,"../type/directives":115,"../type/introspection":117,"../type/scalars":118,"../type/schema":119,"./valueFromAST":138}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27953,7 +31637,7 @@ function concatAST(asts) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{}],107:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27991,7 +31675,11 @@ var _scalars = require('../type/scalars');
 
 var _kinds = require('../language/kinds');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var Kind = _interopRequireWildcard(_kinds);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Produces a new schema given an existing schema and a document which may
@@ -28016,13 +31704,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  */
 
 function extendSchema(schema, documentAST) {
-  (0, _invariant2.default)(schema instanceof _schema.GraphQLSchema, 'Must provide valid GraphQLSchema');
+  !(schema instanceof _schema.GraphQLSchema) ? (0, _invariant2.default)(0, 'Must provide valid GraphQLSchema') : void 0;
 
-  (0, _invariant2.default)(documentAST && documentAST.kind === _kinds.DOCUMENT, 'Must provide valid Document AST');
+  !(documentAST && documentAST.kind === Kind.DOCUMENT) ? (0, _invariant2.default)(0, 'Must provide valid Document AST') : void 0;
 
   // Collect the type definitions and extensions found in the document.
-  var typeDefinitionMap = {};
-  var typeExtensionsMap = {};
+  var typeDefinitionMap = Object.create(null);
+  var typeExtensionsMap = Object.create(null);
 
   // New directives and types are separate because a directives and types can
   // have the same name. For example, a type named "skip".
@@ -28031,12 +31719,12 @@ function extendSchema(schema, documentAST) {
   for (var i = 0; i < documentAST.definitions.length; i++) {
     var def = documentAST.definitions[i];
     switch (def.kind) {
-      case _kinds.OBJECT_TYPE_DEFINITION:
-      case _kinds.INTERFACE_TYPE_DEFINITION:
-      case _kinds.ENUM_TYPE_DEFINITION:
-      case _kinds.UNION_TYPE_DEFINITION:
-      case _kinds.SCALAR_TYPE_DEFINITION:
-      case _kinds.INPUT_OBJECT_TYPE_DEFINITION:
+      case Kind.OBJECT_TYPE_DEFINITION:
+      case Kind.INTERFACE_TYPE_DEFINITION:
+      case Kind.ENUM_TYPE_DEFINITION:
+      case Kind.UNION_TYPE_DEFINITION:
+      case Kind.SCALAR_TYPE_DEFINITION:
+      case Kind.INPUT_OBJECT_TYPE_DEFINITION:
         // Sanity check that none of the defined types conflict with the
         // schema's existing types.
         var typeName = def.name.value;
@@ -28045,7 +31733,7 @@ function extendSchema(schema, documentAST) {
         }
         typeDefinitionMap[typeName] = def;
         break;
-      case _kinds.TYPE_EXTENSION_DEFINITION:
+      case Kind.TYPE_EXTENSION_DEFINITION:
         // Sanity check that this type extension exists within the
         // schema's existing types.
         var extendedTypeName = def.definition.name.value;
@@ -28064,7 +31752,7 @@ function extendSchema(schema, documentAST) {
         }
         typeExtensionsMap[extendedTypeName] = extensions;
         break;
-      case _kinds.DIRECTIVE_DEFINITION:
+      case Kind.DIRECTIVE_DEFINITION:
         var directiveName = def.name.value;
         var existingDirective = schema.getDirective(directiveName);
         if (existingDirective) {
@@ -28128,7 +31816,8 @@ function extendSchema(schema, documentAST) {
     mutation: mutationType,
     subscription: subscriptionType,
     types: types,
-    directives: getMergedDirectives()
+    directives: getMergedDirectives(),
+    astNode: schema.astNode
   });
 
   // Below are functions used for producing this schema that have closed over
@@ -28136,7 +31825,7 @@ function extendSchema(schema, documentAST) {
 
   function getMergedDirectives() {
     var existingDirectives = schema.getDirectives();
-    (0, _invariant2.default)(existingDirectives, 'schema must have default directives');
+    !existingDirectives ? (0, _invariant2.default)(0, 'schema must have default directives') : void 0;
 
     var newDirectives = directiveDefinitions.map(function (directiveNode) {
       return getDirective(directiveNode);
@@ -28146,7 +31835,7 @@ function extendSchema(schema, documentAST) {
 
   function getTypeFromDef(typeDef) {
     var type = _getNamedType(typeDef.name);
-    (0, _invariant2.default)(type, 'Missing type from schema');
+    !type ? (0, _invariant2.default)(0, 'Missing type from schema') : void 0;
     return type;
   }
 
@@ -28160,26 +31849,22 @@ function extendSchema(schema, documentAST) {
 
   function getObjectTypeFromAST(node) {
     var type = getTypeFromAST(node);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLObjectType, 'Must be Object type.');
+    !(type instanceof _definition.GraphQLObjectType) ? (0, _invariant2.default)(0, 'Must be Object type.') : void 0;
     return type;
   }
 
   function getInterfaceTypeFromAST(node) {
     var type = getTypeFromAST(node);
-    (0, _invariant2.default)(type instanceof _definition.GraphQLInterfaceType, 'Must be Interface type.');
+    !(type instanceof _definition.GraphQLInterfaceType) ? (0, _invariant2.default)(0, 'Must be Interface type.') : void 0;
     return type;
   }
 
   function getInputTypeFromAST(node) {
-    var type = getTypeFromAST(node);
-    (0, _invariant2.default)((0, _definition.isInputType)(type), 'Must be Input type.');
-    return type;
+    return (0, _definition.assertInputType)(getTypeFromAST(node));
   }
 
   function getOutputTypeFromAST(node) {
-    var type = getTypeFromAST(node);
-    (0, _invariant2.default)((0, _definition.isOutputType)(type), 'Must be Output type.');
-    return type;
+    return (0, _definition.assertOutputType)(getTypeFromAST(node));
   }
 
   // Given a name, returns a type from either the existing schema or an
@@ -28221,8 +31906,14 @@ function extendSchema(schema, documentAST) {
   }
 
   function extendObjectType(type) {
+    var name = type.name;
+    var extensionASTNodes = type.extensionASTNodes;
+    if (typeExtensionsMap[name]) {
+      extensionASTNodes = extensionASTNodes.concat(typeExtensionsMap[name]);
+    }
+
     return new _definition.GraphQLObjectType({
-      name: type.name,
+      name: name,
       description: type.description,
       interfaces: function interfaces() {
         return extendImplementedInterfaces(type);
@@ -28230,6 +31921,8 @@ function extendSchema(schema, documentAST) {
       fields: function fields() {
         return extendFieldMap(type);
       },
+      astNode: type.astNode,
+      extensionASTNodes: extensionASTNodes,
       isTypeOf: type.isTypeOf
     });
   }
@@ -28241,6 +31934,7 @@ function extendSchema(schema, documentAST) {
       fields: function fields() {
         return extendFieldMap(type);
       },
+      astNode: type.astNode,
       resolveType: type.resolveType
     });
   }
@@ -28250,6 +31944,7 @@ function extendSchema(schema, documentAST) {
       name: type.name,
       description: type.description,
       types: type.getTypes().map(getTypeFromDef),
+      astNode: type.astNode,
       resolveType: type.resolveType
     });
   }
@@ -28277,7 +31972,7 @@ function extendSchema(schema, documentAST) {
   }
 
   function extendFieldMap(type) {
-    var newFieldMap = {};
+    var newFieldMap = Object.create(null);
     var oldFieldMap = type.getFields();
     Object.keys(oldFieldMap).forEach(function (fieldName) {
       var field = oldFieldMap[fieldName];
@@ -28288,6 +31983,7 @@ function extendSchema(schema, documentAST) {
         args: (0, _keyMap2.default)(field.args, function (arg) {
           return arg.name;
         }),
+        astNode: field.astNode,
         resolve: field.resolve
       };
     });
@@ -28305,7 +32001,8 @@ function extendSchema(schema, documentAST) {
             description: (0, _buildASTSchema.getDescription)(field),
             type: buildOutputFieldType(field.type),
             args: buildInputValues(field.arguments),
-            deprecationReason: (0, _buildASTSchema.getDeprecationReason)(field.directives)
+            deprecationReason: (0, _buildASTSchema.getDeprecationReason)(field),
+            astNode: field
           };
         });
       });
@@ -28326,17 +32023,17 @@ function extendSchema(schema, documentAST) {
 
   function buildType(typeNode) {
     switch (typeNode.kind) {
-      case _kinds.OBJECT_TYPE_DEFINITION:
+      case Kind.OBJECT_TYPE_DEFINITION:
         return buildObjectType(typeNode);
-      case _kinds.INTERFACE_TYPE_DEFINITION:
+      case Kind.INTERFACE_TYPE_DEFINITION:
         return buildInterfaceType(typeNode);
-      case _kinds.UNION_TYPE_DEFINITION:
+      case Kind.UNION_TYPE_DEFINITION:
         return buildUnionType(typeNode);
-      case _kinds.SCALAR_TYPE_DEFINITION:
+      case Kind.SCALAR_TYPE_DEFINITION:
         return buildScalarType(typeNode);
-      case _kinds.ENUM_TYPE_DEFINITION:
+      case Kind.ENUM_TYPE_DEFINITION:
         return buildEnumType(typeNode);
-      case _kinds.INPUT_OBJECT_TYPE_DEFINITION:
+      case Kind.INPUT_OBJECT_TYPE_DEFINITION:
         return buildInputObjectType(typeNode);
     }
     throw new TypeError('Unknown type kind ' + typeNode.kind);
@@ -28351,7 +32048,8 @@ function extendSchema(schema, documentAST) {
       },
       fields: function fields() {
         return buildFieldMap(typeNode);
-      }
+      },
+      astNode: typeNode
     });
   }
 
@@ -28362,6 +32060,7 @@ function extendSchema(schema, documentAST) {
       fields: function fields() {
         return buildFieldMap(typeNode);
       },
+      astNode: typeNode,
       resolveType: cannotExecuteExtendedSchema
     });
   }
@@ -28371,6 +32070,7 @@ function extendSchema(schema, documentAST) {
       name: typeNode.name.value,
       description: (0, _buildASTSchema.getDescription)(typeNode),
       types: typeNode.types.map(getObjectTypeFromAST),
+      astNode: typeNode,
       resolveType: cannotExecuteExtendedSchema
     });
   }
@@ -28379,6 +32079,7 @@ function extendSchema(schema, documentAST) {
     return new _definition.GraphQLScalarType({
       name: typeNode.name.value,
       description: (0, _buildASTSchema.getDescription)(typeNode),
+      astNode: typeNode,
       serialize: function serialize(id) {
         return id;
       },
@@ -28404,9 +32105,11 @@ function extendSchema(schema, documentAST) {
       }, function (enumValue) {
         return {
           description: (0, _buildASTSchema.getDescription)(enumValue),
-          deprecationReason: (0, _buildASTSchema.getDeprecationReason)(enumValue.directives)
+          deprecationReason: (0, _buildASTSchema.getDeprecationReason)(enumValue),
+          astNode: enumValue
         };
-      })
+      }),
+      astNode: typeNode
     });
   }
 
@@ -28416,7 +32119,8 @@ function extendSchema(schema, documentAST) {
       description: (0, _buildASTSchema.getDescription)(typeNode),
       fields: function fields() {
         return buildInputValues(typeNode.fields);
-      }
+      },
+      astNode: typeNode
     });
   }
 
@@ -28426,7 +32130,8 @@ function extendSchema(schema, documentAST) {
       locations: directiveNode.locations.map(function (node) {
         return node.value;
       }),
-      args: directiveNode.arguments && buildInputValues(directiveNode.arguments)
+      args: directiveNode.arguments && buildInputValues(directiveNode.arguments),
+      astNode: directiveNode
     });
   }
 
@@ -28442,7 +32147,8 @@ function extendSchema(schema, documentAST) {
         type: buildOutputFieldType(field.type),
         description: (0, _buildASTSchema.getDescription)(field),
         args: buildInputValues(field.arguments),
-        deprecationReason: (0, _buildASTSchema.getDeprecationReason)(field.directives)
+        deprecationReason: (0, _buildASTSchema.getDeprecationReason)(field),
+        astNode: field
       };
     });
   }
@@ -28455,30 +32161,31 @@ function extendSchema(schema, documentAST) {
       return {
         type: type,
         description: (0, _buildASTSchema.getDescription)(value),
-        defaultValue: (0, _valueFromAST.valueFromAST)(value.defaultValue, type)
+        defaultValue: (0, _valueFromAST.valueFromAST)(value.defaultValue, type),
+        astNode: value
       };
     });
   }
 
   function buildInputFieldType(typeNode) {
-    if (typeNode.kind === _kinds.LIST_TYPE) {
+    if (typeNode.kind === Kind.LIST_TYPE) {
       return new _definition.GraphQLList(buildInputFieldType(typeNode.type));
     }
-    if (typeNode.kind === _kinds.NON_NULL_TYPE) {
+    if (typeNode.kind === Kind.NON_NULL_TYPE) {
       var nullableType = buildInputFieldType(typeNode.type);
-      (0, _invariant2.default)(!(nullableType instanceof _definition.GraphQLNonNull), 'Must be nullable');
+      !!(nullableType instanceof _definition.GraphQLNonNull) ? (0, _invariant2.default)(0, 'Must be nullable') : void 0;
       return new _definition.GraphQLNonNull(nullableType);
     }
     return getInputTypeFromAST(typeNode);
   }
 
   function buildOutputFieldType(typeNode) {
-    if (typeNode.kind === _kinds.LIST_TYPE) {
+    if (typeNode.kind === Kind.LIST_TYPE) {
       return new _definition.GraphQLList(buildOutputFieldType(typeNode.type));
     }
-    if (typeNode.kind === _kinds.NON_NULL_TYPE) {
+    if (typeNode.kind === Kind.NON_NULL_TYPE) {
       var nullableType = buildOutputFieldType(typeNode.type);
-      (0, _invariant2.default)(!(nullableType instanceof _definition.GraphQLNonNull), 'Must be nullable');
+      !!(nullableType instanceof _definition.GraphQLNonNull) ? (0, _invariant2.default)(0, 'Must be nullable') : void 0;
       return new _definition.GraphQLNonNull(nullableType);
     }
     return getOutputTypeFromAST(typeNode);
@@ -28488,7 +32195,7 @@ function extendSchema(schema, documentAST) {
 function cannotExecuteExtendedSchema() {
   throw new Error('Extended Schema cannot use Interface or Union types for execution.');
 }
-},{"../error/GraphQLError":69,"../jsutils/invariant":80,"../jsutils/keyMap":83,"../jsutils/keyValMap":84,"../language/kinds":88,"../type/definition":95,"../type/directives":96,"../type/introspection":98,"../type/scalars":99,"../type/schema":100,"./buildASTSchema":104,"./valueFromAST":119}],108:[function(require,module,exports){
+},{"../error/GraphQLError":85,"../jsutils/invariant":96,"../jsutils/keyMap":99,"../jsutils/keyValMap":100,"../language/kinds":104,"../type/definition":114,"../type/directives":115,"../type/introspection":117,"../type/scalars":118,"../type/schema":119,"./buildASTSchema":123,"./valueFromAST":138}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28501,8 +32208,10 @@ exports.findRemovedTypes = findRemovedTypes;
 exports.findTypesThatChangedKind = findTypesThatChangedKind;
 exports.findArgChanges = findArgChanges;
 exports.findFieldsThatChangedType = findFieldsThatChangedType;
+exports.findFieldsThatChangedTypeOnInputObjectTypes = findFieldsThatChangedTypeOnInputObjectTypes;
 exports.findTypesRemovedFromUnions = findTypesRemovedFromUnions;
 exports.findValuesRemovedFromEnums = findValuesRemovedFromEnums;
+exports.findInterfacesRemovedFromObjectTypes = findInterfacesRemovedFromObjectTypes;
 
 var _definition = require('../type/definition');
 
@@ -28525,7 +32234,10 @@ var BreakingChangeType = exports.BreakingChangeType = {
   TYPE_REMOVED_FROM_UNION: 'TYPE_REMOVED_FROM_UNION',
   VALUE_REMOVED_FROM_ENUM: 'VALUE_REMOVED_FROM_ENUM',
   ARG_REMOVED: 'ARG_REMOVED',
-  ARG_CHANGED_KIND: 'ARG_CHANGED_KIND'
+  ARG_CHANGED_KIND: 'ARG_CHANGED_KIND',
+  NON_NULL_ARG_ADDED: 'NON_NULL_ARG_ADDED',
+  NON_NULL_INPUT_FIELD_ADDED: 'NON_NULL_INPUT_FIELD_ADDED',
+  INTERFACE_REMOVED_FROM_OBJECT: 'INTERFACE_REMOVED_FROM_OBJECT'
 };
 
 var DangerousChangeType = exports.DangerousChangeType = {
@@ -28537,7 +32249,7 @@ var DangerousChangeType = exports.DangerousChangeType = {
  * of breaking changes covered by the other functions down below.
  */
 function findBreakingChanges(oldSchema, newSchema) {
-  return [].concat(findRemovedTypes(oldSchema, newSchema), findTypesThatChangedKind(oldSchema, newSchema), findFieldsThatChangedType(oldSchema, newSchema), findTypesRemovedFromUnions(oldSchema, newSchema), findValuesRemovedFromEnums(oldSchema, newSchema), findArgChanges(oldSchema, newSchema).breakingChanges);
+  return [].concat(findRemovedTypes(oldSchema, newSchema), findTypesThatChangedKind(oldSchema, newSchema), findFieldsThatChangedType(oldSchema, newSchema), findTypesRemovedFromUnions(oldSchema, newSchema), findValuesRemovedFromEnums(oldSchema, newSchema), findArgChanges(oldSchema, newSchema).breakingChanges, findInterfacesRemovedFromObjectTypes(oldSchema, newSchema));
 }
 
 /**
@@ -28609,7 +32321,7 @@ function findArgChanges(oldSchema, newSchema) {
   Object.keys(oldTypeMap).forEach(function (typeName) {
     var oldType = oldTypeMap[typeName];
     var newType = newTypeMap[typeName];
-    if (!(oldType instanceof _definition.GraphQLObjectType) || !(newType instanceof oldType.constructor)) {
+    if (!(oldType instanceof _definition.GraphQLObjectType || oldType instanceof _definition.GraphQLInterfaceType) || !(newType instanceof oldType.constructor)) {
       return;
     }
 
@@ -28623,37 +32335,41 @@ function findArgChanges(oldSchema, newSchema) {
 
       oldTypeFields[fieldName].args.forEach(function (oldArgDef) {
         var newArgs = newTypeFields[fieldName].args;
-        var newTypeArgIndex = newArgs.findIndex(function (arg) {
+        var newArgDef = newArgs.find(function (arg) {
           return arg.name === oldArgDef.name;
         });
-        var newArgDef = newArgs[newTypeArgIndex];
-
-        var oldArgTypeName = (0, _definition.getNamedType)(oldArgDef.type);
-        var newArgTypeName = newArgDef ? (0, _definition.getNamedType)(newArgDef.type) : null;
-
-        if (!oldArgTypeName) {
-          return;
-        }
 
         // Arg not present
-        if (!newArgTypeName) {
+        if (!newArgDef) {
           breakingChanges.push({
             type: BreakingChangeType.ARG_REMOVED,
             description: oldType.name + '.' + fieldName + ' arg ' + (oldArgDef.name + ' was removed')
           });
-
-          // Arg changed type in a breaking way
-        } else if (oldArgTypeName.name !== newArgTypeName.name) {
+        } else {
+          var isSafe = isChangeSafeForInputObjectFieldOrFieldArg(oldArgDef.type, newArgDef.type);
+          if (!isSafe) {
+            breakingChanges.push({
+              type: BreakingChangeType.ARG_CHANGED_KIND,
+              description: oldType.name + '.' + fieldName + ' arg ' + (oldArgDef.name + ' has changed type from ') + (oldArgDef.type.toString() + ' to ' + newArgDef.type.toString())
+            });
+          } else if (oldArgDef.defaultValue !== undefined && oldArgDef.defaultValue !== newArgDef.defaultValue) {
+            dangerousChanges.push({
+              type: DangerousChangeType.ARG_DEFAULT_VALUE_CHANGE,
+              description: oldType.name + '.' + fieldName + ' arg ' + (oldArgDef.name + ' has changed defaultValue')
+            });
+          }
+        }
+      });
+      // Check if a non-null arg was added to the field
+      newTypeFields[fieldName].args.forEach(function (newArgDef) {
+        var oldArgs = oldTypeFields[fieldName].args;
+        var oldArgDef = oldArgs.find(function (arg) {
+          return arg.name === newArgDef.name;
+        });
+        if (!oldArgDef && newArgDef.type instanceof _definition.GraphQLNonNull) {
           breakingChanges.push({
-            type: BreakingChangeType.ARG_CHANGED_KIND,
-            description: oldType.name + '.' + fieldName + ' arg ' + (oldArgDef.name + ' has changed type from ') + (oldArgDef.type.toString() + ' to ' + newArgDef.type.toString())
-          });
-
-          // Arg default value has changed
-        } else if (oldArgDef.defaultValue !== undefined && oldArgDef.defaultValue !== newArgDef.defaultValue) {
-          dangerousChanges.push({
-            type: DangerousChangeType.ARG_DEFAULT_VALUE_CHANGE,
-            description: oldType.name + '.' + fieldName + ' arg ' + oldArgDef.name + ' ' + 'has changed defaultValue'
+            type: BreakingChangeType.NON_NULL_ARG_ADDED,
+            description: 'A non-null arg ' + newArgDef.name + ' on ' + (newType.name + '.' + fieldName + ' was added')
           });
         }
       });
@@ -28691,9 +32407,14 @@ function typeKindName(type) {
 /**
  * Given two schemas, returns an Array containing descriptions of any breaking
  * changes in the newSchema related to the fields on a type. This includes if
- * a field has been removed from a type or if a field has changed type.
+ * a field has been removed from a type, if a field has changed type, or if
+ * a non-null field is added to an input type.
  */
 function findFieldsThatChangedType(oldSchema, newSchema) {
+  return [].concat(findFieldsThatChangedTypeOnObjectOrInterfaceTypes(oldSchema, newSchema), findFieldsThatChangedTypeOnInputObjectTypes(oldSchema, newSchema));
+}
+
+function findFieldsThatChangedTypeOnObjectOrInterfaceTypes(oldSchema, newSchema) {
   var oldTypeMap = oldSchema.getTypeMap();
   var newTypeMap = newSchema.getTypeMap();
 
@@ -28701,7 +32422,7 @@ function findFieldsThatChangedType(oldSchema, newSchema) {
   Object.keys(oldTypeMap).forEach(function (typeName) {
     var oldType = oldTypeMap[typeName];
     var newType = newTypeMap[typeName];
-    if (!(oldType instanceof _definition.GraphQLObjectType || oldType instanceof _definition.GraphQLInterfaceType || oldType instanceof _definition.GraphQLInputObjectType) || !(newType instanceof oldType.constructor)) {
+    if (!(oldType instanceof _definition.GraphQLObjectType || oldType instanceof _definition.GraphQLInterfaceType) || !(newType instanceof oldType.constructor)) {
       return;
     }
 
@@ -28715,19 +32436,111 @@ function findFieldsThatChangedType(oldSchema, newSchema) {
           description: typeName + '.' + fieldName + ' was removed.'
         });
       } else {
-        // Check if the field's type has changed in the new schema.
-        var oldFieldType = (0, _definition.getNamedType)(oldTypeFieldsDef[fieldName].type);
-        var newFieldType = (0, _definition.getNamedType)(newTypeFieldsDef[fieldName].type);
-        if (oldFieldType && newFieldType && oldFieldType.name !== newFieldType.name) {
+        var oldFieldType = oldTypeFieldsDef[fieldName].type;
+        var newFieldType = newTypeFieldsDef[fieldName].type;
+        var isSafe = isChangeSafeForObjectOrInterfaceField(oldFieldType, newFieldType);
+        if (!isSafe) {
+          var oldFieldTypeString = (0, _definition.isNamedType)(oldFieldType) ? oldFieldType.name : oldFieldType.toString();
+          var newFieldTypeString = (0, _definition.isNamedType)(newFieldType) ? newFieldType.name : newFieldType.toString();
           breakingFieldChanges.push({
             type: BreakingChangeType.FIELD_CHANGED_KIND,
-            description: typeName + '.' + fieldName + ' changed type from ' + (oldFieldType.name + ' to ' + newFieldType.name + '.')
+            description: typeName + '.' + fieldName + ' changed type from ' + (oldFieldTypeString + ' to ' + newFieldTypeString + '.')
           });
         }
       }
     });
   });
   return breakingFieldChanges;
+}
+
+function findFieldsThatChangedTypeOnInputObjectTypes(oldSchema, newSchema) {
+  var oldTypeMap = oldSchema.getTypeMap();
+  var newTypeMap = newSchema.getTypeMap();
+
+  var breakingFieldChanges = [];
+  Object.keys(oldTypeMap).forEach(function (typeName) {
+    var oldType = oldTypeMap[typeName];
+    var newType = newTypeMap[typeName];
+    if (!(oldType instanceof _definition.GraphQLInputObjectType) || !(newType instanceof _definition.GraphQLInputObjectType)) {
+      return;
+    }
+
+    var oldTypeFieldsDef = oldType.getFields();
+    var newTypeFieldsDef = newType.getFields();
+    Object.keys(oldTypeFieldsDef).forEach(function (fieldName) {
+      // Check if the field is missing on the type in the new schema.
+      if (!(fieldName in newTypeFieldsDef)) {
+        breakingFieldChanges.push({
+          type: BreakingChangeType.FIELD_REMOVED,
+          description: typeName + '.' + fieldName + ' was removed.'
+        });
+      } else {
+        var oldFieldType = oldTypeFieldsDef[fieldName].type;
+        var newFieldType = newTypeFieldsDef[fieldName].type;
+
+        var isSafe = isChangeSafeForInputObjectFieldOrFieldArg(oldFieldType, newFieldType);
+        if (!isSafe) {
+          var oldFieldTypeString = (0, _definition.isNamedType)(oldFieldType) ? oldFieldType.name : oldFieldType.toString();
+          var newFieldTypeString = (0, _definition.isNamedType)(newFieldType) ? newFieldType.name : newFieldType.toString();
+          breakingFieldChanges.push({
+            type: BreakingChangeType.FIELD_CHANGED_KIND,
+            description: typeName + '.' + fieldName + ' changed type from ' + (oldFieldTypeString + ' to ' + newFieldTypeString + '.')
+          });
+        }
+      }
+    });
+    // Check if a non-null field was added to the input object type
+    Object.keys(newTypeFieldsDef).forEach(function (fieldName) {
+      if (!(fieldName in oldTypeFieldsDef) && newTypeFieldsDef[fieldName].type instanceof _definition.GraphQLNonNull) {
+        breakingFieldChanges.push({
+          type: BreakingChangeType.NON_NULL_INPUT_FIELD_ADDED,
+          description: 'A non-null field ' + fieldName + ' on ' + ('input type ' + newType.name + ' was added.')
+        });
+      }
+    });
+  });
+  return breakingFieldChanges;
+}
+
+function isChangeSafeForObjectOrInterfaceField(oldType, newType) {
+  if ((0, _definition.isNamedType)(oldType)) {
+    return (
+      // if they're both named types, see if their names are equivalent
+      (0, _definition.isNamedType)(newType) && oldType.name === newType.name ||
+      // moving from nullable to non-null of the same underlying type is safe
+      newType instanceof _definition.GraphQLNonNull && isChangeSafeForObjectOrInterfaceField(oldType, newType.ofType)
+    );
+  } else if (oldType instanceof _definition.GraphQLList) {
+    return (
+      // if they're both lists, make sure the underlying types are compatible
+      newType instanceof _definition.GraphQLList && isChangeSafeForObjectOrInterfaceField(oldType.ofType, newType.ofType) ||
+      // moving from nullable to non-null of the same underlying type is safe
+      newType instanceof _definition.GraphQLNonNull && isChangeSafeForObjectOrInterfaceField(oldType, newType.ofType)
+    );
+  } else if (oldType instanceof _definition.GraphQLNonNull) {
+    // if they're both non-null, make sure the underlying types are compatible
+    return newType instanceof _definition.GraphQLNonNull && isChangeSafeForObjectOrInterfaceField(oldType.ofType, newType.ofType);
+  }
+  return false;
+}
+
+function isChangeSafeForInputObjectFieldOrFieldArg(oldType, newType) {
+  if ((0, _definition.isNamedType)(oldType)) {
+    // if they're both named types, see if their names are equivalent
+    return (0, _definition.isNamedType)(newType) && oldType.name === newType.name;
+  } else if (oldType instanceof _definition.GraphQLList) {
+    // if they're both lists, make sure the underlying types are compatible
+    return newType instanceof _definition.GraphQLList && isChangeSafeForInputObjectFieldOrFieldArg(oldType.ofType, newType.ofType);
+  } else if (oldType instanceof _definition.GraphQLNonNull) {
+    return (
+      // if they're both non-null, make sure the underlying types are
+      // compatible
+      newType instanceof _definition.GraphQLNonNull && isChangeSafeForInputObjectFieldOrFieldArg(oldType.ofType, newType.ofType) ||
+      // moving from non-null to nullable of the same underlying type is safe
+      !(newType instanceof _definition.GraphQLNonNull) && isChangeSafeForInputObjectFieldOrFieldArg(oldType.ofType, newType)
+    );
+  }
+  return false;
 }
 
 /**
@@ -28791,7 +32604,35 @@ function findValuesRemovedFromEnums(oldSchema, newSchema) {
   });
   return valuesRemovedFromEnums;
 }
-},{"../type/definition":95,"../type/schema":100}],109:[function(require,module,exports){
+
+function findInterfacesRemovedFromObjectTypes(oldSchema, newSchema) {
+  var oldTypeMap = oldSchema.getTypeMap();
+  var newTypeMap = newSchema.getTypeMap();
+  var breakingChanges = [];
+
+  Object.keys(oldTypeMap).forEach(function (typeName) {
+    var oldType = oldTypeMap[typeName];
+    var newType = newTypeMap[typeName];
+    if (!(oldType instanceof _definition.GraphQLObjectType) || !(newType instanceof _definition.GraphQLObjectType)) {
+      return;
+    }
+
+    var oldInterfaces = oldType.getInterfaces();
+    var newInterfaces = newType.getInterfaces();
+    oldInterfaces.forEach(function (oldInterface) {
+      if (!newInterfaces.some(function (int) {
+        return int.name === oldInterface.name;
+      })) {
+        breakingChanges.push({
+          type: BreakingChangeType.INTERFACE_REMOVED_FROM_OBJECT,
+          description: typeName + ' no longer implements interface ' + (oldInterface.name + '.')
+        });
+      }
+    });
+  });
+  return breakingChanges;
+}
+},{"../type/definition":114,"../type/schema":119}],128:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28851,7 +32692,7 @@ function findDeprecatedUsages(schema, ast) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../error/GraphQLError":69,"../language/visitor":94,"../type/definition":95,"../type/schema":100,"./TypeInfo":101}],110:[function(require,module,exports){
+},{"../error/GraphQLError":85,"../language/visitor":110,"../type/definition":114,"../type/schema":119,"./TypeInfo":120}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28894,7 +32735,7 @@ function getOperationAST(documentAST, operationName) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../language/kinds":88}],111:[function(require,module,exports){
+},{"../language/kinds":104}],130:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29077,6 +32918,18 @@ Object.defineProperty(exports, 'assertValidName', {
 
 var _findBreakingChanges = require('./findBreakingChanges');
 
+Object.defineProperty(exports, 'BreakingChangeType', {
+  enumerable: true,
+  get: function get() {
+    return _findBreakingChanges.BreakingChangeType;
+  }
+});
+Object.defineProperty(exports, 'DangerousChangeType', {
+  enumerable: true,
+  get: function get() {
+    return _findBreakingChanges.DangerousChangeType;
+  }
+});
 Object.defineProperty(exports, 'findBreakingChanges', {
   enumerable: true,
   get: function get() {
@@ -29092,7 +32945,7 @@ Object.defineProperty(exports, 'findDeprecatedUsages', {
     return _findDeprecatedUsages.findDeprecatedUsages;
   }
 });
-},{"./TypeInfo":101,"./assertValidName":102,"./astFromValue":103,"./buildASTSchema":104,"./buildClientSchema":105,"./concatAST":106,"./extendSchema":107,"./findBreakingChanges":108,"./findDeprecatedUsages":109,"./getOperationAST":110,"./introspectionQuery":112,"./isValidJSValue":113,"./isValidLiteralValue":114,"./schemaPrinter":115,"./separateOperations":116,"./typeComparators":117,"./typeFromAST":118,"./valueFromAST":119}],112:[function(require,module,exports){
+},{"./TypeInfo":120,"./assertValidName":121,"./astFromValue":122,"./buildASTSchema":123,"./buildClientSchema":124,"./concatAST":125,"./extendSchema":126,"./findBreakingChanges":127,"./findDeprecatedUsages":128,"./getOperationAST":129,"./introspectionQuery":131,"./isValidJSValue":132,"./isValidLiteralValue":133,"./schemaPrinter":134,"./separateOperations":135,"./typeComparators":136,"./typeFromAST":137,"./valueFromAST":138}],131:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29107,12 +32960,23 @@ var introspectionQuery = exports.introspectionQuery = '\n  query IntrospectionQu
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{}],113:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
 exports.isValidJSValue = isValidJSValue;
 
 var _iterall = require('iterall');
@@ -29127,23 +32991,13 @@ var _isNullish2 = _interopRequireDefault(_isNullish);
 
 var _definition = require('../type/definition');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Given a JavaScript value and a GraphQL type, determine if the value will be
  * accepted for that type. This is primarily useful for validating the
  * runtime values of query variables.
  */
-
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
 function isValidJSValue(value, type) {
   // A value must be provided if the type is non-null.
   if (type instanceof _definition.GraphQLNonNull) {
@@ -29174,7 +33028,7 @@ function isValidJSValue(value, type) {
 
   // Input objects check each defined field.
   if (type instanceof _definition.GraphQLInputObjectType) {
-    if (typeof value !== 'object' || value === null) {
+    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object' || value === null) {
       return ['Expected "' + type.name + '", found not an object.'];
     }
     var fields = type.getFields();
@@ -29199,13 +33053,13 @@ function isValidJSValue(value, type) {
     return _errors;
   }
 
-  (0, _invariant2.default)(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType, 'Must be input type');
+  !(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType) ? (0, _invariant2.default)(0, 'Must be input type') : void 0;
 
   // Scalar/Enum input checks to ensure the type can parse the value to
   // a non-null value.
   try {
     var parseResult = type.parseValue(value);
-    if ((0, _isNullish2.default)(parseResult)) {
+    if ((0, _isNullish2.default)(parseResult) && !type.isValidValue(value)) {
       return ['Expected type "' + type.name + '", found ' + JSON.stringify(value) + '.'];
     }
   } catch (error) {
@@ -29214,7 +33068,7 @@ function isValidJSValue(value, type) {
 
   return [];
 }
-},{"../jsutils/invariant":80,"../jsutils/isNullish":82,"../type/definition":95,"iterall":148}],114:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../jsutils/isNullish":98,"../type/definition":114,"iterall":168}],133:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29226,6 +33080,8 @@ var _printer = require('../language/printer');
 
 var _kinds = require('../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _definition = require('../type/definition');
 
 var _invariant = require('../jsutils/invariant');
@@ -29236,11 +33092,9 @@ var _keyMap = require('../jsutils/keyMap');
 
 var _keyMap2 = _interopRequireDefault(_keyMap);
 
-var _isNullish = require('../jsutils/isNullish');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _isNullish2 = _interopRequireDefault(_isNullish);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 /**
  * Utility for validators which determines if a value literal node is valid
@@ -29249,39 +33103,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * Note that this only validates literal values, variables are assumed to
  * provide values of the correct type.
  */
-
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
-
 function isValidLiteralValue(type, valueNode) {
   // A value must be provided if the type is non-null.
   if (type instanceof _definition.GraphQLNonNull) {
-    if (!valueNode || valueNode.kind === _kinds.NULL) {
+    if (!valueNode || valueNode.kind === Kind.NULL) {
       return ['Expected "' + String(type) + '", found null.'];
     }
     return isValidLiteralValue(type.ofType, valueNode);
   }
 
-  if (!valueNode || valueNode.kind === _kinds.NULL) {
+  if (!valueNode || valueNode.kind === Kind.NULL) {
     return [];
   }
 
   // This function only tests literals, and assumes variables will provide
   // values of the correct type.
-  if (valueNode.kind === _kinds.VARIABLE) {
+  if (valueNode.kind === Kind.VARIABLE) {
     return [];
   }
 
   // Lists accept a non-list value as a list of one.
   if (type instanceof _definition.GraphQLList) {
     var itemType = type.ofType;
-    if (valueNode.kind === _kinds.LIST) {
+    if (valueNode.kind === Kind.LIST) {
       return valueNode.values.reduce(function (acc, item, index) {
         var errors = isValidLiteralValue(itemType, item);
         return acc.concat(errors.map(function (error) {
@@ -29294,7 +33138,7 @@ function isValidLiteralValue(type, valueNode) {
 
   // Input objects check each defined field and look for undefined fields.
   if (type instanceof _definition.GraphQLInputObjectType) {
-    if (valueNode.kind !== _kinds.OBJECT) {
+    if (valueNode.kind !== Kind.OBJECT) {
       return ['Expected "' + type.name + '", found not an object.'];
     }
     var fields = type.getFields();
@@ -29323,18 +33167,24 @@ function isValidLiteralValue(type, valueNode) {
     return errors;
   }
 
-  (0, _invariant2.default)(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType, 'Must be input type');
+  !(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType) ? (0, _invariant2.default)(0, 'Must be input type') : void 0;
 
-  // Scalar/Enum input checks to ensure the type can parse the value to
-  // a non-null value.
-  var parseResult = type.parseLiteral(valueNode);
-  if ((0, _isNullish2.default)(parseResult)) {
+  // Scalars determine if a literal values is valid.
+  if (!type.isValidLiteral(valueNode)) {
     return ['Expected type "' + type.name + '", found ' + (0, _printer.print)(valueNode) + '.'];
   }
 
   return [];
 }
-},{"../jsutils/invariant":80,"../jsutils/isNullish":82,"../jsutils/keyMap":83,"../language/kinds":88,"../language/printer":92,"../type/definition":95}],115:[function(require,module,exports){
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+},{"../jsutils/invariant":96,"../jsutils/keyMap":99,"../language/kinds":104,"../language/printer":108,"../type/definition":114}],134:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29366,7 +33216,7 @@ var _scalars = require('../type/scalars');
 
 var _directives = require('../type/directives');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  *  Copyright (c) 2015, Facebook, Inc.
@@ -29485,7 +33335,7 @@ function printType(type) {
   } else if (type instanceof _definition.GraphQLEnumType) {
     return printEnum(type);
   }
-  (0, _invariant2.default)(type instanceof _definition.GraphQLInputObjectType);
+  !(type instanceof _definition.GraphQLInputObjectType) ? (0, _invariant2.default)(0) : void 0;
   return printInputObject(type);
 }
 
@@ -29619,7 +33469,7 @@ function breakLine(line, len) {
   }
   return sublines;
 }
-},{"../jsutils/invariant":80,"../jsutils/isInvalid":81,"../jsutils/isNullish":82,"../language/printer":92,"../type/definition":95,"../type/directives":96,"../type/scalars":99,"../utilities/astFromValue":103}],116:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../jsutils/isInvalid":97,"../jsutils/isNullish":98,"../language/printer":108,"../type/definition":114,"../type/directives":115,"../type/scalars":118,"../utilities/astFromValue":122}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29715,7 +33565,7 @@ function collectTransitiveDependencies(collected, depGraph, fromName) {
     });
   }
 }
-},{"../language/visitor":94}],117:[function(require,module,exports){
+},{"../language/visitor":110}],136:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29820,8 +33670,8 @@ function doTypesOverlap(schema, typeA, typeB) {
     return true;
   }
 
-  if (typeA instanceof _definition.GraphQLInterfaceType || typeA instanceof _definition.GraphQLUnionType) {
-    if (_typeB instanceof _definition.GraphQLInterfaceType || _typeB instanceof _definition.GraphQLUnionType) {
+  if ((0, _definition.isAbstractType)(typeA)) {
+    if ((0, _definition.isAbstractType)(_typeB)) {
       // If both types are abstract, then determine if there is any intersection
       // between possible concrete types of each.
       return schema.getPossibleTypes(typeA).some(function (type) {
@@ -29832,7 +33682,7 @@ function doTypesOverlap(schema, typeA, typeB) {
     return schema.isPossibleType(typeA, _typeB);
   }
 
-  if (_typeB instanceof _definition.GraphQLInterfaceType || _typeB instanceof _definition.GraphQLUnionType) {
+  if ((0, _definition.isAbstractType)(_typeB)) {
     // Determine if the former type is a possible concrete type of the latter.
     return schema.isPossibleType(_typeB, typeA);
   }
@@ -29840,13 +33690,13 @@ function doTypesOverlap(schema, typeA, typeB) {
   // Otherwise the types do not overlap.
   return false;
 }
-},{"../type/definition":95}],118:[function(require,module,exports){
+},{"../type/definition":114}],137:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.typeFromAST = typeFromAST;
+exports.typeFromAST = undefined;
 
 var _invariant = require('../jsutils/invariant');
 
@@ -29854,23 +33704,40 @@ var _invariant2 = _interopRequireDefault(_invariant);
 
 var _kinds = require('../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _definition = require('../type/definition');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function typeFromAST(schema, typeNode) {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Given a Schema and an AST node describing a type, return a GraphQLType
+ * definition which applies to that type. For example, if provided the parsed
+ * AST node for `[User]`, a GraphQLList instance will be returned, containing
+ * the type called "User" found in the schema. If a type called "User" is not
+ * found in the schema, then undefined will be returned.
+ */
+/* eslint-disable no-redeclare */
+function typeFromASTImpl(schema, typeNode) {
+  /* eslint-enable no-redeclare */
   var innerType = void 0;
-  if (typeNode.kind === _kinds.LIST_TYPE) {
+  if (typeNode.kind === Kind.LIST_TYPE) {
     innerType = typeFromAST(schema, typeNode.type);
     return innerType && new _definition.GraphQLList(innerType);
   }
-  if (typeNode.kind === _kinds.NON_NULL_TYPE) {
+  if (typeNode.kind === Kind.NON_NULL_TYPE) {
     innerType = typeFromAST(schema, typeNode.type);
     return innerType && new _definition.GraphQLNonNull(innerType);
   }
-  (0, _invariant2.default)(typeNode.kind === _kinds.NAMED_TYPE, 'Must be a named type.');
+  !(typeNode.kind === Kind.NAMED_TYPE) ? (0, _invariant2.default)(0, 'Must be a named type.') : void 0;
   return schema.getType(typeNode.name.value);
 }
+// This will export typeFromAST with the correct type, but currently exposes
+// ~26 errors: https://gist.github.com/4a29403a99a8186fcb15064d69c5f3ae
+// export var typeFromAST: typeof typeFromASTType = typeFromASTImpl;
+
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -29879,7 +33746,9 @@ function typeFromAST(schema, typeNode) {
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-},{"../jsutils/invariant":80,"../language/kinds":88,"../type/definition":95}],119:[function(require,module,exports){
+
+var typeFromAST = exports.typeFromAST = typeFromASTImpl;
+},{"../jsutils/invariant":96,"../language/kinds":104,"../type/definition":114}],138:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29911,7 +33780,7 @@ var _definition = require('../type/definition');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -30035,12 +33904,12 @@ function valueFromAST(valueNode, type, variables) {
     return coercedObj;
   }
 
-  (0, _invariant2.default)(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType, 'Must be input type');
+  !(type instanceof _definition.GraphQLScalarType || type instanceof _definition.GraphQLEnumType) ? (0, _invariant2.default)(0, 'Must be input type') : void 0;
 
   var parsed = type.parseLiteral(valueNode);
-  if ((0, _isNullish2.default)(parsed)) {
-    // null or invalid values represent a failure to parse correctly,
-    // in which case no value is returned.
+  if ((0, _isNullish2.default)(parsed) && !type.isValidLiteral(valueNode)) {
+    // Invalid values represent a failure to parse correctly, in which case
+    // no value is returned.
     return;
   }
 
@@ -30052,7 +33921,7 @@ function valueFromAST(valueNode, type, variables) {
 function isMissingVariable(valueNode, variables) {
   return valueNode.kind === Kind.VARIABLE && (!variables || (0, _isInvalid2.default)(variables[valueNode.name.value]));
 }
-},{"../jsutils/invariant":80,"../jsutils/isInvalid":81,"../jsutils/isNullish":82,"../jsutils/keyMap":83,"../language/kinds":88,"../type/definition":95}],120:[function(require,module,exports){
+},{"../jsutils/invariant":96,"../jsutils/isInvalid":97,"../jsutils/isNullish":98,"../jsutils/keyMap":99,"../language/kinds":104,"../type/definition":114}],139:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30082,7 +33951,241 @@ Object.defineProperty(exports, 'specifiedRules', {
     return _specifiedRules.specifiedRules;
   }
 });
-},{"./specifiedRules":146,"./validate":147}],121:[function(require,module,exports){
+
+var _ArgumentsOfCorrectType = require('./rules/ArgumentsOfCorrectType');
+
+Object.defineProperty(exports, 'ArgumentsOfCorrectTypeRule', {
+  enumerable: true,
+  get: function get() {
+    return _ArgumentsOfCorrectType.ArgumentsOfCorrectType;
+  }
+});
+
+var _DefaultValuesOfCorrectType = require('./rules/DefaultValuesOfCorrectType');
+
+Object.defineProperty(exports, 'DefaultValuesOfCorrectTypeRule', {
+  enumerable: true,
+  get: function get() {
+    return _DefaultValuesOfCorrectType.DefaultValuesOfCorrectType;
+  }
+});
+
+var _FieldsOnCorrectType = require('./rules/FieldsOnCorrectType');
+
+Object.defineProperty(exports, 'FieldsOnCorrectTypeRule', {
+  enumerable: true,
+  get: function get() {
+    return _FieldsOnCorrectType.FieldsOnCorrectType;
+  }
+});
+
+var _FragmentsOnCompositeTypes = require('./rules/FragmentsOnCompositeTypes');
+
+Object.defineProperty(exports, 'FragmentsOnCompositeTypesRule', {
+  enumerable: true,
+  get: function get() {
+    return _FragmentsOnCompositeTypes.FragmentsOnCompositeTypes;
+  }
+});
+
+var _KnownArgumentNames = require('./rules/KnownArgumentNames');
+
+Object.defineProperty(exports, 'KnownArgumentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _KnownArgumentNames.KnownArgumentNames;
+  }
+});
+
+var _KnownDirectives = require('./rules/KnownDirectives');
+
+Object.defineProperty(exports, 'KnownDirectivesRule', {
+  enumerable: true,
+  get: function get() {
+    return _KnownDirectives.KnownDirectives;
+  }
+});
+
+var _KnownFragmentNames = require('./rules/KnownFragmentNames');
+
+Object.defineProperty(exports, 'KnownFragmentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _KnownFragmentNames.KnownFragmentNames;
+  }
+});
+
+var _KnownTypeNames = require('./rules/KnownTypeNames');
+
+Object.defineProperty(exports, 'KnownTypeNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _KnownTypeNames.KnownTypeNames;
+  }
+});
+
+var _LoneAnonymousOperation = require('./rules/LoneAnonymousOperation');
+
+Object.defineProperty(exports, 'LoneAnonymousOperationRule', {
+  enumerable: true,
+  get: function get() {
+    return _LoneAnonymousOperation.LoneAnonymousOperation;
+  }
+});
+
+var _NoFragmentCycles = require('./rules/NoFragmentCycles');
+
+Object.defineProperty(exports, 'NoFragmentCyclesRule', {
+  enumerable: true,
+  get: function get() {
+    return _NoFragmentCycles.NoFragmentCycles;
+  }
+});
+
+var _NoUndefinedVariables = require('./rules/NoUndefinedVariables');
+
+Object.defineProperty(exports, 'NoUndefinedVariablesRule', {
+  enumerable: true,
+  get: function get() {
+    return _NoUndefinedVariables.NoUndefinedVariables;
+  }
+});
+
+var _NoUnusedFragments = require('./rules/NoUnusedFragments');
+
+Object.defineProperty(exports, 'NoUnusedFragmentsRule', {
+  enumerable: true,
+  get: function get() {
+    return _NoUnusedFragments.NoUnusedFragments;
+  }
+});
+
+var _NoUnusedVariables = require('./rules/NoUnusedVariables');
+
+Object.defineProperty(exports, 'NoUnusedVariablesRule', {
+  enumerable: true,
+  get: function get() {
+    return _NoUnusedVariables.NoUnusedVariables;
+  }
+});
+
+var _OverlappingFieldsCanBeMerged = require('./rules/OverlappingFieldsCanBeMerged');
+
+Object.defineProperty(exports, 'OverlappingFieldsCanBeMergedRule', {
+  enumerable: true,
+  get: function get() {
+    return _OverlappingFieldsCanBeMerged.OverlappingFieldsCanBeMerged;
+  }
+});
+
+var _PossibleFragmentSpreads = require('./rules/PossibleFragmentSpreads');
+
+Object.defineProperty(exports, 'PossibleFragmentSpreadsRule', {
+  enumerable: true,
+  get: function get() {
+    return _PossibleFragmentSpreads.PossibleFragmentSpreads;
+  }
+});
+
+var _ProvidedNonNullArguments = require('./rules/ProvidedNonNullArguments');
+
+Object.defineProperty(exports, 'ProvidedNonNullArgumentsRule', {
+  enumerable: true,
+  get: function get() {
+    return _ProvidedNonNullArguments.ProvidedNonNullArguments;
+  }
+});
+
+var _ScalarLeafs = require('./rules/ScalarLeafs');
+
+Object.defineProperty(exports, 'ScalarLeafsRule', {
+  enumerable: true,
+  get: function get() {
+    return _ScalarLeafs.ScalarLeafs;
+  }
+});
+
+var _SingleFieldSubscriptions = require('./rules/SingleFieldSubscriptions');
+
+Object.defineProperty(exports, 'SingleFieldSubscriptionsRule', {
+  enumerable: true,
+  get: function get() {
+    return _SingleFieldSubscriptions.SingleFieldSubscriptions;
+  }
+});
+
+var _UniqueArgumentNames = require('./rules/UniqueArgumentNames');
+
+Object.defineProperty(exports, 'UniqueArgumentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _UniqueArgumentNames.UniqueArgumentNames;
+  }
+});
+
+var _UniqueDirectivesPerLocation = require('./rules/UniqueDirectivesPerLocation');
+
+Object.defineProperty(exports, 'UniqueDirectivesPerLocationRule', {
+  enumerable: true,
+  get: function get() {
+    return _UniqueDirectivesPerLocation.UniqueDirectivesPerLocation;
+  }
+});
+
+var _UniqueFragmentNames = require('./rules/UniqueFragmentNames');
+
+Object.defineProperty(exports, 'UniqueFragmentNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _UniqueFragmentNames.UniqueFragmentNames;
+  }
+});
+
+var _UniqueInputFieldNames = require('./rules/UniqueInputFieldNames');
+
+Object.defineProperty(exports, 'UniqueInputFieldNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _UniqueInputFieldNames.UniqueInputFieldNames;
+  }
+});
+
+var _UniqueOperationNames = require('./rules/UniqueOperationNames');
+
+Object.defineProperty(exports, 'UniqueOperationNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _UniqueOperationNames.UniqueOperationNames;
+  }
+});
+
+var _UniqueVariableNames = require('./rules/UniqueVariableNames');
+
+Object.defineProperty(exports, 'UniqueVariableNamesRule', {
+  enumerable: true,
+  get: function get() {
+    return _UniqueVariableNames.UniqueVariableNames;
+  }
+});
+
+var _VariablesAreInputTypes = require('./rules/VariablesAreInputTypes');
+
+Object.defineProperty(exports, 'VariablesAreInputTypesRule', {
+  enumerable: true,
+  get: function get() {
+    return _VariablesAreInputTypes.VariablesAreInputTypes;
+  }
+});
+
+var _VariablesInAllowedPosition = require('./rules/VariablesInAllowedPosition');
+
+Object.defineProperty(exports, 'VariablesInAllowedPositionRule', {
+  enumerable: true,
+  get: function get() {
+    return _VariablesInAllowedPosition.VariablesInAllowedPosition;
+  }
+});
+},{"./rules/ArgumentsOfCorrectType":140,"./rules/DefaultValuesOfCorrectType":141,"./rules/FieldsOnCorrectType":142,"./rules/FragmentsOnCompositeTypes":143,"./rules/KnownArgumentNames":144,"./rules/KnownDirectives":145,"./rules/KnownFragmentNames":146,"./rules/KnownTypeNames":147,"./rules/LoneAnonymousOperation":148,"./rules/NoFragmentCycles":149,"./rules/NoUndefinedVariables":150,"./rules/NoUnusedFragments":151,"./rules/NoUnusedVariables":152,"./rules/OverlappingFieldsCanBeMerged":153,"./rules/PossibleFragmentSpreads":154,"./rules/ProvidedNonNullArguments":155,"./rules/ScalarLeafs":156,"./rules/SingleFieldSubscriptions":157,"./rules/UniqueArgumentNames":158,"./rules/UniqueDirectivesPerLocation":159,"./rules/UniqueFragmentNames":160,"./rules/UniqueInputFieldNames":161,"./rules/UniqueOperationNames":162,"./rules/UniqueVariableNames":163,"./rules/VariablesAreInputTypes":164,"./rules/VariablesInAllowedPosition":165,"./specifiedRules":166,"./validate":167}],140:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30131,7 +34234,7 @@ function ArgumentsOfCorrectType(context) {
     }
   };
 }
-},{"../../error":71,"../../language/printer":92,"../../utilities/isValidLiteralValue":114}],122:[function(require,module,exports){
+},{"../../error":87,"../../language/printer":108,"../../utilities/isValidLiteralValue":133}],141:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30198,7 +34301,7 @@ function DefaultValuesOfCorrectType(context) {
     }
   };
 }
-},{"../../error":71,"../../language/printer":92,"../../type/definition":95,"../../utilities/isValidLiteralValue":114}],123:[function(require,module,exports){
+},{"../../error":87,"../../language/printer":108,"../../type/definition":114,"../../utilities/isValidLiteralValue":133}],142:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30219,7 +34322,7 @@ var _quotedOrList2 = _interopRequireDefault(_quotedOrList);
 
 var _definition = require('../../type/definition');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function undefinedFieldMessage(fieldName, type, suggestedTypeNames, suggestedFieldNames) {
   var message = 'Cannot query field "' + fieldName + '" on type "' + type + '".';
@@ -30278,7 +34381,7 @@ function FieldsOnCorrectType(context) {
  * with Interfaces.
  */
 function getSuggestedTypeNames(schema, type, fieldName) {
-  if (type instanceof _definition.GraphQLInterfaceType || type instanceof _definition.GraphQLUnionType) {
+  if ((0, _definition.isAbstractType)(type)) {
     var suggestedObjectTypes = [];
     var interfaceUsageCount = Object.create(null);
     schema.getPossibleTypes(type).forEach(function (possibleType) {
@@ -30321,7 +34424,7 @@ function getSuggestedFieldNames(schema, type, fieldName) {
   // Otherwise, must be a Union type, which does not define fields.
   return [];
 }
-},{"../../error":71,"../../jsutils/quotedOrList":85,"../../jsutils/suggestionList":86,"../../type/definition":95}],124:[function(require,module,exports){
+},{"../../error":87,"../../jsutils/quotedOrList":101,"../../jsutils/suggestionList":102,"../../type/definition":114}],143:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30380,7 +34483,7 @@ function FragmentsOnCompositeTypes(context) {
     }
   };
 }
-},{"../../error":71,"../../language/printer":92,"../../type/definition":95,"../../utilities/typeFromAST":118}],125:[function(require,module,exports){
+},{"../../error":87,"../../language/printer":108,"../../type/definition":114,"../../utilities/typeFromAST":137}],144:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30410,7 +34513,11 @@ var _quotedOrList2 = _interopRequireDefault(_quotedOrList);
 
 var _kinds = require('../../language/kinds');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var Kind = _interopRequireWildcard(_kinds);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function unknownArgMessage(argName, fieldName, type, suggestedArgs) {
   var message = 'Unknown argument "' + argName + '" on field "' + fieldName + '" of ' + ('type "' + String(type) + '".');
@@ -30446,7 +34553,7 @@ function KnownArgumentNames(context) {
   return {
     Argument: function Argument(node, key, parent, path, ancestors) {
       var argumentOf = ancestors[ancestors.length - 1];
-      if (argumentOf.kind === _kinds.FIELD) {
+      if (argumentOf.kind === Kind.FIELD) {
         var fieldDef = context.getFieldDef();
         if (fieldDef) {
           var fieldArgDef = (0, _find2.default)(fieldDef.args, function (arg) {
@@ -30454,13 +34561,13 @@ function KnownArgumentNames(context) {
           });
           if (!fieldArgDef) {
             var parentType = context.getParentType();
-            (0, _invariant2.default)(parentType);
+            !parentType ? (0, _invariant2.default)(0) : void 0;
             context.reportError(new _error.GraphQLError(unknownArgMessage(node.name.value, fieldDef.name, parentType.name, (0, _suggestionList2.default)(node.name.value, fieldDef.args.map(function (arg) {
               return arg.name;
             }))), [node]));
           }
         }
-      } else if (argumentOf.kind === _kinds.DIRECTIVE) {
+      } else if (argumentOf.kind === Kind.DIRECTIVE) {
         var directive = context.getDirective();
         if (directive) {
           var directiveArgDef = (0, _find2.default)(directive.args, function (arg) {
@@ -30476,7 +34583,7 @@ function KnownArgumentNames(context) {
     }
   };
 }
-},{"../../error":71,"../../jsutils/find":79,"../../jsutils/invariant":80,"../../jsutils/quotedOrList":85,"../../jsutils/suggestionList":86,"../../language/kinds":88}],126:[function(require,module,exports){
+},{"../../error":87,"../../jsutils/find":95,"../../jsutils/invariant":96,"../../jsutils/quotedOrList":101,"../../jsutils/suggestionList":102,"../../language/kinds":104}],145:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30494,9 +34601,13 @@ var _find2 = _interopRequireDefault(_find);
 
 var _kinds = require('../../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _directives = require('../../type/directives');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function unknownDirectiveMessage(directiveName) {
   return 'Unknown directive "' + directiveName + '".';
@@ -30543,7 +34654,7 @@ function KnownDirectives(context) {
 function getDirectiveLocationForASTPath(ancestors) {
   var appliedTo = ancestors[ancestors.length - 1];
   switch (appliedTo.kind) {
-    case _kinds.OPERATION_DEFINITION:
+    case Kind.OPERATION_DEFINITION:
       switch (appliedTo.operation) {
         case 'query':
           return _directives.DirectiveLocation.QUERY;
@@ -30553,38 +34664,38 @@ function getDirectiveLocationForASTPath(ancestors) {
           return _directives.DirectiveLocation.SUBSCRIPTION;
       }
       break;
-    case _kinds.FIELD:
+    case Kind.FIELD:
       return _directives.DirectiveLocation.FIELD;
-    case _kinds.FRAGMENT_SPREAD:
+    case Kind.FRAGMENT_SPREAD:
       return _directives.DirectiveLocation.FRAGMENT_SPREAD;
-    case _kinds.INLINE_FRAGMENT:
+    case Kind.INLINE_FRAGMENT:
       return _directives.DirectiveLocation.INLINE_FRAGMENT;
-    case _kinds.FRAGMENT_DEFINITION:
+    case Kind.FRAGMENT_DEFINITION:
       return _directives.DirectiveLocation.FRAGMENT_DEFINITION;
-    case _kinds.SCHEMA_DEFINITION:
+    case Kind.SCHEMA_DEFINITION:
       return _directives.DirectiveLocation.SCHEMA;
-    case _kinds.SCALAR_TYPE_DEFINITION:
+    case Kind.SCALAR_TYPE_DEFINITION:
       return _directives.DirectiveLocation.SCALAR;
-    case _kinds.OBJECT_TYPE_DEFINITION:
+    case Kind.OBJECT_TYPE_DEFINITION:
       return _directives.DirectiveLocation.OBJECT;
-    case _kinds.FIELD_DEFINITION:
+    case Kind.FIELD_DEFINITION:
       return _directives.DirectiveLocation.FIELD_DEFINITION;
-    case _kinds.INTERFACE_TYPE_DEFINITION:
+    case Kind.INTERFACE_TYPE_DEFINITION:
       return _directives.DirectiveLocation.INTERFACE;
-    case _kinds.UNION_TYPE_DEFINITION:
+    case Kind.UNION_TYPE_DEFINITION:
       return _directives.DirectiveLocation.UNION;
-    case _kinds.ENUM_TYPE_DEFINITION:
+    case Kind.ENUM_TYPE_DEFINITION:
       return _directives.DirectiveLocation.ENUM;
-    case _kinds.ENUM_VALUE_DEFINITION:
+    case Kind.ENUM_VALUE_DEFINITION:
       return _directives.DirectiveLocation.ENUM_VALUE;
-    case _kinds.INPUT_OBJECT_TYPE_DEFINITION:
+    case Kind.INPUT_OBJECT_TYPE_DEFINITION:
       return _directives.DirectiveLocation.INPUT_OBJECT;
-    case _kinds.INPUT_VALUE_DEFINITION:
+    case Kind.INPUT_VALUE_DEFINITION:
       var parentNode = ancestors[ancestors.length - 3];
-      return parentNode.kind === _kinds.INPUT_OBJECT_TYPE_DEFINITION ? _directives.DirectiveLocation.INPUT_FIELD_DEFINITION : _directives.DirectiveLocation.ARGUMENT_DEFINITION;
+      return parentNode.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ? _directives.DirectiveLocation.INPUT_FIELD_DEFINITION : _directives.DirectiveLocation.ARGUMENT_DEFINITION;
   }
 }
-},{"../../error":71,"../../jsutils/find":79,"../../language/kinds":88,"../../type/directives":96}],127:[function(require,module,exports){
+},{"../../error":87,"../../jsutils/find":95,"../../language/kinds":104,"../../type/directives":115}],146:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30625,7 +34736,7 @@ function KnownFragmentNames(context) {
     }
   };
 }
-},{"../../error":71}],128:[function(require,module,exports){
+},{"../../error":87}],147:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30644,7 +34755,7 @@ var _quotedOrList = require('../../jsutils/quotedOrList');
 
 var _quotedOrList2 = _interopRequireDefault(_quotedOrList);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  *  Copyright (c) 2015, Facebook, Inc.
@@ -30696,7 +34807,7 @@ function KnownTypeNames(context) {
     }
   };
 }
-},{"../../error":71,"../../jsutils/quotedOrList":85,"../../jsutils/suggestionList":86}],129:[function(require,module,exports){
+},{"../../error":87,"../../jsutils/quotedOrList":101,"../../jsutils/suggestionList":102}],148:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30744,7 +34855,7 @@ function LoneAnonymousOperation(context) {
     }
   };
 }
-},{"../../error":71,"../../language/kinds":88}],130:[function(require,module,exports){
+},{"../../error":87,"../../language/kinds":104}],149:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30831,7 +34942,7 @@ function NoFragmentCycles(context) {
     spreadPathIndexByName[fragmentName] = undefined;
   }
 }
-},{"../../error":71}],131:[function(require,module,exports){
+},{"../../error":87}],150:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30887,7 +34998,7 @@ function NoUndefinedVariables(context) {
     }
   };
 }
-},{"../../error":71}],132:[function(require,module,exports){
+},{"../../error":87}],151:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30950,7 +35061,7 @@ function NoUnusedFragments(context) {
     }
   };
 }
-},{"../../error":71}],133:[function(require,module,exports){
+},{"../../error":87}],152:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31012,7 +35123,7 @@ function NoUnusedVariables(context) {
     }
   };
 }
-},{"../../error":71}],134:[function(require,module,exports){
+},{"../../error":87}],153:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31029,13 +35140,17 @@ var _find2 = _interopRequireDefault(_find);
 
 var _kinds = require('../../language/kinds');
 
+var Kind = _interopRequireWildcard(_kinds);
+
 var _printer = require('../../language/printer');
 
 var _definition = require('../../type/definition');
 
 var _typeFromAST = require('../../utilities/typeFromAST');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 /**
@@ -31456,8 +35571,8 @@ function doTypesConflict(type1, type2) {
 function getFieldsAndFragmentNames(context, cachedFieldsAndFragmentNames, parentType, selectionSet) {
   var cached = cachedFieldsAndFragmentNames.get(selectionSet);
   if (!cached) {
-    var nodeAndDefs = {};
-    var fragmentNames = {};
+    var nodeAndDefs = Object.create(null);
+    var fragmentNames = Object.create(null);
     _collectFieldsAndFragmentNames(context, parentType, selectionSet, nodeAndDefs, fragmentNames);
     cached = [nodeAndDefs, Object.keys(fragmentNames)];
     cachedFieldsAndFragmentNames.set(selectionSet, cached);
@@ -31482,7 +35597,7 @@ function _collectFieldsAndFragmentNames(context, parentType, selectionSet, nodeA
   for (var i = 0; i < selectionSet.selections.length; i++) {
     var selection = selectionSet.selections[i];
     switch (selection.kind) {
-      case _kinds.FIELD:
+      case Kind.FIELD:
         var fieldName = selection.name.value;
         var fieldDef = void 0;
         if (parentType instanceof _definition.GraphQLObjectType || parentType instanceof _definition.GraphQLInterfaceType) {
@@ -31494,10 +35609,10 @@ function _collectFieldsAndFragmentNames(context, parentType, selectionSet, nodeA
         }
         nodeAndDefs[responseName].push([parentType, selection, fieldDef]);
         break;
-      case _kinds.FRAGMENT_SPREAD:
+      case Kind.FRAGMENT_SPREAD:
         fragmentNames[selection.name.value] = true;
         break;
-      case _kinds.INLINE_FRAGMENT:
+      case Kind.INLINE_FRAGMENT:
         var typeCondition = selection.typeCondition;
         var inlineFragmentType = typeCondition ? (0, _typeFromAST.typeFromAST)(context.getSchema(), typeCondition) : parentType;
         _collectFieldsAndFragmentNames(context, inlineFragmentType, selection.selectionSet, nodeAndDefs, fragmentNames);
@@ -31566,7 +35681,7 @@ function _pairSetAdd(data, a, b, areMutuallyExclusive) {
   }
   map[b] = areMutuallyExclusive;
 }
-},{"../../error":71,"../../jsutils/find":79,"../../language/kinds":88,"../../language/printer":92,"../../type/definition":95,"../../utilities/typeFromAST":118}],135:[function(require,module,exports){
+},{"../../error":87,"../../jsutils/find":95,"../../language/kinds":104,"../../language/printer":108,"../../type/definition":114,"../../utilities/typeFromAST":137}],154:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31630,7 +35745,7 @@ function getFragmentType(context, name) {
   var frag = context.getFragment(name);
   return frag && (0, _typeFromAST.typeFromAST)(context.getSchema(), frag.typeCondition);
 }
-},{"../../error":71,"../../utilities/typeComparators":117,"../../utilities/typeFromAST":118}],136:[function(require,module,exports){
+},{"../../error":87,"../../utilities/typeComparators":136,"../../utilities/typeFromAST":137}],155:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31648,7 +35763,7 @@ var _keyMap2 = _interopRequireDefault(_keyMap);
 
 var _definition = require('../../type/definition');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  *  Copyright (c) 2015, Facebook, Inc.
@@ -31718,7 +35833,7 @@ function ProvidedNonNullArguments(context) {
     }
   };
 }
-},{"../../error":71,"../../jsutils/keyMap":83,"../../type/definition":95}],137:[function(require,module,exports){
+},{"../../error":87,"../../jsutils/keyMap":99,"../../type/definition":114}],156:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31770,7 +35885,47 @@ function ScalarLeafs(context) {
     }
   };
 }
-},{"../../error":71,"../../type/definition":95}],138:[function(require,module,exports){
+},{"../../error":87,"../../type/definition":114}],157:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.singleFieldOnlyMessage = singleFieldOnlyMessage;
+exports.SingleFieldSubscriptions = SingleFieldSubscriptions;
+
+var _error = require('../../error');
+
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+function singleFieldOnlyMessage(name) {
+  return (name ? 'Subscription "' + name + '" ' : 'Anonymous Subscription ') + 'must select only one top level field.';
+}
+
+/**
+ * Subscriptions must only include one field.
+ *
+ * A GraphQL subscription is valid only if it contains a single root field.
+ */
+function SingleFieldSubscriptions(context) {
+  return {
+    OperationDefinition: function OperationDefinition(node) {
+      if (node.operation === 'subscription') {
+        if (node.selectionSet.selections.length !== 1) {
+          context.reportError(new _error.GraphQLError(singleFieldOnlyMessage(node.name && node.name.value), node.selectionSet.selections.slice(1)));
+        }
+      }
+    }
+  };
+}
+},{"../../error":87}],158:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31820,7 +35975,7 @@ function UniqueArgumentNames(context) {
     }
   };
 }
-},{"../../error":71}],139:[function(require,module,exports){
+},{"../../error":87}],159:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31870,7 +36025,7 @@ function UniqueDirectivesPerLocation(context) {
     }
   };
 }
-},{"../../error":71}],140:[function(require,module,exports){
+},{"../../error":87}],160:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31916,7 +36071,7 @@ function UniqueFragmentNames(context) {
     }
   };
 }
-},{"../../error":71}],141:[function(require,module,exports){
+},{"../../error":87}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31971,7 +36126,7 @@ function UniqueInputFieldNames(context) {
     }
   };
 }
-},{"../../error":71}],142:[function(require,module,exports){
+},{"../../error":87}],162:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32020,7 +36175,7 @@ function UniqueOperationNames(context) {
     }
   };
 }
-},{"../../error":71}],143:[function(require,module,exports){
+},{"../../error":87}],163:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32066,7 +36221,7 @@ function UniqueVariableNames(context) {
     }
   };
 }
-},{"../../error":71}],144:[function(require,module,exports){
+},{"../../error":87}],164:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32116,7 +36271,7 @@ function VariablesAreInputTypes(context) {
     }
   };
 }
-},{"../../error":71,"../../language/printer":92,"../../type/definition":95,"../../utilities/typeFromAST":118}],145:[function(require,module,exports){
+},{"../../error":87,"../../language/printer":108,"../../type/definition":114,"../../utilities/typeFromAST":137}],165:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32192,7 +36347,7 @@ function VariablesInAllowedPosition(context) {
 function effectiveType(varType, varDef) {
   return !varDef.defaultValue || varType instanceof _definition.GraphQLNonNull ? varType : new _definition.GraphQLNonNull(varType);
 }
-},{"../../error":71,"../../type/definition":95,"../../utilities/typeComparators":117,"../../utilities/typeFromAST":118}],146:[function(require,module,exports){
+},{"../../error":87,"../../type/definition":114,"../../utilities/typeComparators":136,"../../utilities/typeFromAST":137}],166:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32203,6 +36358,8 @@ exports.specifiedRules = undefined;
 var _UniqueOperationNames = require('./rules/UniqueOperationNames');
 
 var _LoneAnonymousOperation = require('./rules/LoneAnonymousOperation');
+
+var _SingleFieldSubscriptions = require('./rules/SingleFieldSubscriptions');
 
 var _KnownTypeNames = require('./rules/KnownTypeNames');
 
@@ -32252,6 +36409,9 @@ var _UniqueInputFieldNames = require('./rules/UniqueInputFieldNames');
 
 /**
  * This set includes all validation rules defined by the GraphQL spec.
+ *
+ * The order of the rules in this list has been adjusted to lead to the
+ * most clear output when encountering multiple validation errors.
  */
 
 
@@ -32288,8 +36448,19 @@ var _UniqueInputFieldNames = require('./rules/UniqueInputFieldNames');
 // Spec Section: "Fragments on Composite Types"
 
 
-// Spec Section: "Lone Anonymous Operation"
-var specifiedRules = exports.specifiedRules = [_UniqueOperationNames.UniqueOperationNames, _LoneAnonymousOperation.LoneAnonymousOperation, _KnownTypeNames.KnownTypeNames, _FragmentsOnCompositeTypes.FragmentsOnCompositeTypes, _VariablesAreInputTypes.VariablesAreInputTypes, _ScalarLeafs.ScalarLeafs, _FieldsOnCorrectType.FieldsOnCorrectType, _UniqueFragmentNames.UniqueFragmentNames, _KnownFragmentNames.KnownFragmentNames, _NoUnusedFragments.NoUnusedFragments, _PossibleFragmentSpreads.PossibleFragmentSpreads, _NoFragmentCycles.NoFragmentCycles, _UniqueVariableNames.UniqueVariableNames, _NoUndefinedVariables.NoUndefinedVariables, _NoUnusedVariables.NoUnusedVariables, _KnownDirectives.KnownDirectives, _UniqueDirectivesPerLocation.UniqueDirectivesPerLocation, _KnownArgumentNames.KnownArgumentNames, _UniqueArgumentNames.UniqueArgumentNames, _ArgumentsOfCorrectType.ArgumentsOfCorrectType, _ProvidedNonNullArguments.ProvidedNonNullArguments, _DefaultValuesOfCorrectType.DefaultValuesOfCorrectType, _VariablesInAllowedPosition.VariablesInAllowedPosition, _OverlappingFieldsCanBeMerged.OverlappingFieldsCanBeMerged, _UniqueInputFieldNames.UniqueInputFieldNames];
+// Spec Section: "Subscriptions with Single Root Field"
+
+/**
+ *  Copyright (c) 2015, Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the BSD-style license found in the
+ *  LICENSE file in the root directory of this source tree. An additional grant
+ *  of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+// Spec Section: "Operation Name Uniqueness"
+var specifiedRules = exports.specifiedRules = [_UniqueOperationNames.UniqueOperationNames, _LoneAnonymousOperation.LoneAnonymousOperation, _SingleFieldSubscriptions.SingleFieldSubscriptions, _KnownTypeNames.KnownTypeNames, _FragmentsOnCompositeTypes.FragmentsOnCompositeTypes, _VariablesAreInputTypes.VariablesAreInputTypes, _ScalarLeafs.ScalarLeafs, _FieldsOnCorrectType.FieldsOnCorrectType, _UniqueFragmentNames.UniqueFragmentNames, _KnownFragmentNames.KnownFragmentNames, _NoUnusedFragments.NoUnusedFragments, _PossibleFragmentSpreads.PossibleFragmentSpreads, _NoFragmentCycles.NoFragmentCycles, _UniqueVariableNames.UniqueVariableNames, _NoUndefinedVariables.NoUndefinedVariables, _NoUnusedVariables.NoUnusedVariables, _KnownDirectives.KnownDirectives, _UniqueDirectivesPerLocation.UniqueDirectivesPerLocation, _KnownArgumentNames.KnownArgumentNames, _UniqueArgumentNames.UniqueArgumentNames, _ArgumentsOfCorrectType.ArgumentsOfCorrectType, _ProvidedNonNullArguments.ProvidedNonNullArguments, _DefaultValuesOfCorrectType.DefaultValuesOfCorrectType, _VariablesInAllowedPosition.VariablesInAllowedPosition, _OverlappingFieldsCanBeMerged.OverlappingFieldsCanBeMerged, _UniqueInputFieldNames.UniqueInputFieldNames];
 
 // Spec Section: "Input Object Field Uniqueness"
 
@@ -32326,17 +36497,9 @@ var specifiedRules = exports.specifiedRules = [_UniqueOperationNames.UniqueOpera
 
 // Spec Section: "Fragment Spread Type Existence"
 
-/**
- *  Copyright (c) 2015, Facebook, Inc.
- *  All rights reserved.
- *
- *  This source code is licensed under the BSD-style license found in the
- *  LICENSE file in the root directory of this source tree. An additional grant
- *  of patent rights can be found in the PATENTS file in the same directory.
- */
 
-// Spec Section: "Operation Name Uniqueness"
-},{"./rules/ArgumentsOfCorrectType":121,"./rules/DefaultValuesOfCorrectType":122,"./rules/FieldsOnCorrectType":123,"./rules/FragmentsOnCompositeTypes":124,"./rules/KnownArgumentNames":125,"./rules/KnownDirectives":126,"./rules/KnownFragmentNames":127,"./rules/KnownTypeNames":128,"./rules/LoneAnonymousOperation":129,"./rules/NoFragmentCycles":130,"./rules/NoUndefinedVariables":131,"./rules/NoUnusedFragments":132,"./rules/NoUnusedVariables":133,"./rules/OverlappingFieldsCanBeMerged":134,"./rules/PossibleFragmentSpreads":135,"./rules/ProvidedNonNullArguments":136,"./rules/ScalarLeafs":137,"./rules/UniqueArgumentNames":138,"./rules/UniqueDirectivesPerLocation":139,"./rules/UniqueFragmentNames":140,"./rules/UniqueInputFieldNames":141,"./rules/UniqueOperationNames":142,"./rules/UniqueVariableNames":143,"./rules/VariablesAreInputTypes":144,"./rules/VariablesInAllowedPosition":145}],147:[function(require,module,exports){
+// Spec Section: "Lone Anonymous Operation"
+},{"./rules/ArgumentsOfCorrectType":140,"./rules/DefaultValuesOfCorrectType":141,"./rules/FieldsOnCorrectType":142,"./rules/FragmentsOnCompositeTypes":143,"./rules/KnownArgumentNames":144,"./rules/KnownDirectives":145,"./rules/KnownFragmentNames":146,"./rules/KnownTypeNames":147,"./rules/LoneAnonymousOperation":148,"./rules/NoFragmentCycles":149,"./rules/NoUndefinedVariables":150,"./rules/NoUnusedFragments":151,"./rules/NoUnusedVariables":152,"./rules/OverlappingFieldsCanBeMerged":153,"./rules/PossibleFragmentSpreads":154,"./rules/ProvidedNonNullArguments":155,"./rules/ScalarLeafs":156,"./rules/SingleFieldSubscriptions":157,"./rules/UniqueArgumentNames":158,"./rules/UniqueDirectivesPerLocation":159,"./rules/UniqueFragmentNames":160,"./rules/UniqueInputFieldNames":161,"./rules/UniqueOperationNames":162,"./rules/UniqueVariableNames":163,"./rules/VariablesAreInputTypes":164,"./rules/VariablesInAllowedPosition":165}],167:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -32344,7 +36507,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ValidationContext = undefined;
 exports.validate = validate;
-exports.visitUsingRules = visitUsingRules;
 
 var _invariant = require('../jsutils/invariant');
 
@@ -32366,7 +36528,7 @@ var _specifiedRules = require('./specifiedRules');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 /**
@@ -32390,13 +36552,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Each validation rules is a function which returns a visitor
  * (see the language/visitor API). Visitor methods are expected to return
  * GraphQLErrors, or Arrays of GraphQLErrors when invalid.
+ *
+ * Optionally a custom TypeInfo instance may be provided. If not provided, one
+ * will be created from the provided schema.
  */
-function validate(schema, ast, rules) {
-  (0, _invariant2.default)(schema, 'Must provide schema');
-  (0, _invariant2.default)(ast, 'Must provide document');
-  (0, _invariant2.default)(schema instanceof _schema.GraphQLSchema, 'Schema must be an instance of GraphQLSchema. Also ensure that there are ' + 'not multiple versions of GraphQL installed in your node_modules directory.');
-  var typeInfo = new _TypeInfo.TypeInfo(schema);
-  return visitUsingRules(schema, typeInfo, ast, rules || _specifiedRules.specifiedRules);
+function validate(schema, ast, rules, typeInfo) {
+  !schema ? (0, _invariant2.default)(0, 'Must provide schema') : void 0;
+  !ast ? (0, _invariant2.default)(0, 'Must provide document') : void 0;
+  !(schema instanceof _schema.GraphQLSchema) ? (0, _invariant2.default)(0, 'Schema must be an instance of GraphQLSchema. Also ensure that there are ' + 'not multiple versions of GraphQL installed in your node_modules directory.') : void 0;
+  return visitUsingRules(schema, typeInfo || new _TypeInfo.TypeInfo(schema), ast, rules || _specifiedRules.specifiedRules);
 }
 
 /**
@@ -32458,7 +36622,7 @@ var ValidationContext = exports.ValidationContext = function () {
           frags[statement.name.value] = statement;
         }
         return frags;
-      }, {});
+      }, Object.create(null));
     }
     return fragments[name];
   };
@@ -32568,7 +36732,7 @@ var ValidationContext = exports.ValidationContext = function () {
 
   return ValidationContext;
 }();
-},{"../error":71,"../jsutils/invariant":80,"../language/kinds":88,"../language/visitor":94,"../type/schema":100,"../utilities/TypeInfo":101,"./specifiedRules":146}],148:[function(require,module,exports){
+},{"../error":87,"../jsutils/invariant":96,"../language/kinds":104,"../language/visitor":110,"../type/schema":119,"../utilities/TypeInfo":120,"./specifiedRules":166}],168:[function(require,module,exports){
 /**
  * Copyright (c) 2016, Lee Byron
  * All rights reserved.
@@ -32671,7 +36835,7 @@ exports.$$iterator = $$iterator
  *   A value which might implement the Iterable protocol.
  * @return {boolean} true if Iterable.
  */
-function isIterable (obj) {
+function isIterable(obj) {
   return !!getIteratorMethod(obj)
 }
 exports.isIterable = isIterable
@@ -32693,7 +36857,7 @@ exports.isIterable = isIterable
  *   A value which might implement the Array-like protocol.
  * @return {boolean} true if Array-like.
  */
-function isArrayLike (obj) {
+function isArrayLike(obj) {
   var length = obj != null && obj.length
   return typeof length === 'number' && length >= 0 && length % 1 === 0
 }
@@ -32730,7 +36894,7 @@ exports.isArrayLike = isArrayLike
  *   An Object value which might implement the Iterable or Array-like protocols.
  * @return {boolean} true if Iterable or Array-like Object.
  */
-function isCollection (obj) {
+function isCollection(obj) {
   return Object(obj) === obj && (isArrayLike(obj) || isIterable(obj))
 }
 exports.isCollection = isCollection
@@ -32753,7 +36917,7 @@ exports.isCollection = isCollection
  *   An Iterable object which is the source of an Iterator.
  * @return {Iterator<T>} new Iterator instance.
  */
-function getIterator (iterable) {
+function getIterator(iterable) {
   var method = getIteratorMethod(iterable)
   if (method) {
     return method.call(iterable)
@@ -32782,15 +36946,79 @@ exports.getIterator = getIterator
  *   An Iterable object which defines an `@@iterator` method.
  * @return {function(): Iterator<T>} `@@iterator` method.
  */
-function getIteratorMethod (iterable) {
+function getIteratorMethod(iterable) {
   if (iterable != null) {
-    var method = SYMBOL_ITERATOR && iterable[SYMBOL_ITERATOR] || iterable['@@iterator']
+    var method =
+      (SYMBOL_ITERATOR && iterable[SYMBOL_ITERATOR]) || iterable['@@iterator']
     if (typeof method === 'function') {
       return method
     }
   }
 }
 exports.getIteratorMethod = getIteratorMethod
+
+/**
+ * Similar to `getIterator()`, this method returns a new Iterator given an
+ * Iterable. However it will also create an Iterator for a non-Iterable
+ * Array-like collection, such as Array in a non-ES2015 environment.
+ *
+ * `createIterator` is complimentary to `forEach`, but allows a "pull"-based
+ * iteration as opposed to `forEach`'s "push"-based iteration.
+ *
+ * `createIterator` produces an Iterator for Array-likes with the same behavior
+ * as ArrayIteratorPrototype described in the ECMAScript specification, and
+ * does *not* skip over "holes".
+ *
+ * @example
+ *
+ * var createIterator = require('iterall').createIterator
+ *
+ * var myArraylike = { length: 3, 0: 'Alpha', 1: 'Bravo', 2: 'Charlie' }
+ * var iterator = createIterator(myArraylike)
+ * iterator.next() // { value: 'Alpha', done: false }
+ * iterator.next() // { value: 'Bravo', done: false }
+ * iterator.next() // { value: 'Charlie', done: false }
+ * iterator.next() // { value: undefined, done: true }
+ *
+ * @template T the type of each iterated value
+ * @param {Iterable<T>|{ length: number }} collection
+ *   An Iterable or Array-like object to produce an Iterator.
+ * @return {Iterator<T>} new Iterator instance.
+ */
+function createIterator(collection) {
+  if (collection != null) {
+    var iterator = getIterator(collection)
+    if (iterator) {
+      return iterator
+    }
+    if (isArrayLike(collection)) {
+      return new ArrayLikeIterator(collection)
+    }
+  }
+}
+exports.createIterator = createIterator
+
+// When the object provided to `createIterator` is not Iterable but is
+// Array-like, this simple Iterator is created.
+function ArrayLikeIterator(obj) {
+  this._o = obj
+  this._i = 0
+}
+
+// Note: all Iterators are themselves Iterable.
+ArrayLikeIterator.prototype[$$iterator] = function() {
+  return this
+}
+
+// A simple state-machine determines the IteratorResult returned, yielding
+// each value in the Array-like object in order of their indicies.
+ArrayLikeIterator.prototype.next = function() {
+  if (this._o === void 0 || this._i >= this._o.length) {
+    this._o = void 0
+    return { value: void 0, done: true }
+  }
+  return { value: this._o[this._i++], done: false }
+}
 
 /**
  * Given an object which either implements the Iterable protocol or is
@@ -32837,7 +37065,7 @@ exports.getIteratorMethod = getIteratorMethod
  * @param [thisArg]
  *   Optional. Value to use as `this` when executing `callback`.
  */
-function forEach (collection, callback, thisArg) {
+function forEach(collection, callback, thisArg) {
   if (collection != null) {
     if (typeof collection.forEach === 'function') {
       return collection.forEach(callback, thisArg)
@@ -32866,70 +37094,310 @@ function forEach (collection, callback, thisArg) {
 }
 exports.forEach = forEach
 
+/////////////////////////////////////////////////////
+//                                                 //
+//                 ASYNC ITERATORS                 //
+//                                                 //
+/////////////////////////////////////////////////////
+
 /**
- * Similar to `getIterator()`, this method returns a new Iterator given an
- * Iterable. However it will also create an Iterator for a non-Iterable
- * Array-like collection, such as Array in a non-ES2015 environment.
+ * [AsyncIterator](https://tc39.github.io/proposal-async-iteration/)
+ * is a *protocol* which describes a standard way to produce and consume an
+ * asynchronous sequence of values, typically the values of the AsyncIterable
+ * represented by this AsyncIterator.
  *
- * `createIterator` is complimentary to `forEach`, but allows a "pull"-based
- * iteration as opposed to `forEach`'s "push"-based iteration.
+ * AsyncIterator is similar to Observable or Stream.
  *
- * `createIterator` produces an Iterator for Array-likes with the same behavior
- * as ArrayIteratorPrototype described in the ECMAScript specification, and
- * does *not* skip over "holes".
+ * While described as a proposed addition to the [ES2017 version of JavaScript](https://tc39.github.io/proposal-async-iteration/)
+ * it can be utilized by any version of JavaScript.
+ *
+ * @typedef {Object} AsyncIterator
+ * @template T The type of each iterated value
+ * @property {function (): Promise<{ value: T, done: boolean }>} next
+ *   A method which produces a Promise which resolves to either the next value
+ *   in a sequence or a result where the `done` property is `true` indicating
+ *   the end of the sequence of values. It may also produce a Promise which
+ *   becomes rejected, indicating a failure.
+ */
+
+/**
+ * AsyncIterable is a *protocol* which when implemented allows a JavaScript
+ * object to define their asynchronous iteration behavior, such as what values
+ * are looped over in a `for-await-of` loop or `iterall`'s `forAwaitEach`
+ * function.
+ *
+ * While described as a proposed addition to the [ES2017 version of JavaScript](https://tc39.github.io/proposal-async-iteration/)
+ * it can be utilized by any version of JavaScript.
+ *
+ * @typedef {Object} AsyncIterable
+ * @template T The type of each iterated value
+ * @property {function (): AsyncIterator<T>} Symbol.asyncIterator
+ *   A method which produces an AsyncIterator for this AsyncIterable.
+ */
+
+// In ES2017 (or a polyfilled) environment, this will be Symbol.asyncIterator
+var SYMBOL_ASYNC_ITERATOR = typeof Symbol === 'function' && Symbol.asyncIterator
+
+/**
+ * A property name to be used as the name of an AsyncIterable's method
+ * responsible for producing an Iterator, referred to as `@@asyncIterator`.
+ * Typically represents the value `Symbol.asyncIterator` but falls back to the
+ * string `"@@asyncIterator"` when `Symbol.asyncIterator` is not defined.
+ *
+ * Use `$$asyncIterator` for defining new AsyncIterables instead of
+ * `Symbol.asyncIterator`, but do not use it for accessing existing Iterables,
+ * instead use `getAsyncIterator()` or `isAsyncIterable()`.
  *
  * @example
  *
- * var createIterator = require('iterall').createIterator
+ * var $$asyncIterator = require('iterall').$$asyncIterator
  *
- * var myArraylike = { length: 3, 0: 'Alpha', 1: 'Bravo', 2: 'Charlie' }
- * var iterator = createIterator(myArraylike)
- * iterator.next() // { value: 'Alpha', done: false }
- * iterator.next() // { value: 'Bravo', done: false }
- * iterator.next() // { value: 'Charlie', done: false }
- * iterator.next() // { value: undefined, done: true }
+ * function Chirper (to) {
+ *   this.to = to
+ * }
+ *
+ * Chirper.prototype[$$asyncIterator] = function () {
+ *   return {
+ *     to: this.to,
+ *     num: 0,
+ *     next () {
+ *       return new Promise(function (resolve) {
+ *         if (this.num >= this.to) {
+ *           resolve({ value: undefined, done: true })
+ *         } else {
+ *           setTimeout(function () {
+ *             resolve({ value: this.num++, done: false })
+ *           }, 1000)
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * var chirper = new Chirper(3)
+ * for await (var number of chirper) {
+ *   console.log(number) // 0 ...wait... 1 ...wait... 2
+ * }
+ *
+ * @type {Symbol|string}
+ */
+var $$asyncIterator = SYMBOL_ASYNC_ITERATOR || '@@asyncIterator'
+exports.$$asyncIterator = $$asyncIterator
+
+/**
+ * Returns true if the provided object implements the AsyncIterator protocol via
+ * either implementing a `Symbol.asyncIterator` or `"@@asyncIterator"` method.
+ *
+ * @example
+ *
+ * var isAsyncIterable = require('iterall').isAsyncIterable
+ * isAsyncIterable(myStream) // true
+ * isAsyncIterable('ABC') // false
+ *
+ * @param obj
+ *   A value which might implement the AsyncIterable protocol.
+ * @return {boolean} true if AsyncIterable.
+ */
+function isAsyncIterable(obj) {
+  return !!getAsyncIteratorMethod(obj)
+}
+exports.isAsyncIterable = isAsyncIterable
+
+/**
+ * If the provided object implements the AsyncIterator protocol, its
+ * AsyncIterator object is returned. Otherwise returns undefined.
+ *
+ * @example
+ *
+ * var getAsyncIterator = require('iterall').getAsyncIterator
+ * var asyncIterator = getAsyncIterator(myStream)
+ * asyncIterator.next().then(console.log) // { value: 1, done: false }
+ * asyncIterator.next().then(console.log) // { value: 2, done: false }
+ * asyncIterator.next().then(console.log) // { value: 3, done: false }
+ * asyncIterator.next().then(console.log) // { value: undefined, done: true }
  *
  * @template T the type of each iterated value
- * @param {Iterable<T>|{ length: number }} collection
- *   An Iterable or Array-like object to produce an Iterator.
- * @return {Iterator<T>} new Iterator instance.
+ * @param {AsyncIterable<T>} asyncIterable
+ *   An AsyncIterable object which is the source of an AsyncIterator.
+ * @return {AsyncIterator<T>} new AsyncIterator instance.
  */
-function createIterator (collection) {
-  if (collection != null) {
-    var iterator = getIterator(collection)
-    if (iterator) {
-      return iterator
-    }
-    if (isArrayLike(collection)) {
-      return new ArrayLikeIterator(collection)
+function getAsyncIterator(asyncIterable) {
+  var method = getAsyncIteratorMethod(asyncIterable)
+  if (method) {
+    return method.call(asyncIterable)
+  }
+}
+exports.getAsyncIterator = getAsyncIterator
+
+/**
+ * If the provided object implements the AsyncIterator protocol, the method
+ * responsible for producing its AsyncIterator object is returned.
+ *
+ * This is used in rare cases for performance tuning. This method must be called
+ * with obj as the contextual this-argument.
+ *
+ * @example
+ *
+ * var getAsyncIteratorMethod = require('iterall').getAsyncIteratorMethod
+ * var method = getAsyncIteratorMethod(myStream)
+ * if (method) {
+ *   var asyncIterator = method.call(myStream)
+ * }
+ *
+ * @template T the type of each iterated value
+ * @param {AsyncIterable<T>} asyncIterable
+ *   An AsyncIterable object which defines an `@@asyncIterator` method.
+ * @return {function(): AsyncIterator<T>} `@@asyncIterator` method.
+ */
+function getAsyncIteratorMethod(asyncIterable) {
+  if (asyncIterable != null) {
+    var method =
+      (SYMBOL_ASYNC_ITERATOR && asyncIterable[SYMBOL_ASYNC_ITERATOR]) ||
+      asyncIterable['@@asyncIterator']
+    if (typeof method === 'function') {
+      return method
     }
   }
 }
-exports.createIterator = createIterator
+exports.getAsyncIteratorMethod = getAsyncIteratorMethod
 
-// When the object provided to `createIterator` is not Iterable but is
-// Array-like, this simple Iterator is created.
-function ArrayLikeIterator (obj) {
-  this._o = obj
-  this._i = 0
+/**
+ * Similar to `getAsyncIterator()`, this method returns a new AsyncIterator
+ * given an AsyncIterable. However it will also create an AsyncIterator for a
+ * non-async Iterable as well as non-Iterable Array-like collection, such as
+ * Array in a pre-ES2015 environment.
+ *
+ * `createAsyncIterator` is complimentary to `forAwaitEach`, but allows a
+ * buffering "pull"-based iteration as opposed to `forAwaitEach`'s
+ * "push"-based iteration.
+ *
+ * `createAsyncIterator` produces an AsyncIterator for non-async Iterables as
+ * described in the ECMAScript proposal [Async-from-Sync Iterator Objects](https://tc39.github.io/proposal-async-iteration/#sec-async-from-sync-iterator-objects).
+ *
+ * > Note: Creating `AsyncIterator`s requires the existence of `Promise`.
+ * > While `Promise` has been available in modern browsers for a number of
+ * > years, legacy browsers (like IE 11) may require a polyfill.
+ *
+ * @example
+ *
+ * var createAsyncIterator = require('iterall').createAsyncIterator
+ *
+ * var myArraylike = { length: 3, 0: 'Alpha', 1: 'Bravo', 2: 'Charlie' }
+ * var iterator = createAsyncIterator(myArraylike)
+ * iterator.next().then(console.log) // { value: 'Alpha', done: false }
+ * iterator.next().then(console.log) // { value: 'Bravo', done: false }
+ * iterator.next().then(console.log) // { value: 'Charlie', done: false }
+ * iterator.next().then(console.log) // { value: undefined, done: true }
+ *
+ * @template T the type of each iterated value
+ * @param {AsyncIterable<T>|Iterable<T>|{ length: number }} source
+ *   An AsyncIterable, Iterable, or Array-like object to produce an Iterator.
+ * @return {AsyncIterator<T>} new AsyncIterator instance.
+ */
+function createAsyncIterator(source) {
+  if (source != null) {
+    var asyncIterator = getAsyncIterator(source)
+    if (asyncIterator) {
+      return asyncIterator
+    }
+    var iterator = createIterator(source)
+    if (iterator) {
+      return new AsyncFromSyncIterator(iterator)
+    }
+  }
+}
+exports.createAsyncIterator = createAsyncIterator
+
+// When the object provided to `createAsyncIterator` is not AsyncIterable but is
+// sync Iterable, this simple wrapper is created.
+function AsyncFromSyncIterator(iterator) {
+  this._i = iterator
 }
 
-// Note: all Iterators are themselves Iterable.
-ArrayLikeIterator.prototype[$$iterator] = function () {
+// Note: all AsyncIterators are themselves AsyncIterable.
+AsyncFromSyncIterator.prototype[$$asyncIterator] = function() {
   return this
 }
 
 // A simple state-machine determines the IteratorResult returned, yielding
 // each value in the Array-like object in order of their indicies.
-ArrayLikeIterator.prototype.next = function () {
-  if (this._o === void 0 || this._i >= this._o.length) {
-    this._o = void 0
-    return { value: void 0, done: true }
-  }
-  return { value: this._o[this._i++], done: false }
+AsyncFromSyncIterator.prototype.next = function() {
+  var step = this._i.next()
+  return Promise.resolve(step.value).then(function(value) {
+    return { value: value, done: step.done }
+  })
 }
 
-},{}],149:[function(require,module,exports){
+/**
+ * Given an object which either implements the AsyncIterable protocol or is
+ * Array-like, iterate over it, calling the `callback` at each iteration.
+ *
+ * Use `forAwaitEach` where you would expect to use a `for-await-of` loop.
+ *
+ * Similar to [Array#forEach][], the `callback` function accepts three
+ * arguments, and is provided with `thisArg` as the calling context.
+ *
+ * > Note: Using `forAwaitEach` requires the existence of `Promise`.
+ * > While `Promise` has been available in modern browsers for a number of
+ * > years, legacy browsers (like IE 11) may require a polyfill.
+ *
+ * @example
+ *
+ * var forAwaitEach = require('iterall').forAwaitEach
+ *
+ * forAwaitEach(myIterable, function (value, index, iterable) {
+ *   console.log(value, index, iterable === myIterable)
+ * })
+ *
+ * @example
+ *
+ * // ES2017:
+ * for await (let value of myAsyncIterable) {
+ *   console.log(await doSomethingAsync(value))
+ * }
+ * console.log('done')
+ *
+ * // Any JavaScript environment:
+ * forAwaitEach(myAsyncIterable, function (value) {
+ *   return doSomethingAsync(value).then(console.log)
+ * }).then(function () {
+ *   console.log('done')
+ * })
+ *
+ * @template T the type of each iterated value
+ * @param {AsyncIterable<T>|Iterable<Promise<T> | T>|{ length: number }} source
+ *   The AsyncIterable or array to iterate over.
+ * @param {function(T, number, object)} callback
+ *   Function to execute for each iteration, taking up to three arguments
+ * @param [thisArg]
+ *   Optional. Value to use as `this` when executing `callback`.
+ */
+function forAwaitEach(source, callback, thisArg) {
+  var asyncIterator = createAsyncIterator(source)
+  if (asyncIterator) {
+    var i = 0
+    return new Promise(function(resolve, reject) {
+      function next() {
+        return asyncIterator
+          .next()
+          .then(function(step) {
+            if (!step.done) {
+              Promise.resolve(callback.call(thisArg, step.value, i++, source))
+                .then(next)
+                .catch(reject)
+            } else {
+              resolve()
+            }
+          })
+          .catch(reject)
+      }
+      next()
+    })
+  }
+}
+exports.forAwaitEach = forAwaitEach
+
+},{}],169:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -34219,5 +38687,1466 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[21])(21)
+},{}],170:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],171:[function(require,module,exports){
+(function (process){
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+'use strict';
+
+if (process.env.NODE_ENV !== 'production') {
+  var invariant = require('fbjs/lib/invariant');
+  var warning = require('fbjs/lib/warning');
+  var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+  var loggedTypeFailures = {};
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (process.env.NODE_ENV !== 'production') {
+    for (var typeSpecName in typeSpecs) {
+      if (typeSpecs.hasOwnProperty(typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          invariant(typeof typeSpecs[typeSpecName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', componentName || 'React class', location, typeSpecName);
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+        warning(!error || error instanceof Error, '%s: type specification of %s `%s` is invalid; the type checker ' + 'function must return `null` or an `Error` but returned a %s. ' + 'You may have forgotten to pass an argument to the type checker ' + 'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' + 'shape all require an argument).', componentName || 'React class', location, typeSpecName, typeof error);
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          warning(false, 'Failed %s type: %s%s', location, error.message, stack != null ? stack : '');
+        }
+      }
+    }
+  }
+}
+
+module.exports = checkPropTypes;
+
+}).call(this,require('_process'))
+},{"./lib/ReactPropTypesSecret":175,"_process":170,"fbjs/lib/invariant":67,"fbjs/lib/warning":68}],172:[function(require,module,exports){
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+'use strict';
+
+var emptyFunction = require('fbjs/lib/emptyFunction');
+var invariant = require('fbjs/lib/invariant');
+
+module.exports = function() {
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+  function shim() {
+    invariant(
+      false,
+      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+      'Use PropTypes.checkPropTypes() to call them. ' +
+      'Read more at http://fb.me/use-check-prop-types'
+    );
+  };
+  shim.isRequired = shim;
+  function getShim() {
+    return shim;
+  };
+  var ReactPropTypes = {
+    array: shim,
+    bool: shim,
+    func: shim,
+    number: shim,
+    object: shim,
+    string: shim,
+    symbol: shim,
+
+    any: shim,
+    arrayOf: getShim,
+    element: shim,
+    instanceOf: getShim,
+    node: shim,
+    objectOf: getShim,
+    oneOf: getShim,
+    oneOfType: getShim,
+    shape: getShim
+  };
+
+  ReactPropTypes.checkPropTypes = emptyFunction;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+},{"fbjs/lib/emptyFunction":66,"fbjs/lib/invariant":67}],173:[function(require,module,exports){
+(function (process){
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+'use strict';
+
+var emptyFunction = require('fbjs/lib/emptyFunction');
+var invariant = require('fbjs/lib/invariant');
+var warning = require('fbjs/lib/warning');
+
+var ReactPropTypesSecret = require('./lib/ReactPropTypesSecret');
+var checkPropTypes = require('./checkPropTypes');
+
+module.exports = function(isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker
+  };
+
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+  function PropTypeError(message) {
+    this.message = message;
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (process.env.NODE_ENV !== 'production') {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          invariant(
+            false,
+            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+            'Use `PropTypes.checkPropTypes()` to call them. ' +
+            'Read more at http://fb.me/use-check-prop-types'
+          );
+        } else if (process.env.NODE_ENV !== 'production' && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+            !manualPropTypeCallCache[cacheKey] &&
+            // Avoid spamming the console because they are often not actionable except for lib authors
+            manualPropTypeWarningCount < 3
+          ) {
+            warning(
+              false,
+              'You are manually calling a React.PropTypes validation ' +
+              'function for the `%s` prop on `%s`. This is deprecated ' +
+              'and will throw in the standalone `prop-types` package. ' +
+              'You may be seeing this warning due to a third-party PropTypes ' +
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.',
+              propFullName,
+              componentName
+            );
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunction.thatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOf, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues);
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + propValue + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (propValue.hasOwnProperty(key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+      process.env.NODE_ENV !== 'production' ? warning(false, 'Invalid argument supplied to oneOfType, expected an instance of array.') : void 0;
+      return emptyFunction.thatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
+          return null;
+        }
+      }
+
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (!checker) {
+          continue;
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+}).call(this,require('_process'))
+},{"./checkPropTypes":171,"./lib/ReactPropTypesSecret":175,"_process":170,"fbjs/lib/emptyFunction":66,"fbjs/lib/invariant":67,"fbjs/lib/warning":68}],174:[function(require,module,exports){
+(function (process){
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+if (process.env.NODE_ENV !== 'production') {
+  var REACT_ELEMENT_TYPE = (typeof Symbol === 'function' &&
+    Symbol.for &&
+    Symbol.for('react.element')) ||
+    0xeac7;
+
+  var isValidElement = function(object) {
+    return typeof object === 'object' &&
+      object !== null &&
+      object.$$typeof === REACT_ELEMENT_TYPE;
+  };
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = require('./factoryWithTypeCheckers')(isValidElement, throwOnDirectAccess);
+} else {
+  // By explicitly using `prop-types` you are opting into new production behavior.
+  // http://fb.me/prop-types-in-prod
+  module.exports = require('./factoryWithThrowingShims')();
+}
+
+}).call(this,require('_process'))
+},{"./factoryWithThrowingShims":172,"./factoryWithTypeCheckers":173,"_process":170}],175:[function(require,module,exports){
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+'use strict';
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+},{}],176:[function(require,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],177:[function(require,module,exports){
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+},{}],178:[function(require,module,exports){
+(function (process,global){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+var formatRegExp = /%[sdj%]/g;
+exports.format = function(f) {
+  if (!isString(f)) {
+    var objects = [];
+    for (var i = 0; i < arguments.length; i++) {
+      objects.push(inspect(arguments[i]));
+    }
+    return objects.join(' ');
+  }
+
+  var i = 1;
+  var args = arguments;
+  var len = args.length;
+  var str = String(f).replace(formatRegExp, function(x) {
+    if (x === '%%') return '%';
+    if (i >= len) return x;
+    switch (x) {
+      case '%s': return String(args[i++]);
+      case '%d': return Number(args[i++]);
+      case '%j':
+        try {
+          return JSON.stringify(args[i++]);
+        } catch (_) {
+          return '[Circular]';
+        }
+      default:
+        return x;
+    }
+  });
+  for (var x = args[i]; i < len; x = args[++i]) {
+    if (isNull(x) || !isObject(x)) {
+      str += ' ' + x;
+    } else {
+      str += ' ' + inspect(x);
+    }
+  }
+  return str;
+};
+
+
+// Mark that a method should not be used.
+// Returns a modified function which warns once by default.
+// If --no-deprecation is set, then it is a no-op.
+exports.deprecate = function(fn, msg) {
+  // Allow for deprecating things in the process of starting up.
+  if (isUndefined(global.process)) {
+    return function() {
+      return exports.deprecate(fn, msg).apply(this, arguments);
+    };
+  }
+
+  if (process.noDeprecation === true) {
+    return fn;
+  }
+
+  var warned = false;
+  function deprecated() {
+    if (!warned) {
+      if (process.throwDeprecation) {
+        throw new Error(msg);
+      } else if (process.traceDeprecation) {
+        console.trace(msg);
+      } else {
+        console.error(msg);
+      }
+      warned = true;
+    }
+    return fn.apply(this, arguments);
+  }
+
+  return deprecated;
+};
+
+
+var debugs = {};
+var debugEnviron;
+exports.debuglog = function(set) {
+  if (isUndefined(debugEnviron))
+    debugEnviron = process.env.NODE_DEBUG || '';
+  set = set.toUpperCase();
+  if (!debugs[set]) {
+    if (new RegExp('\\b' + set + '\\b', 'i').test(debugEnviron)) {
+      var pid = process.pid;
+      debugs[set] = function() {
+        var msg = exports.format.apply(exports, arguments);
+        console.error('%s %d: %s', set, pid, msg);
+      };
+    } else {
+      debugs[set] = function() {};
+    }
+  }
+  return debugs[set];
+};
+
+
+/**
+ * Echos the value of a value. Trys to print the value out
+ * in the best way possible given the different types.
+ *
+ * @param {Object} obj The object to print out.
+ * @param {Object} opts Optional options object that alters the output.
+ */
+/* legacy: obj, showHidden, depth, colors*/
+function inspect(obj, opts) {
+  // default options
+  var ctx = {
+    seen: [],
+    stylize: stylizeNoColor
+  };
+  // legacy...
+  if (arguments.length >= 3) ctx.depth = arguments[2];
+  if (arguments.length >= 4) ctx.colors = arguments[3];
+  if (isBoolean(opts)) {
+    // legacy...
+    ctx.showHidden = opts;
+  } else if (opts) {
+    // got an "options" object
+    exports._extend(ctx, opts);
+  }
+  // set default options
+  if (isUndefined(ctx.showHidden)) ctx.showHidden = false;
+  if (isUndefined(ctx.depth)) ctx.depth = 2;
+  if (isUndefined(ctx.colors)) ctx.colors = false;
+  if (isUndefined(ctx.customInspect)) ctx.customInspect = true;
+  if (ctx.colors) ctx.stylize = stylizeWithColor;
+  return formatValue(ctx, obj, ctx.depth);
+}
+exports.inspect = inspect;
+
+
+// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+inspect.colors = {
+  'bold' : [1, 22],
+  'italic' : [3, 23],
+  'underline' : [4, 24],
+  'inverse' : [7, 27],
+  'white' : [37, 39],
+  'grey' : [90, 39],
+  'black' : [30, 39],
+  'blue' : [34, 39],
+  'cyan' : [36, 39],
+  'green' : [32, 39],
+  'magenta' : [35, 39],
+  'red' : [31, 39],
+  'yellow' : [33, 39]
+};
+
+// Don't use 'blue' not visible on cmd.exe
+inspect.styles = {
+  'special': 'cyan',
+  'number': 'yellow',
+  'boolean': 'yellow',
+  'undefined': 'grey',
+  'null': 'bold',
+  'string': 'green',
+  'date': 'magenta',
+  // "name": intentionally not styling
+  'regexp': 'red'
+};
+
+
+function stylizeWithColor(str, styleType) {
+  var style = inspect.styles[styleType];
+
+  if (style) {
+    return '\u001b[' + inspect.colors[style][0] + 'm' + str +
+           '\u001b[' + inspect.colors[style][1] + 'm';
+  } else {
+    return str;
+  }
+}
+
+
+function stylizeNoColor(str, styleType) {
+  return str;
+}
+
+
+function arrayToHash(array) {
+  var hash = {};
+
+  array.forEach(function(val, idx) {
+    hash[val] = true;
+  });
+
+  return hash;
+}
+
+
+function formatValue(ctx, value, recurseTimes) {
+  // Provide a hook for user-specified inspect functions.
+  // Check that value is an object with an inspect function on it
+  if (ctx.customInspect &&
+      value &&
+      isFunction(value.inspect) &&
+      // Filter out the util module, it's inspect function is special
+      value.inspect !== exports.inspect &&
+      // Also filter out any prototype objects using the circular check.
+      !(value.constructor && value.constructor.prototype === value)) {
+    var ret = value.inspect(recurseTimes, ctx);
+    if (!isString(ret)) {
+      ret = formatValue(ctx, ret, recurseTimes);
+    }
+    return ret;
+  }
+
+  // Primitive types cannot have properties
+  var primitive = formatPrimitive(ctx, value);
+  if (primitive) {
+    return primitive;
+  }
+
+  // Look up the keys of the object.
+  var keys = Object.keys(value);
+  var visibleKeys = arrayToHash(keys);
+
+  if (ctx.showHidden) {
+    keys = Object.getOwnPropertyNames(value);
+  }
+
+  // IE doesn't make error fields non-enumerable
+  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  if (isError(value)
+      && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
+    return formatError(value);
+  }
+
+  // Some type of object without properties can be shortcutted.
+  if (keys.length === 0) {
+    if (isFunction(value)) {
+      var name = value.name ? ': ' + value.name : '';
+      return ctx.stylize('[Function' + name + ']', 'special');
+    }
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    }
+    if (isDate(value)) {
+      return ctx.stylize(Date.prototype.toString.call(value), 'date');
+    }
+    if (isError(value)) {
+      return formatError(value);
+    }
+  }
+
+  var base = '', array = false, braces = ['{', '}'];
+
+  // Make Array say that they are Array
+  if (isArray(value)) {
+    array = true;
+    braces = ['[', ']'];
+  }
+
+  // Make functions say that they are functions
+  if (isFunction(value)) {
+    var n = value.name ? ': ' + value.name : '';
+    base = ' [Function' + n + ']';
+  }
+
+  // Make RegExps say that they are RegExps
+  if (isRegExp(value)) {
+    base = ' ' + RegExp.prototype.toString.call(value);
+  }
+
+  // Make dates with properties first say the date
+  if (isDate(value)) {
+    base = ' ' + Date.prototype.toUTCString.call(value);
+  }
+
+  // Make error with message first say the error
+  if (isError(value)) {
+    base = ' ' + formatError(value);
+  }
+
+  if (keys.length === 0 && (!array || value.length == 0)) {
+    return braces[0] + base + braces[1];
+  }
+
+  if (recurseTimes < 0) {
+    if (isRegExp(value)) {
+      return ctx.stylize(RegExp.prototype.toString.call(value), 'regexp');
+    } else {
+      return ctx.stylize('[Object]', 'special');
+    }
+  }
+
+  ctx.seen.push(value);
+
+  var output;
+  if (array) {
+    output = formatArray(ctx, value, recurseTimes, visibleKeys, keys);
+  } else {
+    output = keys.map(function(key) {
+      return formatProperty(ctx, value, recurseTimes, visibleKeys, key, array);
+    });
+  }
+
+  ctx.seen.pop();
+
+  return reduceToSingleString(output, base, braces);
+}
+
+
+function formatPrimitive(ctx, value) {
+  if (isUndefined(value))
+    return ctx.stylize('undefined', 'undefined');
+  if (isString(value)) {
+    var simple = '\'' + JSON.stringify(value).replace(/^"|"$/g, '')
+                                             .replace(/'/g, "\\'")
+                                             .replace(/\\"/g, '"') + '\'';
+    return ctx.stylize(simple, 'string');
+  }
+  if (isNumber(value))
+    return ctx.stylize('' + value, 'number');
+  if (isBoolean(value))
+    return ctx.stylize('' + value, 'boolean');
+  // For some reason typeof null is "object", so special case here.
+  if (isNull(value))
+    return ctx.stylize('null', 'null');
+}
+
+
+function formatError(value) {
+  return '[' + Error.prototype.toString.call(value) + ']';
+}
+
+
+function formatArray(ctx, value, recurseTimes, visibleKeys, keys) {
+  var output = [];
+  for (var i = 0, l = value.length; i < l; ++i) {
+    if (hasOwnProperty(value, String(i))) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          String(i), true));
+    } else {
+      output.push('');
+    }
+  }
+  keys.forEach(function(key) {
+    if (!key.match(/^\d+$/)) {
+      output.push(formatProperty(ctx, value, recurseTimes, visibleKeys,
+          key, true));
+    }
+  });
+  return output;
+}
+
+
+function formatProperty(ctx, value, recurseTimes, visibleKeys, key, array) {
+  var name, str, desc;
+  desc = Object.getOwnPropertyDescriptor(value, key) || { value: value[key] };
+  if (desc.get) {
+    if (desc.set) {
+      str = ctx.stylize('[Getter/Setter]', 'special');
+    } else {
+      str = ctx.stylize('[Getter]', 'special');
+    }
+  } else {
+    if (desc.set) {
+      str = ctx.stylize('[Setter]', 'special');
+    }
+  }
+  if (!hasOwnProperty(visibleKeys, key)) {
+    name = '[' + key + ']';
+  }
+  if (!str) {
+    if (ctx.seen.indexOf(desc.value) < 0) {
+      if (isNull(recurseTimes)) {
+        str = formatValue(ctx, desc.value, null);
+      } else {
+        str = formatValue(ctx, desc.value, recurseTimes - 1);
+      }
+      if (str.indexOf('\n') > -1) {
+        if (array) {
+          str = str.split('\n').map(function(line) {
+            return '  ' + line;
+          }).join('\n').substr(2);
+        } else {
+          str = '\n' + str.split('\n').map(function(line) {
+            return '   ' + line;
+          }).join('\n');
+        }
+      }
+    } else {
+      str = ctx.stylize('[Circular]', 'special');
+    }
+  }
+  if (isUndefined(name)) {
+    if (array && key.match(/^\d+$/)) {
+      return str;
+    }
+    name = JSON.stringify('' + key);
+    if (name.match(/^"([a-zA-Z_][a-zA-Z_0-9]*)"$/)) {
+      name = name.substr(1, name.length - 2);
+      name = ctx.stylize(name, 'name');
+    } else {
+      name = name.replace(/'/g, "\\'")
+                 .replace(/\\"/g, '"')
+                 .replace(/(^"|"$)/g, "'");
+      name = ctx.stylize(name, 'string');
+    }
+  }
+
+  return name + ': ' + str;
+}
+
+
+function reduceToSingleString(output, base, braces) {
+  var numLinesEst = 0;
+  var length = output.reduce(function(prev, cur) {
+    numLinesEst++;
+    if (cur.indexOf('\n') >= 0) numLinesEst++;
+    return prev + cur.replace(/\u001b\[\d\d?m/g, '').length + 1;
+  }, 0);
+
+  if (length > 60) {
+    return braces[0] +
+           (base === '' ? '' : base + '\n ') +
+           ' ' +
+           output.join(',\n  ') +
+           ' ' +
+           braces[1];
+  }
+
+  return braces[0] + base + ' ' + output.join(', ') + ' ' + braces[1];
+}
+
+
+// NOTE: These type checking functions intentionally don't use `instanceof`
+// because it is fragile and can be easily faked with `Object.create()`.
+function isArray(ar) {
+  return Array.isArray(ar);
+}
+exports.isArray = isArray;
+
+function isBoolean(arg) {
+  return typeof arg === 'boolean';
+}
+exports.isBoolean = isBoolean;
+
+function isNull(arg) {
+  return arg === null;
+}
+exports.isNull = isNull;
+
+function isNullOrUndefined(arg) {
+  return arg == null;
+}
+exports.isNullOrUndefined = isNullOrUndefined;
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+exports.isNumber = isNumber;
+
+function isString(arg) {
+  return typeof arg === 'string';
+}
+exports.isString = isString;
+
+function isSymbol(arg) {
+  return typeof arg === 'symbol';
+}
+exports.isSymbol = isSymbol;
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+exports.isUndefined = isUndefined;
+
+function isRegExp(re) {
+  return isObject(re) && objectToString(re) === '[object RegExp]';
+}
+exports.isRegExp = isRegExp;
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+exports.isObject = isObject;
+
+function isDate(d) {
+  return isObject(d) && objectToString(d) === '[object Date]';
+}
+exports.isDate = isDate;
+
+function isError(e) {
+  return isObject(e) &&
+      (objectToString(e) === '[object Error]' || e instanceof Error);
+}
+exports.isError = isError;
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+exports.isFunction = isFunction;
+
+function isPrimitive(arg) {
+  return arg === null ||
+         typeof arg === 'boolean' ||
+         typeof arg === 'number' ||
+         typeof arg === 'string' ||
+         typeof arg === 'symbol' ||  // ES6 symbol
+         typeof arg === 'undefined';
+}
+exports.isPrimitive = isPrimitive;
+
+exports.isBuffer = require('./support/isBuffer');
+
+function objectToString(o) {
+  return Object.prototype.toString.call(o);
+}
+
+
+function pad(n) {
+  return n < 10 ? '0' + n.toString(10) : n.toString(10);
+}
+
+
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec'];
+
+// 26 Feb 16:19:34
+function timestamp() {
+  var d = new Date();
+  var time = [pad(d.getHours()),
+              pad(d.getMinutes()),
+              pad(d.getSeconds())].join(':');
+  return [d.getDate(), months[d.getMonth()], time].join(' ');
+}
+
+
+// log is just a thin wrapper to console.log that prepends a timestamp
+exports.log = function() {
+  console.log('%s - %s', timestamp(), exports.format.apply(exports, arguments));
+};
+
+
+/**
+ * Inherit the prototype methods from one constructor into another.
+ *
+ * The Function.prototype.inherits from lang.js rewritten as a standalone
+ * function (not on Function.prototype). NOTE: If this file is to be loaded
+ * during bootstrapping this function needs to be rewritten using some native
+ * functions as prototype setup using normal JavaScript does not work as
+ * expected during bootstrapping (see mirror.js in r114903).
+ *
+ * @param {function} ctor Constructor function which needs to inherit the
+ *     prototype.
+ * @param {function} superCtor Constructor function to inherit prototype from.
+ */
+exports.inherits = require('inherits');
+
+exports._extend = function(origin, add) {
+  // Don't do anything if add isn't an object
+  if (!add || !isObject(add)) return origin;
+
+  var keys = Object.keys(add);
+  var i = keys.length;
+  while (i--) {
+    origin[keys[i]] = add[keys[i]];
+  }
+  return origin;
+};
+
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./support/isBuffer":177,"_process":170,"inherits":176}]},{},[22])(22)
 });
