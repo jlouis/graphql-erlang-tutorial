@@ -26,6 +26,15 @@ execute(_Ctx, _DummyObj, <<"allVehicles">>, _Args) ->
 execute(_Ctx, _DummyObj, <<"allSpecies">>, _Args) ->
     {atomic, Species} = mnesia:transaction(load_all(species)),
     {ok, Species};
+execute(_Ctx, _DummyObj, <<"filmByEpisode">>, #{ <<"episode">> := Episode }) ->
+    {atomic, Films} = mnesia:transaction(load_film_by_episode(Episode)),
+    case Films of
+        [] ->
+            %% This shouldn't happen
+            {ok, null};
+        [Film] ->
+            {ok, Film}
+    end;
 execute(_Ctx, _DummyObj, <<"allFilms">>, _Args) ->
     {atomic, Films} = mnesia:transaction(load_all(film)),
     {ok, Films}.
@@ -52,6 +61,13 @@ load_all(Tab) ->
             qlc:e(QH)
     end.
 
+load_film_by_episode(Episode) ->
+    fun() ->
+            QH = qlc:q([F || F <- mnesia:table(film),
+                             F#film.episode == Episode ]),
+            qlc:e(QH)
+    end.
+                                   
             
 
 %% tag::loadNode[]

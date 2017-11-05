@@ -209,6 +209,7 @@ type Query {
   allVehicles : [Vehicle]
   allSpecies : [Species]
   allFilms : [Film]
+  filmByEpisode(episode: Episode) : Film!
 }
 # end::queryObject[]
 
