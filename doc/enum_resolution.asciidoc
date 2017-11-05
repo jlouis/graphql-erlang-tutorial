@@ -1,0 +1,47 @@
+[[enum-resolution]]
+
+== Enum Resolution
+
+GraphQL queries include a special type of _scalars_ as their ground
+types, namely _enum_ (enumerated) types. These are in addition to the
+scalar resolution code (see <<scalar-resolution>>).
+
+The enum is a finite collection of possible strings. They are entered
+without quotes in a GraphQL query document, and the system checks
+their validity. . There is a convention that
+they are written in all-caps, but the system does not enforce this
+convention.
+
+...
+
+Lorem ipsum dolor sit amet, ei dicat comprehensam eum, ut causae
+ornatus mel. Hinc nobis putant id qui. Assum omittantur ad eam,
+labitur recusabo at mei, erant cotidieque est ut. Everti interpretaris
+eum eu, prima nusquam perpetua sed te.
+
+Eu malis putant honestatis eam. Scripta prodesset usu ea. Quot magna
+sonet sit in. Nusquam persecuti inciderint ne quo, vix id volumus
+voluptua. Has ex quod utinam, pro eu doming discere. Scriptorem
+efficiantur consequuntur ut quo, at tale ceteros offendit vix.
+
+Erat tibique philosophia sea ut, ad est accusam pertinacia interesset.
+Sed meis scriptorem no. Id per nulla nominati delicata, eam at rebum
+reprehendunt. His eripuit sadipscing ut. Ea sit diam esse patrioque,
+pri no patrioque intellegebat vituperatoribus, cu vim viris nominati
+constituam. Esse evertitur sea no, putant liberavisse cu vel.
+Erroribus referrentur te sea, ad usu tamquam lobortis, mel aliquando
+consetetur at.
+
+An rebum nominati qui, at ludus albucius deterruisset vix. Quo iriure
+animal inimicus ea, minim eruditi officiis duo ne, tractatos
+definitionem ut sit. Vix convenire expetenda no, vim percipitur
+temporibus in, utamur virtute tincidunt ad his. Ea mel justo blandit.
+In ius justo quodsi diceret, ocurreret moderatius ius ne, cibo prompta
+nec eu.
+
+Lorem quodsi habemus at pro. Sed ea legimus impedit patrioque, eos
+soluta aperiri lucilius te, pri veri patrioque at. Cu utroque maiorum
+est, no mei modus impetus graecis, lorem altera principes est ad. Vel
+ne vitae mandamus suscipiantur, ne tota eleifend est. Cu cum eros
+melius, id mutat fugit ius.
+
