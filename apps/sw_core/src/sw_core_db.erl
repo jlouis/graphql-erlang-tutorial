@@ -321,6 +321,7 @@ json_to_film(
        species = Species,
        producers = commasplit(Producers),
        title = Title,
+       episode = episode(EpisodeId),
        episode_id = number_like(EpisodeId),
        director = Director,
        opening_crawl = OpeningCrawl,
@@ -455,3 +456,13 @@ number_like(String) when is_binary(String) ->
 datetime(DT) ->
     {ok, Val} = sw_core_scalar:input(<<"DateTime">>, DT),
     Val.
+
+%% Compute the episode for injection
+episode(1) -> 'PHANTOM';
+episode(2) -> 'CLONES';
+episode(3) -> 'SITH';
+episode(4) -> 'NEWHOPE';
+episode(5) -> 'EMPIRE';
+episode(6) -> 'JEDI'.
+    
+    

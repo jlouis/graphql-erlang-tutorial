@@ -13,6 +13,7 @@ execute(_Ctx, #film{} = Film, Field, Args) ->
         <<"created">> -> {ok, Film#film.created};
         <<"producers">> -> {ok, [{ok, P} || P <- Film#film.producers]};
         <<"title">> -> {ok, Film#film.title};
+        <<"episode">> -> {ok, Film#film.episode};
         <<"episodeID">> -> {ok, Film#film.episode_id};
         <<"director">> -> {ok, Film#film.director};
         <<"releaseDate">> -> {ok, Film#film.release_date};

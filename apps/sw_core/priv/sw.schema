@@ -2,6 +2,17 @@
 scalar DateTime
 # end::scalarDateTime[]
 
+# tag::enumEpisode[]
+enum Episode {
+  PHANTOM
+  CLONES
+  SITH
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+# end::enumEpisode[]
+
 # tag::nodeInterface[]
 +description(text: "Relay Modern Node Interface")
 interface Node {
@@ -95,6 +106,7 @@ type Starship implements Node, Transport {
 # tag::filmObject[]
 type Film implements Node {
   title : String
+  episode : Episode
   episodeID : Int
   openingCrawl : String
   director : String

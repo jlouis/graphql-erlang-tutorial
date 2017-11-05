@@ -45,6 +45,7 @@
          planets :: [integer()],
          producers :: [binary()],
          title :: binary(),
+         episode :: atom(),
          episode_id :: integer(),
          director :: binary(),
          release_date :: binary(),

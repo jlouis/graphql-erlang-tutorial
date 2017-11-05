@@ -33,6 +33,7 @@ mapping_rules() ->
        scalars => #{ default => sw_core_scalar },
        interfaces => #{ default => sw_core_type },
        unions => #{ default => sw_core_type },
+       enums => #{ default => sw_core_enum },
        objects => #{
          'Planet' => sw_core_planet,
          'Film' => sw_core_film,
