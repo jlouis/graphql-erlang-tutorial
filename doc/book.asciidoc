@@ -74,7 +74,8 @@ Nov 6, 2017:: Document enumerated types. They have been inside the
   as the way to handle enumerated types in the system. Add `Episode`
   as a type which is enumerated in the system as an example. Also add
   lookups by episode to demonstrate the input/output paths for
-  enumerated values.
+  enumerated values. (Large parts of this work is due to a {shopgun}
+  intern, Callum Roberts).
   
 Oct 18, 2017:: Document a trick: How one implements lazy evaluation in
   a GraphQL schema in the engine. Make sure that all code passes the
