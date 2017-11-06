@@ -1,6 +1,6 @@
 = {project} Tutorial
 Jesper Louis Andersen <https://github.com/jlouis[@jlouis]>; Martin Gausby <https://github.com/gausby[@gausby]>; ShopGun <https://github.com/shopgun[@shopgun]>
-Oct 2017
+Nov 2017
 :toc: left
 :icons: font
 :source-highlighter: prettify
@@ -68,6 +68,14 @@ include::code.asciidoc[Code Overview]
 [[changelog]]
 == Changelog
 
+Nov 6, 2017:: Document enumerated types. They have been inside the
+  system in several different variants over the last months, but now
+  we have a variant we are happy with, so document it and lock it down
+  as the way to handle enumerated types in the system. Add `Episode`
+  as a type which is enumerated in the system as an example. Also add
+  lookups by episode to demonstrate the input/output paths for
+  enumerated values.
+  
 Oct 18, 2017:: Document a trick: How one implements lazy evaluation in
   a GraphQL schema in the engine. Make sure that all code passes the
   dialyzer and enable dialyzer runs in Travis CI.
