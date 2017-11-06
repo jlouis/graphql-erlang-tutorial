@@ -1,0 +1,8 @@
+query FilmQuery {
+  filmByEpisode(episode: JEDI) {
+    id
+    title
+    episodeID
+    episode
+  }
+}

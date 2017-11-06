@@ -494,6 +494,7 @@ function `setup_root`:
 include::{sw_core}/src/sw_core_app.erl[tags=setupRoot]
 ----
 
+[[schema-mapping-rules]]
 === Mapping rules
 
 The mapping rules of the GraphQL system defines how the types in the

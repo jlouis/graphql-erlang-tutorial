@@ -29,11 +29,12 @@ end_per_testcase(_Case, _Config) ->
 
 groups() ->
     [{setup, [], [live]},
-     {tour_queries, [], [system_tour_queries]}].
+     {queries, [], [system_tour_queries,
+                    enum_queries]}].
 
 all() -> [
           {group, setup},
-          {group, tour_queries}
+          {group, queries}
          ].
 
 %% -- Mnesia initialization ----------------------
@@ -57,6 +58,10 @@ system_tour_queries(Config) ->
     ok = run_query(Config, "mutation", <<"IntroduceFaction">>),
     ok = run_query(Config, "faction"),
     ok = run_query(Config, "bwing"),
+    ok.
+
+enum_queries(Config) ->
+    ok = run_query(Config, "enum"),
     ok.
 
 %% -- INTERNALS ----------------------------------

@@ -2,46 +2,139 @@
 
 == Enum Resolution
 
-GraphQL queries include a special type of _scalars_ as their ground
-types, namely _enum_ (enumerated) types. These are in addition to the
-scalar resolution code (see <<scalar-resolution>>).
+GraphQL defines a special kind of scalar type, namely the _enum_ type.
+An enumerated type is a one which can take a closed set of values,
+only.
 
-The enum is a finite collection of possible strings. They are entered
-without quotes in a GraphQL query document, and the system checks
-their validity. . There is a convention that
-they are written in all-caps, but the system does not enforce this
-convention.
+By convention, GraphQL systems tend to define these as all upper-case
+letters, but that is merely a convention to make them easy to
+distinguish from other things in a GraphQL query document.
 
-...
+Erlang requires some thought about these. On one hand, we have an
+obvious representation internally in Erlang by using an `atom()` type,
+but these are not without their drawbacks:
 
-Lorem ipsum dolor sit amet, ei dicat comprehensam eum, ut causae
-ornatus mel. Hinc nobis putant id qui. Assum omittantur ad eam,
-labitur recusabo at mei, erant cotidieque est ut. Everti interpretaris
-eum eu, prima nusquam perpetua sed te.
+* The table of atoms are limited in Erlang. So if you can create them
+  freely, you end up exhausting the atom table eventually. Thus, you
+  cannot have an "`enemy`" create them.
+* In Erlang, atoms which begin with an upper-case letter has to be
+  quoted. This is not always desirable.
+* Many transport formats, database backends and so on does not support
+  atom types well. They don't have a representation of what scheme
+  calls a "symbol". So in that case they need handling.
 
-Eu malis putant honestatis eam. Scripta prodesset usu ea. Quot magna
-sonet sit in. Nusquam persecuti inciderint ne quo, vix id volumus
-voluptua. Has ex quod utinam, pro eu doming discere. Scriptorem
-efficiantur consequuntur ut quo, at tale ceteros offendit vix.
+Because of this, the {project} defines an enum mapping construction exactly
+like the one we have for <<scalar-resolution>>. This allows the
+programmer to translate enums as they enter or leave the system. This
+provides the ability to change the data format to something which has
+affordance in the rest of the system. In short, enums undergo coercion
+just like any other value.
 
-Erat tibique philosophia sea ut, ad est accusam pertinacia interesset.
-Sed meis scriptorem no. Id per nulla nominati delicata, eam at rebum
-reprehendunt. His eripuit sadipscing ut. Ea sit diam esse patrioque,
-pri no patrioque intellegebat vituperatoribus, cu vim viris nominati
-constituam. Esse evertitur sea no, putant liberavisse cu vel.
-Erroribus referrentur te sea, ad usu tamquam lobortis, mel aliquando
-consetetur at.
+.Enum input
 
-An rebum nominati qui, at ludus albucius deterruisset vix. Quo iriure
-animal inimicus ea, minim eruditi officiis duo ne, tractatos
-definitionem ut sit. Vix convenire expetenda no, vim percipitur
-temporibus in, utamur virtute tincidunt ad his. Ea mel justo blandit.
-In ius justo quodsi diceret, ocurreret moderatius ius ne, cibo prompta
-nec eu.
+In GraphQL, there are two paths for inputting an enum value: query
+document and query parameters. In the query document an enum is given
+as an unquoted value. It is _not_ legal to input an enum as a string
+in the query document (presumably to eliminate some errors up front).
+In contrast, in the parameter values, we are at the whim of its
+encoding. JSON is prevalent here and it doesn't have any encoding of
+enums. Hence, they are passed as strings here.
 
-Lorem quodsi habemus at pro. Sed ea legimus impedit patrioque, eos
-soluta aperiri lucilius te, pri veri patrioque at. Cu utroque maiorum
-est, no mei modus impetus graecis, lorem altera principes est ad. Vel
-ne vitae mandamus suscipiantur, ne tota eleifend est. Cu cum eros
-melius, id mutat fugit ius.
+In order to simplify the input coercion code for these, we always pass
+them to coercers as binary data. This makes it such that developers
+only have to cater for one path here.
+
+=== Defining enums
+
+You define enum values in the schema as mandated by the GraphQL
+specification. In the {star-wars} schema, we define the different film
+episodes like so
+
+[source,graphql]
+----
+include::{sw_core}/priv/sw.schema[tags=enumEpisode]
+----
+
+which defines a new enum type `Episode` with the possible values
+`PHANTOM, CLONES, ...`.
+
+=== Coercion
+
+In order to handle these enum values internally inside a server, we
+need a way to translate these enum values. This is done by a coercer
+module, just like <<scalar-representation>>. First, we introduce a
+mapping rule
+
+----
+#{ ...
+   enums => #{ 'Episode' => sw_core_enum },
+   ... }
+----
+
+In the schema mapping (see <<schema-mapping-rules>> for the full
+explanation). This means that the type `Episode` is handled by the
+coercer module `sw_core_enum`.
+
+The module follows the same structure as in <<scalar-resolution>>. You
+define two functions, `input/2` and `output/2` which handle the
+translation from external to internal representation and vice versa.
+
+[source,erlang]
+----
+include::{sw_core}/src/sw_core_enum.erl[tags=coreEnum]
+----
+<1> Conversion in the External -> Internal direction
+<2> Conversion in the Internal -> External direction
+
+In the example we turn binary data from the outside into appropriate
+atoms on the inside. This is useful in the case of our {star-wars}
+system because the Mnesia database is able to handle atoms directly.
+This code also protects our system against creating illegal atoms:
+partially because the coercer module cannot generate them, but also
+because the GraphQL type checker rejects values which are not valid
+enums in the schema.
+
+In the output direction, our values are already the right ones, so we
+can just turn them into binaries.
+
+NOTE: The GraphQL system doesn't trust an output coercion function. It
+will check that the result indeed matches a valid enum value. If it
+doesn't the system will `null` the value and produce an error with an
+appropriately set `path` component.
+
+=== Usage Example
+
+In GraphQL, we can run a query which asks for a film by its episode
+enum and then obtain some information on the film in question:
+
+[source,graphql]
+----
+include::{sw_test}/sw_SUITE_data/enum.query[]
+----
+
+Note how we use the value `JEDI` as an enum value for the episode in
+question. The GraphQL type checker, or your <<graphiql>> system will
+report errors if you misuse the enum value in this case.
+
+The output is as one expects from GraphQL:
+
+[source,graphql]
+----
+include::{sw_test}/sw_SUITE_data/enum.result[]
+----
+
+Here, the field `episode` returns the _string_ `"JEDI"` because the
+JSON output has no way of representing an enum value. This is the
+GraphQL default convention in this case. Likewise, enum input as a
+query parameter, e.g. as part of `query Q($episode : Episode) { ...
+}`, should set the `$episode` value to be a string:
+
+[source,json]
+----
+{ "episode" : "EMPIRE",
+  ...
+}
+----
+
+Which will be interpreted by the {project} as an enumerated value.
 
