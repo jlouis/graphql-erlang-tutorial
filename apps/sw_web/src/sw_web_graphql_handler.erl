@@ -2,11 +2,10 @@
 -module(sw_web_graphql_handler).
 
 %% Cowboy Handler Interface
--export([init/3]).
+-export([init/2]).
 
 %% REST callbacks
 -export([
-    rest_init/2,
     allowed_methods/2,
     resource_exists/2,
     content_types_provided/2,
@@ -24,17 +23,11 @@
 
 %% -- API ---------------------------------------------------
 %% tag::init[]
-init(_Transport, _Req, _Options) ->
-    {upgrade, protocol, cowboy_rest}.
+init(Req, {priv_file, _, _} = PrivFile) ->
+    {cowboy_rest,
+     Req,
+     #{ index_location => PrivFile }}.
 %% end::init[]
-
-%% tag::rest_init[]
-rest_init(Req, {priv_file, _, _} = PrivFile) ->
-    {Method, Req2} = cowboy_req:method(Req),
-    {ok, Req2,
-     #{ method => Method,
-        index_location => PrivFile }}.
-%% end::rest_init[]
 
 %% tag::allowed_methods[]
 allowed_methods(Req, State) ->
@@ -62,9 +55,9 @@ charsets_provided(Req, State) ->
 %% end::charsets_provided[]
 
 %% tag::resource_exists[]
-resource_exists(Req, #{ method := <<"GET">> } = State) ->
+resource_exists(#{ method := <<"GET">> } = Req, State) ->
     {true, Req, State};
-resource_exists(Req, #{ method := <<"POST">> } = State) ->
+resource_exists(#{ method := <<"POST">> } = Req, State) ->
     {false, Req, State}.
 %% end::resource_exists[]
 
@@ -130,18 +123,17 @@ run_execute(#{ document := AST,
     Response = graphql:execute(Ctx, AST), % <2>
     ResponseBody = sw_web_response:term_to_json(Response), % <3>
     Req2 = cowboy_req:set_resp_body(ResponseBody, Req), % <4>
-    {ok, Reply} = cowboy_req:reply(200, Req2),
-    {halt, Reply, State}.
+    Reply = cowboy_req:reply(200, Req2),
+    {stop, Reply, State}.
 %% end::run_execute[]
 
 %% tag::gather[]
 gather(Req) ->
-    {ok, Body, Req2} = cowboy_req:body(Req),
-    {Bindings, Req3} = cowboy_req:bindings(Req2),
-    Params = maps:from_list(Bindings),
+    {ok, Body, Req2} = cowboy_req:read_body(Req),
+    Bindings = cowboy_req:bindings(Req2),
     try jsx:decode(Body, [return_maps]) of
         JSON ->
-            gather(Req3, JSON, Params)
+            gather(Req2, JSON, Bindings)
     catch
         error:badarg ->
             {error, invalid_json_body}
@@ -206,6 +198,6 @@ err(Code, Msg, Req, State) ->
              message => Formatted },
     Body = jsx:encode(#{ errors => [Err] }),
     Req2 = cowboy_req:set_resp_body(Body, Req),
-    {ok, Reply} = cowboy_req:reply(Code, Req2),
-    {halt, Reply, State}.
+    Reply = cowboy_req:reply(Code, Req2),
+    {stop, Reply, State}.
 %% end::errors[]

@@ -28,10 +28,12 @@ start(_StartType, _StartArgs) ->
     {ok, Port} = application:get_env(sw_web, http_port),
     error_logger:info_msg("Starting HTTP listener on port ~p", [Port]),
     {ok, Pid} = sw_web_sup:start_link(),
-    cowboy:start_http(sw_http, 100,
+    cowboy:start_clear(sw_http,
                       [{port, Port}],
-                      [{compress, true},
-                       {env, [{dispatch, Dispatch}]},
+                      #{env => #{dispatch => Dispatch}}
+                      
+                       %%[{compress, true},
+                       %% {env, [{dispatch, Dispatch}]},
 
                        %% Bump the default limit of 4096 to 65536 to allow us to submit
                        %% slightly larger, human readable, query documents. The limit of
@@ -44,14 +46,15 @@ start(_StartType, _StartArgs) ->
                        %% max limit have any effect since the socket might make the entire
                        %% HTTP request available when cowboy does a gen_tcp:read(Socket, 0)
                        %% and will ignore the limit.
-                       {max_request_line_length, 65536},
+                       %% {max_request_line_length, 65536},
             
                        %% Bump the default limit of 4096 on Header lengths to 16384. The
                        %% problem is we will eventually get a very large document as a
                        %% referrer from GraphiQL and this will break the server side as it
                        %% has to process through that header
-                       {max_header_value_length, 16384}
-                      ]),
+                       %% {max_header_value_length, 16384}
+                      %%]),
+                      ),
     {ok, Pid}.
 
 %%--------------------------------------------------------------------

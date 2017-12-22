@@ -79,7 +79,7 @@ In this section we describe how the cowboy handler is used to dispatch
 a request to GraphQL. We first focus on using `cowboy_rest` to handle
 the request basics so we have an easier job later on.
 
-.init/3
+.init/2
 [source,erlang]
 ----
 include::{sw_web}/src/sw_web_graphql_handler.erl[tags=init]
@@ -88,22 +88,14 @@ include::{sw_web}/src/sw_web_graphql_handler.erl[tags=init]
 When cowboy dispatches to the `sw_web_graphql_handler` module, this
 function is called upon initialization.
 
+The purpose of this function is to initialize a state with relevant
+information. We are passed data from the dispatcher which we store in
+an Erlang map so we can refer to the information later.
+
 We use the _upgrade_ feature of cowboy to upgrade to the `cowboy_rest`
 protocol for the remainder of the module. This means `cowboy_rest`
 takes over operation and we provide callbacks to the general restful
 handler for the parts we want to override.
-
-The first thing `cowboy_rest` will do is to call the next function:
-
-.rest_init/2
-[source,erlang]
-----
-include::{sw_web}/src/sw_web_graphql_handler.erl[tags=rest_init]
-----
-
-The purpose of this function is to initialize a state with relevant
-information. We are passed data from the dispatcher which we store in
-an Erlang map so we can refer to the information later.
 
 .allowed_methods/2
 [source,erlang]

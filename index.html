@@ -4588,7 +4588,7 @@ version when the basics are down and works in a robust way.</p>
 <div class="paragraph">
 <p>This tutorial implements GraphQL on top of HTTP through the use of the
 Cowboy web server by Loïc Hoguin. We currently use cowboy version
-1.1.x.</p>
+2.2.x.</p>
 </div>
 <div class="sect2">
 <h3 id="cowboy-handler">Cowboy Handler</h3>
@@ -4649,11 +4649,10 @@ familiar with <code>cowboy_rest</code>:</p>
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">-module(sw_web_graphql_handler).
 
 %% Cowboy Handler Interface
--export([init/3]).
+-export([init/2]).
 
 %% REST callbacks
 -export([
-    rest_init/2,
     allowed_methods/2,
     resource_exists/2,
     content_types_provided/2,
@@ -4678,10 +4677,12 @@ a request to GraphQL. We first focus on using <code>cowboy_rest</code> to handle
 the request basics so we have an easier job later on.</p>
 </div>
 <div class="listingblock">
-<div class="title">init/3</div>
+<div class="title">init/2</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">init(_Transport, _Req, _Options) -&gt;
-    {upgrade, protocol, cowboy_rest}.</code></pre>
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">init(Req, {priv_file, _, _} = PrivFile) -&gt;
+    {cowboy_rest,
+     Req,
+     #{ index_location =&gt; PrivFile }}.</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4689,28 +4690,15 @@ the request basics so we have an easier job later on.</p>
 function is called upon initialization.</p>
 </div>
 <div class="paragraph">
+<p>The purpose of this function is to initialize a state with relevant
+information. We are passed data from the dispatcher which we store in
+an Erlang map so we can refer to the information later.</p>
+</div>
+<div class="paragraph">
 <p>We use the <em>upgrade</em> feature of cowboy to upgrade to the <code>cowboy_rest</code>
 protocol for the remainder of the module. This means <code>cowboy_rest</code>
 takes over operation and we provide callbacks to the general restful
 handler for the parts we want to override.</p>
-</div>
-<div class="paragraph">
-<p>The first thing <code>cowboy_rest</code> will do is to call the next function:</p>
-</div>
-<div class="listingblock">
-<div class="title">rest_init/2</div>
-<div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">rest_init(Req, {priv_file, _, _} = PrivFile) -&gt;
-    {Method, Req2} = cowboy_req:method(Req),
-    {ok, Req2,
-     #{ method =&gt; Method,
-        index_location =&gt; PrivFile }}.</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The purpose of this function is to initialize a state with relevant
-information. We are passed data from the dispatcher which we store in
-an Erlang map so we can refer to the information later.</p>
 </div>
 <div class="listingblock">
 <div class="title">allowed_methods/2</div>
@@ -4789,9 +4777,9 @@ simplicity, we omit this part.</p>
 <div class="listingblock">
 <div class="title">resource_exists/2</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">resource_exists(Req, #{ method := &lt;&lt;"GET"&gt;&gt; } = State) -&gt;
+<pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">resource_exists(#{ method := &lt;&lt;"GET"&gt;&gt; } = Req, State) -&gt;
     {true, Req, State};
-resource_exists(Req, #{ method := &lt;&lt;"POST"&gt;&gt; } = State) -&gt;
+resource_exists(#{ method := &lt;&lt;"POST"&gt;&gt; } = Req, State) -&gt;
     {false, Req, State}.</code></pre>
 </div>
 </div>
@@ -4894,12 +4882,11 @@ for data in multiple places</p>
 <div class="listingblock">
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-erlang" data-lang="erlang">gather(Req) -&gt;
-    {ok, Body, Req2} = cowboy_req:body(Req),
-    {Bindings, Req3} = cowboy_req:bindings(Req2),
-    Params = maps:from_list(Bindings),
+    {ok, Body, Req2} = cowboy_req:read_body(Req),
+    Bindings = cowboy_req:bindings(Req2),
     try jsx:decode(Body, [return_maps]) of
         JSON -&gt;
-            gather(Req3, JSON, Params)
+            gather(Req2, JSON, Bindings)
     catch
         error:badarg -&gt;
             {error, invalid_json_body}
@@ -5064,8 +5051,8 @@ important.</td>
     Response = graphql:execute(Ctx, AST), % <i class="conum" data-value="2"></i><b>(2)</b>
     ResponseBody = sw_web_response:term_to_json(Response), % <i class="conum" data-value="3"></i><b>(3)</b>
     Req2 = cowboy_req:set_resp_body(ResponseBody, Req), % <i class="conum" data-value="4"></i><b>(4)</b>
-    {ok, Reply} = cowboy_req:reply(200, Req2),
-    {halt, Reply, State}.</code></pre>
+    Reply = cowboy_req:reply(200, Req2),
+    {stop, Reply, State}.</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5138,8 +5125,8 @@ understand:</p>
              message =&gt; Formatted },
     Body = jsx:encode(#{ errors =&gt; [Err] }),
     Req2 = cowboy_req:set_resp_body(Body, Req),
-    {ok, Reply} = cowboy_req:reply(Code, Req2),
-    {halt, Reply, State}.</code></pre>
+    Reply = cowboy_req:reply(Code, Req2),
+    {stop, Reply, State}.</code></pre>
 </div>
 </div>
 </div>
@@ -6361,7 +6348,7 @@ objects. Then demonstrate how this is used to coerce values.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-11-06 14:29:25 CET
+Last updated 2017-12-22 08:01:09 +08
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
