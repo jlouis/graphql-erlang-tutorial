@@ -30,15 +30,12 @@ start(_StartType, _StartArgs) ->
     {ok, Pid} = sw_web_sup:start_link(),
     cowboy:start_clear(sw_http,
                       [{port, Port}],
-                      #{env => #{dispatch => Dispatch}}
-                      
-                       %%[{compress, true},
-                       %% {env, [{dispatch, Dispatch}]},
-
-                       %% Bump the default limit of 4096 to 65536 to allow us to submit
+                      #{env => #{dispatch => Dispatch},
+                        stream_handlers => [cowboy_compress_h, cowboy_stream_h],
+                       %% Bump the default limit of 8000 to 65536 to allow us to submit
                        %% slightly larger, human readable, query documents. The limit of
-                       %% 65536 is chosen to allow us to have 16 times bigger documents
-                       %% than the default where we hit the limit of 4096. If you are
+                       %% 65536 is chosen to allow us to have 8 times bigger documents
+                       %% than the default where we hit the limit of 8000. If you are
                        %% hitting the bumped limit you should probably consider splitting
                        %% up your query document into two.
                        %%
@@ -46,14 +43,14 @@ start(_StartType, _StartArgs) ->
                        %% max limit have any effect since the socket might make the entire
                        %% HTTP request available when cowboy does a gen_tcp:read(Socket, 0)
                        %% and will ignore the limit.
-                       %% {max_request_line_length, 65536},
-            
+                       max_request_line_length => 65536,
+
                        %% Bump the default limit of 4096 on Header lengths to 16384. The
                        %% problem is we will eventually get a very large document as a
                        %% referrer from GraphiQL and this will break the server side as it
                        %% has to process through that header
-                       %% {max_header_value_length, 16384}
-                      %%]),
+                       max_header_value_length => 16384
+                       }
                       ),
     {ok, Pid}.
 
