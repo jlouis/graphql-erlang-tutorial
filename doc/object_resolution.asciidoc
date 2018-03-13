@@ -509,7 +509,7 @@ appropriately.
 
 Object resolution of mutations works the same way as object resolution
 for every other kind of type in the graph. When the *Mutation* object
-is request in a mutation, the field resovler will run and call an
+is request in a mutation, the field resolver will run and call an
 `execute/4` function for the mutation. In our example, our mutation
 code looks like:
 
